@@ -75,6 +75,15 @@ export default async function MemberHomePage() {
   const villageName = villageRes.data?.name ?? null;
   const circleName = circleRes.data?.name ?? null;
 
+  const { data: roles } = await supabase
+    .from("member_roles")
+    .select("role")
+    .eq("profile_id", user.id)
+    .is("ended_at", null);
+  const runsAVillage = (roles ?? []).some((r) =>
+    ["local_admin", "global_admin"].includes(r.role)
+  );
+
   return (
     <>
       <SiteHeader signedIn />
@@ -91,6 +100,13 @@ export default async function MemberHomePage() {
             </span>{" "}
             <span className="chip">{profile.status}</span>
           </p>
+          {runsAVillage ? (
+            <p>
+              <Link className="btn" href="/admin/applications">
+                Local Admin workspace
+              </Link>
+            </p>
+          ) : null}
         </section>
 
         <section className="band">
