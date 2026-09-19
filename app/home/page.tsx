@@ -13,13 +13,29 @@ export default async function MemberHomePage() {
 
   if (!user) redirect("/login?next=/home");
 
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from("profiles")
-    .select(
-      "full_name, status, plan, village_id, circle_id, villages(name), circles(name)"
-    )
+    .select("full_name, status, plan, village_id, circle_id")
     .eq("id", user.id)
     .maybeSingle();
+
+  if (error) {
+    return (
+      <>
+        <SiteHeader signedIn />
+        <main className="wrap">
+          <section className="band">
+            <h1>Your profile did not load</h1>
+            <div className="notice bad">{error.message}</div>
+            <p className="muted small">
+              Signed in as {user.email}. If this persists, send the message
+              above to the build team.
+            </p>
+          </section>
+        </main>
+      </>
+    );
+  }
 
   if (!profile) {
     return (
@@ -29,9 +45,9 @@ export default async function MemberHomePage() {
           <section className="band">
             <h1>Almost there</h1>
             <p className="lead">
-              You are signed in, but your member profile has not been set up
-              yet. Your Local Admin finishes that when your invitation is
-              approved.
+              You are signed in as {user.email}, but there is no member profile
+              on this account yet. Your Local Admin sets that up when an
+              invitation is approved.
             </p>
           </section>
         </main>
@@ -39,12 +55,25 @@ export default async function MemberHomePage() {
     );
   }
 
-  const village = Array.isArray(profile.villages)
-    ? profile.villages[0]
-    : profile.villages;
-  const circle = Array.isArray(profile.circles)
-    ? profile.circles[0]
-    : profile.circles;
+  const [villageRes, circleRes] = await Promise.all([
+    profile.village_id
+      ? supabase
+          .from("villages")
+          .select("name")
+          .eq("id", profile.village_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    profile.circle_id
+      ? supabase
+          .from("circles")
+          .select("name")
+          .eq("id", profile.circle_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const villageName = villageRes.data?.name ?? null;
+  const circleName = circleRes.data?.name ?? null;
 
   return (
     <>
@@ -53,8 +82,8 @@ export default async function MemberHomePage() {
         <section className="band">
           <h1>{profile.full_name.split(" ")[0]}, welcome back.</h1>
           <p className="lead">
-            {village?.name ? `${village.name} Village` : "No Village yet"}
-            {circle?.name ? `, ${circle.name}` : ""}
+            {villageName ? `${villageName} Village` : "No Village yet"}
+            {circleName ? `, ${circleName}` : ""}
           </p>
           <p>
             <span className="chip mint">

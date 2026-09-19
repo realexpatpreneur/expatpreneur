@@ -22,9 +22,14 @@ export default async function HomePage() {
       .from("villages")
       .select("id, slug, name, country, status, summary")
       .in("status", ["open", "launching", "exploring"])
-      .order("status", { ascending: true })
-      .limit(4),
+      .limit(8),
   ]);
+
+  // Open Villages first, then the ones launching, then the ones being explored.
+  const rank: Record<string, number> = { open: 0, launching: 1, exploring: 2 };
+  const ordered = [...(villages ?? [])].sort(
+    (a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9)
+  );
 
   return (
     <>
@@ -51,7 +56,7 @@ export default async function HomePage() {
         <section className="band">
           <h2>Villages</h2>
           <div className="grid">
-            {(villages ?? []).map((village, i) => (
+            {ordered.map((village, i) => (
               <article className="card" key={village.id}>
                 <Link href={`/villages/${village.slug}`}>
                   <div className={`cover ${covers[i % covers.length]}`}>
