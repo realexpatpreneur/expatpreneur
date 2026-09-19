@@ -34,6 +34,7 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isMemberArea =
     path.startsWith("/home") ||
+    path.startsWith("/welcome") ||
     path.startsWith("/village") ||
     path.startsWith("/directory") ||
     path.startsWith("/admin") ||

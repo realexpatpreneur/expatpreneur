@@ -55,6 +55,9 @@ export default async function MemberHomePage() {
     );
   }
 
+  // A newly approved member finishes their profile before anything else.
+  if (profile.status === "onboarding") redirect("/welcome");
+
   const [villageRes, circleRes] = await Promise.all([
     profile.village_id
       ? supabase

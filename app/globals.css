@@ -403,3 +403,32 @@ ul.plain {
   dl.kv { grid-template-columns: 1fr; gap: 2px; }
   dl.kv dd { margin-bottom: 8px; }
 }
+
+/* checkboxes with a label and a line of explanation */
+
+.check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.check input {
+  margin-top: 3px;
+}
+
+.check b {
+  display: block;
+  font-size: 14px;
+}
+
+.check small {
+  display: block;
+  color: var(--muted);
+  font-size: 12.5px;
+  margin-top: 3px;
+}
