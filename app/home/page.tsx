@@ -172,6 +172,18 @@ export default async function MemberHomePage() {
                 Replies, requests and what is happening around you.
               </p>
             </Link>
+            <Link className="panel" href="/groups">
+              <h3>Industry Groups</h3>
+              <p className="muted small">
+                Your trade, across every Village.
+              </p>
+            </Link>
+            <Link className="panel" href="/pods">
+              <h3>Pods</h3>
+              <p className="muted small">
+                A few members who meet on a rhythm and keep each other honest.
+              </p>
+            </Link>
             <Link className="panel" href="/library">
               <h3>Resources</h3>
               <p className="muted small">

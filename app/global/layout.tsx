@@ -21,6 +21,7 @@ export default async function GlobalLayout({
           <Link href="/global/villages">Villages</Link>
           <Link href="/global/mix">Balance</Link>
           <Link href="/global/cities">Cities</Link>
+          <Link href="/global/groups">Groups</Link>
           <Link href="/global/roles">Roles</Link>
           <Link href="/global/moderation">Moderation</Link>
           <Link href="/global/suggestions">Suggestions</Link>

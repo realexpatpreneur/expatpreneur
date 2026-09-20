@@ -46,6 +46,8 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/upgrade") ||
     path.startsWith("/settings") ||
     path.startsWith("/report") ||
+    path.startsWith("/groups") ||
+    path.startsWith("/pods") ||
     path.startsWith("/events") ||
     path.startsWith("/admin") ||
     path.startsWith("/global");
