@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useActionState } from "react";
 import { sendSignInLink, type LoginState } from "./actions";
 
@@ -23,7 +25,8 @@ export function LoginForm({ next }: { next: string }) {
   }
 
   return (
-    <form action={action} className="panel" style={{ maxWidth: 520 }}>
+    <>
+      <form action={action} className="panel" style={{ maxWidth: 520 }}>
       {state.error ? <div className="notice bad">{state.error}</div> : null}
       <input type="hidden" name="next" value={next} />
       <label className="field">
@@ -36,6 +39,11 @@ export function LoginForm({ next }: { next: string }) {
       <button className="btn primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Email me a link"}
       </button>
-    </form>
+      </form>
+
+      <p className="muted small" style={{ marginTop: 12 }}>
+        Set a password in your settings? <Link href="/reset-password">Reset it here</Link>.
+      </p>
+    </>
   );
 }

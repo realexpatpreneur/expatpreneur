@@ -320,7 +320,11 @@ export default async function MyVillagePage() {
                 <h3>Circles here</h3>
                 <div className="rows" style={{ marginTop: 12 }}>
                   {(circles ?? []).map((circle) => (
-                    <div className="rowlink" key={circle.circle_id}>
+                    <Link
+                      className="rowlink"
+                      href={`/circles/${circle.circle_id}`}
+                      key={circle.circle_id}
+                    >
                       <div>
                         <b>{circle.name}</b>
                         <div className="muted small">
@@ -335,7 +339,7 @@ export default async function MyVillagePage() {
                           <span className="chip mint">Yours</span>
                         ) : null}
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

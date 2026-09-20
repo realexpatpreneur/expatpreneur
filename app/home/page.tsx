@@ -157,6 +157,12 @@ export default async function MemberHomePage() {
                 What your Village needs this week, and what you can give.
               </p>
             </Link>
+            <Link className="panel" href="/network">
+              <h3>The Global network</h3>
+              <p className="muted small">
+                Every Village, what is open, and what is on the way.
+              </p>
+            </Link>
             <Link className="panel" href="/for-you">
               <h3>For you</h3>
               <p className="muted small">
