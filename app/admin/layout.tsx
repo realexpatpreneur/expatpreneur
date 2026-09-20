@@ -9,12 +9,15 @@ const groups = [
   {
     heading: "People",
     links: [
+      ["/admin", "Overview"],
       ["/admin/applications", "Requests"],
       ["/admin/members", "Members"],
       ["/admin/circles", "Circles"],
       ["/admin/care", "Care"],
       ["/admin/whatsapp", "WhatsApp"],
       ["/admin/transfers", "Moves"],
+      ["/admin/mix", "Village mix"],
+      ["/admin/leadership", "Leadership"],
     ],
   },
   {
@@ -36,6 +39,7 @@ const groups = [
   {
     heading: "Listening",
     links: [
+      ["/admin/reports", "Reports"],
       ["/admin/suggestions", "Suggestion box"],
       ["/admin/insight", "Insight"],
       ["/admin/settings", "Village settings"],
