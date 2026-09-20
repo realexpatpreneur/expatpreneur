@@ -29,29 +29,29 @@ export default async function AdminEventsPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Events</h1>
         <p className="lead">
           What is on, who can register, and how full it is.
         </p>
         <p>
-          <Link className="btn primary" href="/admin/events/new">
+          <Link className="btn btn-primary" href="/admin/events/new">
             Create an event
           </Link>
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         {rows.length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing yet. Create the first one.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {rows.map((event) => (
-              <Link className="rowlink" key={event.id} href={`/admin/events/${event.id}`}>
+              <Link className="li linkrow" key={event.id} href={`/admin/events/${event.id}`}>
                 <div>
                   <b>{event.title}</b>
                   <div className="muted small">
@@ -62,7 +62,7 @@ export default async function AdminEventsPage() {
                   <span className="chip">
                     {audienceText(event, villageName(event.audience_id ?? event.village_id))}
                   </span>
-                  <span className={`chip ${event.status === "published" ? "mint" : ""}`}>
+                  <span className={`chip ${event.status === "published" ? "chip-mint" : ""}`}>
                     {event.status}
                   </span>
                 </div>

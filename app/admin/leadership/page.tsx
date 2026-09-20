@@ -54,7 +54,7 @@ export default async function LeadershipPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/admin">Overview</Link>
           </p>
@@ -64,8 +64,8 @@ export default async function LeadershipPage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <h3>Already running something</h3>
@@ -74,10 +74,10 @@ export default async function LeadershipPage() {
                     Nobody holds a role in your Village yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {doing.map((member) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         href={`/admin/members/${member.id}`}
                         key={member.id}
                       >
@@ -87,7 +87,7 @@ export default async function LeadershipPage() {
                         </div>
                         <div className="rowmeta">
                           {holds(member.id).map((role) => (
-                            <span className="chip mint" key={role}>
+                            <span className="chip chip-mint" key={role}>
                               {role}
                             </span>
                           ))}
@@ -105,9 +105,9 @@ export default async function LeadershipPage() {
                     Nobody yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(suggestions ?? []).map((suggestion) => (
-                      <div className="rowlink" key={suggestion.id}>
+                      <div className="li linkrow" key={suggestion.id}>
                         <div>
                           <b>{nameOf(suggestion.profile_id)}</b>
                           <div className="muted small">
@@ -118,7 +118,7 @@ export default async function LeadershipPage() {
                         <div className="rowmeta">
                           <span
                             className={`chip ${
-                              suggestion.status === "actioned" ? "mint" : ""
+                              suggestion.status === "actioned" ? "chip-mint" : ""
                             }`}
                           >
                             {suggestion.status}
@@ -134,7 +134,7 @@ export default async function LeadershipPage() {
             <div className="stack">
               <SuggestLeaderForm members={members ?? []} />
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>How this works</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Roles are given by the Global team, so this is a

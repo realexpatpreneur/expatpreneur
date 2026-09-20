@@ -46,7 +46,7 @@ export default async function GlobalOverviewPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>The network</h1>
         <p className="lead">
           Where the Villages are, how they are doing, and what is waiting on
@@ -54,8 +54,8 @@ export default async function GlobalOverviewPage() {
         </p>
       </section>
 
-      <section className="band">
-        <div className="grid three">
+      <section className="sec">
+        <div className="g3">
           <div className="panel">
             <h3>Active members</h3>
             <p className="lead" style={{ margin: 0 }}>{members ?? 0}</p>
@@ -83,11 +83,11 @@ export default async function GlobalOverviewPage() {
         </div>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Villages</h2>
-        <div className="rows">
+        <div className="divide">
           {(villages ?? []).map((village) => (
-            <Link className="rowlink" key={village.id} href="/global/villages">
+            <Link className="li linkrow" key={village.id} href="/global/villages">
               <div>
                 <b>{village.name}</b>
                 <div className="muted small">
@@ -96,7 +96,7 @@ export default async function GlobalOverviewPage() {
                 </div>
               </div>
               <div className="rowmeta">
-                <span className={`chip ${village.status === "open" ? "mint" : ""}`}>
+                <span className={`chip ${village.status === "open" ? "chip-mint" : ""}`}>
                   {village.status}
                 </span>
               </div>

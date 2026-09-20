@@ -26,26 +26,26 @@ export default async function EmailTemplatePage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global/emails">Emails</Link>
           </p>
           <h1>{template.name}</h1>
           <p className="lead">Sent when: {template.sent_when.toLowerCase()}.</p>
-          {done ? <div className="notice good">Saved.</div> : null}
+          {done ? <div className="flag ok">Saved.</div> : null}
           <p>
-            <Link className="btn" href={`/global/emails/${key}/preview`}>
+            <Link className="btn btn-ghost" href={`/global/emails/${key}/preview`}>
               Preview
             </Link>
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <TemplateForm template={template} />
 
             <div className="stack">
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Placeholders</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Anything in braces is filled in when the email is sent.
@@ -65,7 +65,7 @@ export default async function EmailTemplatePage({
                 </p>
               </div>
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What it looks like</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Every email carries the ExpatPreneurs heading, the message,

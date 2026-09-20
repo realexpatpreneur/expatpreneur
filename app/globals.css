@@ -2806,3 +2806,198 @@ body, .app{color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
 .dcount{margin:12px auto 0!important;font-size:13px;color:var(--muted)}
 
 .dsec[hidden], .dcard[hidden], .dperson[hidden], .dband[hidden]{display:none!important}
+/* =====================================================================
+   The shapes this build writes that the prototype does not have a class
+   for. Nothing new is invented here: every value is taken from the
+   prototype's own rules, applied to the markup the pages already use.
+   ===================================================================== */
+
+/* a section of a page */
+.sec + .sec { margin-top: 28px; }
+.pub .sec { padding: 0 var(--gx); }
+.pub .sec:first-of-type { padding-top: 40px; }
+.pub .sec:last-of-type { padding-bottom: 48px; }
+.mbody .wrap { padding: 0; }
+
+.sec > h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; }
+.sec > h2 { font-size: 19px; }
+
+/* the standfirst under a heading */
+.lead {
+  color: #46586a;
+  margin-top: 10px;
+  max-width: 60ch;
+  font-size: 14px;
+}
+
+.hero .lead { font-size: 15px; max-width: 44ch; }
+
+/* a labelled field, written as one label around its input */
+label.field {
+  display: block;
+  margin-top: 14px;
+}
+
+label.field > span:first-child {
+  display: block;
+  font-weight: 600;
+  font-size: 12.5px;
+  margin-bottom: 6px;
+  color: var(--navy);
+}
+
+label.field input,
+label.field select,
+label.field textarea {
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: var(--navy);
+  background: #fff;
+  border: 1px solid #c7cdd4;
+  border-radius: 14px;
+  padding: 9px 12px;
+  box-shadow: inset 0 2px 4px rgba(15, 20, 25, 0.07), 0 1px 3px rgba(15, 20, 25, 0.07);
+}
+
+label.field textarea { resize: vertical; line-height: 1.5; }
+
+label.field input:hover,
+label.field select:hover,
+label.field textarea:hover { border-color: #b6bdc6; }
+
+label.field input:focus,
+label.field select:focus,
+label.field textarea:focus {
+  outline: 0;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(64, 116, 174, 0.18), inset 0 2px 4px rgba(15, 20, 25, 0.06);
+}
+
+form .row { margin-top: 14px; }
+
+/* a row that leads somewhere, with its detail on the right */
+.li.linkrow > div:first-child,
+.li.linkrow > a:first-child { flex: 1; min-width: 0; }
+
+.rowmeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+/* a card with a colour block at the top */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: #fff;
+  padding: 0 0 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 20, 25, 0.06), 0 8px 20px rgba(15, 20, 25, 0.06);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+a.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(15, 20, 25, 0.1), 0 16px 34px rgba(15, 20, 25, 0.12);
+  border-color: #d7dce2;
+}
+
+.card > *:not(.cover) { padding-left: 14px; padding-right: 14px; }
+
+.cover {
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  min-height: 96px;
+  color: #fff;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  background: var(--c1);
+}
+
+.cover.mint { background: var(--c2); color: #0e3242; }
+.cover.pink { background: var(--c3); color: #4a2a16; }
+.cover.navy { background: var(--c4); }
+.cover.sun { background: linear-gradient(135deg, #f2a65a, #c96f4a); color: #3c2410; }
+.cover.paper { background: var(--wash); color: var(--ink); }
+.cover.photo { background-size: cover; background-position: center; }
+
+.card .kind,
+.kind:not(.wa .kind) {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.card p { font-size: 13px; color: var(--muted); }
+
+.card .meta,
+.meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: auto;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* a search field with its button beside it */
+.searchrow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.searchrow input {
+  flex: 1 1 260px;
+  min-width: 0;
+  font: inherit;
+  color: var(--navy);
+  background: #fff;
+  border: 1px solid #c7cdd4;
+  border-radius: 14px;
+  padding: 9px 12px;
+  box-shadow: inset 0 2px 4px rgba(15, 20, 25, 0.07);
+}
+
+.searchrow input:focus {
+  outline: 0;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(64, 116, 174, 0.18);
+}
+
+/* a photograph used on its own */
+.shot {
+  border-radius: var(--r-md);
+  background: var(--wash) center / cover no-repeat;
+  display: block;
+  width: 100%;
+}
+
+.face { border-radius: 50%; object-fit: cover; width: 44px; height: 44px; }
+.face.big { width: 72px; height: 72px; }
+.facerow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+/* lists written as plain ul inside a panel */
+.panel ul:not(.ticks):not(.p2-list):not(.plan ul) {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  display: grid;
+  gap: 6px;
+}
+
+@media (max-width: 700px) {
+  .pub .sec { padding: 0 18px; }
+}

@@ -10,7 +10,7 @@ export default async function NewMarketPostPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/market-exploration/new">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/market-exploration">Market Exploration</Link>
           </p>
@@ -20,7 +20,7 @@ export default async function NewMarketPostPage() {
             reaches all of them.
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           <MarketPostForm />
         </section>
       </WorkspaceShell>

@@ -35,7 +35,7 @@ export default async function AdminSuggestionPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href="/admin/suggestions">Suggestion box</Link>
         </p>
@@ -44,17 +44,17 @@ export default async function AdminSuggestionPage({
           {suggestion.about === "community" ? "The whole community" : "Village"}.{" "}
           {timeAgo(suggestion.created_at)}.
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="stack">
             <div className="panel">
               <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{suggestion.body}</p>
             </div>
             {suggestion.anonymous ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Sent anonymously</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   No name, no email and no Circle were stored with this

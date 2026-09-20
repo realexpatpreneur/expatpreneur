@@ -34,7 +34,7 @@ export default async function TransferPage({
 
   return (
     <WorkspaceShell kind="member" nav="/settings/transfer">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/settings">Settings</Link>
           </p>
@@ -44,15 +44,15 @@ export default async function TransferPage({
             Only the Village and the Circle change.
           </p>
           {done ? (
-            <div className="notice good">
+            <div className="flag ok">
               Asked. The admins at both ends have been told, and somebody will
               be in touch before you move.
             </div>
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <TransferForm
               villages={(villages ?? []).filter((v) => v.id !== member.village_id)}
             />
@@ -61,9 +61,9 @@ export default async function TransferPage({
               {(asked ?? []).length ? (
                 <div className="panel">
                   <h3>What you have asked</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(asked ?? []).map((request) => (
-                      <div className="rowlink" key={request.id}>
+                      <div className="li linkrow" key={request.id}>
                         <div>
                           <b>{villageName(request.to_village)}</b>
                           <div className="muted small">
@@ -79,7 +79,7 @@ export default async function TransferPage({
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What happens next</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   The Local Admins where you are going place you in a Circle,
@@ -88,13 +88,13 @@ export default async function TransferPage({
                 </p>
               </div>
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Your city is not listed?</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Tell us where you are going and we will count you in when a
                   Village opens there.
                 </p>
-                <Link className="btn" href="/villages/suggest">
+                <Link className="btn btn-ghost" href="/villages/suggest">
                   Suggest a city
                 </Link>
               </div>

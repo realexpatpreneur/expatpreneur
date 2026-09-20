@@ -26,21 +26,21 @@ export default async function GlobalGroupsPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Groups and Pods</h1>
         <p className="lead">
           Industry Groups gather a trade across every Village. Pods are small
           and meet on a rhythm.
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Industry Groups</h2>
-        <div className="cols">
+        <div className="gside">
           <div className="stack">
             {(groups ?? []).length === 0 ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <p className="muted" style={{ margin: 0 }}>
                   None yet.
                 </p>
@@ -55,12 +55,12 @@ export default async function GlobalGroupsPage({
         </div>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Pods</h2>
-        <div className="cols">
+        <div className="gside">
           <div className="stack">
             {(pods ?? []).length === 0 ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <p className="muted" style={{ margin: 0 }}>
                   None yet.
                 </p>

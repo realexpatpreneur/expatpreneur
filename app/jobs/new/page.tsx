@@ -18,7 +18,7 @@ export default async function NewJobPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/jobs/new">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/jobs">Jobs and freelance</Link>
           </p>
@@ -27,7 +27,7 @@ export default async function NewJobPage() {
             Hiring, a project, or someone to build something with.
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           <JobForm businesses={businesses ?? []} villageName={member.villageName} />
         </section>
       </WorkspaceShell>

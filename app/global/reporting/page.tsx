@@ -63,7 +63,7 @@ export default async function GlobalReportingPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Reporting</h1>
         <p className="lead">
           Every Village side by side, how the network is growing, and what it
@@ -71,8 +71,8 @@ export default async function GlobalReportingPage() {
         </p>
       </section>
 
-      <section className="band">
-        <div className="grid three">
+      <section className="sec">
+        <div className="g3">
           <div className="panel">
             <h3>Active members</h3>
             <p className="lead" style={{ margin: 0 }}>{totals.members}</p>
@@ -93,14 +93,14 @@ export default async function GlobalReportingPage() {
         </div>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Villages</h2>
-        <div className="rows">
+        <div className="divide">
           {(villages ?? []).map((village) => {
             const answered = answeredFor(village.village_id);
             const room = roomsFor(village.village_id);
             return (
-              <div className="rowlink" key={village.village_id}>
+              <div className="li linkrow" key={village.village_id}>
                 <div>
                   <b>{village.name}</b>
                   <div className="muted small">
@@ -114,9 +114,9 @@ export default async function GlobalReportingPage() {
                 </div>
                 <div className="rowmeta">
                   {village.quiet ? (
-                    <span className="chip sun">{village.quiet} quiet</span>
+                    <span className="chip chip-sun">{village.quiet} quiet</span>
                   ) : null}
-                  <span className={`chip ${village.status === "open" ? "mint" : ""}`}>
+                  <span className={`chip ${village.status === "open" ? "chip-mint" : ""}`}>
                     {village.status}
                   </span>
                 </div>
@@ -126,8 +126,8 @@ export default async function GlobalReportingPage() {
         </div>
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="panel">
             <h3>People arriving, everywhere</h3>
             {byMonth.size === 0 ? (
@@ -135,9 +135,9 @@ export default async function GlobalReportingPage() {
                 Nothing yet.
               </p>
             ) : (
-              <div className="rows" style={{ marginTop: 12 }}>
+              <div className="divide" style={{ marginTop: 12 }}>
                 {[...byMonth.entries()].slice(0, 12).map(([month, joined]) => (
-                  <div className="rowlink" key={month}>
+                  <div className="li linkrow" key={month}>
                     <div>
                       <b>{monthName(month)}</b>
                     </div>
@@ -159,9 +159,9 @@ export default async function GlobalReportingPage() {
                   charged until Stripe is live.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(money ?? []).map((row) => (
-                    <div className="rowlink" key={`${row.month}-${row.kind}-${row.currency}`}>
+                    <div className="li linkrow" key={`${row.month}-${row.kind}-${row.currency}`}>
                       <div>
                         <b>
                           {(Number(row.cents) / 100).toFixed(2)} {row.currency}
@@ -176,7 +176,7 @@ export default async function GlobalReportingPage() {
                 </div>
               )}
               <p style={{ marginTop: 12 }}>
-                <Link className="btn" href="/global/money">
+                <Link className="btn btn-ghost" href="/global/money">
                   Every payment
                 </Link>
               </p>
@@ -204,7 +204,7 @@ export default async function GlobalReportingPage() {
               </div>
             ) : null}
 
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>Reading these</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 The share of asks answered is the one worth watching. A Village

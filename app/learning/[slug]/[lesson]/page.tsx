@@ -53,7 +53,7 @@ export default async function LessonPage({
 
   return (
     <WorkspaceShell kind="member" nav="/learning">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href={`/learning/${slug}`}>{course.title}</Link>
           </p>
@@ -66,7 +66,7 @@ export default async function LessonPage({
           {current.video_url ? (
             <p>
               <a
-                className="btn primary"
+                className="btn btn-primary"
                 href={current.video_url}
                 target="_blank"
                 rel="noreferrer"
@@ -77,8 +77,8 @@ export default async function LessonPage({
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
                 {current.body || "Nothing written for this lesson yet."}
@@ -98,16 +98,16 @@ export default async function LessonPage({
                 </p>
                 <div className="row" style={{ marginTop: 12 }}>
                   {previous ? (
-                    <Link className="btn" href={`/learning/${slug}/${previous.position}`}>
+                    <Link className="btn btn-ghost" href={`/learning/${slug}/${previous.position}`}>
                       Previous
                     </Link>
                   ) : null}
                   {next ? (
-                    <Link className="btn" href={`/learning/${slug}/${next.position}`}>
+                    <Link className="btn btn-ghost" href={`/learning/${slug}/${next.position}`}>
                       Next lesson
                     </Link>
                   ) : (
-                    <Link className="btn" href={`/learning/${slug}`}>
+                    <Link className="btn btn-ghost" href={`/learning/${slug}`}>
                       Back to the course
                     </Link>
                   )}
@@ -116,10 +116,10 @@ export default async function LessonPage({
 
               <div className="panel">
                 <h3>Lessons</h3>
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(lessons ?? []).map((lesson) => (
                     <Link
-                      className="rowlink"
+                      className="li linkrow"
                       key={lesson.id}
                       href={`/learning/${slug}/${lesson.position}`}
                     >
@@ -130,7 +130,7 @@ export default async function LessonPage({
                       </div>
                       <div className="rowmeta">
                         {doneIds.has(lesson.id) ? (
-                          <span className="chip mint">Done</span>
+                          <span className="chip chip-mint">Done</span>
                         ) : null}
                       </div>
                     </Link>

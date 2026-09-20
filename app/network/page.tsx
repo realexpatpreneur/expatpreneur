@@ -43,7 +43,7 @@ export default async function NetworkPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/network">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/home">Home</Link>
           </p>
@@ -57,13 +57,13 @@ export default async function NetworkPage() {
           </p>
 
           {paid ? null : (
-            <div className="panel wash" style={{ marginTop: 14 }}>
+            <div className="panel panel-wash" style={{ marginTop: 14 }}>
               <p className="muted small" style={{ margin: 0 }}>
                 You can browse every Village. Contacting members and
                 attending events in other Villages comes with the paid plan.
               </p>
               <p style={{ marginTop: 10 }}>
-                <Link className="btn" href="/upgrade">
+                <Link className="btn btn-ghost" href="/upgrade">
                   See the paid plan
                 </Link>
               </p>
@@ -71,8 +71,8 @@ export default async function NetworkPage() {
           )}
         </section>
 
-        <section className="band">
-          <div className="grid">
+        <section className="sec">
+          <div className="g3 g4">
             {open.map((village) => {
               const mine = village.id === member.village_id;
               return (
@@ -92,23 +92,23 @@ export default async function NetworkPage() {
                   </div>
                   <p style={{ marginTop: 10 }}>
                     {mine ? (
-                      <Link className="btn" href="/my-village">
+                      <Link className="btn btn-ghost" href="/my-village">
                         Open
                       </Link>
                     ) : paid ? (
                       <>
                         <Link
-                          className="btn"
+                          className="btn btn-ghost"
                           href={`/directory?village=${village.slug}`}
                         >
                           Members
                         </Link>{" "}
-                        <Link className="btn" href="/events">
+                        <Link className="btn btn-ghost" href="/events">
                           Events
                         </Link>
                       </>
                     ) : (
-                      <Link className="btn" href={`/villages/${village.slug}`}>
+                      <Link className="btn btn-ghost" href={`/villages/${village.slug}`}>
                         Look around
                       </Link>
                     )}
@@ -120,9 +120,9 @@ export default async function NetworkPage() {
         </section>
 
         {soon.length ? (
-          <section className="band">
+          <section className="sec">
             <h2>On the way</h2>
-            <div className="grid" style={{ marginTop: 16 }}>
+            <div className="g3 g4" style={{ marginTop: 16 }}>
               {soon.map((village) => (
                 <article className="card" key={village.id}>
                   <div className="cover paper">{village.city}</div>
@@ -143,14 +143,14 @@ export default async function NetworkPage() {
           </section>
         ) : null}
 
-        <section className="band">
-          <div className="panel wash">
+        <section className="sec">
+          <div className="panel panel-wash">
             <h3>Moving city?</h3>
             <p className="muted small" style={{ marginTop: 4 }}>
               Your profile and your history come with you. Ask to transfer to
               the Village in your new city.
             </p>
-            <Link className="btn" href="/settings/transfer">
+            <Link className="btn btn-ghost" href="/settings/transfer">
               Request a transfer
             </Link>
           </div>

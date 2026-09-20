@@ -11,7 +11,7 @@ export function RenewalForm({ renewalId }: { renewalId: string }) {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 680 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="renewal_id" value={renewalId} />
 
       <label className="check">
@@ -45,7 +45,7 @@ export function RenewalForm({ renewalId }: { renewalId: string }) {
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Send my answer"}
       </button>
     </form>

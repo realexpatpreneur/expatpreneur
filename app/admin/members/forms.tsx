@@ -30,7 +30,7 @@ export function MemberForm({
   return (
     <form action={action} className="panel">
       <h3>Membership</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="id" value={id} />
 
       <label className="field" style={{ marginTop: 10 }}>
@@ -70,7 +70,7 @@ export function MemberForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -98,7 +98,7 @@ export function CircleForm({
   return (
     <form action={action} className="panel">
       <h3>{circle ? `Edit ${circle.name}` : "New Circle"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {circle ? <input type="hidden" name="id" value={circle.id} /> : null}
 
       <label className="field" style={{ marginTop: 10 }}>
@@ -141,7 +141,7 @@ export function CircleForm({
         </select>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -157,7 +157,7 @@ export function TaskDone({ taskId }: { taskId: string }) {
   return (
     <form action={action}>
       <input type="hidden" name="task_id" value={taskId} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Done"}
       </button>
     </form>
@@ -172,7 +172,7 @@ export function AnnouncementForm({ villageName }: { villageName: string | null }
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Who is it for?</span>
@@ -194,7 +194,7 @@ export function AnnouncementForm({ villageName }: { villageName: string | null }
         <textarea name="body" rows={5} required />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send"}
       </button>
     </form>

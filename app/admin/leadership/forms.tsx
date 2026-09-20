@@ -16,9 +16,9 @@ export function SuggestLeaderForm({
   return (
     <form action={action} className="panel">
       <h3>Put somebody forward</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {state.done ? (
-        <div className="notice good">
+        <div className="flag ok">
           Sent to the Global team. The member is not told unless it goes
           ahead.
         </div>
@@ -55,7 +55,7 @@ export function SuggestLeaderForm({
         />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Suggest to Global"}
       </button>
     </form>

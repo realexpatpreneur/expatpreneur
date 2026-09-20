@@ -25,14 +25,14 @@ export default async function NotifiedPage({
 
   return (
     <WorkspaceShell kind="member" nav="/network/notified">
-        <section className="band">
+        <section className="sec">
           <h1>We will let you know</h1>
           <p className="lead">
             You will get a notification when the {row?.name ?? "next"} Village
             opens.
           </p>
           <p>
-            <Link className="btn primary" href="/network">
+            <Link className="btn btn-primary" href="/network">
               Back to the network
             </Link>
           </p>

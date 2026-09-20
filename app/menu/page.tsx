@@ -10,10 +10,10 @@ export default function PublicMenuPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Menu</h1>
         </section>
-        <section className="band">
+        <section className="sec">
           <MenuList
             items={[
               ["/discover", "Discover"],

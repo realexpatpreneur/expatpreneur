@@ -25,7 +25,7 @@ export function ContactBusinessForm({
         </label>
       </div>
 
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="slug" value={slug} />
 
       <label className="field">
@@ -43,7 +43,7 @@ export function ContactBusinessForm({
         <textarea name="body" rows={4} required />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : `Send message`}
       </button>
 

@@ -17,7 +17,7 @@ export function PartnerDecision({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="partner_id" value={id} />
       <label className="field">
         <span>Conditions</span>
@@ -32,14 +32,14 @@ export function PartnerDecision({
       </label>
       <div className="row">
         <button
-          className="btn primary"
+          className="btn btn-primary"
           name="decision"
           value="approved"
           disabled={pending}
         >
           Approve with conditions
         </button>
-        <button className="btn" name="decision" value="declined" disabled={pending}>
+        <button className="btn btn-ghost" name="decision" value="declined" disabled={pending}>
           Decline
         </button>
       </div>

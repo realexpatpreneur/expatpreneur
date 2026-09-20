@@ -9,10 +9,10 @@ export default async function EducatorMorePage() {
 
   return (
     <WorkspaceShell kind="edu" nav="/educator/more">
-        <section className="band">
+        <section className="sec">
           <h1>More</h1>
         </section>
-        <section className="band">
+        <section className="sec">
           <MenuList
             items={[
               ["/educator", "Overview and your courses"],

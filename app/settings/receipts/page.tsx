@@ -64,7 +64,7 @@ export default async function ReceiptsPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/settings/receipts">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/settings?show=membership">Settings</Link>
           </p>
@@ -74,13 +74,13 @@ export default async function ReceiptsPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {rows.length === 0 ? (
             <p className="muted">Nothing paid for yet.</p>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {rows.map((row) => (
-                <div className="rowlink" key={row.id}>
+                <div className="li linkrow" key={row.id}>
                   <div>
                     <b>{row.item}</b>
                     <div className="muted small">
@@ -92,7 +92,7 @@ export default async function ReceiptsPage() {
                     </div>
                   </div>
                   <div className="rowmeta">
-                    <span className={`chip ${row.status === "paid" ? "mint" : ""}`}>
+                    <span className={`chip ${row.status === "paid" ? "chip-mint" : ""}`}>
                       {row.amount}
                     </span>
                   </div>
@@ -101,7 +101,7 @@ export default async function ReceiptsPage() {
             </div>
           )}
 
-          <div className="panel wash" style={{ marginTop: 20 }}>
+          <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <p className="muted small" style={{ margin: 0 }}>
               Invoices with your business details on them come from Stripe.
               Open the card portal from Membership to download them.

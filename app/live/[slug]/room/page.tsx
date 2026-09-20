@@ -30,7 +30,7 @@ export default async function RoomPage({
 
   return (
     <WorkspaceShell kind="member" nav="/live/room">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/live">Live rooms</Link>
           </p>
@@ -40,7 +40,7 @@ export default async function RoomPage({
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {liveReady ? (
             <RoomClient slug={slug} onLeaveHref={`/live/${slug}`} />
           ) : (
@@ -51,7 +51,7 @@ export default async function RoomPage({
                 the roles and the attendance. The audio and video need the
                 LiveKit keys in the environment.
               </p>
-              <Link className="btn" href={`/live/${slug}`}>
+              <Link className="btn btn-ghost" href={`/live/${slug}`}>
                 Back to the session
               </Link>
             </div>

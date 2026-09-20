@@ -24,18 +24,18 @@ export default async function ContactedPage({
 
   return (
     <WorkspaceShell kind="member" nav="/businesses/contacted">
-        <section className="band">
+        <section className="sec">
           <h1>Message sent</h1>
           <p className="lead">
             {business?.name ?? "The business"} will reply to you by email.
             ExpatPreneurs does not take part in the transaction.
           </p>
           <p>
-            <Link className="btn" href="/businesses">
+            <Link className="btn btn-ghost" href="/businesses">
               Back to businesses
             </Link>{" "}
             {business ? (
-              <Link className="btn primary" href={`/businesses/${business.slug}`}>
+              <Link className="btn btn-primary" href={`/businesses/${business.slug}`}>
                 Back to {business.name}
               </Link>
             ) : null}

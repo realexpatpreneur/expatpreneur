@@ -23,7 +23,7 @@ export default async function AdminPartnersPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/admin/events">Events</Link>
           </p>
@@ -33,14 +33,14 @@ export default async function AdminPartnersPage({
             Global approves these before anything is agreed.
           </p>
           {done ? (
-            <div className="notice good">
+            <div className="flag ok">
               Sent. The Global team has been told.
             </div>
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <ProposePartnerForm />
 
             <div className="stack">
@@ -51,9 +51,9 @@ export default async function AdminPartnersPage({
                     Nothing yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(requests ?? []).map((request) => (
-                      <div className="rowlink" key={request.id}>
+                      <div className="li linkrow" key={request.id}>
                         <div>
                           <b>{request.title}</b>
                           <div className="muted small">
@@ -63,7 +63,7 @@ export default async function AdminPartnersPage({
                         </div>
                         <div className="rowmeta">
                           <span
-                            className={`chip ${request.status === "approved" ? "mint" : ""}`}
+                            className={`chip ${request.status === "approved" ? "chip-mint" : ""}`}
                           >
                             {request.status}
                           </span>
@@ -74,7 +74,7 @@ export default async function AdminPartnersPage({
                 )}
               </div>
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>The usual conditions</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   No member data is shared with the partner, and no sales

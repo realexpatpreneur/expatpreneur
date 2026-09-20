@@ -48,7 +48,7 @@ export default async function EmailPreviewPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href={`/global/emails/${template.key}`}>{template.name}</Link>
           </p>
@@ -59,7 +59,7 @@ export default async function EmailPreviewPage({
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <div className="panel" style={{ maxWidth: 620 }}>
             <p className="muted small">
               From: ExpatPreneurs {example.village}
@@ -67,7 +67,7 @@ export default async function EmailPreviewPage({
               Subject: {fill(template.subject)}
             </p>
 
-            <div className="panel wash" style={{ marginTop: 14 }}>
+            <div className="panel panel-wash" style={{ marginTop: 14 }}>
               <p>
                 <b>ExpatPreneurs</b>
               </p>
@@ -79,7 +79,7 @@ export default async function EmailPreviewPage({
               ))}
               {template.button_label ? (
                 <p style={{ marginTop: 16 }}>
-                  <span className="btn primary">{template.button_label}</span>
+                  <span className="btn btn-primary">{template.button_label}</span>
                 </p>
               ) : null}
               <p className="muted small" style={{ marginTop: 16 }}>

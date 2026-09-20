@@ -49,7 +49,7 @@ export default async function GlobalRequestsPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -60,7 +60,7 @@ export default async function GlobalRequestsPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <h2>Pods proposed</h2>
           {openPods.length === 0 ? (
             <p className="muted small">Nothing waiting.</p>
@@ -93,7 +93,7 @@ export default async function GlobalRequestsPage() {
           )}
         </section>
 
-        <section className="band">
+        <section className="sec">
           <h2>Members asking about their own data</h2>
           {openData.length === 0 ? (
             <p className="muted small">Nothing waiting.</p>

@@ -18,8 +18,8 @@ export function PhotoForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Up it goes.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Up it goes.</div> : null}
       <input type="hidden" name="event_id" value={eventId} />
       <input type="hidden" name="slug" value={slug} />
 
@@ -35,7 +35,7 @@ export function PhotoForm({
         <input name="caption" placeholder="Who is in it, or what was happening" />
       </label>
 
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Adding" : "Add it"}
       </button>
     </form>
@@ -58,7 +58,7 @@ export function RemovePhoto({
     <form action={action}>
       <input type="hidden" name="photo_id" value={photoId} />
       <input type="hidden" name="slug" value={slug} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Removing" : "Take it down"}
       </button>
     </form>

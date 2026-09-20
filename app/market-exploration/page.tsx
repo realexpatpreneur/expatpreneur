@@ -43,29 +43,29 @@ export default async function MarketExplorationPage({
 
   return (
     <WorkspaceShell kind="member" nav="/market-exploration">
-        <section className="band">
+        <section className="sec">
           <h1>Market Exploration</h1>
           <p className="lead">
             Looking into a new country or city? Say what you are looking for and
             who you need to meet.
           </p>
           <p>
-            <Link className="btn primary" href="/market-exploration/new">
+            <Link className="btn btn-primary" href="/market-exploration/new">
               Post a market question
             </Link>
           </p>
           <form className="searchrow">
             <input name="q" defaultValue={q} placeholder="Country, city or industry" />
-            <button className="btn" type="submit">
+            <button className="btn btn-ghost" type="submit">
               Search
             </button>
           </form>
           <div className="tabs">
-            <Link className={`chip ${show === "all" ? "mint" : ""}`} href="/market-exploration">
+            <Link className={`chip ${show === "all" ? "chip-mint" : ""}`} href="/market-exploration">
               Everything
             </Link>
             <Link
-              className={`chip ${show === "mine" ? "mint" : ""}`}
+              className={`chip ${show === "mine" ? "chip-mint" : ""}`}
               href="/market-exploration?show=mine"
             >
               My posts
@@ -73,27 +73,27 @@ export default async function MarketExplorationPage({
           </div>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div>
               {(posts ?? []).length === 0 ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <p className="muted" style={{ margin: 0 }}>
                     Nothing here yet. Post the market you are looking into.
                   </p>
                 </div>
               ) : (
-                <div className="rows">
+                <div className="divide">
                   {(posts ?? []).map((post) => {
                     const author = authors?.find((a) => a.id === post.author_id);
                     return (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         key={post.id}
                         href={`/market-exploration/${post.id}`}
                       >
                         <div>
-                          <span className="chip blue">
+                          <span className="chip chip-blue">
                             {post.city ? `${post.city}, ` : ""}
                             {post.country}
                           </span>{" "}
@@ -122,18 +122,18 @@ export default async function MarketExplorationPage({
                   own city. Market Exploration is for the country you are looking
                   into next, and it reaches every Village.
                 </p>
-                <Link className="btn" href="/village">
+                <Link className="btn btn-ghost" href="/village">
                   Go to Ask &amp; Offer
                 </Link>
                 <p className="muted small" style={{ marginTop: 12 }}>
                   When a country comes up often enough, it gets a pathway: the
                   whole route, in order.
                 </p>
-                <Link className="btn" href="/markets">
+                <Link className="btn btn-ghost" href="/markets">
                   Market pathways
                 </Link>
               </div>
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>
                   {isPaid(member)
                     ? "You can reply anywhere"

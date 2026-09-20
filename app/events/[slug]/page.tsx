@@ -95,13 +95,13 @@ export default async function EventPage({
 
   return (
     <WorkspaceShell kind="member" nav="/events">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/events">Events</Link>
           </p>
           <p>
             {village?.name ? (
-              <span className={`chip ${visiting ? "blue" : "mint"}`}>
+              <span className={`chip ${visiting ? "chip-blue" : "chip-mint"}`}>
                 {village.name}
               </span>
             ) : (
@@ -121,8 +121,8 @@ export default async function EventPage({
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
@@ -190,7 +190,7 @@ export default async function EventPage({
                       None yet. If you were there, put one up.
                     </p>
                   ) : (
-                    <div className="grid three" style={{ marginTop: 12 }}>
+                    <div className="g3" style={{ marginTop: 12 }}>
                       {(photos ?? []).map((photo) => (
                         <div key={photo.id}>
                           <div className="shot">
@@ -223,10 +223,10 @@ export default async function EventPage({
                       Nobody yet. Be the first.
                     </p>
                   ) : (
-                    <div className="rows" style={{ marginTop: 12 }}>
+                    <div className="divide" style={{ marginTop: 12 }}>
                       {(guestProfiles ?? []).map((person) => (
                         <Link
-                          className="rowlink"
+                          className="li linkrow"
                           key={person.id}
                           href={`/members/${person.id}`}
                         >
@@ -252,7 +252,7 @@ export default async function EventPage({
                 {registered ? (
                   <>
                     <p>
-                      <span className="chip mint">
+                      <span className="chip chip-mint">
                         {mine?.status === "waitlist"
                           ? "On the waiting list"
                           : mine?.status === "pending"
@@ -265,7 +265,7 @@ export default async function EventPage({
                       starts.
                     </p>
                     <p>
-                      <a className="btn" href={`/events/${event.slug}/calendar`}>
+                      <a className="btn btn-ghost" href={`/events/${event.slug}/calendar`}>
                         Add to calendar
                       </a>
                     </p>
@@ -278,7 +278,7 @@ export default async function EventPage({
                       You can still see what is on. The paid plan opens every
                       Village, including their events.
                     </p>
-                    <Link className="btn" href="/upgrade">
+                    <Link className="btn btn-ghost" href="/upgrade">
                       See the paid plan
                     </Link>
                   </>
@@ -347,7 +347,7 @@ export default async function EventPage({
               </div>
 
               {visiting ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>Visiting {village?.name}</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     The Local Admins will see you are coming and can introduce

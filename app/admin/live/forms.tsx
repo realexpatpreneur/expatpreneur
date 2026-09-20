@@ -19,7 +19,7 @@ export function SessionForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <div className="panel" style={{ maxWidth: 820 }}>
         <h3>The session</h3>
@@ -31,7 +31,7 @@ export function SessionForm({
           <span>What it is for</span>
           <textarea name="purpose" rows={3} />
         </label>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Date</span>
             <input name="date" type="date" required />
@@ -41,7 +41,7 @@ export function SessionForm({
             <input name="time" type="time" required />
           </label>
         </div>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>End</span>
             <input name="end_time" type="time" />
@@ -89,7 +89,7 @@ export function SessionForm({
           </span>
         </label>
 
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Which members</span>
             <select name="audience" defaultValue={audiences[0]?.value}>
@@ -139,7 +139,7 @@ export function SessionForm({
             <b>Hands and questions</b>
           </span>
         </label>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Room size</span>
             <input name="max_participants" type="number" min={2} defaultValue={100} />
@@ -159,7 +159,7 @@ export function SessionForm({
       </div>
 
       <p style={{ marginTop: 16 }}>
-        <button className="btn primary" type="submit" disabled={pending}>
+        <button className="btn btn-primary" type="submit" disabled={pending}>
           {pending ? "Saving" : "Schedule the session"}
         </button>
       </p>
@@ -181,7 +181,7 @@ export function AddHostForm({
 
   return (
     <form action={action} className="row">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="session_id" value={sessionId} />
       <select name="profile_id" defaultValue={people[0]?.id}>
         {people.map((person) => (
@@ -195,7 +195,7 @@ export function AddHostForm({
         <option value="host">Host</option>
         <option value="presenter">Presenter</option>
       </select>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Adding" : "Add"}
       </button>
     </form>

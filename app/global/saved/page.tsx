@@ -14,16 +14,16 @@ export default async function GlobalSavedPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Saved</h1>
           <p className="lead">
             The change is live and recorded in the audit log.
           </p>
           <p>
-            <Link className="btn primary" href={from ? `/global/${from}` : "/global"}>
+            <Link className="btn btn-primary" href={from ? `/global/${from}` : "/global"}>
               Back
             </Link>{" "}
-            <Link className="btn" href="/global/audit">
+            <Link className="btn btn-ghost" href="/global/audit">
               Audit log
             </Link>
           </p>

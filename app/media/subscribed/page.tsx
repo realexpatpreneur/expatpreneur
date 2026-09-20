@@ -9,13 +9,13 @@ export default function SubscribedPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Check your inbox</h1>
           <p className="lead">
             Confirm your email address to start receiving the newsletter.
           </p>
           <p>
-            <Link className="btn primary" href="/media">
+            <Link className="btn btn-primary" href="/media">
               Back to Media
             </Link>
           </p>

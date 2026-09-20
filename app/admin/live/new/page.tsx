@@ -50,7 +50,7 @@ export default async function NewSessionPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href="/admin/live">Live rooms</Link>
         </p>
@@ -60,7 +60,7 @@ export default async function NewSessionPage() {
           the whole network, and it follows the same rules as everything else.
         </p>
       </section>
-      <section className="band">
+      <section className="sec">
         <SessionForm
           audiences={audiences}
           events={(events ?? []).map((e) => ({ value: e.id, label: e.title }))}

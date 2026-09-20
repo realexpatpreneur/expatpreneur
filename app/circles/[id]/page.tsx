@@ -63,7 +63,7 @@ export default async function CirclePage({
 
   return (
     <WorkspaceShell kind="member" nav="/circles">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/my-village">{village?.name ?? "Your"} Village</Link>
           </p>
@@ -78,7 +78,7 @@ export default async function CirclePage({
           {mine && circle.whatsapp_url ? (
             <p>
               <a
-                className="btn primary"
+                className="btn btn-primary"
                 href={circle.whatsapp_url}
                 target="_blank"
                 rel="noreferrer"
@@ -89,11 +89,11 @@ export default async function CirclePage({
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               {mine ? null : (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <p className="muted small" style={{ margin: 0 }}>
                     {circle.status === "preparing"
                       ? `${circle.name} is being prepared for new members.`
@@ -114,10 +114,10 @@ export default async function CirclePage({
                     Nobody here yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(members ?? []).map((person) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         href={`/members/${person.id}`}
                         key={person.id}
                       >
@@ -130,7 +130,7 @@ export default async function CirclePage({
                         </div>
                         <div className="rowmeta">
                           {person.id === circle.host_id ? (
-                            <span className="chip mint">Host</span>
+                            <span className="chip chip-mint">Host</span>
                           ) : null}
                         </div>
                       </Link>
@@ -138,7 +138,7 @@ export default async function CirclePage({
                   </div>
                 )}
                 <p style={{ marginTop: 12 }}>
-                  <Link className="btn" href="/directory">
+                  <Link className="btn btn-ghost" href="/directory">
                     The Directory
                   </Link>
                 </p>
@@ -147,10 +147,10 @@ export default async function CirclePage({
               {mine && (events ?? []).length ? (
                 <div className="panel">
                   <h3>Circle events</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(events ?? []).map((event) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         href={`/events/${event.slug}`}
                         key={event.id}
                       >
@@ -174,14 +174,14 @@ export default async function CirclePage({
                     {host.headline ? `. ${host.headline}` : ""}
                   </p>
                   {mine ? (
-                    <Link className="btn" href={`/messages/${host.id}`}>
+                    <Link className="btn btn-ghost" href={`/messages/${host.id}`}>
                       Message {host.full_name.split(" ")[0]}
                     </Link>
                   ) : null}
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What a Circle is</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Up to fifty people who are meant to know each other, inside

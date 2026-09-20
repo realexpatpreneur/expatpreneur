@@ -148,7 +148,7 @@ export default async function ForYouPage({
 
   return (
     <WorkspaceShell kind="member" nav="/for-you">
-        <section className="band">
+        <section className="sec">
           <h1>For you</h1>
           <p className="lead">
             People and openings worth a few minutes, picked from what you
@@ -157,7 +157,7 @@ export default async function ForYouPage({
           <div className="tabs">
             {tabs.map(([key, label]) => (
               <Link
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/for-you?show=${key}`}
                 key={key}
               >
@@ -168,7 +168,7 @@ export default async function ForYouPage({
         </section>
 
         {show === "people" ? (
-          <section className="band">
+          <section className="sec">
             {suggestions.length === 0 ? (
               <div className="panel">
                 <h3>Nothing to suggest yet</h3>
@@ -177,12 +177,12 @@ export default async function ForYouPage({
                   where you have lived. Filling those in on your profile is
                   what makes it useful.
                 </p>
-                <Link className="btn" href="/settings">
+                <Link className="btn btn-ghost" href="/settings">
                   Fill in your profile
                 </Link>
               </div>
             ) : (
-              <div className="grid">
+              <div className="g3 g4">
                 {suggestions.map(({ person, reasons }) => (
                   <Link className="card" href={`/members/${person.id}`} key={person.id}>
                     {person.avatar_url ? (
@@ -217,13 +217,13 @@ export default async function ForYouPage({
             )}
 
             {isPaid(member) ? null : (
-              <div className="panel wash" style={{ marginTop: 20 }}>
+              <div className="panel panel-wash" style={{ marginTop: 20 }}>
                 <h3>These are people in your own Village</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   On the paid plan the same page suggests people in every
                   Village, which is where the markets you do not know yet are.
                 </p>
-                <Link className="btn" href="/upgrade">
+                <Link className="btn btn-ghost" href="/upgrade">
                   See the paid plan
                 </Link>
               </div>
@@ -232,7 +232,7 @@ export default async function ForYouPage({
         ) : null}
 
         {show === "openings" ? (
-          <section className="band">
+          <section className="sec">
             <div className="stack">
               <div className="panel">
                 <h3>Asks you could answer</h3>
@@ -241,9 +241,9 @@ export default async function ForYouPage({
                     Nothing open that touches what you do.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {asksForMe.slice(0, 6).map((ask) => (
-                      <Link className="rowlink" href={`/village/${ask.id}`} key={ask.id}>
+                      <Link className="li linkrow" href={`/village/${ask.id}`} key={ask.id}>
                         <div>
                           <b>{ask.title}</b>
                           <div className="muted small">
@@ -265,10 +265,10 @@ export default async function ForYouPage({
                     moment.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {marketsForMe.slice(0, 6).map((post) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         href={`/market-exploration/${post.id}`}
                         key={post.id}
                       >
@@ -292,10 +292,10 @@ export default async function ForYouPage({
                     Nothing on the calendar you can get to yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(events ?? []).slice(0, 5).map((event) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         href={`/events/${event.slug}`}
                         key={event.id}
                       >
@@ -320,9 +320,9 @@ export default async function ForYouPage({
                     A few members working towards something together, for a
                     fixed stretch.
                   </p>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(pods ?? []).map((pod) => (
-                      <Link className="rowlink" href={`/pods/${pod.slug}`} key={pod.id}>
+                      <Link className="li linkrow" href={`/pods/${pod.slug}`} key={pod.id}>
                         <div>
                           <b>{pod.name}</b>
                           <div className="muted small">
@@ -338,9 +338,9 @@ export default async function ForYouPage({
               {(jobs ?? []).length ? (
                 <div className="panel">
                   <h3>Who is hiring</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(jobs ?? []).slice(0, 5).map((job) => (
-                      <Link className="rowlink" href={`/jobs/${job.id}`} key={job.id}>
+                      <Link className="li linkrow" href={`/jobs/${job.id}`} key={job.id}>
                         <div>
                           <b>{job.title}</b>
                           <div className="muted small">
@@ -358,8 +358,8 @@ export default async function ForYouPage({
         ) : null}
 
         {show === "how" ? (
-          <section className="band">
-            <div className="cols">
+          <section className="sec">
+            <div className="gside">
               <div className="panel">
                 <h3>Where these come from</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
@@ -378,13 +378,13 @@ export default async function ForYouPage({
                   <dt>Groups you are in</dt>
                   <dd>{(myGroups ?? []).length}</dd>
                 </dl>
-                <Link className="btn" href="/settings">
+                <Link className="btn btn-ghost" href="/settings">
                   Change any of this
                 </Link>
               </div>
 
               <div className="stack">
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>What it does not do</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     It does not watch what you read, who you looked at or how
@@ -392,7 +392,7 @@ export default async function ForYouPage({
                     your back; it is your own profile, read back.
                   </p>
                 </div>
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>Who can see you here</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     The same people who can see you in the Directory, and no

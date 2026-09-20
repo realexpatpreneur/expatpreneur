@@ -35,7 +35,7 @@ export default async function NewEventPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href="/admin/events">Events</Link>
         </p>
@@ -45,7 +45,7 @@ export default async function NewEventPage() {
           the members you choose.
         </p>
       </section>
-      <section className="band">
+      <section className="sec">
         <EventForm audiences={audiences} />
       </section>
     </main>

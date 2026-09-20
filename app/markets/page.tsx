@@ -28,7 +28,7 @@ export default async function MarketsPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/markets">
-        <section className="band">
+        <section className="sec">
           <h1>Market pathways</h1>
           <p className="lead">
             Market Exploration is where you ask. A pathway is the route:
@@ -37,19 +37,19 @@ export default async function MarketsPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(pathways ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 None published yet. They are written from what members work out
                 in Market Exploration, so the questions come first.
               </p>
-              <Link className="btn" href="/market-exploration">
+              <Link className="btn btn-ghost" href="/market-exploration">
                 Go to Market Exploration
               </Link>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(pathways ?? []).map((pathway, i) => {
                 const progress = progressOf(pathway.id);
                 const locked = pathway.tier === "paid" && !isPaid(member);
@@ -66,11 +66,11 @@ export default async function MarketsPage() {
                       <p>{pathway.summary}</p>
                       <div className="meta">
                         {progress ? (
-                          <span className="chip mint">
+                          <span className="chip chip-mint">
                             {progress.done} of {progress.steps} steps
                           </span>
                         ) : locked ? (
-                          <span className="chip sun">Paid plan</span>
+                          <span className="chip chip-sun">Paid plan</span>
                         ) : (
                           <span className="chip">{pathway.title}</span>
                         )}

@@ -55,7 +55,7 @@ export default async function MessagesPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/messages">
-        <section className="band">
+        <section className="sec">
           <h1>Messages</h1>
           <p className="lead">
             Members in your Village can write to you directly. Members elsewhere
@@ -64,11 +64,11 @@ export default async function MessagesPage() {
         </section>
 
         {(requests ?? []).length ? (
-          <section className="band">
+          <section className="sec">
             <h2>Requests to connect</h2>
-            <div className="rows">
+            <div className="divide">
               {(requests ?? []).map((request) => (
-                <div className="rowlink" key={request.id}>
+                <div className="li linkrow" key={request.id}>
                   <div>
                     <b>{nameOf(request.requester_id)}</b>
                     <div className="muted small">{request.reason}</div>
@@ -82,17 +82,17 @@ export default async function MessagesPage() {
           </section>
         ) : null}
 
-        <section className="band">
+        <section className="sec">
           {threads.size === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 No messages yet. Start from someone's profile in the Directory.
               </p>
             </div>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {[...threads.entries()].map(([id, thread]) => (
-                <Link className="rowlink" key={id} href={`/messages/${id}`}>
+                <Link className="li linkrow" key={id} href={`/messages/${id}`}>
                   <div>
                     <b>{nameOf(id)}</b>
                     <div className="muted small">
@@ -101,7 +101,7 @@ export default async function MessagesPage() {
                     </div>
                   </div>
                   <div className="rowmeta">
-                    {thread.unread ? <span className="chip blue">New</span> : null}
+                    {thread.unread ? <span className="chip chip-blue">New</span> : null}
                     <span className="chip">{timeAgo(thread.created_at)}</span>
                   </div>
                 </Link>

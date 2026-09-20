@@ -10,7 +10,7 @@ export default async function ProposePodPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/pods/propose">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/pods">Pods</Link>
           </p>
@@ -21,11 +21,11 @@ export default async function ProposePodPage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <ProposePodForm />
             <div className="stack">
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What makes a Pod work</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Six to eight people, one thing they are all trying to do,
@@ -33,7 +33,7 @@ export default async function ProposePodPage() {
                   broad purpose and no finish.
                 </p>
               </div>
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What you are taking on</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Proposing means leading it: setting the meetings, opening

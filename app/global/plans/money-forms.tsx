@@ -11,18 +11,18 @@ export function RefundDecision({ id }: { id: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
       <input type="hidden" name="request_id" value={id} />
       <label className="field">
         <span>A note</span>
         <input name="note" placeholder="Why, in a line" />
       </label>
       <div className="row">
-        <button className="btn primary" name="decision" value="approved" disabled={pending}>
+        <button className="btn btn-primary" name="decision" value="approved" disabled={pending}>
           Refund it
         </button>
-        <button className="btn" name="decision" value="refused" disabled={pending}>
+        <button className="btn btn-ghost" name="decision" value="refused" disabled={pending}>
           Refuse
         </button>
       </div>
@@ -50,8 +50,8 @@ export function PayoutForm({
   return (
     <form action={action} className="panel">
       <h3>Record a payout</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       <label className="field">
         <span>Educator</span>
@@ -64,7 +64,7 @@ export function PayoutForm({
         </select>
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>From</span>
           <input name="period_start" type="date" defaultValue={monthStart} />
@@ -75,7 +75,7 @@ export function PayoutForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>What the courses took</span>
           <input name="gross" type="number" min={0} step="0.01" />
@@ -86,7 +86,7 @@ export function PayoutForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Currency</span>
           <select name="currency" defaultValue="EUR">
@@ -109,7 +109,7 @@ export function PayoutForm({
         <input name="reference" placeholder="The bank reference you used" />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Record it"}
       </button>
     </form>

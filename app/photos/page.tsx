@@ -28,7 +28,7 @@ export default async function PhotosPage({
 
   return (
     <WorkspaceShell kind="member" nav="/photos">
-        <section className="band">
+        <section className="sec">
           <h1>Photographs</h1>
           <p className="lead">
             What the rooms actually looked like. Put up by the people who were
@@ -41,7 +41,7 @@ export default async function PhotosPage({
             ].map(([key, label]) => (
               <Link
                 key={key}
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/photos?show=${key}`}
               >
                 {label}
@@ -50,15 +50,15 @@ export default async function PhotosPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(photos ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing yet. After the next event, add one from the event page.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(photos ?? []).map((photo) => (
                 <div className="card" key={photo.id}>
                   <Link href={`/events/${photo.event_slug}`}>

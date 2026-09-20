@@ -40,7 +40,7 @@ export default async function PayoutsPage() {
 
   return (
     <WorkspaceShell kind="edu" nav="/educator/payouts">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/educator/sales">Sales</Link>
           </p>
@@ -51,8 +51,8 @@ export default async function PayoutsPage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <h3>Paid out</h3>
               {(payouts ?? []).length === 0 ? (
@@ -60,9 +60,9 @@ export default async function PayoutsPage() {
                   Nothing paid out yet.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(payouts ?? []).map((payout) => (
-                    <div className="rowlink" key={payout.id}>
+                    <div className="li linkrow" key={payout.id}>
                       <div>
                         <b>{money(payout.net_cents, payout.currency)}</b>
                         <div className="muted small">
@@ -71,7 +71,7 @@ export default async function PayoutsPage() {
                         </div>
                       </div>
                       <div className="rowmeta">
-                        <span className={`chip ${payout.status === "paid" ? "mint" : ""}`}>
+                        <span className={`chip ${payout.status === "paid" ? "chip-mint" : ""}`}>
                           {payout.status}
                         </span>
                       </div>
@@ -94,7 +94,7 @@ export default async function PayoutsPage() {
                 </dl>
               </div>
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>How it is paid</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   By bank transfer, monthly, arranged by the Global team. A

@@ -23,14 +23,14 @@ export function ResetForm() {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 520 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Your email</span>
         <input name="email" type="email" required autoComplete="email" />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send me a reset link"}
       </button>
     </form>

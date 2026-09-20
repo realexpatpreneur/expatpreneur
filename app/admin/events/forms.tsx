@@ -57,7 +57,7 @@ export function EventForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {event ? <input type="hidden" name="id" value={event.id} /> : null}
 
       <div className="panel" style={{ maxWidth: 820 }}>
@@ -66,7 +66,7 @@ export function EventForm({
           <span>Title</span>
           <input name="title" required defaultValue={event?.title ?? ""} />
         </label>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Date</span>
             <input name="date" type="date" required defaultValue={dateValue} />
@@ -76,7 +76,7 @@ export function EventForm({
             <input name="time" type="time" required defaultValue={timeValue} />
           </label>
         </div>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>End time</span>
             <input name="end_time" type="time" />
@@ -100,7 +100,7 @@ export function EventForm({
             call.
           </span>
         </label>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Full address, or the link for a call</span>
             <input name="address" defaultValue={event?.address ?? ""} />
@@ -161,7 +161,7 @@ export function EventForm({
           </span>
         </label>
 
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Which members</span>
             <select name="audience" defaultValue={currentAudience}>
@@ -210,7 +210,7 @@ export function EventForm({
 
       <div className="panel" style={{ maxWidth: 820, marginTop: 16 }}>
         <h3>Places and tickets</h3>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Capacity</span>
             <input
@@ -230,7 +230,7 @@ export function EventForm({
             />
           </label>
         </div>
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Ticket price</span>
             <input
@@ -333,7 +333,7 @@ export function EventForm({
       ) : null}
 
       <p style={{ marginTop: 16 }}>
-        <button className="btn primary" type="submit" disabled={pending}>
+        <button className="btn btn-primary" type="submit" disabled={pending}>
           {pending ? "Saving" : event ? "Save changes" : "Publish event"}
         </button>
       </p>
@@ -357,10 +357,10 @@ export function DecisionButtons({
     <form action={action} className="row">
       <input type="hidden" name="registration_id" value={registrationId} />
       <input type="hidden" name="event_id" value={eventId} />
-      <button className="btn primary" name="decision" value="confirmed" disabled={pending}>
+      <button className="btn btn-primary" name="decision" value="confirmed" disabled={pending}>
         Approve
       </button>
-      <button className="btn" name="decision" value="declined" disabled={pending}>
+      <button className="btn btn-ghost" name="decision" value="declined" disabled={pending}>
         Decline
       </button>
     </form>
@@ -387,7 +387,7 @@ export function CheckInButton({
       <input type="hidden" name="event_id" value={eventId} />
       <input type="hidden" name="checked_in" value={checkedIn ? "1" : "0"} />
       <button
-        className={`btn ${checkedIn ? "mint" : ""}`}
+        className={`btn ${checkedIn ? "btn-mint" : ""}`}
         type="submit"
         disabled={pending}
       >

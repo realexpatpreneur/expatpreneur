@@ -53,7 +53,7 @@ export default async function WatchPage({
             ].map(([key, label]) => (
               <Link
                 key={key}
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/watch?show=${key}`}
               >
                 {label}
@@ -61,21 +61,21 @@ export default async function WatchPage({
             ))}
           </div>
                   <p>
-            <Link className="btn" href="/watch/show/expatpreneurs">
+            <Link className="btn btn-ghost" href="/watch/show/expatpreneurs">
               The ExpatPreneurs Podcast
             </Link>
           </p>
 </section>
 
-        <section className="band">
+        <section className="sec">
           {(items ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing published yet.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(items ?? []).map((item, i) => (
                 <article className="card" key={item.id}>
                   <Link href={`/watch/${item.slug}`}>

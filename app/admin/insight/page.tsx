@@ -14,7 +14,7 @@ export default async function VillageInsightPage() {
   if (!villageId) {
     return (
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>No Village</h1>
           <p className="lead">This page is for a Local Admin of one Village.</p>
         </section>
@@ -75,7 +75,7 @@ export default async function VillageInsightPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>How the Village is doing</h1>
         <p className="lead">
           {summary?.name}. Counts only. Nothing here reads anybody&apos;s
@@ -83,8 +83,8 @@ export default async function VillageInsightPage() {
         </p>
       </section>
 
-      <section className="band">
-        <div className="grid three">
+      <section className="sec">
+        <div className="g3">
           <div className="panel">
             <h3>Active members</h3>
             <p className="lead" style={{ margin: 0 }}>{summary?.members ?? 0}</p>
@@ -109,8 +109,8 @@ export default async function VillageInsightPage() {
         </div>
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="stack">
             <div className="panel">
               <h3>Does asking here work?</h3>
@@ -132,7 +132,7 @@ export default async function VillageInsightPage() {
                 <dd>{asks?.recent ?? 0}</dd>
               </dl>
               {answeredShare !== null && answeredShare < 70 ? (
-                <div className="notice bad">
+                <div className="flag hold">
                   Under seven in ten getting an answer. Worth chasing the
                   unanswered ones yourself.
                 </div>
@@ -184,9 +184,9 @@ export default async function VillageInsightPage() {
                   Nothing yet.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(growth ?? []).map((row) => (
-                    <div className="rowlink" key={row.month}>
+                    <div className="li linkrow" key={row.month}>
                       <div>
                         <b>{monthName(row.month)}</b>
                       </div>
@@ -214,7 +214,7 @@ export default async function VillageInsightPage() {
               </div>
             ) : null}
 
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>What these numbers cannot tell you</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Whether people like each other. Whether the last dinner was any

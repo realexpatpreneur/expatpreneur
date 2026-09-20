@@ -32,7 +32,7 @@ export default async function TransfersPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/admin/members">Members</Link>
           </p>
@@ -43,7 +43,7 @@ export default async function TransfersPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {open.length === 0 ? (
             <p className="muted">Nobody is moving at the moment.</p>
           ) : (
@@ -81,9 +81,9 @@ export default async function TransfersPage() {
           {settled.length ? (
             <div className="panel" style={{ marginTop: 20 }}>
               <h3>Settled</h3>
-              <div className="rows" style={{ marginTop: 12 }}>
+              <div className="divide" style={{ marginTop: 12 }}>
                 {settled.map((transfer) => (
-                  <div className="rowlink" key={transfer.id}>
+                  <div className="li linkrow" key={transfer.id}>
                     <div>
                       <b>
                         {people?.find((p) => p.id === transfer.profile_id)

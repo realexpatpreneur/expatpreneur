@@ -34,7 +34,7 @@ export default async function PartneredEventsPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -45,7 +45,7 @@ export default async function PartneredEventsPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {waiting.length === 0 ? (
             <p className="muted">Nothing waiting.</p>
           ) : (
@@ -78,9 +78,9 @@ export default async function PartneredEventsPage() {
           {settled.length ? (
             <div className="panel" style={{ marginTop: 20 }}>
               <h3>Decided</h3>
-              <div className="rows" style={{ marginTop: 12 }}>
+              <div className="divide" style={{ marginTop: 12 }}>
                 {settled.map((request) => (
-                  <div className="rowlink" key={request.id}>
+                  <div className="li linkrow" key={request.id}>
                     <div>
                       <b>{request.title}</b>
                       <div className="muted small">
@@ -90,7 +90,7 @@ export default async function PartneredEventsPage() {
                     </div>
                     <div className="rowmeta">
                       <span
-                        className={`chip ${request.status === "approved" ? "mint" : ""}`}
+                        className={`chip ${request.status === "approved" ? "chip-mint" : ""}`}
                       >
                         {request.status}
                       </span>

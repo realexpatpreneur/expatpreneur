@@ -17,8 +17,8 @@ export function UpgradeButton({ label }: { label: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      <button className="btn primary" type="submit" disabled={pending}>
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Opening checkout" : label}
       </button>
     </form>
@@ -33,8 +33,8 @@ export function CancelMembershipButton() {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      <button className="btn" type="submit" disabled={pending}>
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Cancel at the end of the period"}
       </button>
     </form>
@@ -57,10 +57,10 @@ export function TicketButton({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="event_id" value={eventId} />
       <input type="hidden" name="slug" value={slug} />
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Opening checkout" : label}
       </button>
     </form>
@@ -76,8 +76,8 @@ export function BillingPortalButton() {
 
   return (
     <form action={action} style={{ marginTop: 10 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      <button className="btn" type="submit" disabled={pending}>
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Opening" : "Change your card or see invoices"}
       </button>
     </form>

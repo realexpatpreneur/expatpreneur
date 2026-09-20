@@ -22,7 +22,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
       </div>
 
 
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Your name</span>
@@ -105,7 +105,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
         <input name="heard_about" />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send my request"}
       </button>
     </form>

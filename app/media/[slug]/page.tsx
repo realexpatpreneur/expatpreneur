@@ -49,21 +49,21 @@ export default async function ArticlePage({
 
   return (
     <WorkspaceShell kind="member" nav="/media">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/media">Media</Link>
           </p>
           <p>
             <span className="chip">{kindLabel[article.kind] ?? article.kind}</span>{" "}
             {village?.name ? <span className="chip">{village.name}</span> : null}{" "}
-            {article.member_only ? <span className="chip sun">Members only</span> : null}
+            {article.member_only ? <span className="chip chip-sun">Members only</span> : null}
           </p>
           <h1>{article.title}</h1>
           {article.standfirst ? <p className="lead">{article.standfirst}</p> : null}
         </section>
 
         {article.cover_url ? (
-          <section className="band">
+          <section className="sec">
             <div className="shot">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={article.cover_url} alt="" />
@@ -71,8 +71,8 @@ export default async function ArticlePage({
           </section>
         ) : null}
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <div style={{ whiteSpace: "pre-wrap" }}>{article.body}</div>
             </div>
@@ -86,7 +86,7 @@ export default async function ArticlePage({
                     {about.headline ? `. ${about.headline}` : ""}
                   </p>
                   {about.public_profile || me ? (
-                    <Link className="btn" href={`/members/${about.id}`}>
+                    <Link className="btn btn-ghost" href={`/members/${about.id}`}>
                       Their profile
                     </Link>
                   ) : null}
@@ -94,22 +94,22 @@ export default async function ArticlePage({
               ) : null}
 
               {me ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>There is a story here</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     If you know one worth telling, say so.
                   </p>
-                  <Link className="btn" href="/media/suggest">
+                  <Link className="btn btn-ghost" href="/media/suggest">
                     Suggest a story
                   </Link>
                 </div>
               ) : (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>Join them</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     Membership is by invitation and costs nothing.
                   </p>
-                  <Link className="btn primary" href="/apply">
+                  <Link className="btn btn-primary" href="/apply">
                     Request an invitation
                   </Link>
                 </div>

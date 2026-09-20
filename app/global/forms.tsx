@@ -31,10 +31,10 @@ export function VillageForm({
   return (
     <form action={action} className="panel">
       <h3>{village ? village.name : "Open a Village"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {village ? <input type="hidden" name="id" value={village.id} /> : null}
 
-      <div className="two" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 10 }}>
         <label className="field">
           <span>Name</span>
           <input name="name" required defaultValue={village?.name ?? ""} />
@@ -45,7 +45,7 @@ export function VillageForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Country</span>
           <input name="country" required defaultValue={village?.country ?? ""} />
@@ -76,7 +76,7 @@ export function VillageForm({
         <textarea name="summary" rows={2} defaultValue={village?.summary ?? ""} />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -98,7 +98,7 @@ export function RoleForm({
   return (
     <form action={action} className="panel">
       <h3>Give someone a role</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field" style={{ marginTop: 10 }}>
         <span>Member</span>
@@ -135,7 +135,7 @@ export function RoleForm({
         <span className="hint">Ignored for a Global Admin.</span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Give the role"}
       </button>
     </form>
@@ -148,7 +148,7 @@ export function EndRole({ roleId }: { roleId: string }) {
   return (
     <form action={action}>
       <input type="hidden" name="role_id" value={roleId} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "End"}
       </button>
     </form>
@@ -171,9 +171,9 @@ export function ReportForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="report_id" value={reportId} />
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Status</span>
           <select name="status" defaultValue={status}>
@@ -188,7 +188,7 @@ export function ReportForm({
           <input name="note" defaultValue={note ?? ""} />
         </label>
       </div>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -212,7 +212,7 @@ export function CityForm({
   return (
     <form action={action}>
       <input type="hidden" name="city_id" value={cityId} />
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Status</span>
           <select name="status" defaultValue={status}>
@@ -226,7 +226,7 @@ export function CityForm({
           <input name="note" defaultValue={note ?? ""} />
         </label>
       </div>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

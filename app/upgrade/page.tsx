@@ -32,19 +32,19 @@ export default async function UpgradePage({
 
   return (
     <WorkspaceShell kind="member" nav="/upgrade">
-        <section className="band">
+        <section className="sec">
           <h1>The paid plan</h1>
           <p className="lead">
             Membership is free, and stays free. The paid plan is the rest of
             the network.
           </p>
           {state === "cancelled" ? (
-            <div className="notice bad">Checkout was cancelled. Nothing was charged.</div>
+            <div className="flag hold">Checkout was cancelled. Nothing was charged.</div>
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <h3>What free membership gives you</h3>
@@ -105,14 +105,14 @@ export default async function UpgradePage({
                       The paid plan opens shortly. Until then, ask your Local
                       Admin if you need to reach another Village.
                     </p>
-                    <Link className="btn" href="/home">
+                    <Link className="btn btn-ghost" href="/home">
                       Back to home
                     </Link>
                   </>
                 )}
               </div>
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Why it is not everything</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Your own Village is the point, and it is free. Paying is for

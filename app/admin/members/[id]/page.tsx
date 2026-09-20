@@ -17,7 +17,7 @@ export default async function AdminMemberPage({
   const supabase = await createClient();
 
   const { data: member } = await supabase
-    .from("profiles")
+    .from("member_records")
     .select("*")
     .eq("id", id)
     .maybeSingle();
@@ -54,7 +54,7 @@ export default async function AdminMemberPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href="/admin/members">Members</Link>
         </p>
@@ -63,16 +63,16 @@ export default async function AdminMemberPage({
           {member.headline || member.business_name || "Member"}.{" "}
           {village?.name ? `${village.name} Village.` : ""}
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
         <p>
-          <Link className="btn" href={`/members/${id}`}>
+          <Link className="btn btn-ghost" href={`/members/${id}`}>
             See their member profile
           </Link>
         </p>
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="panel">
             <h3>What they told us</h3>
             <dl className="kv">

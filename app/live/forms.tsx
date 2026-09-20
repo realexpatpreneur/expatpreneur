@@ -40,22 +40,22 @@ export function KnockButton({
 
   if (state.done === "waiting") {
     return (
-      <div className="notice good">
+      <div className="flag ok">
         You are at the door. A host will let you in.
       </div>
     );
   }
   if (state.done === "admitted") {
-    return <div className="notice good">You are in the room.</div>;
+    return <div className="flag ok">You are in the room.</div>;
   }
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="session_id" value={sessionId} />
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="lobby" value={lobby ? "1" : "0"} />
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Knocking" : label}
       </button>
     </form>
@@ -75,7 +75,7 @@ export function LeaveButton({
     <form action={action}>
       <input type="hidden" name="session_id" value={sessionId} />
       <input type="hidden" name="slug" value={slug} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Leaving" : "Leave the room"}
       </button>
     </form>
@@ -98,15 +98,15 @@ export function DoorDecision({
 
   return (
     <form action={action} className="row">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="participant_id" value={participantId} />
       <input type="hidden" name="slug" value={slug} />
       {current === "waiting" ? (
-        <button className="btn primary" name="decision" value="admit" disabled={pending}>
+        <button className="btn btn-primary" name="decision" value="admit" disabled={pending}>
           Let them in
         </button>
       ) : null}
-      <button className="btn" name="decision" value="remove" disabled={pending}>
+      <button className="btn btn-ghost" name="decision" value="remove" disabled={pending}>
         Remove
       </button>
     </form>
@@ -137,7 +137,7 @@ export function RoleSelect({
         <option value="cohost">Co-host</option>
         <option value="observer">Watching</option>
       </select>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Set"}
       </button>
     </form>
@@ -160,15 +160,15 @@ export function SessionControls({
 
   return (
     <form action={action} className="row">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="session_id" value={sessionId} />
       <input type="hidden" name="slug" value={slug} />
       {status !== "live" ? (
-        <button className="btn primary" name="status" value="live" disabled={pending}>
+        <button className="btn btn-primary" name="status" value="live" disabled={pending}>
           Open the room
         </button>
       ) : (
-        <button className="btn" name="status" value="ended" disabled={pending}>
+        <button className="btn btn-ghost" name="status" value="ended" disabled={pending}>
           End the session
         </button>
       )}
@@ -190,10 +190,10 @@ export function CancelSessionButton({
 
   return (
     <form action={action} style={{ marginTop: 10 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="session_id" value={sessionId} />
       <input type="hidden" name="slug" value={slug} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Calling it off" : "Call it off"}
       </button>
     </form>
@@ -226,13 +226,13 @@ export function RecordingControls({
 
   return (
     <div>
-      {startState.error ? <div className="notice bad">{startState.error}</div> : null}
-      {stopState.error ? <div className="notice bad">{stopState.error}</div> : null}
+      {startState.error ? <div className="flag hold">{startState.error}</div> : null}
+      {stopState.error ? <div className="flag hold">{stopState.error}</div> : null}
       {publishState.error ? (
-        <div className="notice bad">{publishState.error}</div>
+        <div className="flag hold">{publishState.error}</div>
       ) : null}
       {publishState.done === "published" ? (
-        <div className="notice good">
+        <div className="flag ok">
           It is in Watch and Listen, for members only.
         </div>
       ) : null}
@@ -241,7 +241,7 @@ export function RecordingControls({
         <form action={stopAction}>
           <input type="hidden" name="session_id" value={sessionId} />
           <input type="hidden" name="slug" value={slug} />
-          <button className="btn" type="submit" disabled={stopping}>
+          <button className="btn btn-ghost" type="submit" disabled={stopping}>
             {stopping ? "Stopping" : "Stop recording"}
           </button>
         </form>
@@ -249,7 +249,7 @@ export function RecordingControls({
         <form action={startAction}>
           <input type="hidden" name="session_id" value={sessionId} />
           <input type="hidden" name="slug" value={slug} />
-          <button className="btn primary" type="submit" disabled={starting}>
+          <button className="btn btn-primary" type="submit" disabled={starting}>
             {starting ? "Starting" : "Start recording"}
           </button>
         </form>
@@ -264,7 +264,7 @@ export function RecordingControls({
       {recording?.status === "ready" && recording.url ? (
         <div style={{ marginTop: 12 }}>
           <a
-            className="btn"
+            className="btn btn-ghost"
             href={`/api/live/recording/${recording.id}`}
             target="_blank"
             rel="noreferrer"
@@ -276,7 +276,7 @@ export function RecordingControls({
               <input type="hidden" name="session_id" value={sessionId} />
               <input type="hidden" name="slug" value={slug} />
               <input type="hidden" name="recording_id" value={recording.id} />
-              <button className="btn" type="submit" disabled={publishing}>
+              <button className="btn btn-ghost" type="submit" disabled={publishing}>
                 {publishing ? "Publishing" : "Put it in Watch and Listen"}
               </button>
             </form>
@@ -313,19 +313,19 @@ export function StreamingControls({
 
   return (
     <div>
-      {addState.error ? <div className="notice bad">{addState.error}</div> : null}
-      {startState.error ? <div className="notice bad">{startState.error}</div> : null}
-      {stopState.error ? <div className="notice bad">{stopState.error}</div> : null}
+      {addState.error ? <div className="flag hold">{addState.error}</div> : null}
+      {startState.error ? <div className="flag hold">{startState.error}</div> : null}
+      {stopState.error ? <div className="flag hold">{stopState.error}</div> : null}
 
       {targets.length ? (
-        <div className="rows" style={{ marginBottom: 12 }}>
+        <div className="divide" style={{ marginBottom: 12 }}>
           {targets.map((target) => (
-            <div className="rowlink" key={target.id}>
+            <div className="li linkrow" key={target.id}>
               <div>
                 <b>{target.platform}</b>
               </div>
               <div className="rowmeta">
-                <span className={`chip ${target.status === "live" ? "mint" : ""}`}>
+                <span className={`chip ${target.status === "live" ? "chip-mint" : ""}`}>
                   {target.status}
                 </span>
               </div>
@@ -338,7 +338,7 @@ export function StreamingControls({
         <form action={stopAction}>
           <input type="hidden" name="session_id" value={sessionId} />
           <input type="hidden" name="slug" value={slug} />
-          <button className="btn" type="submit" disabled={stopping}>
+          <button className="btn btn-ghost" type="submit" disabled={stopping}>
             {stopping ? "Stopping" : "Stop streaming"}
           </button>
         </form>
@@ -368,7 +368,7 @@ export function StreamingControls({
                 Only hosts of this session can see these.
               </span>
             </label>
-            <button className="btn" type="submit" disabled={adding}>
+            <button className="btn btn-ghost" type="submit" disabled={adding}>
               {adding ? "Saving" : "Add destination"}
             </button>
           </form>
@@ -377,7 +377,7 @@ export function StreamingControls({
             <form action={startAction} style={{ marginTop: 12 }}>
               <input type="hidden" name="session_id" value={sessionId} />
               <input type="hidden" name="slug" value={slug} />
-              <button className="btn primary" type="submit" disabled={starting}>
+              <button className="btn btn-primary" type="submit" disabled={starting}>
                 {starting ? "Starting" : "Go live to them"}
               </button>
             </form>
@@ -414,16 +414,16 @@ export function BreakoutPanel({
 
   return (
     <div>
-      {makeState.error ? <div className="notice bad">{makeState.error}</div> : null}
+      {makeState.error ? <div className="flag hold">{makeState.error}</div> : null}
       {shuffleState.error ? (
-        <div className="notice bad">{shuffleState.error}</div>
+        <div className="flag hold">{shuffleState.error}</div>
       ) : null}
-      {openState.error ? <div className="notice bad">{openState.error}</div> : null}
+      {openState.error ? <div className="flag hold">{openState.error}</div> : null}
 
       {rooms.length ? (
-        <div className="rows" style={{ marginBottom: 12 }}>
+        <div className="divide" style={{ marginBottom: 12 }}>
           {rooms.map((room) => (
-            <div className="rowlink" key={room.id}>
+            <div className="li linkrow" key={room.id}>
               <div>
                 <b>{room.name}</b>
                 <div className="muted small">
@@ -432,7 +432,7 @@ export function BreakoutPanel({
                 </div>
               </div>
               <div className="rowmeta">
-                {room.open ? <span className="chip mint">Open</span> : null}
+                {room.open ? <span className="chip chip-mint">Open</span> : null}
               </div>
             </div>
           ))}
@@ -448,7 +448,7 @@ export function BreakoutPanel({
           <input type="hidden" name="session_id" value={sessionId} />
           <input type="hidden" name="slug" value={slug} />
           <input type="hidden" name="open" value="0" />
-          <button className="btn" type="submit" disabled={opening}>
+          <button className="btn btn-ghost" type="submit" disabled={opening}>
             {opening ? "Closing" : "Call everyone back"}
           </button>
         </form>
@@ -465,7 +465,7 @@ export function BreakoutPanel({
               defaultValue={3}
               style={{ width: 70 }}
             />
-            <button className="btn" type="submit" disabled={making}>
+            <button className="btn btn-ghost" type="submit" disabled={making}>
               {making ? "Making" : "Make tables"}
             </button>
           </form>
@@ -475,7 +475,7 @@ export function BreakoutPanel({
               <form action={shuffleAction}>
                 <input type="hidden" name="session_id" value={sessionId} />
                 <input type="hidden" name="slug" value={slug} />
-                <button className="btn" type="submit" disabled={shuffling}>
+                <button className="btn btn-ghost" type="submit" disabled={shuffling}>
                   {shuffling ? "Dealing" : "Deal everyone out"}
                 </button>
               </form>
@@ -483,7 +483,7 @@ export function BreakoutPanel({
                 <input type="hidden" name="session_id" value={sessionId} />
                 <input type="hidden" name="slug" value={slug} />
                 <input type="hidden" name="open" value="1" />
-                <button className="btn primary" type="submit" disabled={opening}>
+                <button className="btn btn-primary" type="submit" disabled={opening}>
                   {opening ? "Opening" : "Send them to the tables"}
                 </button>
               </form>
@@ -532,15 +532,15 @@ export function QuestionsPanel({
 
   return (
     <div>
-      {askState.error ? <div className="notice bad">{askState.error}</div> : null}
+      {askState.error ? <div className="flag hold">{askState.error}</div> : null}
       {askState.done === "asked" ? (
-        <div className="notice good">Asked. The host sees it.</div>
+        <div className="flag ok">Asked. The host sees it.</div>
       ) : null}
 
       {waiting.length ? (
-        <div className="rows" style={{ margin: "12px 0" }}>
+        <div className="divide" style={{ margin: "12px 0" }}>
           {waiting.map((question) => (
-            <div className="rowlink" key={question.id}>
+            <div className="li linkrow" key={question.id}>
               <div>
                 <b>{question.body}</b>
                 <div className="muted small">{question.asker}</div>
@@ -551,7 +551,7 @@ export function QuestionsPanel({
                     <input type="hidden" name="session_id" value={sessionId} />
                     <input type="hidden" name="slug" value={slug} />
                     <input type="hidden" name="question_id" value={question.id} />
-                    <button className="btn" type="submit" disabled={answering}>
+                    <button className="btn btn-ghost" type="submit" disabled={answering}>
                       Answered
                     </button>
                   </form>
@@ -573,7 +573,7 @@ export function QuestionsPanel({
           <span>Ask something</span>
           <input name="body" placeholder="Put it plainly" />
         </label>
-        <button className="btn" type="submit" disabled={asking}>
+        <button className="btn btn-ghost" type="submit" disabled={asking}>
           {asking ? "Asking" : "Ask"}
         </button>
       </form>

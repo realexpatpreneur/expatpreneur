@@ -27,18 +27,18 @@ export default async function TermsPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Terms of service</h1>
           <p className="lead">
             The agreement between ExpatPreneurs Global and its members.
           </p>
-          <div className="notice bad">
+          <div className="flag hold">
             Draft. Company details, governing law and fees are still to be
             confirmed, and this is reviewed before launch.
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <div className="panel" style={{ maxWidth: 760 }}>
             <h3>1. Who we are</h3>
             <p className="muted small">

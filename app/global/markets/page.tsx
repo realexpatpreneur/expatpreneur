@@ -23,7 +23,7 @@ export default async function GlobalMarketsPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Market pathways</h1>
         <p className="lead">
           Written from what members keep asking. The questions come first, the
@@ -31,20 +31,20 @@ export default async function GlobalMarketsPage() {
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>What members are asking about</h2>
         {demand.size === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               No open market questions yet.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {[...demand.entries()]
               .sort((a, b) => b[1] - a[1])
               .map(([country, count]) => (
-                <div className="rowlink" key={country}>
+                <div className="li linkrow" key={country}>
                   <div>
                     <b>{country}</b>
                     <div className="muted small">
@@ -54,7 +54,7 @@ export default async function GlobalMarketsPage() {
                     </div>
                   </div>
                   <div className="rowmeta">
-                    <span className="chip blue">{count} asking</span>
+                    <span className="chip chip-blue">{count} asking</span>
                   </div>
                 </div>
               ))}
@@ -62,11 +62,11 @@ export default async function GlobalMarketsPage() {
         )}
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="stack">
             {(pathways ?? []).length === 0 ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <p className="muted" style={{ margin: 0 }}>
                   None yet.
                 </p>
@@ -77,7 +77,7 @@ export default async function GlobalMarketsPage() {
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <h3>{pathway.title}</h3>
                     <span
-                      className={`chip ${pathway.status === "published" ? "mint" : ""}`}
+                      className={`chip ${pathway.status === "published" ? "chip-mint" : ""}`}
                     >
                       {pathway.status}
                     </span>
@@ -88,10 +88,10 @@ export default async function GlobalMarketsPage() {
                     {pathway.tier === "paid" ? "Paid members only." : "Every member."}
                   </p>
                   <div className="row">
-                    <Link className="btn" href={`/global/markets/${pathway.slug}`}>
+                    <Link className="btn btn-ghost" href={`/global/markets/${pathway.slug}`}>
                       Steps
                     </Link>
-                    <Link className="btn" href={`/markets/${pathway.slug}`}>
+                    <Link className="btn btn-ghost" href={`/markets/${pathway.slug}`}>
                       See it as a member
                     </Link>
                   </div>

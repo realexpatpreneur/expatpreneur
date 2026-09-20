@@ -28,20 +28,20 @@ export default async function AdminResourcesPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Resources</h1>
         <p className="lead">
           Guides, templates and recordings for your Village. Keep them few and
           useful.
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="stack">
             {rows.length === 0 ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <p className="muted" style={{ margin: 0 }}>
                   Nothing yet. Add the first one.
                 </p>

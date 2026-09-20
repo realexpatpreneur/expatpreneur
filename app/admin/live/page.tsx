@@ -41,23 +41,23 @@ export default async function AdminLivePage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Live rooms</h1>
         <p className="lead">
           Roundtables, clinics and Circle calls. Who runs them, who can come
           in, and who turned up.
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
         <p>
-          <Link className="btn primary" href="/admin/live/new">
+          <Link className="btn btn-primary" href="/admin/live/new">
             Schedule a session
           </Link>
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         {rows.length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing scheduled yet.
             </p>
@@ -74,7 +74,7 @@ export default async function AdminLivePage({
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <h3>{session.title}</h3>
                     <span
-                      className={`chip ${session.status === "live" ? "mint" : ""}`}
+                      className={`chip ${session.status === "live" ? "chip-mint" : ""}`}
                     >
                       {session.status}
                     </span>
@@ -105,7 +105,7 @@ export default async function AdminLivePage({
                   )}
                   <AddHostForm sessionId={session.id} people={people ?? []} />
                   <p style={{ marginTop: 12 }}>
-                    <Link className="btn" href={`/live/${session.slug}`}>
+                    <Link className="btn btn-ghost" href={`/live/${session.slug}`}>
                       Open the room
                     </Link>
                   </p>

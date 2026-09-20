@@ -27,7 +27,7 @@ export default async function GlobalBusinessesPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -38,13 +38,13 @@ export default async function GlobalBusinessesPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(businesses ?? []).length === 0 ? (
             <p className="muted">Nobody has listed a business yet.</p>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {(businesses ?? []).map((business) => (
-                <div className="rowlink" key={business.id}>
+                <div className="li linkrow" key={business.id}>
                   <div>
                     <b>
                       <Link href={`/businesses/${business.slug}`}>
@@ -62,7 +62,7 @@ export default async function GlobalBusinessesPage() {
                   <div className="rowmeta">
                     <span
                       className={`chip ${
-                        business.hidden ? "" : business.public ? "mint" : ""
+                        business.hidden ? "" : business.public ? "chip-mint" : ""
                       }`}
                     >
                       {business.hidden

@@ -97,7 +97,7 @@ export default async function CoursePage({
 
   return (
     <DualPage member={Boolean(member)} nav="/learning" active="/learning">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/learning">Learning</Link>
           </p>
@@ -105,15 +105,15 @@ export default async function CoursePage({
             <span className="chip">{course.level}</span>{" "}
             {course.duration ? <span className="chip">{course.duration}</span> : null}{" "}
             {course.tier === "paid" ? (
-              <span className="chip sun">Paid plan</span>
+              <span className="chip chip-sun">Paid plan</span>
             ) : null}
           </p>
           <h1>{course.title}</h1>
           <p className="lead">{course.summary}</p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
@@ -128,10 +128,10 @@ export default async function CoursePage({
                     Still being written.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(lessons ?? []).map((lesson) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         key={lesson.id}
                         href={
                           enrolment && !locked && paidFor
@@ -149,7 +149,7 @@ export default async function CoursePage({
                         </div>
                         <div className="rowmeta">
                           {doneIds.has(lesson.id) ? (
-                            <span className="chip mint">Done</span>
+                            <span className="chip chip-mint">Done</span>
                           ) : null}
                         </div>
                       </Link>
@@ -161,7 +161,7 @@ export default async function CoursePage({
 
             <div className="stack">
               {bought ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>You bought this</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     If it was not what you expected, say so. Refunds are
@@ -183,7 +183,7 @@ export default async function CoursePage({
                         : "Anyone can buy this. Members pay the member price."}
                     </p>
                     {priceCents === 0 ? (
-                      <Link className="btn primary" href="/apply">
+                      <Link className="btn btn-primary" href="/apply">
                         Request an invitation
                       </Link>
                     ) : (
@@ -214,7 +214,7 @@ export default async function CoursePage({
                       Some courses come with paid membership, along with the
                       rest of the network.
                     </p>
-                    <Link className="btn" href="/upgrade">
+                    <Link className="btn btn-ghost" href="/upgrade">
                       See the paid plan
                     </Link>
                   </>
@@ -230,7 +230,7 @@ export default async function CoursePage({
                     </p>
                     {(lessons ?? []).length ? (
                       <Link
-                        className="btn primary"
+                        className="btn btn-primary"
                         href={`/learning/${slug}/${
                           (lessons ?? []).find((l) => !doneIds.has(l.id))?.position ??
                           1

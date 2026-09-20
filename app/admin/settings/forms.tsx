@@ -25,11 +25,11 @@ export function VillageSettingsForm({
 
   return (
     <form action={action} className="panel">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
       <input type="hidden" name="village_id" value={village.id} />
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Village name</span>
           <input name="name" defaultValue={village.name} required />
@@ -45,7 +45,7 @@ export function VillageSettingsForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Circle capacity</span>
           <input value="50 members" readOnly disabled />
@@ -70,7 +70,7 @@ export function VillageSettingsForm({
         <textarea name="summary" rows={3} defaultValue={village.summary ?? ""} />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -98,7 +98,7 @@ export function ContactGlobalForm() {
   return (
     <form action={action} className="panel">
       <h3>Write to the Global team</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Subject</span>
@@ -115,7 +115,7 @@ export function ContactGlobalForm() {
         />
       </label>
 
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send it"}
       </button>
     </form>

@@ -19,7 +19,7 @@ export function FollowForm({
 
   if (state.done === "following") {
     return (
-      <div className="notice good">
+      <div className="flag ok">
         You are following this. Work down the steps and tick them off.
       </div>
     );
@@ -27,7 +27,7 @@ export function FollowForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="pathway_id" value={pathwayId} />
       <input type="hidden" name="slug" value={slug} />
       <label className="field">
@@ -37,7 +37,7 @@ export function FollowForm({
           Only you and the Global team see this. It is how pathways get better.
         </span>
       </label>
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Follow this pathway"}
       </button>
     </form>
@@ -64,7 +64,7 @@ export function StepDone({
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="done" value={done ? "1" : "0"} />
       <button
-        className={`btn ${done ? "mint" : ""}`}
+        className={`btn ${done ? "btn-mint" : ""}`}
         type="submit"
         disabled={pending}
       >

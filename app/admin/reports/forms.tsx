@@ -11,21 +11,21 @@ export function ReportDecision({ id }: { id: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
       <input type="hidden" name="report_id" value={id} />
       <label className="field">
         <span>What you did</span>
         <input name="note" placeholder="Kept private. Not for Village channels." />
       </label>
       <div className="row">
-        <button className="btn" name="status" value="in_progress" disabled={pending}>
+        <button className="btn btn-ghost" name="status" value="in_progress" disabled={pending}>
           Looking at it
         </button>
-        <button className="btn" name="status" value="closed" disabled={pending}>
+        <button className="btn btn-ghost" name="status" value="closed" disabled={pending}>
           Handled here
         </button>
-        <button className="btn primary" name="status" value="escalated" disabled={pending}>
+        <button className="btn btn-primary" name="status" value="escalated" disabled={pending}>
           Send it to Global
         </button>
       </div>

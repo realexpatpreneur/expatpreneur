@@ -47,15 +47,15 @@ export default async function BusinessesPage({
           <p className="lead">
             What members actually do, and which markets they already sell into.
           </p>
-          {done ? <div className="notice good">Saved.</div> : null}
+          {done ? <div className="flag ok">Saved.</div> : null}
           <p>
-            <Link className="btn primary" href="/businesses/new">
+            <Link className="btn btn-primary" href="/businesses/new">
               Add your business
             </Link>
           </p>
           <form className="searchrow">
             <input name="q" defaultValue={q} placeholder="Name, industry or what they do" />
-            <button className="btn" type="submit">
+            <button className="btn btn-ghost" type="submit">
               Search
             </button>
           </form>
@@ -67,7 +67,7 @@ export default async function BusinessesPage({
             ].map(([key, label]) => (
               <Link
                 key={key}
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/businesses?show=${key}`}
               >
                 {label}
@@ -76,15 +76,15 @@ export default async function BusinessesPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(businesses ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing here yet. Yours could be the first.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(businesses ?? []).map((business) => (
                 <Link
                   className="panel"
@@ -109,13 +109,13 @@ export default async function BusinessesPage({
         </section>
 
         {member ? null : (
-          <section className="band cta">
+          <section className="sec">
             <h2>Run a business abroad?</h2>
             <p className="lead">
               Members can list their business here once they are in.
             </p>
             <p>
-              <Link className="btn primary" href="/apply">
+              <Link className="btn btn-primary" href="/apply">
                 Request your invitation
               </Link>
             </p>

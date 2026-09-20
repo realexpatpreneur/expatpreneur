@@ -11,7 +11,7 @@ export function ProposePodForm() {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 680 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>What would you call it?</span>
@@ -28,7 +28,7 @@ export function ProposePodForm() {
         />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>How often would you meet?</span>
           <select name="cadence" defaultValue="monthly">
@@ -52,7 +52,7 @@ export function ProposePodForm() {
         lead it.
       </p>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Propose it"}
       </button>
     </form>

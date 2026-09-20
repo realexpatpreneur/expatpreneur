@@ -20,7 +20,7 @@ export default async function GlobalMixPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Village balance</h1>
         <p className="lead">
           No Village above {Math.round(NATIONALITY_LIMIT * 100)} percent of one
@@ -28,9 +28,9 @@ export default async function GlobalMixPage() {
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         {byVillage.size === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Not enough members yet to say anything useful.
             </p>
@@ -40,12 +40,12 @@ export default async function GlobalMixPage() {
             {[...byVillage.entries()].map(([village, rows]) => (
               <div className="panel" key={village}>
                 <h3>{village}</h3>
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(rows ?? [])
                     .slice()
                     .sort((a, b) => Number(b.percent) - Number(a.percent))
                     .map((row) => (
-                      <div className="rowlink" key={`${village}-${row.nationality}`}>
+                      <div className="li linkrow" key={`${village}-${row.nationality}`}>
                         <div>
                           <b>{row.nationality}</b>
                           <div className="muted small">
@@ -54,7 +54,7 @@ export default async function GlobalMixPage() {
                         </div>
                         <div className="rowmeta">
                           {Number(row.percent) > NATIONALITY_LIMIT * 100 ? (
-                            <span className="chip sun">Over the limit</span>
+                            <span className="chip chip-sun">Over the limit</span>
                           ) : null}
                         </div>
                       </div>

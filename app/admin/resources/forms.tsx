@@ -23,7 +23,7 @@ export function ResourceForm({
   return (
     <form action={action} className="panel">
       <h3>{resource ? "Edit" : "Add a resource"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {resource ? <input type="hidden" name="id" value={resource.id} /> : null}
 
       <label className="field" style={{ marginTop: 10 }}>
@@ -71,7 +71,7 @@ export function ResourceForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -103,7 +103,7 @@ export function MediaForm({
   return (
     <form action={action} className="panel">
       <h3>{item ? "Edit" : "Add to Watch and Listen"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
 
       <label className="field" style={{ marginTop: 10 }}>
@@ -187,7 +187,7 @@ export function MediaForm({
         />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

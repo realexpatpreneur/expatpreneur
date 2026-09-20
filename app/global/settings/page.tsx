@@ -31,7 +31,7 @@ export default async function SystemSettingsPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -42,7 +42,7 @@ export default async function SystemSettingsPage({
           <div className="tabs">
             {tabs.map(([key, label]) => (
               <Link
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/global/settings?show=${key}`}
                 key={key}
               >
@@ -52,14 +52,14 @@ export default async function SystemSettingsPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <div className="stack" style={{ maxWidth: 820 }}>
             {show === "general" ? <GeneralForm values={values} /> : null}
 
             {show === "integrations" ? (
               <>
                 <div className="panel">
-                  <div className="rows">
+                  <div className="divide">
                     <IntegrationRow
                       name="Email delivery"
                       settingKey="integration_email"
@@ -107,7 +107,7 @@ export default async function SystemSettingsPage({
                   </div>
                 </div>
 
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>What the chips mean</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     Email, payments and live rooms say Connected when their
@@ -128,11 +128,11 @@ export default async function SystemSettingsPage({
                     Every decision a leader makes is recorded: memberships,
                     roles, moderation, and anything called off.
                   </p>
-                  <Link className="btn" href="/global/audit">
+                  <Link className="btn btn-ghost" href="/global/audit">
                     Audit log
                   </Link>
                 </div>
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>Backups</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     Supabase takes the backups and holds them. Downloading one

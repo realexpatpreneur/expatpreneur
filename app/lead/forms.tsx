@@ -16,7 +16,7 @@ export function OpenRoomForm({
   return (
     <form action={action} className="panel">
       <h3>Open a room</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field" style={{ marginTop: 10 }}>
         <span>For</span>
@@ -34,7 +34,7 @@ export function OpenRoomForm({
         <input name="title" required placeholder="Monthly catch up" />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Date</span>
           <input name="date" type="date" required />
@@ -69,7 +69,7 @@ export function OpenRoomForm({
         </span>
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Room size</span>
           <input name="max_participants" type="number" min={2} defaultValue={50} />
@@ -83,7 +83,7 @@ export function OpenRoomForm({
         </label>
       </div>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Opening" : "Schedule it"}
       </button>
     </form>
@@ -102,8 +102,8 @@ export function GroupForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
       <input type="hidden" name="group_id" value={group.id} />
       <label className="field">
         <span>What it is for</span>
@@ -113,7 +113,7 @@ export function GroupForm({
         <span>WhatsApp group link</span>
         <input name="whatsapp_url" defaultValue={group.whatsapp_url ?? ""} />
       </label>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -138,14 +138,14 @@ export function PodForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
       <input type="hidden" name="pod_id" value={pod.id} />
       <label className="field">
         <span>What it is for</span>
         <textarea name="purpose" rows={2} defaultValue={pod.purpose ?? ""} />
       </label>
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>How often</span>
           <select name="cadence" defaultValue={pod.cadence}>
@@ -159,7 +159,7 @@ export function PodForm({
           <input name="whatsapp_url" defaultValue={pod.whatsapp_url ?? ""} />
         </label>
       </div>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

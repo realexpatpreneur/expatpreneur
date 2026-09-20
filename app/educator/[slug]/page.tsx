@@ -44,7 +44,7 @@ export default async function EducatorCoursePage({
 
   return (
     <WorkspaceShell kind="edu" nav="/educator">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
           </p>
@@ -53,16 +53,16 @@ export default async function EducatorCoursePage({
             {(lessons ?? []).length} lessons. {(enrolments ?? []).length} members
             started it, {finished} finished.
           </p>
-          {done ? <div className="notice good">Saved.</div> : null}
+          {done ? <div className="flag ok">Saved.</div> : null}
           {!mine ? (
-            <div className="notice bad">
+            <div className="flag hold">
               This course belongs to someone else, so saving will be refused.
             </div>
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               {(lessons ?? []).map((lesson) => (
                 <div key={lesson.id}>

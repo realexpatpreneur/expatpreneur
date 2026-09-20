@@ -24,22 +24,22 @@ export default async function NotificationsPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/notifications">
-        <section className="band">
+        <section className="sec">
           <h1>Notifications</h1>
           <p className="lead">
             Replies, messages, requests and what your Village is doing.
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(notifications ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing yet.
               </p>
             </div>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {(notifications ?? []).map((item) => {
                 const inner = (
                   <div>
@@ -51,16 +51,16 @@ export default async function NotificationsPage() {
                   </div>
                 );
                 return item.link ? (
-                  <Link className="rowlink" key={item.id} href={item.link}>
+                  <Link className="li linkrow" key={item.id} href={item.link}>
                     {inner}
                     {!item.read_at ? (
                       <div className="rowmeta">
-                        <span className="chip blue">New</span>
+                        <span className="chip chip-blue">New</span>
                       </div>
                     ) : null}
                   </Link>
                 ) : (
-                  <div className="rowlink" key={item.id}>
+                  <div className="li linkrow" key={item.id}>
                     {inner}
                   </div>
                 );

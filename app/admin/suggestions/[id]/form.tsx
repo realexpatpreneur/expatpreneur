@@ -30,7 +30,7 @@ export function SuggestionAdminForm({
   return (
     <form action={action} className="panel">
       <h3>Status</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="id" value={id} />
 
       <label className="field" style={{ marginTop: 10 }}>
@@ -57,7 +57,7 @@ export function SuggestionAdminForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

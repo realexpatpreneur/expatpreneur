@@ -16,17 +16,17 @@ export default async function GlobalVillagesPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Villages</h1>
         <p className="lead">
           A Village opens where there are enough members, a shared language and
           someone to run it.
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="stack">
             {(villages ?? []).map((village) => (
               <VillageForm key={village.id} village={village} />

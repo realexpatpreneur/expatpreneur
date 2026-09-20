@@ -58,21 +58,21 @@ export default async function ThreadPage({
 
   return (
     <WorkspaceShell kind="member" nav="/messages">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/messages">Messages</Link>
           </p>
           <h1>{person.full_name}</h1>
           <p className="lead">{person.headline}</p>
           <p>
-            <Link className="btn" href={`/members/${person.id}`}>
+            <Link className="btn btn-ghost" href={`/members/${person.id}`}>
               See their profile
             </Link>
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 {thread.length === 0 ? (
@@ -80,9 +80,9 @@ export default async function ThreadPage({
                     Nothing said yet.
                   </p>
                 ) : (
-                  <div className="rows">
+                  <div className="divide">
                     {thread.map((message) => (
-                      <div className="rowlink" key={message.id}>
+                      <div className="li linkrow" key={message.id}>
                         <div>
                           <b>
                             {message.sender_id === member.id
@@ -111,7 +111,7 @@ export default async function ThreadPage({
                         ? "Your request is with them. You can write once they accept."
                         : "Members in other Villages are reached through a request, on the paid plan."}
                     </p>
-                    <Link className="btn" href={`/members/${person.id}`}>
+                    <Link className="btn btn-ghost" href={`/members/${person.id}`}>
                       Go to their profile
                     </Link>
                   </>
@@ -119,7 +119,7 @@ export default async function ThreadPage({
               </div>
             </div>
 
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>How messages work here</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Inside a Village, members write to each other directly. Across

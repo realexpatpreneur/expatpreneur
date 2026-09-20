@@ -14,7 +14,7 @@ export function LoginForm({ next }: { next: string }) {
   if (state.sent) {
     return (
       <div className="panel" style={{ maxWidth: 520 }}>
-        <div className="notice good">
+        <div className="flag ok">
           Check your email. The link signs you in and lasts one hour.
         </div>
         <p className="muted small">
@@ -27,7 +27,7 @@ export function LoginForm({ next }: { next: string }) {
   return (
     <>
       <form action={action} className="panel" style={{ maxWidth: 520 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="next" value={next} />
       <label className="field">
         <span>Email</span>
@@ -36,7 +36,7 @@ export function LoginForm({ next }: { next: string }) {
           Use the address your invitation was sent to.
         </span>
       </label>
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Email me a link"}
       </button>
       </form>

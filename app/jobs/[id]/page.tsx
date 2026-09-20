@@ -49,15 +49,15 @@ export default async function JobPage({
 
   return (
     <WorkspaceShell kind="member" nav="/jobs">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/jobs">Jobs and freelance</Link>
           </p>
           <p>
-            <span className="chip blue">{kindLabel[job.kind] ?? job.kind}</span>{" "}
+            <span className="chip chip-blue">{kindLabel[job.kind] ?? job.kind}</span>{" "}
             {job.remote ? <span className="chip">Remote possible</span> : null}{" "}
             {job.status !== "open" ? (
-              <span className="chip sun">{job.status}</span>
+              <span className="chip chip-sun">{job.status}</span>
             ) : null}
           </p>
           <h1>{job.title}</h1>
@@ -67,8 +67,8 @@ export default async function JobPage({
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{job.description}</p>
@@ -82,7 +82,7 @@ export default async function JobPage({
                 </div>
               ) : null}
               {mine && job.status === "open" ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>When it is done</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     Closing it keeps the board honest.
@@ -105,7 +105,7 @@ export default async function JobPage({
                     This is your post.
                   </p>
                 ) : canReach && poster ? (
-                  <Link className="btn primary" href={`/messages/${poster.id}`}>
+                  <Link className="btn btn-primary" href={`/messages/${poster.id}`}>
                     Message {poster.full_name.split(" ")[0]}
                   </Link>
                 ) : (
@@ -114,7 +114,7 @@ export default async function JobPage({
                       They are in another Village, so reaching them is part of
                       the paid plan.
                     </p>
-                    <Link className="btn" href="/upgrade">
+                    <Link className="btn btn-ghost" href="/upgrade">
                       See the paid plan
                     </Link>
                   </>

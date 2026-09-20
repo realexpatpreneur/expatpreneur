@@ -67,15 +67,15 @@ export default async function LearningPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {shown.length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing published yet.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {shown.map((course, i) => {
                 const progress = progressOf(course.id);
                 const locked =
@@ -100,11 +100,11 @@ export default async function LearningPage() {
                       <p>{course.summary}</p>
                       <div className="meta">
                         {progress ? (
-                          <span className="chip mint">
+                          <span className="chip chip-mint">
                             {progress.done} of {progress.lessons} done
                           </span>
                         ) : locked ? (
-                          <span className="chip sun">Paid plan</span>
+                          <span className="chip chip-sun">Paid plan</span>
                         ) : (
                           <>
                             <span className="chip">{priceOf(course)}</span>{" "}
@@ -124,17 +124,17 @@ export default async function LearningPage() {
         </section>
 
         {member ? null : (
-          <section className="band cta">
+          <section className="sec">
             <h2>Members pay less, and some courses are theirs alone</h2>
             <p className="lead">
               Anyone can buy these. Members get the member price, and the
               courses written for the network.
             </p>
             <p>
-              <Link className="btn primary" href="/apply">
+              <Link className="btn btn-primary" href="/apply">
                 Request an invitation
               </Link>{" "}
-              <Link className="btn" href="/membership">
+              <Link className="btn btn-ghost" href="/membership">
                 What membership costs
               </Link>
             </p>

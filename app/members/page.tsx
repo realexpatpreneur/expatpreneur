@@ -70,21 +70,21 @@ export default async function PublicMembersPage({
               placeholder="An industry, a market, a name"
               aria-label="Search members"
             />
-            <button className="btn" type="submit">
+            <button className="btn btn-ghost" type="submit">
               Search
             </button>
           </form>
 
           <div className="tabs">
             <Link
-              className={`chip ${village ? "" : "mint"}`}
+              className={`chip ${village ? "" : "chip-mint"}`}
               href={`/members${q ? `?q=${encodeURIComponent(q)}` : ""}`}
             >
               Everywhere
             </Link>
             {(villages ?? []).map((v) => (
               <Link
-                className={`chip ${village === v.slug ? "mint" : ""}`}
+                className={`chip ${village === v.slug ? "chip-mint" : ""}`}
                 href={`/members?village=${v.slug}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
                 key={v.id}
               >
@@ -94,14 +94,14 @@ export default async function PublicMembersPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {people.length === 0 ? (
             <p className="muted">
               Nobody matches that yet. Most members keep their profile inside
               the platform, which is their choice to make.
             </p>
           ) : (
-            <div className="grid">
+            <div className="g3 g4">
               {people.map((person, i) => (
                 <Link className="card" href={`/members/${person.id}`} key={person.id}>
                   {person.avatar_url ? (
@@ -135,17 +135,17 @@ export default async function PublicMembersPage({
         </section>
 
         {me ? null : (
-          <section className="band cta">
+          <section className="sec">
             <h2>Members see more than this</h2>
             <p className="lead">
               What somebody is looking for, what they can help with, and how to
               reach them stay inside the platform.
             </p>
             <p>
-              <Link className="btn primary" href="/apply">
+              <Link className="btn btn-primary" href="/apply">
                 Request an invitation
               </Link>{" "}
-              <Link className="btn" href="/membership">
+              <Link className="btn btn-ghost" href="/membership">
                 What membership costs
               </Link>
             </p>

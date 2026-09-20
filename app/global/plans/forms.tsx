@@ -27,8 +27,8 @@ export function PlanForm({
   return (
     <form action={action} className="panel">
       <h3>{plan.name}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
       <input type="hidden" name="id" value={plan.id} />
 
       <label className="field">
@@ -41,7 +41,7 @@ export function PlanForm({
         <input name="blurb" defaultValue={plan.blurb ?? ""} />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Price</span>
           <input
@@ -62,7 +62,7 @@ export function PlanForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>How often</span>
           <select name="interval" defaultValue={plan.interval}>
@@ -103,7 +103,7 @@ export function PlanForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

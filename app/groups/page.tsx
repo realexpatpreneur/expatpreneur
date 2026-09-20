@@ -25,7 +25,7 @@ export default async function GroupsPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/groups">
-        <section className="band">
+        <section className="sec">
           <h1>Industry Groups</h1>
           <p className="lead">
             The people in your trade, across every Village. A restaurant in
@@ -34,16 +34,16 @@ export default async function GroupsPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(groups ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 None open yet. The Global team starts these once there are
                 enough members in a trade.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(groups ?? []).map((group) => (
                 <Link className="panel" key={group.id} href={`/groups/${group.slug}`}>
                   <span className="chip">{group.industry}</span>

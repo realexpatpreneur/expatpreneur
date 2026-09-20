@@ -23,7 +23,7 @@ export function MarketPostForm() {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>What are you looking for?</span>
@@ -76,7 +76,7 @@ export function MarketPostForm() {
         it.
       </p>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Posting" : "Post"}
       </button>
     </form>
@@ -91,7 +91,7 @@ export function MarketReplyForm({ postId }: { postId: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="post_id" value={postId} />
       <label className="field">
         <span>Your reply</span>
@@ -102,7 +102,7 @@ export function MarketReplyForm({ postId }: { postId: string }) {
           placeholder="Who you know there, or what you learned doing it yourself"
         />
       </label>
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Reply"}
       </button>
     </form>
@@ -118,7 +118,7 @@ export function CloseMarketForm({ postId }: { postId: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="post_id" value={postId} />
       <label className="field">
         <span>What came of it?</span>
@@ -127,7 +127,7 @@ export function CloseMarketForm({ postId }: { postId: string }) {
           Worth a line. The next person looking at that market reads it.
         </span>
       </label>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Closing" : "Close this"}
       </button>
     </form>

@@ -42,7 +42,7 @@ export default async function GlobalMediaPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -51,16 +51,16 @@ export default async function GlobalMediaPage({
             The stories and guides that are read, as against Watch and Listen,
             which is what is watched.
           </p>
-          {done ? <div className="notice good">Saved.</div> : null}
+          {done ? <div className="flag ok">Saved.</div> : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <ArticleForm villages={villages ?? []} article={editing} />
               {editing ? (
                 <p>
-                  <Link className="btn" href="/global/media">
+                  <Link className="btn btn-ghost" href="/global/media">
                     Start a new piece instead
                   </Link>
                 </p>
@@ -75,10 +75,10 @@ export default async function GlobalMediaPage({
                     Nothing yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(articles ?? []).map((article) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         href={`/global/media?edit=${article.id}`}
                         key={article.id}
                       >
@@ -90,7 +90,7 @@ export default async function GlobalMediaPage({
                         </div>
                         <div className="rowmeta">
                           <span
-                            className={`chip ${article.status === "published" ? "mint" : ""}`}
+                            className={`chip ${article.status === "published" ? "chip-mint" : ""}`}
                           >
                             {article.status}
                           </span>
@@ -110,7 +110,7 @@ export default async function GlobalMediaPage({
                 ) : (
                   <div className="stack" style={{ marginTop: 12 }}>
                     {(suggestions ?? []).map((suggestion) => (
-                      <div className="panel wash" key={suggestion.id}>
+                      <div className="panel panel-wash" key={suggestion.id}>
                         <p className="muted small">
                           {suggesters?.find((s) => s.id === suggestion.profile_id)
                             ?.full_name ?? "A member"}

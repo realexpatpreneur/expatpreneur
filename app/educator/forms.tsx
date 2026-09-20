@@ -36,7 +36,7 @@ export function CourseForm({
   return (
     <form action={action} className="panel">
       <h3>{course ? course.title : "New course"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {course ? <input type="hidden" name="id" value={course.id} /> : null}
 
       <Uploader
@@ -61,7 +61,7 @@ export function CourseForm({
         <textarea name="description" rows={4} defaultValue={course?.description ?? ""} />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Who it is for</span>
           <select name="level" defaultValue={course?.level ?? "anyone"}>
@@ -80,7 +80,7 @@ export function CourseForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Price for everybody</span>
           <input
@@ -113,7 +113,7 @@ export function CourseForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Currency</span>
           <select name="currency" defaultValue={course?.currency ?? "EUR"}>
@@ -154,7 +154,7 @@ export function CourseForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -185,11 +185,11 @@ export function LessonForm({
   return (
     <form action={action} className="panel">
       <h3>{lesson ? `${lesson.position}. ${lesson.title}` : "New lesson"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="course_id" value={courseId} />
       {lesson ? <input type="hidden" name="id" value={lesson.id} /> : null}
 
-      <div className="two" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 10 }}>
         <label className="field">
           <span>Position</span>
           <input
@@ -220,7 +220,7 @@ export function LessonForm({
         <textarea name="body" rows={6} defaultValue={lesson?.body ?? ""} />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -241,10 +241,10 @@ export function DeleteLessonButton({
 
   return (
     <form action={action} style={{ marginTop: 10 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="course_id" value={courseId} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Taking it down" : "Take this lesson down"}
       </button>
     </form>

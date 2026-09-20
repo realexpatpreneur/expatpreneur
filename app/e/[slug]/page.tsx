@@ -42,10 +42,10 @@ export default async function PublicEventPage({
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p>
             {village?.name ? (
-              <span className="chip mint">{village.name}</span>
+              <span className="chip chip-mint">{village.name}</span>
             ) : null}{" "}
             <span className="chip">Open to everyone</span>
           </p>
@@ -59,8 +59,8 @@ export default async function PublicEventPage({
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
@@ -102,13 +102,13 @@ export default async function PublicEventPage({
                 />
               )}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>About ExpatPreneurs</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   A curated network of expat entrepreneurs. Most of what we do
                   is for members, but some events are open to anyone.
                 </p>
-                <Link className="btn" href="/apply">
+                <Link className="btn btn-ghost" href="/apply">
                   Request an invitation
                 </Link>
               </div>

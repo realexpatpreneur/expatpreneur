@@ -8,9 +8,9 @@ export function MenuList({
   items: [string, string][];
 }) {
   return (
-    <div className="rows">
+    <div className="divide">
       {items.map(([href, label]) => (
-        <Link className="rowlink" href={href} key={href + label}>
+        <Link className="li linkrow" href={href} key={href + label}>
           <div>
             <b>{label}</b>
           </div>

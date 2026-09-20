@@ -43,7 +43,7 @@ export default async function GlobalEventsPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -52,12 +52,12 @@ export default async function GlobalEventsPage() {
         </section>
 
         {(partners ?? []).length ? (
-          <section className="band">
+          <section className="sec">
             <div className="panel">
               <h3>Waiting for approval</h3>
-              <div className="rows" style={{ marginTop: 12 }}>
+              <div className="divide" style={{ marginTop: 12 }}>
                 {(partners ?? []).map((request) => (
-                  <Link className="rowlink" href="/global/partners" key={request.id}>
+                  <Link className="li linkrow" href="/global/partners" key={request.id}>
                     <div>
                       <b>{request.title}</b>
                       <div className="muted small">
@@ -66,7 +66,7 @@ export default async function GlobalEventsPage() {
                       </div>
                     </div>
                     <div className="rowmeta">
-                      <span className="chip sun">Partnered event</span>
+                      <span className="chip chip-sun">Partnered event</span>
                     </div>
                   </Link>
                 ))}
@@ -75,15 +75,15 @@ export default async function GlobalEventsPage() {
           </section>
         ) : null}
 
-        <section className="band">
+        <section className="sec">
           <h2>Coming up</h2>
           {upcoming.length === 0 ? (
             <p className="muted small">Nothing on the calendar anywhere.</p>
           ) : (
-            <div className="rows" style={{ marginTop: 12 }}>
+            <div className="divide" style={{ marginTop: 12 }}>
               {upcoming.map((event) => (
                 <Link
-                  className="rowlink"
+                  className="li linkrow"
                   href={`/admin/events/${event.id}`}
                   key={event.id}
                 >
@@ -109,15 +109,15 @@ export default async function GlobalEventsPage() {
           )}
         </section>
 
-        <section className="band">
+        <section className="sec">
           <h2>Already happened</h2>
           {past.length === 0 ? (
             <p className="muted small">Nothing yet.</p>
           ) : (
-            <div className="rows" style={{ marginTop: 12 }}>
+            <div className="divide" style={{ marginTop: 12 }}>
               {past.slice(0, 25).map((event) => (
                 <Link
-                  className="rowlink"
+                  className="li linkrow"
                   href={`/admin/events/${event.id}`}
                   key={event.id}
                 >
@@ -128,7 +128,7 @@ export default async function GlobalEventsPage() {
                     </div>
                   </div>
                   <div className="rowmeta">
-                    <span className={`chip ${event.status === "cancelled" ? "" : "mint"}`}>
+                    <span className={`chip ${event.status === "cancelled" ? "" : "chip-mint"}`}>
                       {event.status === "cancelled"
                         ? "Called off"
                         : `${taken(event.id)} came`}

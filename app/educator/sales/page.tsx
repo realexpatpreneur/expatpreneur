@@ -51,7 +51,7 @@ export default async function SalesPage() {
 
   return (
     <WorkspaceShell kind="edu" nav="/educator/sales">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
           </p>
@@ -61,14 +61,14 @@ export default async function SalesPage() {
             {refunded.length ? `${refunded.length} refunded.` : ""}
           </p>
           <p>
-            <Link className="btn" href="/educator/payouts">
+            <Link className="btn btn-ghost" href="/educator/payouts">
               What you are owed
             </Link>
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <h3>Every sale</h3>
@@ -77,9 +77,9 @@ export default async function SalesPage() {
                     Nothing sold yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(sales ?? []).map((sale) => (
-                      <div className="rowlink" key={sale.purchase_id}>
+                      <div className="li linkrow" key={sale.purchase_id}>
                         <div>
                           <b>{sale.course_title}</b>
                           <div className="muted small">
@@ -88,7 +88,7 @@ export default async function SalesPage() {
                           </div>
                         </div>
                         <div className="rowmeta">
-                          <span className={`chip ${sale.status === "paid" ? "mint" : ""}`}>
+                          <span className={`chip ${sale.status === "paid" ? "chip-mint" : ""}`}>
                             {sale.status === "refunded"
                               ? "refunded"
                               : money(sale.educator_cents ?? 0, sale.currency)}
@@ -108,9 +108,9 @@ export default async function SalesPage() {
                     through the platform. You see them so nothing happens
                     behind your back.
                   </p>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(refunds ?? []).map((request) => (
-                      <div className="rowlink" key={request.id}>
+                      <div className="li linkrow" key={request.id}>
                         <div>
                           <b>{request.reason}</b>
                           <div className="muted small">

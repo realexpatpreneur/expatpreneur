@@ -13,7 +13,7 @@ export default async function SuggestionSentPage({
 
   return (
     <WorkspaceShell kind="member" nav="/suggestions/sent">
-        <section className="band">
+        <section className="sec">
           <h1>Thank you</h1>
           <p className="lead">
             {anonymous
@@ -21,10 +21,10 @@ export default async function SuggestionSentPage({
               : "Your suggestion is with the team. You will hear what happens with it."}
           </p>
           <p>
-            <Link className="btn" href="/suggestions">
+            <Link className="btn btn-ghost" href="/suggestions">
               Send another
             </Link>{" "}
-            <Link className="btn primary" href="/home">
+            <Link className="btn btn-primary" href="/home">
               Back to home
             </Link>
           </p>

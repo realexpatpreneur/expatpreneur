@@ -21,7 +21,7 @@ export default async function PlansPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -31,7 +31,7 @@ export default async function PlansPage() {
             is what the public membership page reads.
           </p>
           {mismatch ? (
-            <div className="notice bad">
+            <div className="flag hold">
               The Stripe price id here does not match the one the platform is
               configured with. Members would be told one thing and charged
               another. Fix one of them.
@@ -39,16 +39,16 @@ export default async function PlansPage() {
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             {(plans ?? []).map((plan) => (
               <PlanForm key={plan.id} plan={plan} />
             ))}
           </div>
         </section>
 
-        <section className="band">
-          <div className="panel wash">
+        <section className="sec">
+          <div className="panel panel-wash">
             <h3>Changing a price</h3>
             <p className="muted small" style={{ marginTop: 6 }}>
               Changing the number here changes what the site says, not what

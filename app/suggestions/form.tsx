@@ -11,7 +11,7 @@ export function SuggestionForm({ villageName }: { villageName: string | null }) 
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>What is it about?</span>
@@ -61,7 +61,7 @@ export function SuggestionForm({ villageName }: { villageName: string | null }) 
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send suggestion"}
       </button>
     </form>

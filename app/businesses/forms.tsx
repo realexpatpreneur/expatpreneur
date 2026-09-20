@@ -30,7 +30,7 @@ export function BusinessForm({
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {business ? <input type="hidden" name="id" value={business.id} /> : null}
 
       <Uploader
@@ -54,7 +54,7 @@ export function BusinessForm({
         />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Industry</span>
           <input name="industry" defaultValue={business?.industry ?? ""} />
@@ -132,7 +132,7 @@ export function BusinessForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -150,7 +150,7 @@ export function JobForm({
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>What are you looking for?</span>
@@ -180,7 +180,7 @@ export function JobForm({
         </label>
       ) : null}
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Where</span>
           <input name="location" placeholder="Dubai, or anywhere" />
@@ -218,7 +218,7 @@ export function JobForm({
         <input name="apply_note" placeholder="Message me here, or write to..." />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Posting" : "Post"}
       </button>
     </form>
@@ -231,10 +231,10 @@ export function CloseJobForm({ jobId }: { jobId: string }) {
   return (
     <form action={action} className="row">
       <input type="hidden" name="job_id" value={jobId} />
-      <button className="btn" name="status" value="filled" disabled={pending}>
+      <button className="btn btn-ghost" name="status" value="filled" disabled={pending}>
         Filled it
       </button>
-      <button className="btn" name="status" value="closed" disabled={pending}>
+      <button className="btn btn-ghost" name="status" value="closed" disabled={pending}>
         Close it
       </button>
     </form>

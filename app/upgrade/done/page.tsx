@@ -13,7 +13,7 @@ export default async function UpgradeDonePage({
 
   return (
     <WorkspaceShell kind="member" nav="/upgrade/done">
-        <section className="band">
+        <section className="sec">
           <h1>{cancelled ? "Your plan will end" : "Every Village is open"}</h1>
           <p className="lead">
             {cancelled
@@ -21,11 +21,11 @@ export default async function UpgradeDonePage({
               : "The payment went through. It can take a few seconds for the platform to catch up, so if a page still looks closed, reload it."}
           </p>
           <p>
-            <Link className="btn primary" href="/home">
+            <Link className="btn btn-primary" href="/home">
               Back to home
             </Link>{" "}
             {cancelled ? null : (
-              <Link className="btn" href="/directory?village=all">
+              <Link className="btn btn-ghost" href="/directory?village=all">
                 See every Village
               </Link>
             )}

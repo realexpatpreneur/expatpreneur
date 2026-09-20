@@ -35,16 +35,16 @@ export default async function AnnouncementsPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Announcements</h1>
         <p className="lead">
           One message to the Village. Used sparingly, it gets read.
         </p>
-        {done ? <div className="notice good">Sent.</div> : null}
+        {done ? <div className="flag ok">Sent.</div> : null}
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <AnnouncementForm villageName={village?.name ?? null} />
           <div className="stack">
             <div className="panel">
@@ -54,9 +54,9 @@ export default async function AnnouncementsPage({
                   Nothing yet.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {rows.map((row) => (
-                    <div className="rowlink" key={row.id}>
+                    <div className="li linkrow" key={row.id}>
                       <div>
                         <b>{row.title}</b>
                         <div className="muted small">
@@ -72,7 +72,7 @@ export default async function AnnouncementsPage({
                 </div>
               )}
             </div>
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>A word on frequency</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 One a week at most. Everything else belongs in Ask and Offer or

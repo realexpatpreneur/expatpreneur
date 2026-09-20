@@ -29,29 +29,29 @@ export default async function PodsPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/pods">
-        <section className="band">
+        <section className="sec">
           <h1>Pods</h1>
           <p className="lead">
             Small and committed. A handful of members who meet on a rhythm and
             hold each other to what they said they would do.
           </p>
           <p>
-            <Link className="btn primary" href="/pods/propose">
+            <Link className="btn btn-primary" href="/pods/propose">
               Propose a Pod
             </Link>
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(pods ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 None forming yet. If there is one you would want, propose it:
                 whoever proposes a Pod leads it.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(pods ?? []).map((pod) => {
                 const size = sizeOf(pod.id);
                 return (

@@ -37,7 +37,7 @@ export default async function GlobalRolesPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Roles</h1>
         <p className="lead">
           Who holds what, and until when. Roles are reviewed once a year, not
@@ -45,19 +45,19 @@ export default async function GlobalRolesPage() {
         </p>
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div>
             {(roles ?? []).length === 0 ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <p className="muted" style={{ margin: 0 }}>
                   Nobody holds a role yet.
                 </p>
               </div>
             ) : (
-              <div className="rows">
+              <div className="divide">
                 {(roles ?? []).map((role) => (
-                  <div className="rowlink" key={role.id}>
+                  <div className="li linkrow" key={role.id}>
                     <div>
                       <b>{nameOf(role.profile_id)}</b>
                       <div className="muted small">

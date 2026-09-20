@@ -69,22 +69,22 @@ export default async function MemberCarePage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Member care</h1>
         <p className="lead">
           Who is finding their feet, who has gone quiet, and who is due to be
           asked about another year.
         </p>
         {asked ? (
-          <div className="notice good">
+          <div className="flag ok">
             {asked} {Number(asked) === 1 ? "member has" : "members have"} been
             asked.
           </div>
         ) : null}
       </section>
 
-      <section className="band">
-        <div className="grid three">
+      <section className="sec">
+        <div className="g3">
           <div className="panel">
             <h3>In the Village</h3>
             <p className="lead" style={{ margin: 0 }}>{(members ?? []).length}</p>
@@ -100,24 +100,24 @@ export default async function MemberCarePage({
         </div>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Gone quiet</h2>
         <p className="muted small">
           Nothing posted, nothing answered, nothing attended. A message from a
           person beats any reminder the platform can send.
         </p>
         {quiet.length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nobody is sitting silent. That is rarer than it sounds.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {quiet.map((member) => {
               const a = activityOf(member.id);
               return (
-                <div className="rowlink" key={member.id}>
+                <div className="li linkrow" key={member.id}>
                   <div>
                     <b>{member.full_name}</b>
                     <div className="muted small">
@@ -126,10 +126,10 @@ export default async function MemberCarePage({
                     </div>
                   </div>
                   <div className="rowmeta">
-                    <Link className="btn" href={`/messages/${member.id}`}>
+                    <Link className="btn btn-ghost" href={`/messages/${member.id}`}>
                       Message
                     </Link>
-                    <Link className="btn" href={`/admin/members/${member.id}`}>
+                    <Link className="btn btn-ghost" href={`/admin/members/${member.id}`}>
                       Open
                     </Link>
                   </div>
@@ -140,12 +140,12 @@ export default async function MemberCarePage({
         )}
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Re-enrolment, {currentCycle}</h2>
-        <div className="cols">
+        <div className="gside">
           <div>
             {round.length === 0 ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <p className="muted" style={{ margin: 0 }}>
                   No round open for {currentCycle} yet.
                 </p>
@@ -154,9 +154,9 @@ export default async function MemberCarePage({
               <>
                 <p>
                   <span className="chip">{counts.asked} asked</span>{" "}
-                  <span className="chip mint">{counts.staying} staying</span>{" "}
-                  <span className="chip sun">{counts.leaving} leaving</span>{" "}
-                  <span className="chip blue">{counts.waiting} waiting</span>
+                  <span className="chip chip-mint">{counts.staying} staying</span>{" "}
+                  <span className="chip chip-sun">{counts.leaving} leaving</span>{" "}
+                  <span className="chip chip-blue">{counts.waiting} waiting</span>
                 </p>
                 <div className="stack">
                   {round.map((renewal) => (
@@ -166,9 +166,9 @@ export default async function MemberCarePage({
                         <span
                           className={`chip ${
                             renewal.status === "staying"
-                              ? "mint"
+                              ? "chip-mint"
                               : renewal.status === "leaving"
-                                ? "sun"
+                                ? "chip-sun"
                                 : ""
                           }`}
                         >
@@ -194,7 +194,7 @@ export default async function MemberCarePage({
 
           <div className="stack">
             <OpenRoundForm suggested={currentCycle} />
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>Before you open a round</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Speak to the quiet ones first. Someone who has drifted will

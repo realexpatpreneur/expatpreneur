@@ -11,7 +11,7 @@ export function ProposePartnerForm() {
 
   return (
     <form action={action} className="panel">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>The event</span>
@@ -48,7 +48,7 @@ export function ProposePartnerForm() {
         approved. The Global team attaches conditions to it.
       </p>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send it to Global"}
       </button>
     </form>

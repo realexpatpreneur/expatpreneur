@@ -20,10 +20,10 @@ export function GeneralForm({
 
   return (
     <form action={action} className="panel">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Network name</span>
           <input name="network_name" defaultValue={values.network_name ?? ""} />
@@ -35,7 +35,7 @@ export function GeneralForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Default language</span>
           <select name="default_language" defaultValue={values.default_language ?? "English"}>
@@ -59,7 +59,7 @@ export function GeneralForm({
         <input name="support_email" defaultValue={values.support_email ?? ""} />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -83,19 +83,19 @@ export function IntegrationRow({
   );
 
   return (
-    <div className="rowlink">
+    <div className="li linkrow">
       <div>
         <b>{name}</b>
         <div className="muted small">{fixed ?? status}</div>
       </div>
       <div className="rowmeta">
         {fixed ? (
-          <span className={`chip ${fixed === "Connected" ? "mint" : ""}`}>
+          <span className={`chip ${fixed === "Connected" ? "chip-mint" : ""}`}>
             {fixed}
           </span>
         ) : (
           <form action={action} className="row">
-            {state.error ? <div className="notice bad">{state.error}</div> : null}
+            {state.error ? <div className="flag hold">{state.error}</div> : null}
             <input type="hidden" name="key" value={settingKey} />
             <input
               name="value"
@@ -103,7 +103,7 @@ export function IntegrationRow({
               placeholder="Not chosen yet"
               style={{ width: 160 }}
             />
-            <button className="btn" type="submit" disabled={pending}>
+            <button className="btn btn-ghost" type="submit" disabled={pending}>
               {pending ? "Saving" : "Save"}
             </button>
           </form>
@@ -127,8 +127,8 @@ export function SecurityForm({
 
   return (
     <form action={action} className="panel">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       <label className="check">
         <input
@@ -176,7 +176,7 @@ export function SecurityForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

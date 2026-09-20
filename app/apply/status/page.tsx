@@ -12,7 +12,7 @@ export default function ApplicationStatusPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/apply">Request an invitation</Link>
           </p>
@@ -23,11 +23,11 @@ export default function ApplicationStatusPage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <StatusForm />
             <div className="stack">
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Why it takes a while</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Requests go to the Local Admins of the city you named, and
@@ -35,14 +35,14 @@ export default function ApplicationStatusPage() {
                   normal.
                 </p>
               </div>
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Lost the reference?</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Write to us and say which address you used. We will not
                   confirm anything about a request to anybody but the person
                   who made it.
                 </p>
-                <Link className="btn" href="/contact">
+                <Link className="btn btn-ghost" href="/contact">
                   Contact
                 </Link>
               </div>

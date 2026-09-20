@@ -10,15 +10,15 @@ export default async function SuggestionsPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/suggestions">
-        <section className="band">
+        <section className="sec">
           <h1>Suggestion box</h1>
           <p className="lead">
             How could ExpatPreneurs be better? Local Admins and the Global team
             read everything that comes in.
           </p>
         </section>
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <SuggestionForm villageName={member.villageName} />
             <div className="stack">
               <div className="panel">
@@ -29,14 +29,14 @@ export default async function SuggestionsPage() {
                   write here appears in the Village or in any WhatsApp group.
                 </p>
               </div>
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>This is not a report</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   If something has happened between you and another member,
                   report it instead. Those go straight to the Local Admins and
                   are handled privately.
                 </p>
-                <Link className="btn" href="/report">
+                <Link className="btn btn-ghost" href="/report">
                   Report something
                 </Link>
               </div>

@@ -16,14 +16,14 @@ export default async function SuggestCityPage({
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Your city is not here yet</h1>
           <p className="lead">
             Villages open where enough people ask. Tell us where you are and we
             will count you in.
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           {done ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>Thank you</h3>
@@ -31,14 +31,14 @@ export default async function SuggestCityPage({
                 You are counted. When that city has enough people and someone to
                 run it, you will be among the first to hear.
               </p>
-              <Link className="btn" href="/villages">
+              <Link className="btn btn-ghost" href="/villages">
                 Back to Villages
               </Link>
             </div>
           ) : (
-            <div className="cols">
+            <div className="gside">
               <CitySuggestionForm />
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What makes a Village work</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Enough expat entrepreneurs in one city, a language they share,

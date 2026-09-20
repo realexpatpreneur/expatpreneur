@@ -36,7 +36,7 @@ export default async function GlobalPathwayPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href="/global/markets">Market pathways</Link>
         </p>
@@ -45,17 +45,17 @@ export default async function GlobalPathwayPage({
           {pathway.country}. {(steps ?? []).length} steps.{" "}
           {(followers ?? []).length} members following it.
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
       </section>
 
       {(followers ?? []).some((f) => f.note) ? (
-        <section className="band">
+        <section className="sec">
           <h2>What they are trying to do</h2>
-          <div className="rows">
+          <div className="divide">
             {(followers ?? [])
               .filter((f) => f.note)
               .map((follower) => (
-                <div className="rowlink" key={follower.profile_id}>
+                <div className="li linkrow" key={follower.profile_id}>
                   <div>
                     <b>{follower.note}</b>
                   </div>
@@ -68,8 +68,8 @@ export default async function GlobalPathwayPage({
         </section>
       ) : null}
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="stack">
             {(steps ?? []).map((step) => (
               <StepForm

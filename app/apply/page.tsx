@@ -18,7 +18,7 @@ export default async function ApplyPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Request an invitation</h1>
           <p className="lead">
             Every request is read personally. Tell us about you, your business
@@ -28,7 +28,7 @@ export default async function ApplyPage() {
             Already asked? <Link href="/apply/status">Check where it stands</Link>.
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           <ApplyForm villages={villages ?? []} />
         </section>
       </main>

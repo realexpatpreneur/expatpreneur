@@ -21,8 +21,8 @@ export function AmountsForm({
   return (
     <form action={action} className="panel">
       <h3>Amounts by role</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       <label className="field">
         <span>Local Admin</span>
@@ -58,7 +58,7 @@ export function AmountsForm({
         />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Currency</span>
           <select name="currency" defaultValue={values.recognition_currency ?? "EUR"}>
@@ -83,7 +83,7 @@ export function AmountsForm({
         Check with an accountant how to pay people properly in each country.
       </p>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -98,9 +98,9 @@ export function RunButton() {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">{state.done}.</div> : null}
-      <button className="btn primary" type="submit" disabled={pending}>
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">{state.done}.</div> : null}
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Running" : "Run this month"}
       </button>
     </form>
@@ -115,10 +115,10 @@ export function PaidForm({ id }: { id: string }) {
 
   return (
     <form action={action} className="row">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="payout_id" value={id} />
       <input name="reference" placeholder="Bank reference" style={{ width: 150 }} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Paid"}
       </button>
     </form>

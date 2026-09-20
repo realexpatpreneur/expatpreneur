@@ -34,7 +34,7 @@ export default async function GlobalSuggestionsPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Suggestion box, everywhere</h1>
         <p className="lead">
           What members across the network would change. The same thing said in
@@ -42,17 +42,17 @@ export default async function GlobalSuggestionsPage() {
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         {(suggestions ?? []).length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing yet.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {(suggestions ?? []).map((s) => (
-              <Link className="rowlink" key={s.id} href={`/admin/suggestions/${s.id}`}>
+              <Link className="li linkrow" key={s.id} href={`/admin/suggestions/${s.id}`}>
                 <div>
                   <b>{s.title}</b>
                   <div className="muted small">
@@ -64,7 +64,7 @@ export default async function GlobalSuggestionsPage() {
                   </div>
                 </div>
                 <div className="rowmeta">
-                  {s.to_global ? <span className="chip blue">For Global</span> : null}
+                  {s.to_global ? <span className="chip chip-blue">For Global</span> : null}
                   <span className="chip">{statusLabel[s.status] ?? s.status}</span>
                 </div>
               </Link>

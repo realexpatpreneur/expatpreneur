@@ -15,7 +15,7 @@ export function TransferForm({
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 640 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Where are you going?</span>
@@ -47,7 +47,7 @@ export function TransferForm({
         />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Ask to transfer"}
       </button>
     </form>

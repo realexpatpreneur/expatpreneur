@@ -10,7 +10,7 @@ export default async function NewPostPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/village/new">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/village">Ask &amp; Offer</Link>
           </p>
@@ -19,7 +19,7 @@ export default async function NewPostPage() {
             Ask for what you need, or offer what you know. No pitching.
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           <PostForm villageName={member.villageName} />
         </section>
       </WorkspaceShell>

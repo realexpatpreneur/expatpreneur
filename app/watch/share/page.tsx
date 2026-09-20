@@ -31,7 +31,7 @@ export default async function SharePage({
 
   return (
     <DualPage member={Boolean(member)} nav="/watch/share" active="/watch/share">
-        <section className="band">
+        <section className="sec">
           <div className="panel" style={{ maxWidth: 520 }}>
             <h2>Share</h2>
             <p className="muted small" style={{ marginTop: 4 }}>
@@ -45,7 +45,7 @@ export default async function SharePage({
 
             <div className="row" style={{ marginTop: 14, flexWrap: "wrap" }}>
               <a
-                className="btn"
+                className="btn btn-ghost"
                 href={`https://wa.me/?text=${encodeURIComponent(`${title} ${link}`)}`}
                 target="_blank"
                 rel="noreferrer"
@@ -53,7 +53,7 @@ export default async function SharePage({
                 WhatsApp
               </a>
               <a
-                className="btn"
+                className="btn btn-ghost"
                 href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(link)}`}
                 target="_blank"
                 rel="noreferrer"
@@ -61,7 +61,7 @@ export default async function SharePage({
                 LinkedIn
               </a>
               <a
-                className="btn"
+                className="btn btn-ghost"
                 href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(link)}`}
               >
                 Email
@@ -70,7 +70,7 @@ export default async function SharePage({
 
             <p style={{ marginTop: 16 }}>
               <Link
-                className="btn primary"
+                className="btn btn-primary"
                 href={media ? `/watch/${media.slug}` : "/watch"}
               >
                 Done

@@ -11,7 +11,7 @@ export function StoryForm() {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 640 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Who is it about?</span>
@@ -32,7 +32,7 @@ export function StoryForm() {
         />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send it to the team"}
       </button>
     </form>

@@ -25,7 +25,7 @@ export default async function RenewPage({
 
   return (
     <WorkspaceShell kind="member" nav="/renew">
-        <section className="band">
+        <section className="sec">
           <h1>Another year?</h1>
           <p className="lead">
             Membership is renewed by a decision, not by silence. Once a year we
@@ -33,14 +33,14 @@ export default async function RenewPage({
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {done === "staying" ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>Good. See you at the next one.</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Nothing changes. Your Circle and your Village carry on.
               </p>
-              <Link className="btn" href="/home">
+              <Link className="btn btn-ghost" href="/home">
                 Back to home
               </Link>
             </div>
@@ -51,18 +51,18 @@ export default async function RenewPage({
                 Your Local Admin will be in touch about the last details. You
                 are welcome to come back.
               </p>
-              <Link className="btn" href="/home">
+              <Link className="btn btn-ghost" href="/home">
                 Back to home
               </Link>
             </div>
           ) : !renewal ? (
-            <div className="panel wash" style={{ maxWidth: 680 }}>
+            <div className="panel panel-wash" style={{ maxWidth: 680 }}>
               <h3>Nothing to answer</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 You are not in a re-enrolment round at the moment. This page
                 wakes up once a year.
               </p>
-              <Link className="btn" href="/home">
+              <Link className="btn btn-ghost" href="/home">
                 Back to home
               </Link>
             </div>
@@ -74,12 +74,12 @@ export default async function RenewPage({
                 {renewal.status === "staying" ? "staying" : "stepping away"}. If
                 that has changed, tell your Local Admin.
               </p>
-              <Link className="btn" href="/home">
+              <Link className="btn btn-ghost" href="/home">
                 Back to home
               </Link>
             </div>
           ) : (
-            <div className="cols">
+            <div className="gside">
               <RenewalForm renewalId={renewal.id} />
               <div className="stack">
                 <div className="panel">
@@ -90,7 +90,7 @@ export default async function RenewPage({
                     people who want to be in them.
                   </p>
                 </div>
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>What happens to your place</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     If you step away, it goes to someone on the waiting list in

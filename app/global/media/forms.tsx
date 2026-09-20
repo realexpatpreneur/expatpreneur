@@ -33,13 +33,13 @@ export function ArticleForm({
   return (
     <form action={action} className="panel">
       <h3>{article ? article.title : "A new piece"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {article ? <input type="hidden" name="id" value={article.id} /> : null}
       {article?.published_at ? (
         <input type="hidden" name="published_at" value={article.published_at} />
       ) : null}
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>What is it</span>
           <select name="kind" defaultValue={article?.kind ?? "story"}>
@@ -76,7 +76,7 @@ export function ArticleForm({
         current={article?.cover_url}
       />
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Who it is about</span>
           <input
@@ -121,7 +121,7 @@ export function ArticleForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -136,7 +136,7 @@ export function SuggestionDecision({ id }: { id: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="suggestion_id" value={id} />
       <div className="row">
         <select name="status" defaultValue="read">
@@ -145,7 +145,7 @@ export function SuggestionDecision({ id }: { id: string }) {
           <option value="actioned">Writing it</option>
           <option value="not_now">Not now</option>
         </select>
-        <button className="btn" type="submit" disabled={pending}>
+        <button className="btn btn-ghost" type="submit" disabled={pending}>
           {pending ? "Saving" : "Save"}
         </button>
       </div>

@@ -75,7 +75,7 @@ export default async function RecognitionPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -95,8 +95,8 @@ export default async function RecognitionPage() {
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <h3>Who would be recognised</h3>
@@ -105,9 +105,9 @@ export default async function RecognitionPage() {
                     Nobody holds one of these roles yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(due ?? []).map((person) => (
-                      <div className="rowlink" key={person.profile_id}>
+                      <div className="li linkrow" key={person.profile_id}>
                         <div>
                           <b>{nameOf(person.profile_id)}</b>
                           <div className="muted small">
@@ -139,9 +139,9 @@ export default async function RecognitionPage() {
                     Nothing recorded yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(payouts ?? []).map((payout) => (
-                      <div className="rowlink" key={payout.id}>
+                      <div className="li linkrow" key={payout.id}>
                         <div>
                           <b>{nameOf(payout.person_id)}</b>
                           <div className="muted small">
@@ -153,7 +153,7 @@ export default async function RecognitionPage() {
                         </div>
                         <div className="rowmeta">
                           {payout.status === "paid" ? (
-                            <span className="chip mint">paid</span>
+                            <span className="chip chip-mint">paid</span>
                           ) : (
                             <PaidForm id={payout.id} />
                           )}
@@ -168,7 +168,7 @@ export default async function RecognitionPage() {
             <div className="stack">
               <AmountsForm values={values} />
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What is owed</h3>
                 <dl className="kv">
                   <dt>Waiting to be paid</dt>

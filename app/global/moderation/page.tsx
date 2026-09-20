@@ -29,7 +29,7 @@ export default async function GlobalModerationPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Moderation</h1>
         <p className="lead">
           What members reported, what was done, and by whom. Handled quietly,
@@ -37,10 +37,10 @@ export default async function GlobalModerationPage() {
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Open</h2>
         {open.length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing open.
             </p>
@@ -51,7 +51,7 @@ export default async function GlobalModerationPage() {
               <div className="panel" key={report.id}>
                 <div className="row" style={{ justifyContent: "space-between" }}>
                   <h3>About {nameOf(report.subject_id)}</h3>
-                  <span className="chip sun">{report.status}</span>
+                  <span className="chip chip-sun">{report.status}</span>
                 </div>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Reported by {nameOf(report.reporter_id)}.{" "}
@@ -70,11 +70,11 @@ export default async function GlobalModerationPage() {
       </section>
 
       {closed.length ? (
-        <section className="band">
+        <section className="sec">
           <h2>Closed</h2>
-          <div className="rows">
+          <div className="divide">
             {closed.map((report) => (
-              <div className="rowlink" key={report.id}>
+              <div className="li linkrow" key={report.id}>
                 <div>
                   <b>About {nameOf(report.subject_id)}</b>
                   <div className="muted small">

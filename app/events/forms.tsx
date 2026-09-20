@@ -30,7 +30,7 @@ export function RegisterForm({
 
   if (state.done === "confirmed") {
     return (
-      <div className="notice good">
+      <div className="flag ok">
         You are registered. A reminder comes the day before and an hour before
         it starts.
       </div>
@@ -38,7 +38,7 @@ export function RegisterForm({
   }
   if (state.done === "waiting") {
     return (
-      <div className="notice good">
+      <div className="flag ok">
         You are on the list. If a place comes free you get it, and you will
         hear by email.
       </div>
@@ -46,7 +46,7 @@ export function RegisterForm({
   }
   if (state.done === "pending") {
     return (
-      <div className="notice good">
+      <div className="flag ok">
         Your request is with the host. You will hear within a day.
       </div>
     );
@@ -54,7 +54,7 @@ export function RegisterForm({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="event_id" value={eventId} />
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="requires_approval" value={requiresApproval ? "1" : "0"} />
@@ -76,7 +76,7 @@ export function RegisterForm({
         <input name="dietary" placeholder="Dietary needs, accessibility, arriving late" />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Registering" : label}
       </button>
     </form>
@@ -96,14 +96,14 @@ export function CancelForm({
   );
 
   if (state.done === "cancelled") {
-    return <div className="notice bad">Your place has been released.</div>;
+    return <div className="flag hold">Your place has been released.</div>;
   }
 
   return (
     <form action={action}>
       <input type="hidden" name="event_id" value={eventId} />
       <input type="hidden" name="slug" value={slug} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Cancelling" : "Cancel my place"}
       </button>
     </form>
@@ -127,7 +127,7 @@ export function GuestRegisterForm({
   return (
     <form action={action} className="panel">
       <h3>Register</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="event_id" value={eventId} />
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="requires_approval" value={requiresApproval ? "1" : "0"} />
@@ -145,7 +145,7 @@ export function GuestRegisterForm({
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Registering" : "Register"}
       </button>
     </form>

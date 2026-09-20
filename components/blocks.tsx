@@ -15,7 +15,7 @@ export function Blocks({
       {blocks.map((block, i) => {
         if (block.type === "hero") {
           return (
-            <section className="band" key={i}>
+            <section className="sec" key={i}>
               <h1>{block.heading}</h1>
               {block.text ? <p className="lead">{block.text}</p> : null}
               {block.image_url ? (
@@ -26,12 +26,12 @@ export function Blocks({
               ) : null}
               <p>
                 {block.button_label ? (
-                  <Link className="btn primary" href={block.button_href ?? "/apply"}>
+                  <Link className="btn btn-primary" href={block.button_href ?? "/apply"}>
                     {block.button_label}
                   </Link>
                 ) : null}{" "}
                 {block.second_label ? (
-                  <Link className="btn" href={block.second_href ?? "/discover"}>
+                  <Link className="btn btn-ghost" href={block.second_href ?? "/discover"}>
                     {block.second_label}
                   </Link>
                 ) : null}
@@ -42,7 +42,7 @@ export function Blocks({
 
         if (block.type === "heading") {
           return (
-            <section className="band" key={i}>
+            <section className="sec" key={i}>
               <h2>{block.heading}</h2>
             </section>
           );
@@ -50,7 +50,7 @@ export function Blocks({
 
         if (block.type === "text") {
           return (
-            <section className="band" key={i}>
+            <section className="sec" key={i}>
               <p className="lead" style={{ whiteSpace: "pre-wrap" }}>
                 {block.body}
               </p>
@@ -60,8 +60,8 @@ export function Blocks({
 
         if (block.type === "story") {
           return (
-            <section className="band" key={i}>
-              <div className="panel wash">
+            <section className="sec" key={i}>
+              <div className="panel panel-wash">
                 {block.heading ? <h3>{block.heading}</h3> : null}
                 <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>{block.body}</p>
               </div>
@@ -77,9 +77,9 @@ export function Blocks({
           );
 
           return (
-            <section className="band" key={i}>
+            <section className="sec" key={i}>
               <h2>The Villages</h2>
-              <div className="grid" style={{ marginTop: 16 }}>
+              <div className="g3 g4" style={{ marginTop: 16 }}>
                 {shown.map((village) => (
                   <Link className="card" href={`/villages/${village.slug}`} key={village.slug}>
                     <div className="cover blue">{village.city}</div>

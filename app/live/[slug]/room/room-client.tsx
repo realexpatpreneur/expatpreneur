@@ -73,8 +73,8 @@ export function RoomClient({ slug, onLeaveHref }: { slug: string; onLeaveHref: s
     return (
       <div className="panel">
         <h3>Not in the room</h3>
-        <div className="notice bad">{error}</div>
-        <a className="btn" href={onLeaveHref}>
+        <div className="flag hold">{error}</div>
+        <a className="btn btn-ghost" href={onLeaveHref}>
           Back to the session
         </a>
       </div>
@@ -94,14 +94,14 @@ export function RoomClient({ slug, onLeaveHref }: { slug: string; onLeaveHref: s
   return (
     <div className="roomwrap">
       {ready.breakout ? (
-        <div className="notice good">
+        <div className="flag ok">
           You are at {ready.breakout}. When the tables close you go back to
           the main room.
         </div>
       ) : null}
 
       {ready.recording !== "off" ? (
-        <div className="notice bad">
+        <div className="flag hold">
           This session is recorded. Anything you say or show may be watched
           afterwards by the people it was open to.
         </div>

@@ -16,15 +16,15 @@ export default async function VillagesPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="hero center">
+        <section className="pubsec hero-center">
           <h1>Villages</h1>
           <p className="lead">
             A Village opens where there are enough expat entrepreneurs, a shared
             language and a trusted Local Admin.
           </p>
         </section>
-        <section className="band">
-          <div className="grid">
+        <section className="sec">
+          <div className="g3 g4">
             {(villages ?? []).map((village, i) => (
               <article className="card" key={village.id}>
                 <div className={`cover ${covers[i % covers.length]}`}>
@@ -39,7 +39,7 @@ export default async function VillagesPage() {
             ))}
           </div>
           <p style={{ marginTop: 24 }}>
-            <Link className="btn" href="/villages/suggest">
+            <Link className="btn btn-ghost" href="/villages/suggest">
               Suggest a city
             </Link>
           </p>

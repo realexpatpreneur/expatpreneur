@@ -23,7 +23,7 @@ export default async function AdminSavedPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Saved</h1>
           <p className="lead">
             {from === "mix"
@@ -31,7 +31,7 @@ export default async function AdminSavedPage({
               : "Your changes are live."}
           </p>
           <p>
-            <Link className="btn primary" href={href}>
+            <Link className="btn btn-primary" href={href}>
               Back to {label}
             </Link>
           </p>

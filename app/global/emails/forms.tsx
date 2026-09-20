@@ -29,7 +29,7 @@ export function TemplateForm({
   return (
     <div className="stack">
       <form action={action} className="panel">
-        {state.error ? <div className="notice bad">{state.error}</div> : null}
+        {state.error ? <div className="flag hold">{state.error}</div> : null}
         <input type="hidden" name="key" value={template.key} />
 
         <label className="field">
@@ -45,7 +45,7 @@ export function TemplateForm({
           </span>
         </label>
 
-        <div className="two">
+        <div className="g2">
           <label className="field">
             <span>Button</span>
             <input
@@ -75,24 +75,24 @@ export function TemplateForm({
           </span>
         </label>
 
-        <button className="btn primary" type="submit" disabled={pending}>
+        <button className="btn btn-primary" type="submit" disabled={pending}>
           {pending ? "Saving" : "Save"}
         </button>
       </form>
 
-      <form action={testAction} className="panel wash">
+      <form action={testAction} className="panel panel-wash">
         <h3>Send me a test</h3>
         {testState.error ? (
-          <div className="notice bad">{testState.error}</div>
+          <div className="flag hold">{testState.error}</div>
         ) : null}
         {testState.done ? (
-          <div className="notice good">Sent to your own address.</div>
+          <div className="flag ok">Sent to your own address.</div>
         ) : null}
         <p className="muted small" style={{ marginTop: 6 }}>
           Goes to you, with the placeholders filled in with example values.
         </p>
         <input type="hidden" name="key" value={template.key} />
-        <button className="btn" type="submit" disabled={testing}>
+        <button className="btn btn-ghost" type="submit" disabled={testing}>
           {testing ? "Sending" : "Send me a test"}
         </button>
       </form>

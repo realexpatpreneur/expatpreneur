@@ -21,7 +21,7 @@ export default async function NewBusinessPage() {
 
   return (
     <WorkspaceShell kind="member" nav="/businesses/new">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/businesses">Businesses</Link>
           </p>
@@ -31,7 +31,7 @@ export default async function NewBusinessPage() {
             to work out whether to introduce you to someone.
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           <BusinessForm business={existing ?? undefined} />
         </section>
       </WorkspaceShell>

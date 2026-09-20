@@ -8,10 +8,10 @@ export default async function AdminMorePage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>More</h1>
         </section>
-        <section className="band">
+        <section className="sec">
           <MenuList
             items={[
               ["/admin", "Overview"],

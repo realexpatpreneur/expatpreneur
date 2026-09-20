@@ -185,7 +185,7 @@ export default async function SearchPage({
 
   return (
     <WorkspaceShell kind="member" nav="/search">
-        <section className="band">
+        <section className="sec">
           <h1>Search</h1>
           <p className="lead">
             Members, businesses, posts, events, resources and courses. You only
@@ -198,26 +198,26 @@ export default async function SearchPage({
               placeholder="A name, a country, a trade, anything"
               autoFocus
             />
-            <button className="btn primary" type="submit">
+            <button className="btn btn-primary" type="submit">
               Search
             </button>
           </form>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {term.length < 2 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Two letters or more.
               </p>
             </div>
           ) : hits.length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing matches that. Try a shorter word, or ask in your
                 Village.
               </p>
-              <Link className="btn" href="/village/new">
+              <Link className="btn btn-ghost" href="/village/new">
                 Post an ask
               </Link>
             </div>
@@ -226,9 +226,9 @@ export default async function SearchPage({
               <p className="muted small">
                 {hits.length} {hits.length === 1 ? "result" : "results"}
               </p>
-              <div className="rows">
+              <div className="divide">
                 {hits.map((hit, i) => (
-                  <Link className="rowlink" key={`${hit.href}-${i}`} href={hit.href}>
+                  <Link className="li linkrow" key={`${hit.href}-${i}`} href={hit.href}>
                     <div>
                       <b>{hit.title}</b>
                       <div className="muted small">{hit.line}</div>

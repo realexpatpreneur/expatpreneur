@@ -66,7 +66,7 @@ export default async function AuditPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -79,18 +79,18 @@ export default async function AuditPage({
           <form className="searchrow" action="/global/audit" style={{ marginTop: 18 }}>
             {entity ? <input type="hidden" name="entity" value={entity} /> : null}
             <input name="q" defaultValue={q} placeholder="approved, role, cancelled" />
-            <button className="btn" type="submit">
+            <button className="btn btn-ghost" type="submit">
               Search
             </button>
           </form>
 
           <div className="tabs">
-            <Link className={`chip ${entity ? "" : "mint"}`} href="/global/audit">
+            <Link className={`chip ${entity ? "" : "chip-mint"}`} href="/global/audit">
               Everything
             </Link>
             {entities.map((kind) => (
               <Link
-                className={`chip ${entity === kind ? "mint" : ""}`}
+                className={`chip ${entity === kind ? "chip-mint" : ""}`}
                 href={`/global/audit?entity=${kind}`}
                 key={kind}
               >
@@ -100,13 +100,13 @@ export default async function AuditPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(entries ?? []).length === 0 ? (
             <p className="muted">Nothing recorded that matches.</p>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {(entries ?? []).map((entry) => (
-                <div className="rowlink" key={entry.id}>
+                <div className="li linkrow" key={entry.id}>
                   <div>
                     <b>
                       {nameOf(entry.actor_id)}{" "}
@@ -134,7 +134,7 @@ export default async function AuditPage({
             </div>
           )}
 
-          <div className="panel wash" style={{ marginTop: 20 }}>
+          <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>What is not here</h3>
             <p className="muted small" style={{ marginTop: 6 }}>
               Not everything that happens, only what somebody decided.

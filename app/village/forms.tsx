@@ -11,7 +11,7 @@ export function PostForm({ villageName }: { villageName: string | null }) {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Are you asking or offering?</span>
@@ -58,7 +58,7 @@ export function PostForm({ villageName }: { villageName: string | null }) {
         />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Posting" : "Post"}
       </button>
     </form>
@@ -73,13 +73,13 @@ export function ReplyForm({ askId }: { askId: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="ask_id" value={askId} />
       <label className="field">
         <span>Your reply</span>
         <textarea name="body" rows={3} required />
       </label>
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Reply"}
       </button>
     </form>
@@ -93,9 +93,9 @@ export function CloseForm({ askId }: { askId: string }) {
   );
 
   return (
-    <form action={action} className="panel wash">
+    <form action={action} className="panel panel-wash">
       <h3>Did this get sorted?</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="ask_id" value={askId} />
       <label className="field">
         <span>What happened, in a line</span>
@@ -104,7 +104,7 @@ export function CloseForm({ askId }: { askId: string }) {
           Closed posts show the Village that asking here works.
         </span>
       </label>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Mark as sorted"}
       </button>
     </form>

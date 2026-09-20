@@ -15,7 +15,7 @@ export default async function EmailsPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -25,11 +25,11 @@ export default async function EmailsPage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="rows">
+        <section className="sec">
+          <div className="divide">
             {(templates ?? []).map((template) => (
               <Link
-                className="rowlink"
+                className="li linkrow"
                 href={`/global/emails/${template.key}`}
                 key={template.key}
               >
@@ -38,7 +38,7 @@ export default async function EmailsPage() {
                   <div className="muted small">{template.sent_when}</div>
                 </div>
                 <div className="rowmeta">
-                  <span className={`chip ${template.active ? "mint" : ""}`}>
+                  <span className={`chip ${template.active ? "chip-mint" : ""}`}>
                     {template.active ? "Live" : "Off"}
                   </span>
                 </div>

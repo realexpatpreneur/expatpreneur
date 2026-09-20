@@ -35,30 +35,30 @@ export default async function WhatsappTasksPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>WhatsApp sync</h1>
         <p className="lead">
           The platform cannot add anyone to a group, so it keeps the list of
           what needs doing by hand.
         </p>
         <p>
-          <span className="chip blue">{open.length} to do</span>
+          <span className="chip chip-blue">{open.length} to do</span>
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         {open.length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing waiting. The groups match the platform.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {open.map((task) => {
               const person = people?.find((p) => p.id === task.profile_id);
               return (
-                <div className="rowlink" key={task.id}>
+                <div className="li linkrow" key={task.id}>
                   <div>
                     <b>
                       {label[task.kind] ?? task.kind} {task.group_name}
@@ -80,11 +80,11 @@ export default async function WhatsappTasksPage() {
       </section>
 
       {doneRows.length ? (
-        <section className="band">
+        <section className="sec">
           <h2>Done recently</h2>
-          <div className="rows">
+          <div className="divide">
             {doneRows.map((task) => (
-              <div className="rowlink" key={task.id}>
+              <div className="li linkrow" key={task.id}>
                 <div>
                   <b>
                     {label[task.kind] ?? task.kind} {task.group_name}

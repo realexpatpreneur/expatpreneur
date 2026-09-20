@@ -15,7 +15,7 @@ export default async function SuggestStoryPage({
 
   return (
     <WorkspaceShell kind="member" nav="/media/suggest">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/media">Media</Link>
           </p>
@@ -26,7 +26,7 @@ export default async function SuggestStoryPage({
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {done ? (
             <div className="panel">
               <h3>Thank you</h3>
@@ -34,7 +34,7 @@ export default async function SuggestStoryPage({
                 It is with the team. If it fits something coming up, somebody
                 will be in touch.
               </p>
-              <Link className="btn" href="/media">
+              <Link className="btn btn-ghost" href="/media">
                 Back to Media
               </Link>
             </div>

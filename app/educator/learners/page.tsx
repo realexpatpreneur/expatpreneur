@@ -53,7 +53,7 @@ export default async function LearnersPage({
 
   return (
     <WorkspaceShell kind="edu" nav="/educator/learners">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
           </p>
@@ -66,7 +66,7 @@ export default async function LearnersPage({
             <div className="tabs">
               {(courses ?? []).map((c) => (
                 <Link
-                  className={`chip ${chosen?.id === c.id ? "mint" : ""}`}
+                  className={`chip ${chosen?.id === c.id ? "chip-mint" : ""}`}
                   href={`/educator/learners?course=${c.slug}`}
                   key={c.id}
                 >
@@ -77,24 +77,24 @@ export default async function LearnersPage({
           ) : null}
 
           <p style={{ marginTop: 12 }}>
-            <Link className="btn" href="/educator/sales">
+            <Link className="btn btn-ghost" href="/educator/sales">
               Write to everybody who bought it
             </Link>
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {!chosen ? (
             <p className="muted">You have not written a course yet.</p>
           ) : (purchases ?? []).length === 0 ? (
             <p className="muted">Nobody has bought this one yet.</p>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {(purchases ?? []).map((purchase) => {
                 const person = people?.find((p) => p.id === purchase.buyer_id);
                 const done = progressOf(purchase.buyer_id);
                 return (
-                  <div className="rowlink" key={purchase.purchase_id}>
+                  <div className="li linkrow" key={purchase.purchase_id}>
                     <div>
                       <b>
                         {person ? (
@@ -117,12 +117,12 @@ export default async function LearnersPage({
                     </div>
                     <div className="rowmeta">
                       <span
-                        className={`chip ${purchase.status === "paid" ? "mint" : ""}`}
+                        className={`chip ${purchase.status === "paid" ? "chip-mint" : ""}`}
                       >
                         {purchase.status === "refunded" ? "Refunded" : "Paid"}
                       </span>
                       {person ? (
-                        <Link className="btn" href={`/messages/${person.id}`}>
+                        <Link className="btn btn-ghost" href={`/messages/${person.id}`}>
                           Message
                         </Link>
                       ) : null}
@@ -133,7 +133,7 @@ export default async function LearnersPage({
             </div>
           )}
 
-          <div className="panel wash" style={{ marginTop: 20 }}>
+          <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>How to reach them</h3>
             <p className="muted small" style={{ marginTop: 6 }}>
               Members are messaged inside the platform. People who bought

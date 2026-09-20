@@ -53,7 +53,7 @@ export default async function AdminEventPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href="/admin/events">Events</Link>
         </p>
@@ -62,28 +62,28 @@ export default async function AdminEventPage({
           {whenText(event)}. {event.venue ?? "Online"}. {priceText(event)}.
         </p>
         {done ? (
-          <div className="notice good">
+          <div className="flag ok">
             {done === "published" ? "Event published." : "Saved."}
           </div>
         ) : null}
         <p>
-          <Link className="btn" href={`/admin/events/${id}/edit`}>
+          <Link className="btn btn-ghost" href={`/admin/events/${id}/edit`}>
             Edit
           </Link>{" "}
           {event.visibility === "public" ? (
-            <Link className="btn" href={`/e/${event.slug}`}>
+            <Link className="btn btn-ghost" href={`/e/${event.slug}`}>
               See the public page
             </Link>
           ) : (
-            <Link className="btn" href={`/events/${event.slug}`}>
+            <Link className="btn btn-ghost" href={`/events/${event.slug}`}>
               See the member page
             </Link>
           )}
         </p>
       </section>
 
-      <section className="band">
-        <div className="grid three">
+      <section className="sec">
+        <div className="g3">
           <div className="panel">
             <h3>Registered</h3>
             <p className="lead" style={{ margin: 0 }}>
@@ -105,7 +105,7 @@ export default async function AdminEventPage({
         </div>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <div className="panel">
           <h3>Who can register</h3>
           <p className="muted small" style={{ marginTop: 6 }}>
@@ -121,11 +121,11 @@ export default async function AdminEventPage({
       </section>
 
       {waiting.length ? (
-        <section className="band">
+        <section className="sec">
           <h2>Waiting for approval</h2>
-          <div className="rows">
+          <div className="divide">
             {waiting.map((row) => (
-              <div className="rowlink" key={row.id}>
+              <div className="li linkrow" key={row.id}>
                 <div>
                   <b>{nameOf(row)}</b>
                   <div className="muted small">
@@ -142,18 +142,18 @@ export default async function AdminEventPage({
         </section>
       ) : null}
 
-      <section className="band">
+      <section className="sec">
         <h2>Guest list</h2>
         {rows.length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nobody has registered yet.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {rows.map((row) => (
-              <div className="rowlink" key={row.id}>
+              <div className="li linkrow" key={row.id}>
                 <div>
                   <b>{nameOf(row)}</b>
                   <div className="muted small">

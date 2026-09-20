@@ -13,7 +13,7 @@ export default async function ApplicationSentPage({
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Thank you</h1>
           <p className="lead">
             Your request is with us. Someone reads every one, and you will hear
@@ -28,14 +28,14 @@ export default async function ApplicationSentPage({
                 where your request stands at any point. It is in the email we
                 just sent you as well.
               </p>
-              <Link className="btn" href="/apply/status">
+              <Link className="btn btn-ghost" href="/apply/status">
                 Check where it stands
               </Link>
             </div>
           ) : null}
 
           <p style={{ marginTop: 18 }}>
-            <Link className="btn" href="/">
+            <Link className="btn btn-ghost" href="/">
               Back to the site
             </Link>
           </p>

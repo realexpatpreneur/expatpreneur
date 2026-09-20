@@ -39,15 +39,15 @@ export default async function JobsPage({
 
   return (
     <WorkspaceShell kind="member" nav="/jobs">
-        <section className="band">
+        <section className="sec">
           <h1>Jobs and freelance</h1>
           <p className="lead">
             Members hiring members, and the work that goes with it. Say what it
             pays.
           </p>
-          {done ? <div className="notice good">Posted.</div> : null}
+          {done ? <div className="flag ok">Posted.</div> : null}
           <p>
-            <Link className="btn primary" href="/jobs/new">
+            <Link className="btn btn-primary" href="/jobs/new">
               Post something
             </Link>
           </p>
@@ -61,7 +61,7 @@ export default async function JobsPage({
             ].map(([key, label]) => (
               <Link
                 key={key}
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/jobs?show=${key}`}
               >
                 {label}
@@ -70,19 +70,19 @@ export default async function JobsPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(jobs ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing open at the moment.
               </p>
             </div>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {(jobs ?? []).map((job) => (
-                <Link className="rowlink" key={job.id} href={`/jobs/${job.id}`}>
+                <Link className="li linkrow" key={job.id} href={`/jobs/${job.id}`}>
                   <div>
-                    <span className="chip blue">{kindLabel[job.kind] ?? job.kind}</span>{" "}
+                    <span className="chip chip-blue">{kindLabel[job.kind] ?? job.kind}</span>{" "}
                     <b>{job.title}</b>
                     <div className="muted small">
                       {people?.find((p) => p.id === job.poster_id)?.full_name ??

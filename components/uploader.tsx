@@ -84,7 +84,7 @@ export function Uploader({
       {hint && !error ? <span className="hint">{hint}</span> : null}
       {url ? (
         <button
-          className="btn"
+          className="btn btn-ghost"
           type="button"
           style={{ marginTop: 8 }}
           onClick={() => setUrl(null)}

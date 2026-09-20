@@ -43,14 +43,14 @@ export default async function LeadPage({
   if (!(leadership ?? []).length && !isEducator) {
     return (
       <WorkspaceShell kind="lead" nav="/lead">
-          <section className="band">
+          <section className="sec">
             <h1>Nothing to run yet</h1>
             <p className="lead">
               This is where Circle Hosts, Industry Leads, Pod Leads and
               Educators find what they are responsible for. Roles are given
               by the Global team, and reviewed once a year.
             </p>
-            <Link className="btn" href="/home">
+            <Link className="btn btn-ghost" href="/home">
               Back to home
             </Link>
           </section>
@@ -105,17 +105,17 @@ export default async function LeadPage({
 
   return (
     <WorkspaceShell kind="lead" nav="/lead">
-        <section className="band">
+        <section className="sec">
           <h1>What you run</h1>
           <p className="lead">
             The people you are responsible for, and the room you can open for
             them.
           </p>
-          {done ? <div className="notice good">Scheduled.</div> : null}
+          {done ? <div className="flag ok">Scheduled.</div> : null}
         </section>
 
-        <section className="band">
-          <div className="grid three">
+        <section className="sec">
+          <div className="g3">
             {(leadership ?? []).map((l) => (
               <div className="panel" key={`${l.kind}-${l.thing_id}`}>
                 <span className="chip">{roleLabel[l.role] ?? l.role}</span>
@@ -137,8 +137,8 @@ export default async function LeadPage({
           </div>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               {circleIds.length ? (
                 <div className="panel">
@@ -147,15 +147,15 @@ export default async function LeadPage({
                     Knowing who has gone quiet is most of the job. A message
                     from you lands better than anything the platform sends.
                   </p>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(circleMembers ?? []).map((person) => (
-                      <div className="rowlink" key={person.id}>
+                      <div className="li linkrow" key={person.id}>
                         <div>
                           <b>{person.full_name}</b>
                           <div className="muted small">{person.headline}</div>
                         </div>
                         <div className="rowmeta">
-                          <Link className="btn" href={`/messages/${person.id}`}>
+                          <Link className="btn btn-ghost" href={`/messages/${person.id}`}>
                             Message
                           </Link>
                         </div>
@@ -189,10 +189,10 @@ export default async function LeadPage({
               {(sessions ?? []).length ? (
                 <div className="panel">
                   <h3>Rooms you opened</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(sessions ?? []).map((session) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         key={session.id}
                         href={`/live/${session.slug}`}
                       >
@@ -202,7 +202,7 @@ export default async function LeadPage({
                         </div>
                         <div className="rowmeta">
                           <span
-                            className={`chip ${session.status === "live" ? "mint" : ""}`}
+                            className={`chip ${session.status === "live" ? "chip-mint" : ""}`}
                           >
                             {session.status}
                           </span>
@@ -213,7 +213,7 @@ export default async function LeadPage({
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What the role is</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Turning up, noticing who has gone quiet, and making

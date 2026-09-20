@@ -25,7 +25,7 @@ export function WelcomeForm({ profile }: { profile: Profile }) {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <label className="field">
         <span>Your name</span>
@@ -128,7 +128,7 @@ export function WelcomeForm({ profile }: { profile: Profile }) {
         </span>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Finish and join my Circle"}
       </button>
     </form>

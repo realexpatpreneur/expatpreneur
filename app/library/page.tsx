@@ -38,7 +38,7 @@ export default async function LibraryPage({
 
   return (
     <WorkspaceShell kind="member" nav="/library">
-        <section className="band">
+        <section className="sec">
           <h1>Resources</h1>
           <p className="lead">
             What members worked out the hard way, written down so the next
@@ -53,7 +53,7 @@ export default async function LibraryPage({
             ].map(([key, label]) => (
               <Link
                 key={key}
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/library?show=${key}`}
               >
                 {label}
@@ -62,16 +62,16 @@ export default async function LibraryPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(resources ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing here yet. Your Local Admin adds these as the Village
                 gathers them.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(resources ?? []).map((resource) => (
                 <div className="panel" key={resource.id}>
                   <span className="chip">{kindLabel[resource.kind] ?? resource.kind}</span>
@@ -84,7 +84,7 @@ export default async function LibraryPage({
                   </p>
                   {resource.url ? (
                     <a
-                      className="btn"
+                      className="btn btn-ghost"
                       href={resource.url}
                       target="_blank"
                       rel="noreferrer"
@@ -98,14 +98,14 @@ export default async function LibraryPage({
           )}
 
           {!isPaid(member) ? (
-            <div className="panel wash" style={{ marginTop: 16 }}>
+            <div className="panel panel-wash" style={{ marginTop: 16 }}>
               <h3>Resources from other Villages</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 What Dubai learned about licensing is not much use in Lisbon,
                 but some of it travels. The paid plan opens every Village's
                 library.
               </p>
-              <Link className="btn" href="/upgrade">
+              <Link className="btn btn-ghost" href="/upgrade">
                 See the paid plan
               </Link>
             </div>

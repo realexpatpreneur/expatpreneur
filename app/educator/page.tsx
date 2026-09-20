@@ -34,39 +34,39 @@ export default async function EducatorPage({
 
   return (
     <WorkspaceShell kind="edu" nav="/educator">
-        <section className="band">
+        <section className="sec">
           <h1>Your courses</h1>
           <p className="lead">
             Teach the thing you actually did. Short beats thorough.
           </p>
-          {done ? <div className="notice good">Saved.</div> : null}
+          {done ? <div className="flag ok">Saved.</div> : null}
           <p>
-            <Link className="btn" href="/educator/sales">
+            <Link className="btn btn-ghost" href="/educator/sales">
               Sales
             </Link>{" "}
-            <Link className="btn" href="/educator/learners">
+            <Link className="btn btn-ghost" href="/educator/learners">
               Learners
             </Link>{" "}
-            <Link className="btn" href="/educator/profile">
+            <Link className="btn btn-ghost" href="/educator/profile">
               Educator profile
             </Link>{" "}
-            <Link className="btn" href="/educator/payouts">
+            <Link className="btn btn-ghost" href="/educator/payouts">
               Payouts
             </Link>
           </p>
           {!isEducator ? (
-            <div className="notice bad">
+            <div className="flag hold">
               Courses are written by Educators. Ask the Global team about the
               role, and until then saving will be refused.
             </div>
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               {(courses ?? []).length === 0 ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <p className="muted" style={{ margin: 0 }}>
                     Nothing yet.
                   </p>
@@ -79,7 +79,7 @@ export default async function EducatorPage({
                       <span
                         className={`chip ${
                           course.status === "published" && course.review === "approved"
-                            ? "mint"
+                            ? "chip-mint"
                             : ""
                         }`}
                       >
@@ -100,10 +100,10 @@ export default async function EducatorPage({
                       </p>
                     ) : null}
                     <div className="row">
-                      <Link className="btn" href={`/educator/${course.slug}`}>
+                      <Link className="btn btn-ghost" href={`/educator/${course.slug}`}>
                         Lessons
                       </Link>
-                      <Link className="btn" href={`/learning/${course.slug}`}>
+                      <Link className="btn btn-ghost" href={`/learning/${course.slug}`}>
                         See it as a member
                       </Link>
                     </div>

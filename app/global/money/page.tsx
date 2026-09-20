@@ -70,7 +70,7 @@ export default async function GlobalMoneyPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Money</h1>
         <p className="lead">
           Memberships and event tickets. Rows appear here once Stripe is
@@ -78,8 +78,8 @@ export default async function GlobalMoneyPage() {
         </p>
       </section>
 
-      <section className="band">
-        <div className="grid three">
+      <section className="sec">
+        <div className="g3">
           <div className="panel">
             <h3>Paid members</h3>
             <p className="lead" style={{ margin: 0 }}>{paidMembers ?? 0}</p>
@@ -99,19 +99,19 @@ export default async function GlobalMoneyPage() {
         </div>
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Recent payments</h2>
         {(payments ?? []).length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing yet. Membership is free for now and tickets are not
               charged until Stripe is live.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {(payments ?? []).map((payment) => (
-              <div className="rowlink" key={payment.id}>
+              <div className="li linkrow" key={payment.id}>
                 <div>
                   <b>
                     {(payment.amount_cents / 100).toFixed(2)} {payment.currency}
@@ -126,7 +126,7 @@ export default async function GlobalMoneyPage() {
                 </div>
                 <div className="rowmeta">
                   <span
-                    className={`chip ${payment.status === "paid" ? "mint" : ""}`}
+                    className={`chip ${payment.status === "paid" ? "chip-mint" : ""}`}
                   >
                     {payment.status}
                   </span>
@@ -137,9 +137,9 @@ export default async function GlobalMoneyPage() {
         )}
       </section>
 
-      <section className="band">
+      <section className="sec">
         <h2>Courses</h2>
-        <div className="cols">
+        <div className="gside">
           <div className="stack">
             <div className="panel">
               <h3>Refunds asked for</h3>
@@ -150,7 +150,7 @@ export default async function GlobalMoneyPage() {
               ) : (
                 <div className="stack" style={{ marginTop: 12 }}>
                   {(refundAsks ?? []).map((request) => (
-                    <div className="panel wash" key={request.id}>
+                    <div className="panel panel-wash" key={request.id}>
                       <p className="muted small">
                         {people?.find((p) => p.id === request.profile_id)
                           ?.full_name ?? "A member"}
@@ -171,9 +171,9 @@ export default async function GlobalMoneyPage() {
                   Nothing sold yet.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(sales ?? []).slice(0, 25).map((sale) => (
-                    <div className="rowlink" key={sale.purchase_id}>
+                    <div className="li linkrow" key={sale.purchase_id}>
                       <div>
                         <b>{sale.course_title}</b>
                         <div className="muted small">
@@ -183,7 +183,7 @@ export default async function GlobalMoneyPage() {
                         </div>
                       </div>
                       <div className="rowmeta">
-                        <span className={`chip ${sale.status === "paid" ? "mint" : ""}`}>
+                        <span className={`chip ${sale.status === "paid" ? "chip-mint" : ""}`}>
                           {(sale.amount_cents / 100).toFixed(0)} {sale.currency}
                         </span>
                       </div>
@@ -205,7 +205,7 @@ export default async function GlobalMoneyPage() {
                 }))}
               />
             ) : (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Payouts</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Nothing to pay out until a course sells.
@@ -213,14 +213,14 @@ export default async function GlobalMoneyPage() {
               </div>
             )}
 
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>The share</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Educators keep a percentage of each sale, recorded on every
                 payout, so changing it later does not change what was already
                 agreed.
               </p>
-              <Link className="btn" href="/global/plans">
+              <Link className="btn btn-ghost" href="/global/plans">
                 Plans and prices
               </Link>
             </div>

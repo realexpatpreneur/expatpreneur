@@ -28,7 +28,7 @@ export default async function EducatorProfilePage() {
 
   return (
     <WorkspaceShell kind="edu" nav="/educator/profile">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
           </p>
@@ -38,18 +38,18 @@ export default async function EducatorProfilePage() {
           </p>
           {live ? (
             <p>
-              <Link className="btn" href={`/learning/${live.slug}`}>
+              <Link className="btn btn-ghost" href={`/learning/${live.slug}`}>
                 View a course page
               </Link>
             </p>
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <EducatorProfileForm profile={profile} name={member.full_name} />
 
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>Why this is separate</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Your member profile is about who you are in the network. This

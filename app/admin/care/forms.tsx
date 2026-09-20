@@ -12,7 +12,7 @@ export function OpenRoundForm({ suggested }: { suggested: string }) {
   return (
     <form action={action} className="panel">
       <h3>Open a re-enrolment round</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <label className="field" style={{ marginTop: 10 }}>
         <span>Cycle</span>
         <input name="cycle" defaultValue={suggested} />
@@ -21,7 +21,7 @@ export function OpenRoundForm({ suggested }: { suggested: string }) {
           for the same cycle.
         </span>
       </label>
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Asking" : "Ask everyone"}
       </button>
     </form>
@@ -45,7 +45,7 @@ export function RenewalNote({
   return (
     <form action={action}>
       <input type="hidden" name="renewal_id" value={renewalId} />
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Status</span>
           <select name="status" defaultValue={status}>
@@ -60,7 +60,7 @@ export function RenewalNote({
           <input name="admin_note" defaultValue={note ?? ""} />
         </label>
       </div>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

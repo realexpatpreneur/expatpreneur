@@ -32,10 +32,10 @@ export function AccountForm({
 
   return (
     <form action={action} className="panel">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Email</span>
           <input name="email" type="email" defaultValue={account.email} />
@@ -50,7 +50,7 @@ export function AccountForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Password</span>
           <input name="password" type="password" placeholder="••••••••" />
@@ -75,7 +75,7 @@ export function AccountForm({
         </select>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -109,8 +109,8 @@ export function ProfileSettingsForm({
   return (
     <form action={action} className="panel">
       <h3>Your profile</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       <Uploader
         name="avatar_url"
@@ -129,7 +129,7 @@ export function ProfileSettingsForm({
         <input name="headline" defaultValue={profile.headline ?? ""} />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Business</span>
           <input name="business_name" defaultValue={profile.business_name ?? ""} />
@@ -172,7 +172,7 @@ export function ProfileSettingsForm({
         />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Markets you know</span>
           <input
@@ -189,7 +189,7 @@ export function ProfileSettingsForm({
         </label>
       </div>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -234,8 +234,8 @@ export function NotificationForm({
 
   return (
     <form action={action} className="panel">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       {rows.map(([key, label, hint]) => (
         <label className="check" key={key}>
@@ -247,7 +247,7 @@ export function NotificationForm({
         </label>
       ))}
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -272,8 +272,8 @@ export function PrivacyForm({
 
   return (
     <form action={action} className="panel">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       <label className="check">
         <input
@@ -316,7 +316,7 @@ export function PrivacyForm({
         are never public.
       </p>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -331,7 +331,7 @@ export function MyDataButtons() {
 
   if (state.done === "asked") {
     return (
-      <div className="notice good">
+      <div className="flag ok">
         Asked. The Global team has it and will be in touch.
       </div>
     );
@@ -339,11 +339,11 @@ export function MyDataButtons() {
 
   return (
     <form action={action} className="row">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      <button className="btn" name="kind" value="export" disabled={pending}>
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      <button className="btn btn-ghost" name="kind" value="export" disabled={pending}>
         Export my data
       </button>
-      <button className="btn" name="kind" value="delete" disabled={pending}>
+      <button className="btn btn-ghost" name="kind" value="delete" disabled={pending}>
         Delete my account
       </button>
     </form>
@@ -365,7 +365,7 @@ export function UnblockButton({
   return (
     <form action={action}>
       <input type="hidden" name="blocked_id" value={id} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Unblocking" : `Unblock ${name}`}
       </button>
     </form>
@@ -380,12 +380,12 @@ export function LeaveForm() {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <label className="field">
         <span>Type LEAVE to confirm</span>
         <input name="confirm" placeholder="LEAVE" />
       </label>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Leaving" : "Leave the community"}
       </button>
     </form>

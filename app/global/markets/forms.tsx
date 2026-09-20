@@ -26,7 +26,7 @@ export function PathwayForm({
   return (
     <form action={action} className="panel">
       <h3>{pathway ? pathway.title : "New pathway"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {pathway ? <input type="hidden" name="id" value={pathway.id} /> : null}
 
       <label className="field" style={{ marginTop: 10 }}>
@@ -39,7 +39,7 @@ export function PathwayForm({
         />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Country</span>
           <input name="country" required defaultValue={pathway?.country ?? ""} />
@@ -69,7 +69,7 @@ export function PathwayForm({
         <textarea name="body" rows={4} defaultValue={pathway?.body ?? ""} />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Who can see the steps</span>
           <select name="tier" defaultValue={pathway?.tier ?? "all"}>
@@ -87,7 +87,7 @@ export function PathwayForm({
         </label>
       </div>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -120,11 +120,11 @@ export function StepForm({
   return (
     <form action={action} className="panel">
       <h3>{step ? `${step.position}. ${step.title}` : "New step"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="pathway_id" value={pathwayId} />
       {step ? <input type="hidden" name="id" value={step.id} /> : null}
 
-      <div className="two" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 10 }}>
         <label className="field">
           <span>Position</span>
           <input
@@ -153,7 +153,7 @@ export function StepForm({
         </span>
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Usually costs</span>
           <input name="typical_cost" defaultValue={step?.typical_cost ?? ""} />
@@ -169,7 +169,7 @@ export function StepForm({
         <input name="link" defaultValue={step?.link ?? ""} placeholder="https://" />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

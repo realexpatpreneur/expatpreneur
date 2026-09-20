@@ -16,8 +16,8 @@ export function PhotoForm({
   return (
     <form action={action} className="panel">
       <h3>Record a photograph</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       <label className="field">
         <span>Who is in it</span>
@@ -44,7 +44,7 @@ export function PhotoForm({
         <input name="appears_on" required placeholder="Home page, Dubai Village page" />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Taken</span>
           <input name="taken_on" type="date" />
@@ -69,7 +69,7 @@ export function PhotoForm({
         <input name="consent_note" placeholder="Where the signed permission is kept" />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Record it"}
       </button>
     </form>
@@ -86,7 +86,7 @@ export function RetireButton({ id }: { id: string }) {
     <form action={action} className="row">
       <input type="hidden" name="id" value={id} />
       <input name="reason" placeholder="Why" style={{ width: 140 }} />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Taking down" : "Take it down"}
       </button>
     </form>
@@ -102,8 +102,8 @@ export function RotationForm({ values }: { values: Record<string, string> }) {
   return (
     <form action={action} className="panel">
       <h3>Rotation</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Saved.</div> : null}
 
       <label className="field">
         <span>Rotate member photographs</span>
@@ -127,7 +127,7 @@ export function RotationForm({ values }: { values: Record<string, string> }) {
         </select>
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

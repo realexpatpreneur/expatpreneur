@@ -25,7 +25,7 @@ export default async function MediaPage({
 
   return (
     <DualPage member={Boolean(user)} nav="/watch" active="/watch">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/watch">Watch and Listen</Link>
           </p>
@@ -39,7 +39,7 @@ export default async function MediaPage({
           {item.external_url ? (
             <p>
               <a
-                className="btn primary"
+                className="btn btn-primary"
                 href={item.external_url}
                 target="_blank"
                 rel="noreferrer"
@@ -51,7 +51,7 @@ export default async function MediaPage({
         </section>
 
         {item.body ? (
-          <section className="band">
+          <section className="sec">
             <div className="panel" style={{ maxWidth: 760 }}>
               <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{item.body}</p>
             </div>
@@ -59,24 +59,24 @@ export default async function MediaPage({
         ) : null}
 
         {user ? null : (
-          <section className="band">
-            <div className="band cta">
+          <section className="sec">
+            <div className="sec">
               <h2>This is what the network sounds like</h2>
               <p style={{ color: "#fff" }}>
                 Most of what happens here is between members, in their own
                 cities.
               </p>
-              <Link className="btn" href="/apply">
+              <Link className="btn btn-ghost" href="/apply">
                 Request an invitation
               </Link>
             </div>
-          <section className="band">
+          <section className="sec">
           <div className="row">
-            <Link className="btn" href={`/watch/share?item=${slug}`}>
+            <Link className="btn btn-ghost" href={`/watch/share?item=${slug}`}>
               Share this
             </Link>
             {item.show_slug ? (
-              <Link className="btn" href={`/watch/show/${item.show_slug}`}>
+              <Link className="btn btn-ghost" href={`/watch/show/${item.show_slug}`}>
                 The whole show
               </Link>
             ) : null}

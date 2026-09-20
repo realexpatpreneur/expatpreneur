@@ -20,9 +20,9 @@ export function CitySuggestionForm() {
       </div>
 
 
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>City</span>
           <input name="city" required />
@@ -66,7 +66,7 @@ export function CitySuggestionForm() {
         <textarea name="network" rows={3} />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send"}
       </button>
     </form>

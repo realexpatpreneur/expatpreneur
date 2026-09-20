@@ -27,18 +27,18 @@ export default async function PrivacyPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Privacy policy</h1>
           <p className="lead">
             What we hold, why we hold it, and who can see it.
           </p>
-          <div className="notice bad">
+          <div className="flag hold">
             Draft. It matches what the platform does today. The entity, the
             contact address and the retention periods are still to be confirmed.
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <div className="panel" style={{ maxWidth: 760 }}>
             <h3>What we collect</h3>
             <p className="muted small">

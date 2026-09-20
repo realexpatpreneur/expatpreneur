@@ -50,13 +50,13 @@ export default async function PodPage({
 
   return (
     <WorkspaceShell kind="member" nav="/pods">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/pods">Pods</Link>
           </p>
           <p>
             <span className="chip">Meets {pod.cadence}</span>{" "}
-            <span className={`chip ${pod.status === "open" ? "mint" : ""}`}>
+            <span className={`chip ${pod.status === "open" ? "chip-mint" : ""}`}>
               {pod.status}
             </span>
           </p>
@@ -64,8 +64,8 @@ export default async function PodPage({
           <p className="lead">{pod.purpose}</p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <h3>
                 {size?.members ?? 0} of {pod.capacity}
@@ -75,10 +75,10 @@ export default async function PodPage({
                   Nobody yet.
                 </p>
               ) : joined ? (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(people ?? []).map((person) => (
                     <Link
-                      className="rowlink"
+                      className="li linkrow"
                       key={person.id}
                       href={`/members/${person.id}`}
                     >
@@ -129,7 +129,7 @@ export default async function PodPage({
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What joining means</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Turning up {pod.cadence}, saying what you are working on, and

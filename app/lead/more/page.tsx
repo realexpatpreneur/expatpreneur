@@ -9,10 +9,10 @@ export default async function LeadMorePage() {
 
   return (
     <WorkspaceShell kind="lead" nav="/lead/more">
-        <section className="band">
+        <section className="sec">
           <h1>More</h1>
         </section>
-        <section className="band">
+        <section className="sec">
           <MenuList
             items={[
               ["/lead", "What you run"],

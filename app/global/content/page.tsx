@@ -16,7 +16,7 @@ export default async function PagesListPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -26,11 +26,11 @@ export default async function PagesListPage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="rows">
+        <section className="sec">
+          <div className="divide">
             {(pages ?? []).map((page) => (
               <Link
-                className="rowlink"
+                className="li linkrow"
                 href={`/global/content/${page.slug}`}
                 key={page.slug}
               >
@@ -41,7 +41,7 @@ export default async function PagesListPage() {
                   </div>
                 </div>
                 <div className="rowmeta">
-                  <span className={`chip ${page.status === "live" ? "mint" : ""}`}>
+                  <span className={`chip ${page.status === "live" ? "chip-mint" : ""}`}>
                     {page.status === "live" ? "Live" : "Draft"}
                   </span>
                 </div>
@@ -49,7 +49,7 @@ export default async function PagesListPage() {
             ))}
           </div>
 
-          <div className="panel wash" style={{ marginTop: 20 }}>
+          <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>How this works</h3>
             <p className="muted small" style={{ marginTop: 6 }}>
               Each page is a list of blocks. While a page is a draft, the site

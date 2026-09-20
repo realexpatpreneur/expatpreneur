@@ -40,7 +40,7 @@ export default async function PhotosConsentPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -51,8 +51,8 @@ export default async function PhotosConsentPage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="grid">
+        <section className="sec">
+          <div className="g3 g4">
             <div className="card">
               <div className="kind">Photographs in use</div>
               <p>
@@ -82,8 +82,8 @@ export default async function PhotosConsentPage() {
           </div>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <h3>In use</h3>
@@ -92,9 +92,9 @@ export default async function PhotosConsentPage() {
                     Nothing recorded yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {live.map((photo) => (
-                      <div className="rowlink" key={photo.id}>
+                      <div className="li linkrow" key={photo.id}>
                         <div>
                           <b>{photo.who}</b>
                           <div className="muted small">
@@ -107,9 +107,9 @@ export default async function PhotosConsentPage() {
                           <span
                             className={`chip ${
                               photo.consent === "signed"
-                                ? "mint"
+                                ? "chip-mint"
                                 : photo.consent === "waiting"
-                                  ? "sun"
+                                  ? "chip-sun"
                                   : ""
                             }`}
                           >
@@ -126,9 +126,9 @@ export default async function PhotosConsentPage() {
               {retired.length ? (
                 <div className="panel">
                   <h3>Taken down</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {retired.map((photo) => (
-                      <div className="rowlink" key={photo.id}>
+                      <div className="li linkrow" key={photo.id}>
                         <div>
                           <b>{photo.who}</b>
                           <div className="muted small">
@@ -141,7 +141,7 @@ export default async function PhotosConsentPage() {
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>How we use member photographs</h3>
                 <ul>
                   <li>Only a few members appear on permanent pages</li>

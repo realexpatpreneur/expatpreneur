@@ -78,7 +78,7 @@ export default async function NetworkIntelligencePage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -86,8 +86,8 @@ export default async function NetworkIntelligencePage() {
           <p className="lead">How the Villages help each other.</p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               <div className="panel">
                 <h3>Cross Village interest</h3>
@@ -96,12 +96,12 @@ export default async function NetworkIntelligencePage() {
                     Nobody has asked about another market yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {[...interest.entries()]
                       .sort((a, b) => b[1].members.size - a[1].members.size)
                       .slice(0, 12)
                       .map(([route, row]) => (
-                        <div className="rowlink" key={route}>
+                        <div className="li linkrow" key={route}>
                           <div>
                             <b>{route}</b>
                             <div className="muted small">
@@ -125,9 +125,9 @@ export default async function NetworkIntelligencePage() {
                     Nothing asked about that nobody here knows.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {unmet.slice(0, 8).map((row) => (
-                      <div className="rowlink" key={row.country}>
+                      <div className="li linkrow" key={row.country}>
                         <div>
                           <b>{row.country}</b>
                           <div className="muted small">
@@ -139,9 +139,9 @@ export default async function NetworkIntelligencePage() {
                         </div>
                         <div className="rowmeta">
                           {row.hasPathway ? (
-                            <span className="chip mint">Pathway exists</span>
+                            <span className="chip chip-mint">Pathway exists</span>
                           ) : (
-                            <Link className="btn" href="/global/markets">
+                            <Link className="btn btn-ghost" href="/global/markets">
                               Plan a pathway
                             </Link>
                           )}
@@ -170,7 +170,7 @@ export default async function NetworkIntelligencePage() {
                 </dl>
               </div>
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What this is not</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Every figure here comes from what members posted and

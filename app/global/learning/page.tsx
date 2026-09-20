@@ -47,7 +47,7 @@ export default async function GlobalLearningPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -58,7 +58,7 @@ export default async function GlobalLearningPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <h2>Waiting to be read</h2>
           {waiting.length === 0 ? (
             <p className="muted small">Nothing waiting.</p>
@@ -75,7 +75,7 @@ export default async function GlobalLearningPage() {
                   </p>
                   <p style={{ marginTop: 8 }}>{course.summary}</p>
                   <p>
-                    <Link className="btn" href={`/learning/${course.slug}`}>
+                    <Link className="btn btn-ghost" href={`/learning/${course.slug}`}>
                       Read it
                     </Link>
                   </p>
@@ -86,8 +86,8 @@ export default async function GlobalLearningPage() {
           )}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <h3>Open to members</h3>
               {live.length === 0 ? (
@@ -95,10 +95,10 @@ export default async function GlobalLearningPage() {
                   Nothing is open yet.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {live.map((course) => (
                     <Link
-                      className="rowlink"
+                      className="li linkrow"
                       href={`/learning/${course.slug}`}
                       key={course.id}
                     >
@@ -109,7 +109,7 @@ export default async function GlobalLearningPage() {
                         </div>
                       </div>
                       <div className="rowmeta">
-                        <span className="chip mint">approved</span>
+                        <span className="chip chip-mint">approved</span>
                       </div>
                     </Link>
                   ))}
@@ -124,9 +124,9 @@ export default async function GlobalLearningPage() {
                   The Educator role is given at Roles, and taken back the same
                   way.
                 </p>
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(educatorRoles ?? []).map((role) => (
-                    <div className="rowlink" key={role.profile_id}>
+                    <div className="li linkrow" key={role.profile_id}>
                       <div>
                         <b>{nameOf(role.profile_id)}</b>
                         <div className="muted small">
@@ -141,12 +141,12 @@ export default async function GlobalLearningPage() {
                     </div>
                   ))}
                 </div>
-                <Link className="btn" href="/global/roles">
+                <Link className="btn btn-ghost" href="/global/roles">
                   Roles
                 </Link>
               </div>
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Drafts</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   {drafts.length} being written. Nobody sees them but their

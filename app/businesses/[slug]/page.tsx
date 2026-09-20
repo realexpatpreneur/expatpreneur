@@ -48,7 +48,7 @@ export default async function BusinessPage({
 
   return (
     <DualPage member={Boolean(member)} nav="/businesses" active="/businesses">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/businesses">Businesses</Link>
           </p>
@@ -57,7 +57,7 @@ export default async function BusinessPage({
               <span className="chip">{business.industry}</span>
             ) : null}{" "}
             {village?.name ? <span className="chip">{village.name}</span> : null}{" "}
-            {business.public ? <span className="chip mint">Public</span> : null}
+            {business.public ? <span className="chip chip-mint">Public</span> : null}
           </p>
           <div className="facerow">
             {business.logo_url ? (
@@ -70,7 +70,7 @@ export default async function BusinessPage({
           <p>
             {business.website ? (
               <a
-                className="btn"
+                className="btn btn-ghost"
                 href={business.website}
                 target="_blank"
                 rel="noreferrer"
@@ -79,19 +79,19 @@ export default async function BusinessPage({
               </a>
             ) : null}{" "}
             {mine ? (
-              <Link className="btn" href="/businesses/new">
+              <Link className="btn btn-ghost" href="/businesses/new">
                 Edit
               </Link>
             ) : owner ? (
-              <Link className="btn primary" href={`/members/${owner.id}`}>
+              <Link className="btn btn-primary" href={`/members/${owner.id}`}>
                 See {owner.full_name.split(" ")[0]}
               </Link>
             ) : null}
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <h3>What it does</h3>
               <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>
@@ -107,7 +107,7 @@ export default async function BusinessPage({
 
             <div className="stack">
               {business.offer ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>Current offer</h3>
                   <p style={{ marginTop: 6 }}>{business.offer}</p>
                 </div>
@@ -116,9 +116,9 @@ export default async function BusinessPage({
               {(business.services ?? []).length ? (
                 <div className="panel">
                   <h3>Services</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(business.services ?? []).map((service: string) => (
-                      <div className="rowlink" key={service}>
+                      <div className="li linkrow" key={service}>
                         <div>
                           <b>{service}</b>
                         </div>
@@ -142,9 +142,9 @@ export default async function BusinessPage({
               {(jobs ?? []).length ? (
                 <div className="panel">
                   <h3>Looking for people</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(jobs ?? []).map((job) => (
-                      <Link className="rowlink" key={job.id} href={`/jobs/${job.id}`}>
+                      <Link className="li linkrow" key={job.id} href={`/jobs/${job.id}`}>
                         <div>
                           <b>{job.title}</b>
                           <div className="muted small">{job.kind}</div>
@@ -158,13 +158,13 @@ export default async function BusinessPage({
           </div>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <h3>Contact {business.name}</h3>
               <ContactBusinessForm slug={business.slug} name={business.name} />
             </div>
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>How this works</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Your message goes to the member who runs this business, with

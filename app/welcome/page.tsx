@@ -23,7 +23,7 @@ export default async function WelcomePage() {
   if (!profile) {
     return (
       <WorkspaceShell kind="member" nav="/welcome">
-          <section className="band">
+          <section className="sec">
             <h1>Almost there</h1>
             <p className="lead">
               You are signed in as {user.email}, but there is no member profile
@@ -44,7 +44,7 @@ export default async function WelcomePage() {
 
   return (
     <WorkspaceShell kind="member" nav="/welcome">
-        <section className="band">
+        <section className="sec">
           <h1>Welcome to ExpatPreneurs.</h1>
           <p className="lead">
             {village?.name
@@ -52,7 +52,7 @@ export default async function WelcomePage() {
               : "Finish your profile and your Local Admin will place you in a Circle."}
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           <WelcomeForm profile={profile} />
         </section>
       </WorkspaceShell>

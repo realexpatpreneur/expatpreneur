@@ -137,17 +137,17 @@ export default async function LiveSessionPage({
 
   return (
     <WorkspaceShell kind="member" nav="/live">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/live">Live rooms</Link>
           </p>
           <p>
-            <span className={`chip ${session.status === "live" ? "mint" : ""}`}>
+            <span className={`chip ${session.status === "live" ? "chip-mint" : ""}`}>
               {session.status === "live" ? "Happening now" : session.status}
             </span>{" "}
             {village?.name ? <span className="chip">{village.name}</span> : null}{" "}
             {session.tier === "paid" ? (
-              <span className="chip sun">Paid members</span>
+              <span className="chip chip-sun">Paid members</span>
             ) : null}{" "}
             {session.recording !== "off" ? (
               <span className="chip">Recorded</span>
@@ -162,8 +162,8 @@ export default async function LiveSessionPage({
           ) : null}
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               {session.purpose ? (
                 <div className="panel">
@@ -250,9 +250,9 @@ export default async function LiveSessionPage({
                       Nobody waiting.
                     </p>
                   ) : (
-                    <div className="rows" style={{ marginTop: 12 }}>
+                    <div className="divide" style={{ marginTop: 12 }}>
                       {waiting.map((person) => (
-                        <div className="rowlink" key={person.id}>
+                        <div className="li linkrow" key={person.id}>
                           <div>
                             <b>{nameOf(person)}</b>
                           </div>
@@ -277,9 +277,9 @@ export default async function LiveSessionPage({
                     Nobody yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {inside.map((person) => (
-                      <div className="rowlink" key={person.id}>
+                      <div className="li linkrow" key={person.id}>
                         <div>
                           <b>{nameOf(person)}</b>
                           <div className="muted small">
@@ -307,7 +307,7 @@ export default async function LiveSessionPage({
                 {blocked ? (
                   <>
                     <h3>{blocked}</h3>
-                    <Link className="btn" href="/upgrade">
+                    <Link className="btn btn-ghost" href="/upgrade">
                       See the paid plan
                     </Link>
                   </>
@@ -320,7 +320,7 @@ export default async function LiveSessionPage({
                     </h3>
                     {mine.state === "admitted" ? (
                       <p>
-                        <Link className="btn primary" href={`/live/${slug}/room`}>
+                        <Link className="btn btn-primary" href={`/live/${slug}/room`}>
                           Enter the room
                         </Link>
                       </p>
@@ -367,7 +367,7 @@ export default async function LiveSessionPage({
                     status={session.status}
                   />
                   <p style={{ marginTop: 12 }}>
-                    <Link className="btn primary" href={`/live/${slug}/room`}>
+                    <Link className="btn btn-primary" href={`/live/${slug}/room`}>
                       Enter the room
                     </Link>
                   </p>
@@ -418,7 +418,7 @@ export default async function LiveSessionPage({
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Who can be here</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   {session.visibility === "public" && session.allow_guests

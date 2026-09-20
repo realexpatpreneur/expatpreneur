@@ -50,13 +50,13 @@ export default async function GroupPage({
 
   return (
     <WorkspaceShell kind="member" nav="/groups">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/groups">Industry Groups</Link>
           </p>
           <p>
             <span className="chip">{group.industry}</span>{" "}
-            <span className={`chip ${group.status === "open" ? "mint" : ""}`}>
+            <span className={`chip ${group.status === "open" ? "chip-mint" : ""}`}>
               {group.status}
             </span>
           </p>
@@ -64,8 +64,8 @@ export default async function GroupPage({
           <p className="lead">{group.description}</p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <h3>Who is in it</h3>
               {(people ?? []).length === 0 ? (
@@ -73,10 +73,10 @@ export default async function GroupPage({
                   Nobody yet. Being first is not a bad place to be.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(people ?? []).map((person) => (
                     <Link
-                      className="rowlink"
+                      className="li linkrow"
                       key={person.id}
                       href={`/members/${person.id}`}
                     >
@@ -122,7 +122,7 @@ export default async function GroupPage({
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>What happens here</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Questions that only make sense inside the trade: suppliers,

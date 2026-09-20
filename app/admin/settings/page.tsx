@@ -50,7 +50,7 @@ export default async function VillageSettingsPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/admin/members">The Local Admin workspace</Link>
           </p>
@@ -61,7 +61,7 @@ export default async function VillageSettingsPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <div className="stack" style={{ maxWidth: 820 }}>
             {(villages ?? []).length === 0 ? (
               <p className="muted">You do not run a Village yet.</p>
@@ -86,9 +86,9 @@ export default async function VillageSettingsPage() {
 
             <div className="panel">
               <h3>Local Admins</h3>
-              <div className="rows" style={{ marginTop: 12 }}>
+              <div className="divide" style={{ marginTop: 12 }}>
                 {(adminRoles ?? []).map((role) => (
-                  <div className="rowlink" key={`${role.profile_id}-${role.scope_id}`}>
+                  <div className="li linkrow" key={`${role.profile_id}-${role.scope_id}`}>
                     <div>
                       <b>
                         {people?.find((p) => p.id === role.profile_id)
@@ -106,7 +106,7 @@ export default async function VillageSettingsPage() {
 
             <ContactGlobalForm />
 
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>Decided by Global</h3>
               <ul>
                 {decidedByGlobal.map((item) => (

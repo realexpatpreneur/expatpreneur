@@ -16,13 +16,13 @@ export default async function LoginPage({
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Log in</h1>
           <p className="lead">
             We send a link instead of asking for a password.
           </p>
         </section>
-        <section className="band">
+        <section className="sec">
           <LoginForm next={next ?? "/home"} />
           <p className="muted small" style={{ marginTop: 16 }}>
             Not a member yet? <Link href="/apply">Request an invitation</Link>.

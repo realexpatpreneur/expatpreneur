@@ -39,25 +39,25 @@ export default async function ShowPage({
 
   return (
     <DualPage member={Boolean(member)} nav="/watch/show" active="/watch/show">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/watch">Watch and Listen</Link>
           </p>
           <p>
-            <span className="chip blue">Podcast</span>
+            <span className="chip chip-blue">Podcast</span>
           </p>
           <h1>{show.name}</h1>
           <p className="lead">{show.about}</p>
 
           <p>
             {latest ? (
-              <Link className="btn primary" href={`/watch/${latest.slug}`}>
+              <Link className="btn btn-primary" href={`/watch/${latest.slug}`}>
                 Play the latest
               </Link>
             ) : null}{" "}
             {follow.map(([name, href]) => (
               <a
-                className="btn"
+                className="btn btn-ghost"
                 href={href}
                 target="_blank"
                 rel="noreferrer"
@@ -69,8 +69,8 @@ export default async function ShowPage({
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="panel">
               <div className="row" style={{ justifyContent: "space-between" }}>
                 <h3>Episodes</h3>
@@ -85,10 +85,10 @@ export default async function ShowPage({
                   Nothing published yet.
                 </p>
               ) : (
-                <div className="rows" style={{ marginTop: 12 }}>
+                <div className="divide" style={{ marginTop: 12 }}>
                   {(episodes ?? []).map((episode) => (
                     <Link
-                      className="rowlink"
+                      className="li linkrow"
                       href={`/watch/${episode.slug}`}
                       key={episode.id}
                     >
@@ -124,12 +124,12 @@ export default async function ShowPage({
               ) : null}
 
               {member ? null : (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>The people in these conversations are members</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     Membership is by invitation and costs nothing.
                   </p>
-                  <Link className="btn primary" href="/apply">
+                  <Link className="btn btn-primary" href="/apply">
                     Request an invitation
                   </Link>
                 </div>

@@ -29,10 +29,10 @@ export function GroupForm({
   return (
     <form action={action} className="panel">
       <h3>{group ? group.name : "New Industry Group"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {group ? <input type="hidden" name="id" value={group.id} /> : null}
 
-      <div className="two" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 10 }}>
         <label className="field">
           <span>Name</span>
           <input name="name" required defaultValue={group?.name ?? ""} />
@@ -48,7 +48,7 @@ export function GroupForm({
         <textarea name="description" rows={2} defaultValue={group?.description ?? ""} />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Lead</span>
           <select name="lead_id" defaultValue={group?.lead_id ?? ""}>
@@ -76,7 +76,7 @@ export function GroupForm({
         <input name="whatsapp_url" defaultValue={group?.whatsapp_url ?? ""} />
       </label>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>
@@ -110,7 +110,7 @@ export function PodForm({
   return (
     <form action={action} className="panel">
       <h3>{pod ? pod.name : "New Pod"}</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       {pod ? <input type="hidden" name="id" value={pod.id} /> : null}
 
       <label className="field" style={{ marginTop: 10 }}>
@@ -123,7 +123,7 @@ export function PodForm({
         <textarea name="purpose" rows={2} defaultValue={pod?.purpose ?? ""} />
       </label>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Village</span>
           <select name="village_id" defaultValue={pod?.village_id ?? ""}>
@@ -148,7 +148,7 @@ export function PodForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>Seats</span>
           <input
@@ -170,7 +170,7 @@ export function PodForm({
         </label>
       </div>
 
-      <div className="two">
+      <div className="g2">
         <label className="field">
           <span>WhatsApp group link</span>
           <input name="whatsapp_url" defaultValue={pod?.whatsapp_url ?? ""} />
@@ -187,7 +187,7 @@ export function PodForm({
         </label>
       </div>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
       </button>
     </form>

@@ -26,11 +26,11 @@ export default async function MemberMorePage() {
 
   return (
     <WorkspaceShell kind="member" nav="/more">
-        <section className="band">
+        <section className="sec">
           <h1>More</h1>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <MenuList
             items={[
               ["/search", "Search"],
@@ -68,7 +68,7 @@ export default async function MemberMorePage() {
           />
 
           <form action={signOut} style={{ marginTop: 18 }}>
-            <button className="btn" type="submit">
+            <button className="btn btn-ghost" type="submit">
               Log out
             </button>
           </form>

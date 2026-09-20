@@ -27,7 +27,7 @@ export default async function PageEditorPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global/content">Pages</Link>
           </p>
@@ -39,25 +39,25 @@ export default async function PageEditorPage({
               : "A draft: the site still shows what is in the code."}
           </p>
           {done === "published" ? (
-            <div className="notice good">Published.</div>
+            <div className="flag ok">Published.</div>
           ) : done === "saved" ? (
-            <div className="notice good">Saved as a draft.</div>
+            <div className="flag ok">Saved as a draft.</div>
           ) : null}
           <div className="row" style={{ marginTop: 12 }}>
-            <Link className="btn" href={page.path} target="_blank">
+            <Link className="btn btn-ghost" href={page.path} target="_blank">
               Preview
             </Link>
             <StatusButton slug={page.slug} status={page.status} />
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <PageEditor
             page={{ ...page, blocks: (page.blocks ?? []) as Block[] }}
           />
         </section>
 
-        <section className="band">
+        <section className="sec">
           <AddBlockForm slug={page.slug} />
         </section>
     </main>

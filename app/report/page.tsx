@@ -25,7 +25,7 @@ export default async function ReportPage({
 
   return (
     <WorkspaceShell kind="member" nav="/report">
-        <section className="band">
+        <section className="sec">
           <h1>Report something</h1>
           <p className="lead">
             If something happened that should not have, tell us. It is handled
@@ -33,7 +33,7 @@ export default async function ReportPage({
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {done ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>It is with us</h3>
@@ -42,12 +42,12 @@ export default async function ReportPage({
                 back to you. The person it is about is never told who reported
                 it.
               </p>
-              <Link className="btn" href="/home">
+              <Link className="btn btn-ghost" href="/home">
                 Back to home
               </Link>
             </div>
           ) : (
-            <div className="cols">
+            <div className="gside">
               <ReportForm people={people ?? []} subjectId={subjectId} />
               <div className="stack">
                 <div className="panel">
@@ -58,13 +58,13 @@ export default async function ReportPage({
                     team. A membership can end over this.
                   </p>
                 </div>
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>This is not the suggestion box</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     Ideas for making the community better belong there, and can
                     be sent anonymously.
                   </p>
-                  <Link className="btn" href="/suggestions">
+                  <Link className="btn btn-ghost" href="/suggestions">
                     Suggestion box
                   </Link>
                 </div>

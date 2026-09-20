@@ -21,26 +21,26 @@ export default async function AdminMediaPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Watch and Listen</h1>
         <p className="lead">
           Videos, podcast episodes and articles. Published pieces appear on the
           public site unless they are kept for members.
         </p>
-        {done ? <div className="notice good">Saved.</div> : null}
+        {done ? <div className="flag ok">Saved.</div> : null}
         {!admin.isGlobal ? (
-          <div className="notice bad">
+          <div className="flag hold">
             This is managed by the Global team. You can look, but saving will be
             refused.
           </div>
         ) : null}
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="stack">
             {(items ?? []).length === 0 ? (
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <p className="muted" style={{ margin: 0 }}>
                   Nothing yet.
                 </p>

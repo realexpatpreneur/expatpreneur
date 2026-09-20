@@ -70,12 +70,12 @@ export default async function PathwayPage({
 
   return (
     <WorkspaceShell kind="member" nav="/markets">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/markets">Market pathways</Link>
           </p>
           <p>
-            <span className="chip blue">
+            <span className="chip chip-blue">
               {pathway.city ? `${pathway.city}, ` : ""}
               {pathway.country}
             </span>{" "}
@@ -83,15 +83,15 @@ export default async function PathwayPage({
               <span className="chip">{pathway.industry}</span>
             ) : null}{" "}
             {pathway.tier === "paid" ? (
-              <span className="chip sun">Paid plan</span>
+              <span className="chip chip-sun">Paid plan</span>
             ) : null}
           </p>
           <h1>{pathway.title}</h1>
           <p className="lead">{pathway.summary}</p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
               {pathway.body ? (
                 <div className="panel">
@@ -100,21 +100,21 @@ export default async function PathwayPage({
               ) : null}
 
               {locked ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>The steps are part of the paid plan</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     What a pathway is worth is the detail: the order, the costs,
                     the things people get wrong. That comes with paid
                     membership.
                   </p>
-                  <Link className="btn" href="/upgrade">
+                  <Link className="btn btn-ghost" href="/upgrade">
                     See the paid plan
                   </Link>
                 </div>
               ) : (
                 <div className="stack">
                   {(steps ?? []).length === 0 ? (
-                    <div className="panel wash">
+                    <div className="panel panel-wash">
                       <p className="muted" style={{ margin: 0 }}>
                         The steps are still being written.
                       </p>
@@ -127,7 +127,7 @@ export default async function PathwayPage({
                             {step.position}. {step.title}
                           </h3>
                           {doneIds.has(step.id) ? (
-                            <span className="chip mint">Done</span>
+                            <span className="chip chip-mint">Done</span>
                           ) : null}
                         </div>
                         {step.body ? (
@@ -136,7 +136,7 @@ export default async function PathwayPage({
                           </p>
                         ) : null}
                         {step.watch_out ? (
-                          <div className="notice bad">
+                          <div className="flag hold">
                             What people get wrong: {step.watch_out}
                           </div>
                         ) : null}
@@ -149,7 +149,7 @@ export default async function PathwayPage({
                         <div className="row" style={{ marginTop: 12 }}>
                           {step.link ? (
                             <a
-                              className="btn"
+                              className="btn btn-ghost"
                               href={step.link}
                               target="_blank"
                               rel="noreferrer"
@@ -191,10 +191,10 @@ export default async function PathwayPage({
                     someone usually turns up.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(knowers ?? []).map((person) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         key={person.id}
                         href={`/members/${person.id}`}
                       >
@@ -211,10 +211,10 @@ export default async function PathwayPage({
               {(sellers ?? []).length ? (
                 <div className="panel">
                   <h3>Members already selling there</h3>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(sellers ?? []).map((business) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         key={business.id}
                         href={`/businesses/${business.slug}`}
                       >
@@ -228,17 +228,17 @@ export default async function PathwayPage({
                 </div>
               ) : null}
 
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Open questions about {pathway.country}</h3>
                 {(questions ?? []).length === 0 ? (
                   <p className="muted small" style={{ marginTop: 6 }}>
                     None at the moment.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(questions ?? []).map((question) => (
                       <Link
-                        className="rowlink"
+                        className="li linkrow"
                         key={question.id}
                         href={`/market-exploration/${question.id}`}
                       >
@@ -249,7 +249,7 @@ export default async function PathwayPage({
                     ))}
                   </div>
                 )}
-                <Link className="btn" href="/market-exploration/new">
+                <Link className="btn btn-ghost" href="/market-exploration/new">
                   Ask your own
                 </Link>
               </div>

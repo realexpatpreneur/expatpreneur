@@ -48,7 +48,7 @@ export default async function AdminSuggestionsPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Suggestion box</h1>
         <p className="lead">
           What members would change. Read them together at the monthly admin
@@ -56,7 +56,7 @@ export default async function AdminSuggestionsPage({
         </p>
         <p>
           <span className="chip">{counts.total} in view</span>{" "}
-          <span className="chip blue">{counts.fresh} new</span>{" "}
+          <span className="chip chip-blue">{counts.fresh} new</span>{" "}
           <span className="chip">{counts.anonymous} anonymous</span>
         </p>
         <div className="tabs">
@@ -67,7 +67,7 @@ export default async function AdminSuggestionsPage({
           ].map(([key, label]) => (
             <Link
               key={key}
-              className={`chip ${show === key ? "mint" : ""}`}
+              className={`chip ${show === key ? "chip-mint" : ""}`}
               href={`/admin/suggestions?show=${key}`}
             >
               {label}
@@ -76,17 +76,17 @@ export default async function AdminSuggestionsPage({
         </div>
       </section>
 
-      <section className="band">
+      <section className="sec">
         {(suggestions ?? []).length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing here at the moment.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <div className="divide">
             {(suggestions ?? []).map((s) => (
-              <Link className="rowlink" key={s.id} href={`/admin/suggestions/${s.id}`}>
+              <Link className="li linkrow" key={s.id} href={`/admin/suggestions/${s.id}`}>
                 <div>
                   <b>{s.title}</b>
                   <div className="muted small">
@@ -99,7 +99,7 @@ export default async function AdminSuggestionsPage({
                   </div>
                 </div>
                 <div className="rowmeta">
-                  <span className={`chip ${s.status === "new" ? "blue" : ""}`}>
+                  <span className={`chip ${s.status === "new" ? "chip-blue" : ""}`}>
                     {statusLabel[s.status] ?? s.status}
                   </span>
                 </div>
@@ -107,7 +107,7 @@ export default async function AdminSuggestionsPage({
             ))}
           </div>
         )}
-        <div className="panel wash" style={{ marginTop: 16 }}>
+        <div className="panel panel-wash" style={{ marginTop: 16 }}>
           <p className="muted small" style={{ margin: 0 }}>
             Anonymous suggestions carry no name, no email and no Circle, so
             there is nobody to go back to. Judge them on what they say.

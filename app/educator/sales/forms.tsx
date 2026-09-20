@@ -16,8 +16,8 @@ export function MessageLearnersForm({
   return (
     <form action={action} className="panel">
       <h3>Write to the people who bought a course</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">{state.done}.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">{state.done}.</div> : null}
 
       <label className="field">
         <span>Which course</span>
@@ -46,7 +46,7 @@ export function MessageLearnersForm({
         only address we have.
       </p>
 
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send it"}
       </button>
     </form>

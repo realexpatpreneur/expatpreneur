@@ -41,7 +41,7 @@ export default async function AdminReportsPage() {
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/admin">Overview</Link>
           </p>
@@ -51,7 +51,7 @@ export default async function AdminReportsPage() {
           </p>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {open.length === 0 ? (
             <p className="muted">Nothing open.</p>
           ) : (
@@ -60,7 +60,7 @@ export default async function AdminReportsPage() {
                 <div className="panel" key={report.id}>
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <h3>{report.kind}</h3>
-                    <span className="chip sun">{report.status}</span>
+                    <span className="chip chip-sun">{report.status}</span>
                   </div>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     About {nameOf(report.subject_id)}. Reported by{" "}
@@ -78,9 +78,9 @@ export default async function AdminReportsPage() {
           {settled.length ? (
             <div className="panel" style={{ marginTop: 20 }}>
               <h3>Settled</h3>
-              <div className="rows" style={{ marginTop: 12 }}>
+              <div className="divide" style={{ marginTop: 12 }}>
                 {settled.map((report) => (
-                  <div className="rowlink" key={report.id}>
+                  <div className="li linkrow" key={report.id}>
                     <div>
                       <b>{report.kind}</b>
                       <div className="muted small">
@@ -101,7 +101,7 @@ export default async function AdminReportsPage() {
             </div>
           ) : null}
 
-          <div className="panel wash" style={{ marginTop: 20 }}>
+          <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>When to send one up</h3>
             <p className="muted small" style={{ marginTop: 6 }}>
               Anything involving safety, money, or a member you would have to

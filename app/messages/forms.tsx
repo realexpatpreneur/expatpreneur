@@ -16,14 +16,14 @@ export function MessageForm({ recipientId }: { recipientId: string }) {
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Sent.</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      {state.done ? <div className="flag ok">Sent.</div> : null}
       <input type="hidden" name="recipient_id" value={recipientId} />
       <label className="field">
         <span>Your message</span>
         <textarea name="body" rows={3} required />
       </label>
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send"}
       </button>
     </form>
@@ -38,7 +38,7 @@ export function ConnectionRequestForm({ recipientId }: { recipientId: string }) 
 
   if (state.done === "requested") {
     return (
-      <div className="notice good">
+      <div className="flag ok">
         Your request is with them. They decide whether to open the door.
       </div>
     );
@@ -46,7 +46,7 @@ export function ConnectionRequestForm({ recipientId }: { recipientId: string }) 
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="recipient_id" value={recipientId} />
       <label className="field">
         <span>Why are you getting in touch?</span>
@@ -58,7 +58,7 @@ export function ConnectionRequestForm({ recipientId }: { recipientId: string }) 
         />
         <span className="hint">They see this before they decide.</span>
       </label>
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send a request"}
       </button>
     </form>
@@ -74,10 +74,10 @@ export function ConnectionDecision({ requestId }: { requestId: string }) {
   return (
     <form action={action} className="row">
       <input type="hidden" name="request_id" value={requestId} />
-      <button className="btn primary" name="decision" value="accepted" disabled={pending}>
+      <button className="btn btn-primary" name="decision" value="accepted" disabled={pending}>
         Accept
       </button>
-      <button className="btn" name="decision" value="declined" disabled={pending}>
+      <button className="btn btn-ghost" name="decision" value="declined" disabled={pending}>
         Not now
       </button>
     </form>

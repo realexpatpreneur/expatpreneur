@@ -37,7 +37,7 @@ export default async function WelcomeDonePage() {
 
   return (
     <WorkspaceShell kind="member" nav="/welcome/done">
-        <section className="band">
+        <section className="sec">
           <h1>You are in.</h1>
           <p className="lead">
             {village?.name
@@ -46,8 +46,8 @@ export default async function WelcomeDonePage() {
           </p>
         </section>
 
-        <section className="band">
-          <div className="grid three">
+        <section className="sec">
+          <div className="g3">
             <div className="panel">
               <h3>{circle?.name ?? "Your Circle"}</h3>
               {circle?.name ? (

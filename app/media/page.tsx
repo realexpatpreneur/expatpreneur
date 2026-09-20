@@ -47,23 +47,23 @@ export default async function MediaPage({
             they learned doing it.
           </p>
           <div className="tabs">
-            <Link className={`chip ${kind ? "" : "mint"}`} href="/media">
+            <Link className={`chip ${kind ? "" : "chip-mint"}`} href="/media">
               Everything
             </Link>
             <Link
-              className={`chip ${kind === "story" ? "mint" : ""}`}
+              className={`chip ${kind === "story" ? "chip-mint" : ""}`}
               href="/media?kind=story"
             >
               Member stories
             </Link>
             <Link
-              className={`chip ${kind === "guide" ? "mint" : ""}`}
+              className={`chip ${kind === "guide" ? "chip-mint" : ""}`}
               href="/media?kind=guide"
             >
               Guides
             </Link>
             <Link
-              className={`chip ${kind === "note" ? "mint" : ""}`}
+              className={`chip ${kind === "note" ? "chip-mint" : ""}`}
               href="/media?kind=note"
             >
               Notes
@@ -71,11 +71,11 @@ export default async function MediaPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(articles ?? []).length === 0 ? (
             <p className="muted">Nothing published here yet.</p>
           ) : (
-            <div className="grid">
+            <div className="g3 g4">
               {(articles ?? []).map((article, i) => (
                 <Link className="card" href={`/media/${article.slug}`} key={article.id}>
                   {article.cover_url ? (
@@ -104,8 +104,8 @@ export default async function MediaPage({
           )}
         </section>
 
-        <section className="band">
-          <div className="panel wash" style={{ maxWidth: 520 }}>
+        <section className="sec">
+          <div className="panel panel-wash" style={{ maxWidth: 520 }}>
             <h3>The newsletter</h3>
             <p className="muted small" style={{ marginTop: 6 }}>
               Member stories and what is opening where, once a month. Members
@@ -117,26 +117,26 @@ export default async function MediaPage({
         </section>
 
         {me ? (
-          <section className="band">
-            <div className="panel wash">
+          <section className="sec">
+            <div className="panel panel-wash">
               <h3>There is a story here</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Something you did, something another member did, or something
                 two of you did together. Tell the team about it.
               </p>
-              <Link className="btn" href="/media/suggest">
+              <Link className="btn btn-ghost" href="/media/suggest">
                 Suggest a story
               </Link>
             </div>
           </section>
         ) : (
-          <section className="band cta">
+          <section className="sec">
             <h2>The people in these stories are members</h2>
             <p className="lead">
               Membership is by invitation and costs nothing.
             </p>
             <p>
-              <Link className="btn primary" href="/apply">
+              <Link className="btn btn-primary" href="/apply">
                 Request an invitation
               </Link>
             </p>

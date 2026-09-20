@@ -108,12 +108,12 @@ export default async function SettingsPage({
 
   return (
     <WorkspaceShell kind="member" nav="/settings">
-        <section className="band">
+        <section className="sec">
           <h1>Settings</h1>
           <div className="tabs">
             {tabs.map(([key, label]) => (
               <Link
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/settings?show=${key}`}
                 key={key}
               >
@@ -123,7 +123,7 @@ export default async function SettingsPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <div className="stack" style={{ maxWidth: 760 }}>
             {show === "account" ? (
               <>
@@ -140,14 +140,14 @@ export default async function SettingsPage({
                   <p className="muted small" style={{ marginTop: 4 }}>
                     {villageLine}
                   </p>
-                  <Link className="btn" href="/settings/transfer">
+                  <Link className="btn btn-ghost" href="/settings/transfer">
                     Request a transfer to another Village
                   </Link>
                 </div>
                 <div className="panel">
                   <h3>Signing out</h3>
                   <form action={signOut} style={{ marginTop: 10 }}>
-                    <button className="btn" type="submit">
+                    <button className="btn btn-ghost" type="submit">
                       Sign out
                     </button>
                   </form>
@@ -178,9 +178,9 @@ export default async function SettingsPage({
                       </p>
                     </div>
                     {isPaid(member) ? (
-                      <span className="chip mint">Active</span>
+                      <span className="chip chip-mint">Active</span>
                     ) : (
-                      <Link className="btn primary" href="/upgrade">
+                      <Link className="btn btn-primary" href="/upgrade">
                         Upgrade to Paid member
                       </Link>
                     )}
@@ -212,13 +212,13 @@ export default async function SettingsPage({
                         </dd>
                       </dl>
                       <div className="row" style={{ marginTop: 14 }}>
-                        <Link className="btn" href="/upgrade">
+                        <Link className="btn btn-ghost" href="/upgrade">
                           Update card
                         </Link>
-                        <Link className="btn" href="/settings/receipts">
+                        <Link className="btn btn-ghost" href="/settings/receipts">
                           Receipts
                         </Link>
-                        <Link className="btn" href="/upgrade">
+                        <Link className="btn btn-ghost" href="/upgrade">
                           Cancel paid membership
                         </Link>
                       </div>
@@ -242,7 +242,7 @@ export default async function SettingsPage({
                         <dt>Payment method</dt>
                         <dd>None saved yet</dd>
                       </dl>
-                      <div className="panel wash" style={{ marginTop: 14 }}>
+                      <div className="panel panel-wash" style={{ marginTop: 14 }}>
                         <p className="muted small" style={{ margin: 0 }}>
                           The paid plan adds every Village: contact members
                           anywhere, events in other Villages as a visiting
@@ -258,7 +258,7 @@ export default async function SettingsPage({
                   <p className="muted small" style={{ marginTop: 4 }}>
                     {villageLine}
                   </p>
-                  <Link className="btn" href="/settings/transfer">
+                  <Link className="btn btn-ghost" href="/settings/transfer">
                     Request a transfer to another Village
                   </Link>
                 </div>

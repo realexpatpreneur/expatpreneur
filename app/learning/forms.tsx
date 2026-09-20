@@ -16,15 +16,15 @@ export function EnrolButton({
   );
 
   if (state.done === "enrolled") {
-    return <div className="notice good">You are in. Start with the first lesson.</div>;
+    return <div className="flag ok">You are in. Start with the first lesson.</div>;
   }
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="course_id" value={courseId} />
       <input type="hidden" name="slug" value={slug} />
-      <button className="btn primary" type="submit" disabled={pending}>
+      <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Starting" : "Start the course"}
       </button>
     </form>
@@ -54,7 +54,7 @@ export function LessonDone({
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="done" value={done ? "1" : "0"} />
       <button
-        className={`btn ${done ? "mint" : "primary"}`}
+        className={`btn ${done ? "btn-mint" : "btn-primary"}`}
         type="submit"
         disabled={pending}
       >

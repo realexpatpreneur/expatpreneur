@@ -34,7 +34,7 @@ export default async function GlobalLibraryPage({
 
   return (
     <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
@@ -47,24 +47,24 @@ export default async function GlobalLibraryPage({
           <form className="searchrow" action="/global/library" style={{ marginTop: 18 }}>
             {village ? <input type="hidden" name="village" value={village} /> : null}
             <input name="q" defaultValue={q} placeholder="A title or a line from it" />
-            <button className="btn" type="submit">
+            <button className="btn btn-ghost" type="submit">
               Search
             </button>
           </form>
 
           <div className="tabs">
-            <Link className={`chip ${village ? "" : "mint"}`} href="/global/library">
+            <Link className={`chip ${village ? "" : "chip-mint"}`} href="/global/library">
               Everything
             </Link>
             <Link
-              className={`chip ${village === "network" ? "mint" : ""}`}
+              className={`chip ${village === "network" ? "chip-mint" : ""}`}
               href="/global/library?village=network"
             >
               Shared with every Village
             </Link>
             {(villages ?? []).map((v) => (
               <Link
-                className={`chip ${village === v.id ? "mint" : ""}`}
+                className={`chip ${village === v.id ? "chip-mint" : ""}`}
                 href={`/global/library?village=${v.id}`}
                 key={v.id}
               >
@@ -74,13 +74,13 @@ export default async function GlobalLibraryPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(resources ?? []).length === 0 ? (
             <p className="muted">Nothing matches that.</p>
           ) : (
-            <div className="rows">
+            <div className="divide">
               {(resources ?? []).map((resource) => (
-                <Link className="rowlink" href="/library" key={resource.id}>
+                <Link className="li linkrow" href="/library" key={resource.id}>
                   <div>
                     <b>{resource.title}</b>
                     <div className="muted small">
@@ -89,7 +89,7 @@ export default async function GlobalLibraryPage({
                   </div>
                   <div className="rowmeta">
                     <span className="chip">{resource.kind}</span>
-                    <span className={`chip ${resource.all_villages ? "mint" : ""}`}>
+                    <span className={`chip ${resource.all_villages ? "chip-mint" : ""}`}>
                       {villageName(resource.village_id, resource.all_villages)}
                     </span>
                   </div>
@@ -98,14 +98,14 @@ export default async function GlobalLibraryPage({
             </div>
           )}
 
-          <div className="panel wash" style={{ marginTop: 20 }}>
+          <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>Sharing one with every Village</h3>
             <p className="muted small" style={{ marginTop: 6 }}>
               A resource marked for every Village is shared with all of them. Local
               Admins add their own in their workspace, and anything worth
               copying across the network belongs here.
             </p>
-            <Link className="btn" href="/admin/resources">
+            <Link className="btn btn-ghost" href="/admin/resources">
               Add a resource
             </Link>
           </div>

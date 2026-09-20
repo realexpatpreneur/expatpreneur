@@ -57,7 +57,7 @@ export default async function EventsPage({
             ].map(([key, label]) => (
               <Link
                 key={key}
-                className={`chip ${show === key ? "mint" : ""}`}
+                className={`chip ${show === key ? "chip-mint" : ""}`}
                 href={`/events?show=${key}`}
               >
                 {label}
@@ -66,15 +66,15 @@ export default async function EventsPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {rows.length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing on the calendar yet.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {rows.map((event, i) => {
                 const blocked = registrationBlock(event, member);
                 return (
@@ -94,9 +94,9 @@ export default async function EventsPage({
                       <p>{event.venue ?? (event.is_online ? "Online" : "")}</p>
                       <div className="meta">
                         {registeredFor.has(event.id) ? (
-                          <span className="chip mint">You are going</span>
+                          <span className="chip chip-mint">You are going</span>
                         ) : blocked ? (
-                          <span className="chip sun">{blocked}</span>
+                          <span className="chip chip-sun">{blocked}</span>
                         ) : (
                           <span className="chip">{priceText(event)}</span>
                         )}

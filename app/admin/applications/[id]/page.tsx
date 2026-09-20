@@ -85,7 +85,7 @@ export default async function ApplicationPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href="/admin/applications">Invitation requests</Link>
         </p>
@@ -100,12 +100,12 @@ export default async function ApplicationPage({
           <span className="chip">{application.email}</span>
         </p>
         {done && doneText[done] ? (
-          <div className="notice good">{doneText[done]}</div>
+          <div className="flag ok">{doneText[done]}</div>
         ) : null}
       </section>
 
-      <section className="band">
-        <div className="cols">
+      <section className="sec">
+        <div className="gside">
           <div className="panel">
             <h3>What they told us</h3>
             <dl className="kv">
@@ -131,7 +131,7 @@ export default async function ApplicationPage({
           </div>
 
           <div className="stack">
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <h3>Village balance</h3>
               <p className="muted small">
                 Internal only. No Village goes above 30 percent of one

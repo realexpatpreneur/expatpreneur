@@ -46,7 +46,7 @@ export default async function DirectoryPage({
 
   return (
     <WorkspaceShell kind="member" nav="/directory">
-        <section className="band">
+        <section className="sec">
           <h1>Directory</h1>
           <p className="lead">
             {scope === "mine"
@@ -60,20 +60,20 @@ export default async function DirectoryPage({
               placeholder="Search by name, business, industry"
             />
             <input type="hidden" name="village" value={scope} />
-            <button className="btn" type="submit">
+            <button className="btn btn-ghost" type="submit">
               Search
             </button>
           </form>
           <div className="tabs">
             <Link
-              className={`chip ${scope === "mine" ? "mint" : ""}`}
+              className={`chip ${scope === "mine" ? "chip-mint" : ""}`}
               href="/directory?village=mine"
             >
               My Village
             </Link>
             {paid ? (
               <Link
-                className={`chip ${scope === "all" ? "mint" : ""}`}
+                className={`chip ${scope === "all" ? "chip-mint" : ""}`}
                 href="/directory?village=all"
               >
                 Every Village
@@ -86,15 +86,15 @@ export default async function DirectoryPage({
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           {(people ?? []).length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nobody matches that yet.
               </p>
             </div>
           ) : (
-            <div className="grid three">
+            <div className="g3">
               {(people ?? []).map((person) => (
                 <Link className="panel" key={person.id} href={`/members/${person.id}`}>
                   <div className="facerow">

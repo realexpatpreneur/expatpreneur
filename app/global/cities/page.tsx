@@ -19,16 +19,16 @@ export default async function GlobalCitiesPage() {
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <h1>Cities people are asking for</h1>
         <p className="lead">
           Where the next Villages are, if enough people keep asking.
         </p>
       </section>
 
-      <section className="band">
+      <section className="sec">
         {(cities ?? []).length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nobody has suggested a city yet.
             </p>
@@ -41,13 +41,13 @@ export default async function GlobalCitiesPage() {
                 <div className="panel" key={place}>
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <h3>{place}</h3>
-                    <span className="chip blue">{count} asking</span>
+                    <span className="chip chip-blue">{count} asking</span>
                   </div>
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(cities ?? [])
                       .filter((c) => `${c.city}, ${c.country}` === place)
                       .map((city) => (
-                        <div className="rowlink" key={city.id}>
+                        <div className="li linkrow" key={city.id}>
                           <div style={{ width: "100%" }}>
                             <b>{city.name || city.email || "Someone"}</b>
                             <div className="muted small">

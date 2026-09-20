@@ -53,9 +53,9 @@ export default async function VillagePublicPage({
 
   return (
     <WorkspaceShell kind="member" nav="/villages">
-        <section className="band">
+        <section className="sec">
           <p>
-            <span className={`chip ${village.status === "open" ? "mint" : ""}`}>
+            <span className={`chip ${village.status === "open" ? "chip-mint" : ""}`}>
               {statusLine[village.status] ?? village.status}
             </span>
           </p>
@@ -65,22 +65,22 @@ export default async function VillagePublicPage({
           </p>
           <p>
             {village.status === "exploring" ? (
-              <Link className="btn primary" href="/villages/suggest">
+              <Link className="btn btn-primary" href="/villages/suggest">
                 Tell us you are there
               </Link>
             ) : (
-              <Link className="btn primary" href="/apply">
+              <Link className="btn btn-primary" href="/apply">
                 Request an invitation
               </Link>
             )}{" "}
-            <Link className="btn" href="/villages">
+            <Link className="btn btn-ghost" href="/villages">
               All Villages
             </Link>
           </p>
         </section>
 
-        <section className="band">
-          <div className="grid three">
+        <section className="sec">
+          <div className="g3">
             <div className="panel">
               <h3>Circles</h3>
               <p className="muted small">
@@ -106,11 +106,11 @@ export default async function VillagePublicPage({
         </section>
 
         {(events ?? []).length ? (
-          <section className="band">
+          <section className="sec">
             <h2>Open to everyone</h2>
-            <div className="rows">
+            <div className="divide">
               {(events ?? []).map((event) => (
-                <Link className="rowlink" key={event.id} href={`/e/${event.slug}`}>
+                <Link className="li linkrow" key={event.id} href={`/e/${event.slug}`}>
                   <div>
                     <b>{event.title}</b>
                     <div className="muted small">
@@ -123,8 +123,8 @@ export default async function VillagePublicPage({
           </section>
         ) : null}
 
-        <section className="band">
-          <div className="band cta">
+        <section className="sec">
+          <div className="sec">
             <h2>
               {village.status === "exploring"
                 ? `Want a Village in ${village.city}?`
@@ -136,7 +136,7 @@ export default async function VillagePublicPage({
                 : "Membership is free. The paid plan adds every other Village."}
             </p>
             <Link
-              className="btn"
+              className="btn btn-ghost"
               href={village.status === "exploring" ? "/villages/suggest" : "/apply"}
             >
               {village.status === "exploring"

@@ -50,17 +50,17 @@ export default async function MarketPostPage({
 
   return (
     <WorkspaceShell kind="member" nav="/market-exploration">
-        <section className="band">
+        <section className="sec">
           <p className="muted small">
             <Link href="/market-exploration">Market Exploration</Link>
           </p>
           <p>
-            <span className="chip blue">
+            <span className="chip chip-blue">
               {post.city ? `${post.city}, ` : ""}
               {post.country}
             </span>{" "}
             <span className="chip">{post.industry}</span>{" "}
-            <span className="chip mint">{stageLabel[post.stage] ?? post.stage}</span>
+            <span className="chip chip-mint">{stageLabel[post.stage] ?? post.stage}</span>
           </p>
           <h1>{post.title}</h1>
           <p className="muted small">
@@ -71,8 +71,8 @@ export default async function MarketPostPage({
           </p>
         </section>
 
-        <section className="band">
-          <div className="cols">
+        <section className="sec">
+          <div className="gside">
             <div className="stack">
             {post.author_id === member.id && post.status === "open" ? (
               <div className="panel">
@@ -82,7 +82,7 @@ export default async function MarketPostPage({
             ) : null}
 
               {post.status === "resolved" ? (
-                <div className="panel wash">
+                <div className="panel panel-wash">
                   <h3>Closed</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     {post.outcome ?? "The person who asked has what they needed."}
@@ -104,9 +104,9 @@ export default async function MarketPostPage({
                     Nobody has answered yet.
                   </p>
                 ) : (
-                  <div className="rows" style={{ marginTop: 12 }}>
+                  <div className="divide" style={{ marginTop: 12 }}>
                     {(replies ?? []).map((reply) => (
-                      <div className="rowlink" key={reply.id}>
+                      <div className="li linkrow" key={reply.id}>
                         <div>
                           <b>
                             {replyAuthors?.find((a) => a.id === reply.author_id)
@@ -124,13 +124,13 @@ export default async function MarketPostPage({
                   {canReply ? (
                     <MarketReplyForm postId={id} />
                   ) : (
-                    <div className="panel wash">
+                    <div className="panel panel-wash">
                       <h3>Replying across Villages is part of the paid plan</h3>
                       <p className="muted small">
                         You can read every post here. Answering a member in
                         another Village comes with paid membership.
                       </p>
-                      <Link className="btn" href="/upgrade">
+                      <Link className="btn btn-ghost" href="/upgrade">
                         See the paid plan
                       </Link>
                     </div>
@@ -153,12 +153,12 @@ export default async function MarketPostPage({
                   <dd>{stageLabel[post.stage] ?? post.stage}</dd>
                 </dl>
               </div>
-              <div className="panel wash">
+              <div className="panel panel-wash">
                 <h3>Who knows this market</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   Search the Directory for members who have lived or sold there.
                 </p>
-                <Link className="btn" href={`/directory?q=${encodeURIComponent(post.country)}`}>
+                <Link className="btn btn-ghost" href={`/directory?q=${encodeURIComponent(post.country)}`}>
                   Search the Directory
                 </Link>
               </div>

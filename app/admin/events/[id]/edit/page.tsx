@@ -38,13 +38,13 @@ export default async function EditEventPage({
 
   return (
     <main className="wrap">
-      <section className="band">
+      <section className="sec">
         <p className="muted small">
           <Link href={`/admin/events/${id}`}>{event.title}</Link>
         </p>
         <h1>Edit event</h1>
       </section>
-      <section className="band">
+      <section className="sec">
         <EventForm audiences={audiences} event={event} />
       </section>
     </main>

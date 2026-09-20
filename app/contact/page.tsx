@@ -9,22 +9,22 @@ export default function ContactPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="sec">
           <h1>Contact</h1>
           <p className="lead">
             Most questions have a better door than this one.
           </p>
         </section>
 
-        <section className="band">
-          <div className="grid three">
+        <section className="sec">
+          <div className="g3">
             <div className="panel">
               <h3>You want to join</h3>
               <p className="muted small">
                 Requesting an invitation is the way in. It is read by a person,
                 not a filter.
               </p>
-              <Link className="btn" href="/apply">
+              <Link className="btn btn-ghost" href="/apply">
                 Request an invitation
               </Link>
             </div>
@@ -33,7 +33,7 @@ export default function ContactPage() {
               <p className="muted small">
                 Tell us where you are. Villages open where enough people ask.
               </p>
-              <Link className="btn" href="/villages/suggest">
+              <Link className="btn btn-ghost" href="/villages/suggest">
                 Suggest a city
               </Link>
             </div>
@@ -43,14 +43,14 @@ export default function ContactPage() {
                 Your Local Admin is the fastest answer, and they are in your
                 Village's WhatsApp group.
               </p>
-              <Link className="btn" href="/home">
+              <Link className="btn btn-ghost" href="/home">
                 Member space
               </Link>
             </div>
           </div>
         </section>
 
-        <section className="band">
+        <section className="sec">
           <div className="panel" style={{ maxWidth: 680 }}>
             <h3>Anything else</h3>
             <p className="muted small" style={{ marginTop: 6 }}>

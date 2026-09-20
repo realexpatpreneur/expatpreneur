@@ -25,11 +25,11 @@ export function PageEditor({
 
   return (
     <form action={action}>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="slug" value={page.slug} />
       <input type="hidden" name="block_count" value={page.blocks.length} />
 
-      <div className="cols">
+      <div className="gside">
         <div className="stack">
           {page.blocks.map((block, i) => (
             <div className="panel" key={i}>
@@ -58,7 +58,7 @@ export function PageEditor({
                       defaultValue={block.text ?? ""}
                     />
                   </label>
-                  <div className="two">
+                  <div className="g2">
                     <label className="field">
                       <span>Button</span>
                       <input
@@ -74,7 +74,7 @@ export function PageEditor({
                       />
                     </label>
                   </div>
-                  <div className="two">
+                  <div className="g2">
                     <label className="field">
                       <span>Second button</span>
                       <input
@@ -150,7 +150,7 @@ export function PageEditor({
           ))}
 
           {page.blocks.length === 0 ? (
-            <div className="panel wash">
+            <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 No blocks yet. Add one, and this page starts showing what you
                 write here instead of what is in the code.
@@ -190,7 +190,7 @@ export function PageEditor({
           <div className="panel">
             <div className="row">
               <button
-                className="btn"
+                className="btn btn-ghost"
                 type="submit"
                 name="intent"
                 value="save"
@@ -199,7 +199,7 @@ export function PageEditor({
                 {pending ? "Saving" : "Save as draft"}
               </button>
               <button
-                className="btn primary"
+                className="btn btn-primary"
                 type="submit"
                 name="intent"
                 value="publish"
@@ -227,7 +227,7 @@ export function AddBlockForm({ slug }: { slug: string }) {
 
   return (
     <form action={action} className="row">
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="slug" value={slug} />
       <select name="type" defaultValue="text">
         <option value="hero">Hero</option>
@@ -236,7 +236,7 @@ export function AddBlockForm({ slug }: { slug: string }) {
         <option value="villages">Villages</option>
         <option value="story">Founder story</option>
       </select>
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Adding" : "Add a block"}
       </button>
     </form>
@@ -263,7 +263,7 @@ export function StatusButton({
         name="status"
         value={status === "live" ? "draft" : "live"}
       />
-      <button className="btn" type="submit" disabled={pending}>
+      <button className="btn btn-ghost" type="submit" disabled={pending}>
         {status === "live" ? "Take it back to draft" : "Publish"}
       </button>
     </form>
