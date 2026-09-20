@@ -51,7 +51,13 @@ export default async function CoursePage({
 
   const paidFor = priceCents === 0 || Boolean(bought);
 
-  const [{ data: lessons }, { data: enrolment }, { data: educator }, { data: progress }] =
+  const [
+    { data: lessons },
+    { data: enrolment },
+    { data: educator },
+    { data: teaching },
+    { data: progress },
+  ] =
     await Promise.all([
       supabase
         .from("lessons")
@@ -71,6 +77,13 @@ export default async function CoursePage({
             .from("profiles")
             .select("id, full_name, headline")
             .eq("id", course.educator_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      course.educator_id
+        ? supabase
+            .from("educator_profiles")
+            .select("headline, about, teaches_in, markets")
+            .eq("profile_id", course.educator_id)
             .maybeSingle()
         : Promise.resolve({ data: null }),
       member
@@ -239,11 +252,34 @@ export default async function CoursePage({
                 <div className="panel">
                   <h3>Taught by</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
-                    <Link href={`/members/${educator.id}`}>
-                      {educator.full_name}
-                    </Link>
-                    {educator.headline ? `, ${educator.headline}` : ""}
+                    {member ? (
+                      <Link href={`/members/${educator.id}`}>
+                        {educator.full_name}
+                      </Link>
+                    ) : (
+                      educator.full_name
+                    )}
+                    {teaching?.headline
+                      ? `, ${teaching.headline}`
+                      : educator.headline
+                        ? `, ${educator.headline}`
+                        : ""}
                   </p>
+                  {teaching?.about ? (
+                    <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>
+                      {teaching.about}
+                    </p>
+                  ) : null}
+                  {(teaching?.markets ?? []).length ? (
+                    <p className="muted small">
+                      Knows {(teaching?.markets ?? []).join(", ")}.
+                    </p>
+                  ) : null}
+                  {(teaching?.teaches_in ?? []).length ? (
+                    <p className="muted small">
+                      Teaches in {(teaching?.teaches_in ?? []).join(", ")}.
+                    </p>
+                  ) : null}
                 </div>
               ) : null}
             </div>

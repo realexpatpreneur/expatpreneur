@@ -46,6 +46,12 @@ export default async function EducatorPage({
             <Link className="btn" href="/educator/sales">
               Sales
             </Link>{" "}
+            <Link className="btn" href="/educator/learners">
+              Learners
+            </Link>{" "}
+            <Link className="btn" href="/educator/profile">
+              Educator profile
+            </Link>{" "}
             <Link className="btn" href="/educator/payouts">
               Payouts
             </Link>
