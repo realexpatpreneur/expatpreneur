@@ -29,6 +29,11 @@ export async function submitApplication(
     return { error: "Up to five nationalities." };
   }
 
+  // A field nobody can see. Anything that fills it in is not a person.
+  if (String(formData.get("website") ?? "").trim()) {
+    redirect("/apply/sent");
+  }
+
   const supabase = await createClient();
 
   const villageSlug = String(formData.get("village") ?? "");
@@ -40,6 +45,20 @@ export async function submitApplication(
       .eq("slug", villageSlug)
       .maybeSingle();
     villageId = data?.id ?? null;
+  }
+
+  const { data: recent } = await supabase
+    .from("applications")
+    .select("id, created_at")
+    .eq("email", email)
+    .gte("created_at", new Date(Date.now() - 86400000).toISOString())
+    .limit(1);
+
+  if (recent?.length) {
+    return {
+      error:
+        "We already have a request from this address today. One is enough, and somebody is reading it.",
+    };
   }
 
   const { error } = await supabase.from("applications").insert({

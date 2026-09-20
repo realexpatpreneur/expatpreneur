@@ -7,7 +7,12 @@ const from = process.env.EMAIL_FROM ?? "ExpatPreneurs <hello@expatpreneurs.com>"
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://expatpreneur.vercel.app";
 
-function wrap(title: string, lines: string[], action?: { label: string; href: string }) {
+function wrap(
+  title: string,
+  lines: string[],
+  action?: { label: string; href: string },
+  forMember = false
+) {
   const body = lines
     .map(
       (line) =>
@@ -19,6 +24,10 @@ function wrap(title: string, lines: string[], action?: { label: string; href: st
     ? `<p style="margin:22px 0 0"><a href="${action.href}" style="display:inline-block;background:#0f1419;color:#ffffff;text-decoration:none;font-weight:600;font-size:14px;padding:11px 18px;border-radius:8px">${action.label}</a></p>`
     : "";
 
+  const footer = forMember
+    ? `<br /><a href="${siteUrl}/settings" style="color:#6b7683">Choose what reaches your inbox</a>`
+    : "";
+
   return `<!doctype html><html><body style="margin:0;padding:24px;background:#f4f6f8;font-family:Inter,'Segoe UI',system-ui,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e3e6ea;border-radius:12px;padding:28px">
     <p style="margin:0 0 20px;font-size:17px;font-weight:800;letter-spacing:-0.02em;color:#0f1419">ExpatPreneurs</p>
@@ -26,7 +35,7 @@ function wrap(title: string, lines: string[], action?: { label: string; href: st
     ${body}${button}
   </div>
   <p style="max-width:560px;margin:16px auto 0;font-size:12px;color:#6b7683">
-    ExpatPreneurs Global. <a href="${siteUrl}" style="color:#6b7683">${siteUrl.replace("https://", "")}</a>
+    ExpatPreneurs Global. <a href="${siteUrl}" style="color:#6b7683">${siteUrl.replace("https://", "")}</a>${footer}
   </p>
 </body></html>`;
 }
@@ -36,7 +45,8 @@ export async function sendEmail(
   subject: string,
   title: string,
   lines: string[],
-  action?: { label: string; href: string }
+  action?: { label: string; href: string },
+  forMember = false
 ) {
   if (!emailReady) return;
 
@@ -51,7 +61,7 @@ export async function sendEmail(
         from,
         to,
         subject,
-        html: wrap(title, lines, action),
+        html: wrap(title, lines, action, forMember),
       }),
     });
   } catch {
@@ -87,5 +97,7 @@ export async function sendEmailToMember(
     // If the check itself fails, the message still goes.
   }
 
-  await sendEmail(to, subject, title, lines, action);
+  // Anything sent to a member carries the line about choosing what reaches
+  // them, which is both decent and, once the domain is live, required.
+  await sendEmail(to, subject, title, lines, action, true);
 }

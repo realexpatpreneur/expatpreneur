@@ -14,6 +14,10 @@ export async function suggestCity(
   const country = String(formData.get("country") ?? "").trim();
   if (!city || !country) return { error: "A city and a country are needed." };
 
+  if (String(formData.get("website") ?? "").trim()) {
+    redirect("/villages/suggest?done=1");
+  }
+
   const supabase = await createClient();
   const offersAdmin = Boolean(formData.get("offers_admin"));
 

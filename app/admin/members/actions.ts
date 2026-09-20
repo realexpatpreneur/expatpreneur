@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { sendEmailToMember, url } from "@/lib/email";
+import { record } from "@/lib/audit";
 import { notify } from "@/lib/notify";
 
 export type MemberAdminState = { error?: string };
@@ -35,6 +36,12 @@ export async function updateMember(
     .eq("id", id);
 
   if (error) return { error: error.message };
+
+  await record(admin.userId, "member.updated", "profile", id, {
+    circle_id: circleId,
+    status: String(formData.get("status") ?? "active"),
+    plan: String(formData.get("plan") ?? "member"),
+  });
 
   // Moving someone between Circles means the WhatsApp groups change too.
   if (circleId && before?.circle_id !== circleId) {
@@ -135,7 +142,7 @@ export async function sendAnnouncement(
   const villageId = admin.homeVillageId ?? admin.villageIds[0] ?? null;
   const { data: members } = villageId
     ? await supabase
-        .from("profiles")
+        .from("member_records")
         .select("id, email, full_name")
         .eq("village_id", villageId)
         .eq("status", "active")

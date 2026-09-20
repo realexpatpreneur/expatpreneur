@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
+import { record } from "@/lib/audit";
 
 export type GlobalState = { error?: string };
 
@@ -50,7 +51,7 @@ export async function assignRole(
   _prev: GlobalState,
   formData: FormData
 ): Promise<GlobalState> {
-  await requireGlobal();
+  const admin = await requireGlobal();
   const supabase = await createClient();
 
   const profileId = String(formData.get("profile_id"));
@@ -70,6 +71,12 @@ export async function assignRole(
     return { error: "That role is already held, or the details do not match." };
   }
 
+  await record(admin.userId, "role.given", "profile", profileId, {
+    role,
+    scope,
+    scope_id: scope === "global" ? null : scopeId,
+  });
+
   revalidatePath("/global/roles");
   return {};
 }
@@ -78,15 +85,22 @@ export async function endRole(
   _prev: GlobalState,
   formData: FormData
 ): Promise<GlobalState> {
-  await requireGlobal();
+  const admin = await requireGlobal();
   const supabase = await createClient();
 
-  const { error } = await supabase
+  const roleId = String(formData.get("role_id"));
+  const { data: ended, error } = await supabase
     .from("member_roles")
     .update({ ended_at: new Date().toISOString() })
-    .eq("id", String(formData.get("role_id")));
+    .eq("id", roleId)
+    .select("profile_id, role")
+    .maybeSingle();
 
   if (error) return { error: error.message };
+
+  await record(admin.userId, "role.ended", "profile", ended?.profile_id ?? null, {
+    role: ended?.role,
+  });
 
   revalidatePath("/global/roles");
   return {};
@@ -109,6 +123,17 @@ export async function updateReport(
     .eq("id", String(formData.get("report_id")));
 
   if (error) return { error: error.message };
+
+  await record(
+    admin.userId,
+    "report.handled",
+    "report",
+    String(formData.get("report_id")),
+    {
+      status: String(formData.get("status") ?? "in_progress"),
+      note: String(formData.get("note") ?? "").trim() || null,
+    }
+  );
 
   revalidatePath("/global/moderation");
   return {};

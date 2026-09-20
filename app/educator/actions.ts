@@ -91,3 +91,34 @@ export async function saveLesson(
   revalidatePath(`/educator/${course?.slug}`);
   redirect(`/educator/${course?.slug}?done=1`);
 }
+
+export async function deleteLesson(
+  _prev: EducatorState,
+  formData: FormData
+): Promise<EducatorState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=/educator");
+
+  const courseId = String(formData.get("course_id"));
+
+  const { error } = await supabase
+    .from("lessons")
+    .delete()
+    .eq("id", String(formData.get("id")));
+
+  if (error) {
+    return { error: "Only the educator who wrote it can take it down." };
+  }
+
+  const { data: course } = await supabase
+    .from("courses")
+    .select("slug")
+    .eq("id", courseId)
+    .maybeSingle();
+
+  revalidatePath(`/educator/${course?.slug}`);
+  redirect(`/educator/${course?.slug}?done=1`);
+}

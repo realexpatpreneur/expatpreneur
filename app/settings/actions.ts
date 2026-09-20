@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { record } from "@/lib/audit";
 
 const list = (value: FormDataEntryValue | null) =>
   String(value ?? "")
@@ -84,6 +85,10 @@ export async function leaveCommunity(
     .eq("id", user.id);
 
   if (error) return { error: error.message };
+
+  await record(user.id, "member.left", "profile", user.id, {
+    village_id: profile?.village_id ?? null,
+  });
 
   if (profile?.circle_id) {
     const { data: circle } = await supabase

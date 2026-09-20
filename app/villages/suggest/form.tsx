@@ -11,6 +11,15 @@ export function CitySuggestionForm() {
 
   return (
     <form action={action} className="panel" style={{ maxWidth: 680 }}>
+      {/* Not for people. Anything that fills this in is a machine. */}
+      <div style={{ position: "absolute", left: "-9999px" }} aria-hidden="true">
+        <label>
+          Website
+          <input name="website" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+
+
       {state.error ? <div className="notice bad">{state.error}</div> : null}
 
       <div className="two">

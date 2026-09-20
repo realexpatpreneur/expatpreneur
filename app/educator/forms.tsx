@@ -1,7 +1,12 @@
 "use client";
 
 import { useActionState } from "react";
-import { saveCourse, saveLesson, type EducatorState } from "./actions";
+import {
+  saveCourse,
+  saveLesson,
+  deleteLesson,
+  type EducatorState,
+} from "./actions";
 import { Uploader } from "@/components/uploader";
 
 export function CourseForm({
@@ -157,6 +162,30 @@ export function LessonForm({
 
       <button className="btn primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}
+
+export function DeleteLessonButton({
+  id,
+  courseId,
+}: {
+  id: string;
+  courseId: string;
+}) {
+  const [state, action, pending] = useActionState<EducatorState, FormData>(
+    deleteLesson,
+    {}
+  );
+
+  return (
+    <form action={action} style={{ marginTop: 10 }}>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="course_id" value={courseId} />
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Taking it down" : "Take this lesson down"}
       </button>
     </form>
   );

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notify";
+import { record } from "@/lib/audit";
 import {
   recordingReady,
   startRecording,
@@ -133,6 +134,13 @@ export async function cancelSession(
     .eq("id", sessionId);
 
   if (error) return { error: error.message };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  await record(user?.id ?? null, "session.cancelled", "live_session", sessionId, {
+    title: session.title,
+  });
 
   const service = createAdminClient();
   const { data: people } = await service

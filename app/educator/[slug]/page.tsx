@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
-import { CourseForm, LessonForm } from "../forms";
+import { CourseForm, LessonForm, DeleteLessonButton } from "../forms";
 
 export default async function EducatorCoursePage({
   params,
@@ -67,12 +67,16 @@ export default async function EducatorCoursePage({
           <div className="cols">
             <div className="stack">
               {(lessons ?? []).map((lesson) => (
-                <LessonForm
-                  key={lesson.id}
-                  courseId={course.id}
-                  nextPosition={lesson.position}
-                  lesson={lesson}
-                />
+                <div key={lesson.id}>
+                  <LessonForm
+                    courseId={course.id}
+                    nextPosition={lesson.position}
+                    lesson={lesson}
+                  />
+                  {mine ? (
+                    <DeleteLessonButton id={lesson.id} courseId={course.id} />
+                  ) : null}
+                </div>
               ))}
               <LessonForm
                 courseId={course.id}
