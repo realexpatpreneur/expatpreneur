@@ -144,6 +144,8 @@ table or deletes a row.
 | 0014_waitlist_and_address | The event address, and when it is shown |
 | 0015_profile_privacy | Narrowed rows, column grants, and `member_records` |
 | 0016_market_outcome | Closing a market question |
+| 0017_shop_window | Circles, Groups and published courses readable by the public |
+| 0018_media | Articles, member stories, and the stories members suggest |
 
 **The helper functions to know**, defined in 0002 and used all over the
 policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
@@ -152,10 +154,19 @@ policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
 `is_session_host()`, `can_join_session()`, `holds_a_role()`,
 `wants_email()`.
 
+**What the public can read.** Villages, Circles, Industry Groups and
+published courses are readable by anybody, names and descriptions only.
+Profiles appear publicly only where the member ticked the public box, and
+only their public columns. Articles are public unless marked members only.
+Everything else needs a member.
+
 **Two things that will bite you if you forget them.**
 
 1. `profiles` no longer exposes email, phone or nationalities to anybody
-   signed in. Those columns are revoked at the grant level. Admin pages
+   signed in, and a signed-out visitor is not granted the member-only
+   columns either, so a page that asks for them while nobody is signed in
+   fails its whole query rather than returning nulls. The pages the public
+   can open ask for fewer columns; see `/members/[id]`. Those columns are revoked at the grant level. Admin pages
    read `member_records`, a view that checks the Village. Anything
    sending email uses the service role.
 2. `member_records` is a `security_invoker = off` view. Its guard is
@@ -167,8 +178,10 @@ policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
 
 ```
 app/
-  (public pages)     /, /villages, /apply, /how-it-works, /contact, /legal
+  (public pages)     /, /discover, /membership, /villages, /members, /media,
+                     /apply, /how-it-works, /contact, /legal
   home, my-village   the member's own landing pages
+  for-you            people and openings, from the member's own profile
   village            Ask & Offer
   directory, members the people
   messages           one to one, with connection requests across Villages
@@ -179,6 +192,7 @@ app/
   groups, pods       Industry Groups and Pods
   businesses, jobs   what members do, and who is hiring
   library, watch     resources and Watch and Listen
+  media              articles and member stories, public and members only
   photos             event galleries
   admin              the Local Admin workspace
   global             the Global team workspace
@@ -267,6 +281,8 @@ Two things to keep:
 - No automated tests anywhere. The access rules were tested by hand
   against a local Postgres, with real member rows.
 - English only.
+- Media is built but was never confirmed as wanted. If it is not, the four
+  pages come out and the two tables sit unused.
 - The apply form has a honeypot and a daily limit per address, but no
   captcha. If it gets hammered, that is the next step.
 - The platform has never been used by anyone except the people who built
