@@ -3,7 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
 import { stripeReady, membershipPriceId } from "@/lib/stripe";
 import { SiteHeader } from "@/components/site-header";
-import { UpgradeButton, CancelMembershipButton } from "./forms";
+import {
+  UpgradeButton,
+  CancelMembershipButton,
+  BillingPortalButton,
+} from "./forms";
 
 export const metadata = { title: "The paid plan, ExpatPreneurs Global" };
 
@@ -81,7 +85,10 @@ export default async function UpgradePage({
                           : "Set by an admin rather than a subscription."}
                     </p>
                     {live && subscription?.status === "active" ? (
-                      <CancelMembershipButton />
+                      <>
+                        <BillingPortalButton />
+                        <CancelMembershipButton />
+                      </>
                     ) : null}
                   </>
                 ) : live ? (

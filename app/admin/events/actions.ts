@@ -11,6 +11,7 @@ import { notify } from "@/lib/notify";
 import { sendEmailToMember, url } from "@/lib/email";
 import { whenText } from "@/lib/events";
 import { record } from "@/lib/audit";
+import { refundTicketsFor } from "@/app/upgrade/actions";
 
 export type EventFormState = { error?: string };
 
@@ -153,6 +154,7 @@ export async function saveEvent(
 
       if (calledOff) {
         await record(admin.userId, "event.cancelled", "event", id, { title });
+        await refundTicketsFor(id);
         await tellTheGuests(id, before.slug, title, "This event is off", [
           "The host has called it off. Nothing is expected of you.",
           "If you paid for a ticket, the refund follows automatically.",

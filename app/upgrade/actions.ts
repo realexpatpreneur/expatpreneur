@@ -24,7 +24,7 @@ export async function startMembershipCheckout(
   if (!user) redirect("/login?next=/upgrade");
 
   const { data: profile } = await supabase
-    .from("profiles")
+    .from("member_records")
     .select("full_name, email, plan")
     .eq("id", user.id)
     .maybeSingle();
@@ -152,4 +152,78 @@ export async function cancelMembership(
   });
 
   redirect("/upgrade/done?state=cancelled");
+}
+
+// Stripe keeps the card, so changing it, seeing invoices and cancelling all
+// happen on their portal rather than here.
+export async function openBillingPortal(
+  _prev: CheckoutState,
+  _formData: FormData
+): Promise<CheckoutState> {
+  if (!stripeReady) return { error: "Payments are not switched on yet." };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=/upgrade");
+
+  const service = createAdminClient();
+  const { data: subscription } = await service
+    .from("subscriptions")
+    .select("provider_customer")
+    .eq("profile_id", user.id)
+    .maybeSingle();
+
+  if (!subscription?.provider_customer) {
+    return { error: "There is nothing to manage on this account yet." };
+  }
+
+  const stripe = getStripe();
+  const session = await stripe.billingPortal.sessions.create({
+    customer: subscription.provider_customer,
+    return_url: `${siteUrl}/upgrade`,
+  });
+
+  redirect(session.url);
+}
+
+// Giving the money back for an event that did not happen. Called when a
+// host calls an event off, so nobody has to remember.
+export async function refundTicketsFor(eventId: string) {
+  if (!stripeReady) return;
+
+  const service = createAdminClient();
+  const { data: payments } = await service
+    .from("payments")
+    .select("id, provider_ref, status")
+    .eq("event_id", eventId)
+    .eq("status", "paid");
+
+  if (!payments?.length) return;
+
+  const stripe = getStripe();
+
+  for (const payment of payments) {
+    if (!payment.provider_ref) continue;
+    try {
+      // The reference we keep is the checkout session, which knows its
+      // own payment.
+      const session = await stripe.checkout.sessions.retrieve(payment.provider_ref);
+      const intent = session.payment_intent;
+      if (!intent) continue;
+
+      await stripe.refunds.create({
+        payment_intent: typeof intent === "string" ? intent : intent.id,
+      });
+
+      await service
+        .from("payments")
+        .update({ status: "refunded" })
+        .eq("id", payment.id);
+    } catch {
+      // A refund that will not go through is left for a person to sort
+      // out, rather than silently marked as done.
+    }
+  }
 }

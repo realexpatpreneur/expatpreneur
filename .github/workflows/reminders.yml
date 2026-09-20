@@ -1,22 +1,37 @@
-# Event reminders, hourly.
-# Vercel Hobby only allows one cron run a day, so the schedule lives here
-# instead. The job simply calls the same endpoint the platform already has.
-name: Event reminders
+# The platform's scheduled jobs.
+# Vercel Hobby allows only one cron run a day, so the schedule lives here.
+# Reminders run hourly; clearing out old recordings runs once, at night.
+name: Scheduled jobs
 
 on:
   schedule:
-    - cron: "5 * * * *"      # five past every hour, UTC
-  workflow_dispatch:          # and a button, for testing
+    - cron: "5 * * * *"        # every hour, for event reminders
+    - cron: "20 3 * * *"       # once a night, to clear out old recordings
+  workflow_dispatch:            # and a button, for testing
 
 jobs:
-  send:
+  reminders:
+    if: github.event.schedule != '20 3 * * *'
     runs-on: ubuntu-latest
     steps:
-      - name: Call the reminder job
+      - name: Send what is due
         run: |
           code=$(curl -s -o response.txt -w "%{http_code}" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             "${{ secrets.SITE_URL }}/api/cron/reminders")
+          echo "status $code"
+          cat response.txt
+          if [ "$code" != "200" ]; then exit 1; fi
+
+  tidy:
+    if: github.event.schedule == '20 3 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear out recordings past their keeping time
+        run: |
+          code=$(curl -s -o response.txt -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/tidy")
           echo "status $code"
           cat response.txt
           if [ "$code" != "200" ]; then exit 1; fi

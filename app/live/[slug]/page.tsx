@@ -387,7 +387,9 @@ export default async function LiveSessionPage({
                       <p className="muted small" style={{ marginTop: 6 }}>
                         Everyone in the room is told when it starts. The file
                         lands in our own storage, and only the people this
-                        session was open to can watch it.
+                        session was open to can watch it. Recordings are kept
+                        for six months unless you publish one into Watch and
+                        Listen, which keeps it for good.
                       </p>
                       <RecordingControls
                         sessionId={session.id}

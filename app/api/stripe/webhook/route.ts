@@ -98,6 +98,70 @@ export async function POST(request: Request) {
     }
   }
 
+  // Money going back, whether we sent it or Stripe did.
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object as Stripe.Charge;
+    const intent =
+      typeof charge.payment_intent === "string"
+        ? charge.payment_intent
+        : charge.payment_intent?.id;
+
+    if (intent) {
+      const { data: sessions } = await service
+        .from("payments")
+        .select("id, provider_ref")
+        .eq("status", "paid");
+
+      // The reference we keep is the checkout session, so match on the
+      // intent recorded against it.
+      for (const row of sessions ?? []) {
+        if (!row.provider_ref) continue;
+        try {
+          const found = await getStripe().checkout.sessions.retrieve(row.provider_ref);
+          const its =
+            typeof found.payment_intent === "string"
+              ? found.payment_intent
+              : found.payment_intent?.id;
+          if (its === intent) {
+            await service
+              .from("payments")
+              .update({ status: "refunded" })
+              .eq("id", row.id);
+            break;
+          }
+        } catch {
+          // Nothing to do; the next one may match.
+        }
+      }
+    }
+  }
+
+  // A card that stopped working. The member is told rather than quietly
+  // dropped at the end of the period.
+  if (event.type === "invoice.payment_failed") {
+    const invoice = event.data.object as Stripe.Invoice;
+    const customer =
+      typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+
+    if (customer) {
+      const { data: subscription } = await service
+        .from("subscriptions")
+        .select("profile_id")
+        .eq("provider_customer", customer)
+        .maybeSingle();
+
+      if (subscription?.profile_id) {
+        await notify(
+          subscription.profile_id,
+          "membership",
+          "Your payment did not go through",
+          "Stripe will try again. You can change the card from your settings.",
+          "/upgrade"
+        );
+      }
+    }
+  }
+
   if (
     event.type === "customer.subscription.updated" ||
     event.type === "customer.subscription.deleted"

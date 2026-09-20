@@ -5,6 +5,7 @@ import {
   startMembershipCheckout,
   startTicketCheckout,
   cancelMembership,
+  openBillingPortal,
   type CheckoutState,
 } from "./actions";
 
@@ -61,6 +62,23 @@ export function TicketButton({
       <input type="hidden" name="slug" value={slug} />
       <button className="btn primary" type="submit" disabled={pending}>
         {pending ? "Opening checkout" : label}
+      </button>
+    </form>
+  );
+}
+
+
+export function BillingPortalButton() {
+  const [state, action, pending] = useActionState<CheckoutState, FormData>(
+    openBillingPortal,
+    {}
+  );
+
+  return (
+    <form action={action} style={{ marginTop: 10 }}>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Opening" : "Change your card or see invoices"}
       </button>
     </form>
   );
