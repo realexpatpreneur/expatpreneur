@@ -56,12 +56,27 @@ begin
     json_build_object('sub', who, 'role', 'authenticated')::text);
 end $$;
 
+-- Supabase reads identity from two settings and falls back from one to
+-- the other, so becoming a stranger means clearing both. Clearing one and
+-- not the other leaves the last person still signed in, which is how this
+-- test first lied to itself.
 create or replace function pg_temp.as_stranger() returns void
 language plpgsql as $$
 begin
   set local role anon;
   set local request.jwt.claim.sub = '';
+  set local request.jwt.claims = '';
 end $$;
+
+-- Who the database thinks is asking. Every section checks this first, so
+-- a result can never be read as the wrong person's.
+create or replace function pg_temp.whoami()
+returns uuid language sql stable as $$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.sub', true), ''),
+    nullif(current_setting('request.jwt.claims', true), '')::json ->> 'sub'
+  )::uuid
+$$;
 
 -- Runs a count as whoever the session is pretending to be. A refusal is
 -- an answer, not an error, so it comes back as false.
@@ -100,6 +115,9 @@ begin
 
   perform pg_temp.as_person(free);
   return query select * from pg_temp.verdict(
+    'the test is signed in as the member it thinks it is',
+    pg_temp.whoami() = free, true);
+  return query select * from pg_temp.verdict(
     'a member cannot read anybody''s email through profiles',
     pg_temp.can_read('select count(*) from profiles where email is not null'),
     false);
@@ -118,6 +136,9 @@ begin
   reset role;
 
   perform pg_temp.as_person(admin);
+  return query select * from pg_temp.verdict(
+    'the test is signed in as the admin it thinks it is',
+    pg_temp.whoami() = admin, true);
   return query select * from pg_temp.verdict(
     'a Local Admin can read the records of their own Village',
     pg_temp.can_read(format('select count(*) from member_records where id = %L', free)),
@@ -177,6 +198,9 @@ begin
   return query select ''::text, '--- a stranger ---'::text, null::text;
 
   perform pg_temp.as_stranger();
+  return query select * from pg_temp.verdict(
+    'the test is nobody at all, not the last person it pretended to be',
+    pg_temp.whoami() is null, true);
   return query select * from pg_temp.verdict(
     'a stranger reads the Villages',
     pg_temp.can_read('select count(*) from villages'),
