@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 
 // What the email looks like, with the placeholders filled in with example
 // values. The prototype has this for the welcome and the re-enrolment
@@ -48,9 +47,7 @@ export default async function EmailPreviewPage({
   const lines = fill(template.body).split("\n").filter((line) => line.trim());
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href={`/global/emails/${template.key}`}>{template.name}</Link>
@@ -98,7 +95,6 @@ export default async function EmailPreviewPage({
             </p>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }
