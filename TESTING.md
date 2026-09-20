@@ -32,7 +32,9 @@ In the private window, go to the site.
 - [ ] Members shows only the people who chose to be public.
 - [ ] Open one of them. You see their headline and business. You do not see
       what they are looking for, and there is no way to contact them.
-- [ ] Membership says what membership is and what the paid plan adds.
+- [ ] Membership says what membership is and what the paid plan adds, and
+      the prices match what is set at /global/plans.
+- [ ] Learning shows courses anybody can buy, with the public price.
 - [ ] Media shows anything published that is not members only.
 - [ ] The Terms and Privacy pages open, and both say they are drafts.
 
@@ -48,6 +50,10 @@ Still in the private window.
       skip the optional parts.
 - [ ] It accepts you and says somebody reads every one.
 - [ ] Send the same form again. It should refuse, once per address per day.
+- [ ] Note the reference you were given. Open /apply/status and check it
+      with the email address. It should say where the request stands.
+- [ ] Try the same reference with a different email address, and a made up
+      reference with the right address. Both should tell you nothing.
 
 In the admin browser:
 
@@ -70,6 +76,30 @@ Open the sign in link in the private window.
       work from. Both are correct answers.
 - [ ] Settings: change your name, upload a photograph, turn off one of the
       email preferences. All three save.
+
+## 3b. Selling a course
+
+In the admin browser, give yourself the Educator role at /global/roles if
+you do not have it, then in the educator workspace:
+
+- [ ] Write a course with two lessons. Set a public price and a lower
+      member price. Publish it.
+- [ ] At /global/learning it is waiting to be read, not live. Approve it.
+- [ ] The educator workspace now shows it as published rather than
+      waiting.
+
+In the member browser:
+
+- [ ] The course shows the member price.
+- [ ] The lessons do not open before paying.
+- [ ] Buy it with a Stripe test card. The lessons open.
+- [ ] Ask for a refund from the course page.
+
+In the admin browser:
+
+- [ ] The refund request is on /global/money. Approve it.
+- [ ] The member's lessons close again.
+- [ ] /educator/sales shows the sale and then the refund.
 
 ## 4. An event, end to end
 
@@ -141,8 +171,16 @@ In the admin browser:
 - [ ] Member care shows who has gone quiet.
 - [ ] Insight shows the Village's numbers, and says plainly when there is
       not enough to say anything.
-- [ ] The audit log has your approval, your announcement and the event you
-      called off in it.
+- [ ] The audit log at /global/audit has your approval, your announcement
+      and the event you called off in it, in plain words.
+- [ ] Village settings: write a welcome message. It appears on the
+      member's Village page.
+- [ ] Write to the Global team from the same page. It lands in Global
+      suggestions.
+- [ ] A member proposes a Pod at /pods/propose. Approve it at
+      /global/requests. The Pod exists with them leading it.
+- [ ] A member asks to move Village at /settings/transfer. Arrange it at
+      /admin/transfers. Their Village changes and their Circle clears.
 
 ---
 

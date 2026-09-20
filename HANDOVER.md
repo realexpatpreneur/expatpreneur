@@ -146,6 +146,11 @@ table or deletes a row.
 | 0016_market_outcome | Closing a market question |
 | 0017_shop_window | Circles, Groups and published courses readable by the public |
 | 0018_media | Articles, member stories, and the stories members suggest |
+| 0019_proposals_and_requests | Proposing a Pod, moving Village, and a member's own data |
+| 0020_review_and_plans | Course review, and the membership plans |
+| 0021_course_sales | Course prices, purchases, and who may read the lessons |
+| 0022_educator_earnings | The educator's share, refund requests, payouts |
+| 0023_status_and_village_settings | Application references, and what a Local Admin may change |
 
 **The helper functions to know**, defined in 0002 and used all over the
 policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
@@ -155,7 +160,7 @@ policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
 `wants_email()`.
 
 **What the public can read.** Villages, Circles, Industry Groups and
-published courses are readable by anybody, names and descriptions only.
+approved courses are readable by anybody, names and descriptions only.
 Profiles appear publicly only where the member ticked the public box, and
 only their public columns. Articles are public unless marked members only.
 Everything else needs a member.
@@ -171,6 +176,15 @@ Everything else needs a member.
    sending email uses the service role.
 2. `member_records` is a `security_invoker = off` view. Its guard is
    inside the view, not a policy.
+3. Three rules live in triggers rather than policies, because they are
+   about what a row may become rather than who may read it: an educator
+   cannot approve their own course, editing an approved course sends it
+   back to be read again, and an application gets its reference on insert.
+   If a value keeps reverting, look for a trigger before you look at the
+   page.
+4. A course with a price opens its lessons only to somebody who paid.
+   That is `has_paid_for()` inside the `lessons` policy, so a refund
+   closes the course again with nothing else to remember.
 
 ---
 
@@ -182,12 +196,14 @@ app/
                      /apply, /how-it-works, /contact, /legal
   home, my-village   the member's own landing pages
   for-you            people and openings, from the member's own profile
+  apply/status       where somebody's invitation request stands
   village            Ask & Offer
   directory, members the people
   messages           one to one, with connection requests across Villages
   events, e/[slug]   events, and their public pages
   live               live rooms, /live/[slug]/room is the room itself
-  learning, educator courses, taking and writing
+  learning, educator courses, taking, writing and selling; sales and payouts
+  pods/propose       a member starts a Pod, the Global team approves it
   markets            market pathways
   groups, pods       Industry Groups and Pods
   businesses, jobs   what members do, and who is hiring
@@ -197,7 +213,7 @@ app/
   admin              the Local Admin workspace
   global             the Global team workspace
   lead               what a Circle Host, Group or Pod lead runs
-  settings, renew    the member's own account
+  settings, renew    the member's own account, moving city, their own data
   api/               webhooks and scheduled jobs
 lib/
   supabase/          three clients: browser, server, service role
@@ -245,7 +261,21 @@ supabase/migrations/ the numbered SQL files
 
 Villages, the internal nationality balance, cities people are asking for,
 Groups and Pods, market pathways, roles, moderation, suggestions across
-every Village, money and reporting.
+every Village, money and reporting. Also: Requests (Pods members want to
+start, and members asking about their own data), Learning (reading a
+course before it reaches members), Plans (what membership costs), Media,
+and The record (the audit log).
+
+**What money moves through the platform**
+
+- Membership, a Stripe subscription. The card is changed on Stripe's
+  portal, never here.
+- Event tickets, one-off. Calling an event off refunds them automatically.
+- Courses. An educator sets a public price and a member price; the
+  platform keeps a share set in `settings.educator_share` and recorded on
+  each payout, so changing it later does not rewrite what was agreed.
+  Refunds are decided by the Global team, asked of Stripe first, and
+  recorded only if Stripe agrees. Payouts are recorded by hand.
 
 **Scheduled jobs**, in GitHub Actions
 
@@ -283,6 +313,14 @@ Two things to keep:
 - English only.
 - Media is built but was never confirmed as wanted. If it is not, the four
   pages come out and the two tables sit unused.
+- Somebody who is not a member can buy a course, but has no account, so
+  the educator sends it to them. Giving buyers an account would make
+  membership purchasable, which is a decision for the founder.
+- Payouts to educators are recorded by hand. Stripe Connect is the answer
+  once there are enough educators to justify it.
+- Six prototype screens were deliberately not built: editing the public
+  pages and the email templates from inside the platform, system
+  settings, sponsored events, a newsletter, and a recognition page.
 - The apply form has a honeypot and a daily limit per address, but no
   captcha. If it gets hammered, that is the next step.
 - The platform has never been used by anyone except the people who built
