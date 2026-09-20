@@ -151,6 +151,12 @@ table or deletes a row.
 | 0021_course_sales | Course prices, purchases, and who may read the lessons |
 | 0022_educator_earnings | The educator's share, refund requests, payouts |
 | 0023_status_and_village_settings | Application references, and what a Local Admin may change |
+| 0024_settings_to_prototype | The member, Village and system settings fields |
+| 0025_email_templates | The eight transactional emails, edited in the platform |
+| 0026_pages | The public pages, edited in blocks |
+| 0027_recognition_and_partners | Monthly recognition, and partnered events |
+| 0028_public_businesses | The public marketplace and its enquiries |
+| 0029_shows_and_newsletter | Podcast shows, and the newsletter list |
 
 **The helper functions to know**, defined in 0002 and used all over the
 policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
@@ -193,7 +199,8 @@ Everything else needs a member.
 ```
 app/
   (public pages)     /, /discover, /membership, /villages, /members, /media,
-                     /apply, /how-it-works, /contact, /legal
+                     /businesses, /learning, /watch, /apply, /how-it-works,
+                     /contact, /legal
   home, my-village   the member's own landing pages
   for-you            people and openings, from the member's own profile
   apply/status       where somebody's invitation request stands
@@ -213,7 +220,8 @@ app/
   admin              the Local Admin workspace
   global             the Global team workspace
   lead               what a Circle Host, Group or Pod lead runs
-  settings, renew    the member's own account, moving city, their own data
+  settings, renew    five tabs: account, profile, membership, notifications
+                     and privacy; moving city; receipts; their own data
   api/               webhooks and scheduled jobs
 lib/
   supabase/          three clients: browser, server, service role
@@ -264,13 +272,28 @@ Groups and Pods, market pathways, roles, moderation, suggestions across
 every Village, money and reporting. Also: Requests (Pods members want to
 start, and members asking about their own data), Learning (reading a
 course before it reaches members), Plans (what membership costs), Media,
-and The record (the audit log).
+and The record (the audit log). Also: Pages (the public site, edited in
+blocks), Emails (the eight transactional templates), System settings,
+Recognition, Partnered events and Business listings.
+
+**Two rules about content that are easy to miss**
+
+- A page is a draft until it is published. While it is a draft the site
+  shows what is written in the code; publishing makes the site show the
+  blocks; taking it back to draft restores the code version. Nothing is
+  ever lost by editing.
+- A transactional email falls back to the wording in the code if its
+  template is switched off or the database cannot be reached, so an
+  editing mistake cannot stop an email going out.
 
 **What money moves through the platform**
 
 - Membership, a Stripe subscription. The card is changed on Stripe's
   portal, never here.
 - Event tickets, one-off. Calling an event off refunds them automatically.
+- Recognition. A monthly thank you to Local Admins, Circle Hosts,
+  Industry Leads and Pod Leads, at amounts set in `settings`, recorded as
+  payouts and paid by hand. Running a month twice pays nobody twice.
 - Courses. An educator sets a public price and a member price; the
   platform keeps a share set in `settings.educator_share` and recorded on
   each payout, so changing it later does not rewrite what was agreed.
@@ -310,8 +333,8 @@ Two things to keep:
   the retention periods. A lawyer signs them off before launch.
 - The access rules have a test file, `supabase/tests/access_rules.sql`.
   Run it in the SQL editor after any migration that touches a policy, a
-  grant or a role. It makes its own Villages and people, checks twenty
-  rules, returns a table of results and rolls everything back, so nothing
+  grant or a role. It makes its own Villages, people, pages and listings,
+  checks thirty rules, returns a table of results and rolls everything back, so nothing
   it makes survives and nothing real is touched. Failures are listed
   first: if the top row says ok, all of it passed.
 - Nothing else is tested automatically. The pages, the payments and the

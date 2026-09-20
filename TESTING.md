@@ -74,8 +74,13 @@ Open the sign in link in the private window.
 - [ ] The Directory shows your own Village.
 - [ ] For you either suggests people, or says your profile is too empty to
       work from. Both are correct answers.
-- [ ] Settings: change your name, upload a photograph, turn off one of the
-      email preferences. All three save.
+- [ ] Settings: the five tabs. Change your name on Profile, set a phone
+      and a time zone on Account, turn off the weekly digest on
+      Notifications, and switch off the public profile on Privacy. All
+      four save, and switching the public profile off takes you off
+      /members.
+- [ ] Settings, Membership: the plan, and Receipts opens even with nothing
+      in it.
 
 ## 3b. Selling a course
 
@@ -144,7 +149,7 @@ In the member browser:
 ## 6. The things that should be refused
 
 Before doing any of this by hand, run `supabase/tests/access_rules.sql` in
-the Supabase SQL editor. It checks twenty of these rules in a few seconds,
+the Supabase SQL editor. It checks thirty of these rules in a few seconds,
 returns a table and rolls itself back. Failures come first, so if the top
 row says ok, all of it passed. Then do the ones
 below, which are about the pages rather than the database.
@@ -167,6 +172,34 @@ In the private window, signed in as nobody:
 - [ ] /home sends you to the login page.
 - [ ] /directory sends you to the login page.
 - [ ] A members-only article is not readable.
+
+## 6b. The marketplace and the public site
+
+In the private window, signed in as nobody:
+
+- [ ] /businesses shows listings, and a business page shows its offer and
+      services. Send an enquiry. It arrives as a notification and an email
+      to the member who owns it.
+- [ ] /watch/show/expatpreneurs shows the podcast with its episodes.
+- [ ] Sharing an episode gives you an expatpreneur link, not a YouTube
+      one.
+- [ ] Sign up to the newsletter on /media. It confirms without saying
+      whether the address was already on the list.
+
+In the admin browser:
+
+- [ ] /global/businesses takes a listing down. It disappears from the
+      public marketplace and the owner is told why.
+- [ ] /global/content: open Home, change the hero heading, save as draft.
+      The public home page is unchanged. Publish. It changes. Take it back
+      to draft. It changes back.
+- [ ] /global/emails: reword the application acknowledgement, send
+      yourself a test, then send a real request from the private window
+      and check the new wording arrives.
+- [ ] /global/recognition: set amounts, run the month, mark one paid.
+      Running it twice adds nobody twice.
+- [ ] /admin/partners: propose a partnered event. Approve it at
+      /global/partners with conditions. The proposer is told.
 
 ## 7. The admin work
 

@@ -45,6 +45,22 @@ values
   ('cccccccc-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'ask', 'Alpha ask', 'Body', 'open'),
   ('cccccccc-0000-0000-0000-000000000002', 'bbbbbbbb-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000002', 'ask', 'Beta ask',  'Body', 'open');
 
+-- Something published and something still a draft, on both the page
+-- editor and the marketplace.
+insert into pages (slug, title, path, status) values
+  ('test-live',  'Test live',  '/test-live',  'live'),
+  ('test-draft', 'Test draft', '/test-draft', 'draft');
+
+insert into businesses (slug, owner_id, village_id, name, public, hidden)
+values
+  ('test-open',   'bbbbbbbb-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000002', 'Test Open',   true,  false),
+  ('test-hidden', 'bbbbbbbb-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000002', 'Test Hidden', true,  true);
+
+insert into newsletter_signups (email, source) values ('someone@test.invalid', 'test');
+
+insert into payouts (person_id, kind, period_start, period_end, gross_cents, share, net_cents, currency)
+values ('bbbbbbbb-0000-0000-0000-000000000002', 'recognition', '2026-09-01', '2026-09-30', 5000, 100, 5000, 'EUR');
+
 -- ------------------------------------------------------------ the checks
 
 create or replace function pg_temp.as_person(who uuid) returns void
@@ -195,6 +211,27 @@ begin
     false);
   reset role;
 
+  return query select ''::text, '--- money and mailing lists ---'::text, null::text;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a member cannot read the email templates',
+    pg_temp.can_read('select count(*) from email_templates'),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot read somebody else''s payout',
+    pg_temp.can_read('select count(*) from payouts'),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot read the newsletter list',
+    pg_temp.can_read('select count(*) from newsletter_signups'),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot read enquiries sent to somebody else''s business',
+    pg_temp.can_read('select count(*) from business_enquiries'),
+    false);
+  reset role;
+
   return query select ''::text, '--- a stranger ---'::text, null::text;
 
   perform pg_temp.as_stranger();
@@ -229,6 +266,30 @@ begin
     'a stranger cannot read asks',
     pg_temp.can_read('select count(*) from asks'),
     false);
+  return query select * from pg_temp.verdict(
+    'a stranger reads a published page',
+    pg_temp.can_read('select count(*) from pages where slug = ''test-live'''),
+    true);
+  return query select * from pg_temp.verdict(
+    'a stranger cannot read a page still in draft',
+    pg_temp.can_read('select count(*) from pages where slug = ''test-draft'''),
+    false);
+  return query select * from pg_temp.verdict(
+    'a stranger reads a public business listing',
+    pg_temp.can_read('select count(*) from businesses where slug = ''test-open'''),
+    true);
+  return query select * from pg_temp.verdict(
+    'a stranger cannot read a listing the Global team took down',
+    pg_temp.can_read('select count(*) from businesses where slug = ''test-hidden'''),
+    false);
+  return query select * from pg_temp.verdict(
+    'a stranger cannot read the newsletter list',
+    pg_temp.can_read('select count(*) from newsletter_signups'),
+    false);
+  return query select * from pg_temp.verdict(
+    'a stranger reads the podcast show',
+    pg_temp.can_read('select count(*) from shows'),
+    true);
   reset role;
   return;
 end $fn$;
