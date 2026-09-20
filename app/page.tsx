@@ -55,45 +55,48 @@ export default async function HomePage() {
       <main className="wrap">
         <section className="hero">
           <div>
-            <span className="kicker">By invitation, in eleven cities</span>
             <h1>Your business needs a village too.</h1>
             <p className="lead">
               A curated network of expat entrepreneurs. Belong to a small,
               trusted community in your city, and reach people you can trust
               in other markets.
             </p>
-            <p style={{ marginTop: 18 }}>
-              <Link className="btn primary" href="/apply">
+            <div className="ctas">
+              <Link className="btn dark" href="/apply">
                 Request your invitation
-              </Link>{" "}
-              <Link className="btn" href="/discover">
-                Look around first
               </Link>
-            </p>
-            <p className="note">
-              Membership is free. Somebody reads every request.
+              <Link className="btn" href="/villages">
+                Find your Village
+              </Link>
+            </div>
+            <p className="proverb">
+              &ldquo;It takes a village to raise a child.&rdquo; We believe the
+              same is true of the businesses we build far from home.
             </p>
           </div>
 
-          <div className="panel">
+          <div className="panel art">
             <h3>Three places at once</h3>
             <div className="layers" style={{ marginTop: 14 }}>
               <div className="layer">
-                <b>Your Circle</b>
+                <b>Global</b>
                 <span className="muted small">
-                  Up to fifty people who actually know each other.
+                  The whole network. Members, events and markets wherever
+                  there is a Village.
                 </span>
               </div>
               <div className="layer">
-                <b>Your Village</b>
+                <b>Village</b>
                 <span className="muted small">
-                  Everybody in your city, and what is on this month.
+                  Your city. Local gatherings, local knowledge and the people
+                  building around you.
                 </span>
               </div>
               <div className="layer">
-                <b>The network</b>
+                <b>Circle</b>
                 <span className="muted small">
-                  Every other city, when you need a market you do not know.
+                  Your home base of up to fifty members, where real
+                  relationships form.
                 </span>
               </div>
             </div>
@@ -101,22 +104,110 @@ export default async function HomePage() {
         </section>
 
         <section className="band public">
-          <h2>Villages</h2>
+          <h2>Big enough to open doors. Small enough to know each other.</h2>
+          <p className="intro">
+            Every member belongs to three places at once. As the network grows,
+            your home base stays human sized.
+          </p>
+
+          <div className="across">
+            <p style={{ flex: 1, minWidth: 220, margin: 0 }}>
+              <b>Across all three:</b> Industry Groups connect you with people
+              in your field, and Pods bring a few members together around a
+              shared goal.
+            </p>
+            <Link className="btn sm" href="/how-it-works">
+              How it works
+            </Link>
+          </div>
+        </section>
+
+        <section className="band public">
+          <div className="sechead">
+            <h2 style={{ fontSize: 20 }}>What members do here</h2>
+          </div>
           <div className="grid">
-            {ordered.map((village, i) => (
+            {[
+              [
+                "Ask and offer help",
+                "Post what you need or what you can give, and track it until it is resolved.",
+              ],
+              [
+                "Find the right people",
+                "Search by skill, language and the markets people know.",
+              ],
+              [
+                "Meet in person",
+                "Monthly gatherings in your Village, and events in other cities.",
+              ],
+              [
+                "Explore new markets",
+                "Talk to members who already build where you want to go.",
+              ],
+            ].map(([title, text]) => (
+              <div className="panel" key={title}>
+                <h3>{title}</h3>
+                <p className="muted small" style={{ marginTop: 4 }}>
+                  {text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="band public">
+          <div className="sechead">
+            <h2 style={{ fontSize: 20 }}>Villages</h2>
+            <Link href="/villages" style={{ fontWeight: 600 }}>
+              See all Villages
+            </Link>
+          </div>
+          <div className="grid three">
+            {ordered.slice(0, 3).map((village, i) => (
               <article className="card" key={village.id}>
-                <Link href={`/villages/${village.slug}`}>
-                  <div className={`cover ${covers[i % covers.length]}`}>
-                    {village.name}
-                  </div>
-                  <div className="kind">{village.country}</div>
-                  <p>{village.summary}</p>
-                  <div className="meta">
+                <div className={`cover ${covers[i % covers.length]}`}>
+                  {village.name}
+                </div>
+                <div className="vbody">
+                  <span
+                    className={`chip ${
+                      village.status === "open" ? "mint" : "sun"
+                    }`}
+                  >
                     {statusLine[village.status] ?? village.status}
-                  </div>
-                </Link>
+                  </span>
+                  <p>
+                    {village.country}. {village.summary}
+                  </p>
+                  <Link className="btn sm" href={`/villages/${village.slug}`}>
+                    {village.status === "open"
+                      ? `Explore ${village.name}`
+                      : "See what is coming"}
+                  </Link>
+                </div>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="band public">
+          <div className="story">
+            <div className="img" />
+            <div>
+              <span className="chip pink">From the founder</span>
+              <h3 style={{ fontSize: 20, marginTop: 12, maxWidth: "28ch" }}>
+                Six countries, one lesson: local belonging needs global
+                continuity.
+              </h3>
+              <p className="muted" style={{ marginTop: 8, maxWidth: "56ch" }}>
+                Kristiane Charrier on rebuilding her network at every move, and
+                why the first ExpatPreneurs community shaped everything that
+                followed.
+              </p>
+              <Link className="btn sm" href="/media">
+                Read the story
+              </Link>
+            </div>
           </div>
         </section>
 

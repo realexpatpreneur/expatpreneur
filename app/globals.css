@@ -131,8 +131,7 @@ section.band { padding: 34px 0 6px; }
 }
 
 /* the mark beside the name, on every prototype page */
-.top .brand::before {
-  content: "EP";
+.mark {
   width: 30px;
   height: 30px;
   border-radius: 9px;
@@ -143,6 +142,38 @@ section.band { padding: 34px 0 6px; }
   font: 650 11px/1 var(--display);
   letter-spacing: -0.02em;
   flex: none;
+}
+
+.brand small {
+  font-weight: 500;
+  color: var(--blue);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.pubnav a[aria-current],
+.pubnav a:hover {
+  color: var(--blue);
+}
+
+/* the round search button in the header */
+.iconbtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--navy);
+  font-size: 0;
+  flex: none;
+}
+
+.iconbtn::before {
+  content: "⌕";
+  font-size: 17px;
+  line-height: 1;
 }
 
 .top nav {
@@ -843,39 +874,107 @@ main.wrap > section.band.public h2 {
 }
 
 /* The footer in columns, as the prototype has it. */
-footer.site .cols-foot {
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 24px; padding: 40px 0 32px; }
+  .layers { grid-template-columns: 1fr; }
+  .layer { border-right: 0; border-bottom: 1px solid var(--line); }
+  .plans { grid-template-columns: 1fr; }
+  footer.site .cols-foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* --------------------------------------------- the footer, in full */
+
+footer.site {
+  background: var(--navy);
+  color: #c9d6e2;
+  margin-top: 46px;
+  font-size: 13px;
+}
+
+footer.site .brand {
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--display);
+  font-weight: 650;
+  font-size: 14px;
+}
+
+footer.site .brand .mark {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+footer.site .ft-top {
+  max-width: var(--shell);
+  margin: 0 auto;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 40px 28px 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+footer.site .ft-brand { max-width: 360px; }
+
+footer.site .ft-brand p {
+  margin-top: 12px;
+  color: #c9d6e2;
+  line-height: 1.6;
+}
+
+footer.site .ft-news { width: min(100%, 400px); }
+footer.site .ft-news b { display: block; color: #fff; font-size: 14px; }
+footer.site .ft-news p { color: #c9d6e2; margin-top: 4px; }
+
+/* the sign up inside the footer keeps the dark surface */
+footer.site .ft-news form { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+footer.site .ft-news .field { flex: 1; margin: 0; min-width: 180px; }
+footer.site .ft-news .field > span:first-child { display: none; }
+
+footer.site .ft-news input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+footer.site .ft-news input::placeholder { color: #93a6b8; }
+
+footer.site .ft-news .btn {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: var(--navy);
+}
+
+footer.site .ft-cols {
   max-width: var(--shell);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 24px;
-  padding: 36px 28px;
+  padding: 30px 28px;
 }
 
-footer.site .cols-foot b {
-  display: block;
-  color: #fff;
-  font-family: var(--display);
-  font-size: 13px;
-  margin-bottom: 8px;
+footer.site .ft-cols h4 {
+  color: var(--mint);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
 }
 
-footer.site .cols-foot a {
-  display: block;
-  color: #c9d6e2;
-  font-size: 13px;
-  margin-bottom: 5px;
-}
+footer.site .ft-cols nav { display: grid; gap: 9px; align-content: start; }
+footer.site .ft-cols a { color: #e6eef5; }
+footer.site .ft-cols a:hover { color: #fff; text-decoration: underline; }
 
-footer.site .cols-foot a:hover {
-  color: #fff;
-}
-
-footer.site .bottom {
+footer.site .ft-bottom {
   max-width: var(--shell);
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
   gap: 12px;
   padding: 16px 28px;
@@ -884,10 +983,79 @@ footer.site .bottom {
   color: #93a6b8;
 }
 
+footer.site .ft-bottom a { color: #93a6b8; }
+footer.site .ft-bottom a:hover { color: #fff; }
+
 @media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; gap: 24px; padding: 40px 0 32px; }
-  .layers { grid-template-columns: 1fr; }
-  .layer { border-right: 0; border-bottom: 1px solid var(--line); }
-  .plans { grid-template-columns: 1fr; }
-  footer.site .cols-foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  footer.site .ft-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* --------------------------------------------- the home page blocks */
+
+.hero .ctas { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+
+.hero .proverb {
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 46ch;
+  border-left: 3px solid var(--mint);
+  padding-left: 12px;
+}
+
+.intro { color: #46586a; margin-top: 10px; max-width: 60ch; font-size: 14px; }
+
+.across {
+  margin-top: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: var(--mint-soft);
+}
+
+.sechead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sechead a { color: var(--blue); font-size: 13px; }
+
+/* the body of a Village card */
+.vbody {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.vbody p { margin: 0; font-size: 13px; color: var(--muted); }
+
+/* the founder story */
+.story {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  border-radius: var(--radius);
+  background: var(--pink);
+  padding: 22px;
+}
+
+.story .img {
+  height: 180px;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #2c3e50 0%, #4074ae 60%, #a8dcd1 100%);
+}
+
+@media (max-width: 760px) {
+  .story { grid-template-columns: 1fr; }
+  .story .img { height: 140px; }
 }

@@ -1,37 +1,27 @@
 import Link from "next/link";
 import { MemberNav } from "@/components/member-nav";
 
+// The public header, as the prototype draws it: the mark, the wordmark
+// with Global in blue, the navigation to the left, then search, sign in
+// and the navy invitation pill.
 export async function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
   return (
     <>
       <header className="top">
         <Link className="brand" href={signedIn ? "/home" : "/"}>
-          ExpatPreneurs
+          <span className="mark">EP</span>
+          <span>
+            ExpatPreneurs <small>Global</small>
+          </span>
         </Link>
 
         {signedIn ? null : (
           <nav className="pubnav">
-            <Link className="hide-small" href="/discover">
-              Discover
-            </Link>
-            <Link className="hide-small" href="/villages">
-              Villages
-            </Link>
-            <Link className="hide-small" href="/how-it-works">
-              How it works
-            </Link>
-            <Link className="hide-small" href="/businesses">
-              Businesses
-            </Link>
-            <Link className="hide-small" href="/learning">
-              Learning
-            </Link>
-            <Link className="hide-small" href="/media">
-              Media
-            </Link>
-            <Link className="hide-small" href="/watch">
-              Watch and Listen
-            </Link>
+            <Link href="/discover">Discover</Link>
+            <Link href="/how-it-works">How it works</Link>
+            <Link href="/membership">Membership</Link>
+            <Link href="/events">Events</Link>
+            <Link href="/watch">Watch and Listen</Link>
           </nav>
         )}
 
@@ -41,7 +31,7 @@ export async function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
           </Link>
           {signedIn ? (
             <>
-              <Link className="hide-small" href="/search">
+              <Link className="iconbtn hide-small" href="/search" aria-label="Search">
                 Search
               </Link>
               <Link className="hide-small" href="/notifications">
@@ -53,9 +43,14 @@ export async function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
             </>
           ) : (
             <>
-              <Link href="/login">Log in</Link>
-              <Link className="btn primary" href="/apply">
-                Request an invitation
+              <Link className="iconbtn hide-small" href="/discover" aria-label="Search">
+                Search
+              </Link>
+              <Link className="hide-small" href="/login">
+                Log in
+              </Link>
+              <Link className="btn dark" href="/apply">
+                Request your invitation
               </Link>
             </>
           )}
