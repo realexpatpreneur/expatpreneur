@@ -63,28 +63,8 @@ begin
   set local request.jwt.claim.sub = '';
 end $$;
 
--- The results are collected rather than printed, because the SQL editor
--- shows tables and swallows notices.
-create temporary table test_results (
-  seq      serial,
-  verdict  text,
-  rule     text,
-  expected boolean,
-  got      boolean
-) on commit drop;
-
--- The checks run while the session is pretending to be a member or a
--- stranger, so those roles need to be able to write their result down.
-grant all on test_results to public;
-grant all on sequence test_results_seq_seq to public;
-
-create or replace function pg_temp.check(what text, got boolean, expected boolean)
-returns void language plpgsql as $$
-begin
-  insert into test_results (verdict, rule, expected, got)
-  values (case when got = expected then 'ok' else 'FAILED' end, what, expected, got);
-end $$;
-
+-- Runs a count as whoever the session is pretending to be. A refusal is
+-- an answer, not an error, so it comes back as false.
 create or replace function pg_temp.can_read(query text)
 returns boolean language plpgsql as $$
 declare n int;
@@ -95,131 +75,146 @@ exception when others then
   return false;
 end $$;
 
-do $$
+-- One rule, checked. A row rather than a printed line.
+create or replace function pg_temp.verdict(what text, got boolean, expected boolean)
+returns table (verdict text, rule text, detail text)
+language sql as $$
+  select
+    case when got = expected then 'ok' else 'FAILED' end,
+    what,
+    case when got <> expected then format('expected %s, got %s', expected, got) end
+$$;
+
+-- The results come back from a function rather than a table, so the
+-- editor has nothing to warn about and nothing is created that could
+-- outlive the transaction.
+create or replace function pg_temp.checks()
+returns table (verdict text, rule text, detail text)
+language plpgsql as $fn$
 declare
   free  uuid := 'bbbbbbbb-0000-0000-0000-000000000001';
   paid  uuid := 'bbbbbbbb-0000-0000-0000-000000000002';
   admin uuid := 'bbbbbbbb-0000-0000-0000-000000000003';
 begin
-  insert into test_results (verdict, rule) values ('', '--- a member''s private columns ---');
+  return query select ''::text, '--- a member''s private columns ---'::text, null::text;
 
   perform pg_temp.as_person(free);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a member cannot read anybody''s email through profiles',
     pg_temp.can_read('select count(*) from profiles where email is not null'),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a member cannot read anybody''s phone through profiles',
     pg_temp.can_read('select count(*) from profiles where phone is not null'),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a member can read their own record through member_records',
     pg_temp.can_read(format('select count(*) from member_records where id = %L', free)),
     true);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a member cannot read another member''s record through member_records',
     pg_temp.can_read(format('select count(*) from member_records where id = %L', paid)),
     false);
   reset role;
 
   perform pg_temp.as_person(admin);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a Local Admin can read the records of their own Village',
     pg_temp.can_read(format('select count(*) from member_records where id = %L', free)),
     true);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a Local Admin cannot read the records of another Village',
     pg_temp.can_read(format('select count(*) from member_records where id = %L', paid)),
     false);
   reset role;
 
-  insert into test_results (verdict, rule) values ('', '--- who can see whom ---');
+  return query select ''::text, '--- who can see whom ---'::text, null::text;
 
   perform pg_temp.as_person(free);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a free member sees their own Village',
     pg_temp.can_read(format('select count(*) from profiles where id = %L', admin)),
     true);
   reset role;
 
   perform pg_temp.as_person(paid);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a paid member sees other Villages',
     pg_temp.can_read(format('select count(*) from profiles where id = %L', free)),
     true);
   reset role;
 
-  insert into test_results (verdict, rule) values ('', '--- Ask and Offer stays in its Village ---');
+  return query select ''::text, '--- Ask and Offer stays in its Village ---'::text, null::text;
 
   perform pg_temp.as_person(free);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a free member reads their own Village''s asks',
     pg_temp.can_read('select count(*) from asks where village_id = ''aaaaaaaa-0000-0000-0000-000000000001'''),
     true);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a free member does not read another Village''s asks',
     pg_temp.can_read('select count(*) from asks where village_id = ''aaaaaaaa-0000-0000-0000-000000000002'''),
     false);
   reset role;
 
-  insert into test_results (verdict, rule) values ('', '--- the workspaces ---');
+  return query select ''::text, '--- the workspaces ---'::text, null::text;
 
   perform pg_temp.as_person(free);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a member cannot read the audit log',
     pg_temp.can_read('select count(*) from audit_log'),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a member cannot read applications',
     pg_temp.can_read('select count(*) from applications'),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a member cannot read reports',
     pg_temp.can_read('select count(*) from reports'),
     false);
   reset role;
 
-  insert into test_results (verdict, rule) values ('', '--- a stranger ---');
+  return query select ''::text, '--- a stranger ---'::text, null::text;
 
   perform pg_temp.as_stranger();
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a stranger reads the Villages',
     pg_temp.can_read('select count(*) from villages'),
     true);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a stranger reads a public profile',
     pg_temp.can_read('select count(*) from profiles where public_profile'),
     true);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a stranger cannot read a private profile',
     pg_temp.can_read(format('select count(*) from profiles where id = %L', free)),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a stranger cannot read any email',
     pg_temp.can_read('select count(*) from profiles where email is not null'),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a stranger cannot read a Circle WhatsApp link',
     pg_temp.can_read('select count(*) from circles where whatsapp_url is not null'),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a stranger cannot read messages',
     pg_temp.can_read('select count(*) from messages'),
     false);
-  perform pg_temp.check(
+  return query select * from pg_temp.verdict(
     'a stranger cannot read asks',
     pg_temp.can_read('select count(*) from asks'),
     false);
   reset role;
-
-end $$;
+  return;
+end $fn$;
 
 -- Failures first, then everything in the order it was checked.
-select
-  verdict,
-  rule,
-  case when verdict = 'FAILED' then format('expected %s, got %s', expected, got) end as detail
-from test_results
+with results as (
+  select row_number() over () as seq, * from pg_temp.checks()
+)
+select verdict, rule, detail
+from results
 order by case when verdict = 'FAILED' then 0 else 1 end, seq;
 
 rollback;
