@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -8,7 +9,28 @@ export const metadata = {
     "Membership is by invitation and costs nothing. The paid plan opens the rest of the network.",
 };
 
-export default function MembershipPage() {
+function priceLine(plan: {
+  price_cents: number;
+  currency: string;
+  interval: string;
+}) {
+  if (plan.interval === "none" || plan.price_cents === 0) return "Free";
+  const amount = (plan.price_cents / 100).toLocaleString("en-GB", {
+    style: "currency",
+    currency: plan.currency,
+    maximumFractionDigits: 0,
+  });
+  return `${amount} a ${plan.interval}`;
+}
+
+export default async function MembershipPage() {
+  const supabase = await createClient();
+  const { data: plans } = await supabase
+    .from("plans")
+    .select("id, slug, name, blurb, price_cents, currency, interval, features")
+    .eq("active", true)
+    .order("position");
+
   return (
     <>
       <SiteHeader />
@@ -23,45 +45,33 @@ export default function MembershipPage() {
 
         <section className="band">
           <div className="two">
-            <div className="panel">
-              <h3>Member</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                Free, for as long as you are here. It comes with an accepted
-                invitation.
-              </p>
-              <ul>
-                <li>Your Village, your Circle and its WhatsApp group</li>
-                <li>Ask and Offer in your own Village</li>
-                <li>The Directory of your Village</li>
-                <li>Your Village&apos;s events and resources</li>
-                <li>Reading every Market Exploration post</li>
-                <li>The suggestion box</li>
-              </ul>
-              <p style={{ marginTop: 14 }}>
-                <Link className="btn primary" href="/apply">
-                  Request an invitation
-                </Link>
-              </p>
-            </div>
-
-            <div className="panel wash">
-              <h3>Paid member</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                The one paid plan. Members take it when their business starts
-                needing the other cities, not before.
-              </p>
-              <ul>
-                <li>Replying to members in any Village</li>
-                <li>Asking to connect, and messaging once they accept</li>
-                <li>The Directory of every Village</li>
-                <li>Events in other Villages, as a visiting member</li>
-                <li>Resources from every Village</li>
-              </ul>
-              <p className="muted small" style={{ marginTop: 14 }}>
-                The price is shown when you are signed in, and you can change
-                or cancel it yourself at any time.
-              </p>
-            </div>
+            {(plans ?? []).map((plan, i) => (
+              <div className={`panel ${i === 0 ? "" : "wash"}`} key={plan.id}>
+                <h3>{plan.name}</h3>
+                <p className="lead" style={{ marginTop: 6 }}>
+                  {priceLine(plan)}
+                </p>
+                <p className="muted small">{plan.blurb}</p>
+                <ul>
+                  {(plan.features ?? []).map((feature: string) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+                {plan.slug === "member" ? (
+                  <p style={{ marginTop: 14 }}>
+                    <Link className="btn primary" href="/apply">
+                      Request an invitation
+                    </Link>
+                  </p>
+                ) : (
+                  <p className="muted small" style={{ marginTop: 14 }}>
+                    Members take this when their business starts needing the
+                    other cities. You can change or cancel it yourself at any
+                    time.
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         </section>
 

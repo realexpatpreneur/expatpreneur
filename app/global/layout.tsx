@@ -29,7 +29,10 @@ export default async function GlobalLayout({
           <Link href="/global/suggestions">Suggestions</Link>
           <Link href="/global/requests">Requests</Link>
           <Link href="/global/reporting">Reporting</Link>
+          <Link href="/global/learning">Learning</Link>
+          <Link href="/global/plans">Plans</Link>
           <Link href="/global/money">Money</Link>
+          <Link href="/global/audit">The record</Link>
           <Link className="btn" href="/admin/applications">
             Village view
           </Link>

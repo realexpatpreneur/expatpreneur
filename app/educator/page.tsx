@@ -65,14 +65,28 @@ export default async function EducatorPage({
                     <div className="row" style={{ justifyContent: "space-between" }}>
                       <h3>{course.title}</h3>
                       <span
-                        className={`chip ${course.status === "published" ? "mint" : ""}`}
+                        className={`chip ${
+                          course.status === "published" && course.review === "approved"
+                            ? "mint"
+                            : ""
+                        }`}
                       >
-                        {course.status}
+                        {course.status === "published" && course.review !== "approved"
+                          ? "waiting to be read"
+                          : course.status}
                       </span>
                     </div>
                     <p className="muted small" style={{ marginTop: 6 }}>
                       {course.summary}
                     </p>
+                    {course.status === "published" && course.review !== "approved" ? (
+                      <p className="muted small">
+                        {course.review === "refused"
+                          ? "This one was refused."
+                          : "Somebody reads every course before it goes out to members."}
+                        {course.review_note ? ` ${course.review_note}` : ""}
+                      </p>
+                    ) : null}
                     <div className="row">
                       <Link className="btn" href={`/educator/${course.slug}`}>
                         Lessons
