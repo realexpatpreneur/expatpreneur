@@ -243,6 +243,14 @@ export default async function LiveSessionPage({
                     ) : null}
                     <LeaveButton sessionId={session.id} slug={slug} />
                   </>
+                ) : isHost ? (
+                  <>
+                    <h3>You run this room</h3>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      You do not knock. Use the controls below to open it and
+                      go in.
+                    </p>
+                  </>
                 ) : !open ? (
                   <>
                     <h3>The doors open shortly before it starts</h3>

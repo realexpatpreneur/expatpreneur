@@ -34,7 +34,7 @@ export default async function RoomPage({
       <main className="wrap">
         <section className="band">
           <p className="muted small">
-            <Link href={`/live/${slug}`}>{session.title}</Link>
+            <Link href="/live">Live rooms</Link>
           </p>
           <h1 style={{ fontSize: 26 }}>{session.title}</h1>
           <p className="muted small">

@@ -27,9 +27,18 @@ export default async function NewSessionPage() {
     (v) => admin.isGlobal || admin.villageIds.includes(v.id)
   );
 
+  // Their own Village first, because that is what a Local Admin usually
+  // means. Every Village has to be chosen on purpose.
+  const home = mine.find((v) => v.id === admin.homeVillageId) ?? mine[0];
+
   const audiences = [
+    ...(home
+      ? [{ value: `village:${home.id}`, label: `${home.name} Village` }]
+      : []),
     { value: "global", label: "Every Village" },
-    ...mine.map((v) => ({ value: `village:${v.id}`, label: `${v.name} Village` })),
+    ...mine
+      .filter((v) => v.id !== home?.id)
+      .map((v) => ({ value: `village:${v.id}`, label: `${v.name} Village` })),
     ...(circles ?? [])
       .filter((c) => admin.isGlobal || admin.villageIds.includes(c.village_id))
       .map((c) => ({ value: `circle:${c.id}`, label: c.name })),

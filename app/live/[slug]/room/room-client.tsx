@@ -24,6 +24,7 @@ export function RoomClient({ slug, onLeaveHref }: { slug: string; onLeaveHref: s
   const [ready, setReady] = useState<Ready | null>(null);
   const [error, setError] = useState<string | null>(null);
   const joinedAt = useRef<number>(Date.now());
+  const reported = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,9 +54,12 @@ export function RoomClient({ slug, onLeaveHref }: { slug: string; onLeaveHref: s
     };
   }, [slug]);
 
-  // Tell the platform how long they were actually here.
+  // Tell the platform how long they were actually here, once. Closing the
+  // tab and pressing leave both end up here, and only the first one counts.
   useEffect(() => {
     function report() {
+      if (reported.current) return;
+      reported.current = true;
       const seconds = Math.round((Date.now() - joinedAt.current) / 1000);
       const body = JSON.stringify({ slug, seconds });
       navigator.sendBeacon?.("/api/live/leave", new Blob([body], { type: "application/json" }));
@@ -104,6 +108,11 @@ export function RoomClient({ slug, onLeaveHref }: { slug: string; onLeaveHref: s
         data-lk-theme="default"
         style={{ height: "72vh", borderRadius: 12, overflow: "hidden" }}
         onDisconnected={() => {
+          if (reported.current) {
+            window.location.href = onLeaveHref;
+            return;
+          }
+          reported.current = true;
           const seconds = Math.round((Date.now() - joinedAt.current) / 1000);
           fetch("/api/live/leave", {
             method: "POST",
