@@ -172,6 +172,18 @@ export default async function MemberHomePage() {
                 Replies, requests and what is happening around you.
               </p>
             </Link>
+            <Link className="panel" href="/businesses">
+              <h3>Businesses</h3>
+              <p className="muted small">
+                What members do, and which markets they already sell into.
+              </p>
+            </Link>
+            <Link className="panel" href="/jobs">
+              <h3>Jobs and freelance</h3>
+              <p className="muted small">
+                Members hiring members, projects and partners.
+              </p>
+            </Link>
             <Link className="panel" href="/groups">
               <h3>Industry Groups</h3>
               <p className="muted small">
