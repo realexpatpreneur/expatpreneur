@@ -449,3 +449,22 @@ ul.plain {
   border-radius: var(--radius);
   padding: 10px 14px;
 }
+
+/* two fields side by side */
+
+.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+  .two { grid-template-columns: 1fr; }
+}

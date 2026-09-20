@@ -1,0 +1,246 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { requireMember } from "@/lib/member";
+import {
+  whenText,
+  priceText,
+  audienceText,
+  registrationBlock,
+  type EventRow,
+} from "@/lib/events";
+import { SiteHeader } from "@/components/site-header";
+import { RegisterForm, CancelForm } from "../forms";
+
+export default async function EventPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const member = await requireMember("/events");
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("events")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (!data) notFound();
+  const event = data as EventRow;
+
+  const [{ data: host }, { data: village }, { data: mine }, { data: guests }] =
+    await Promise.all([
+      event.host_id
+        ? supabase
+            .from("profiles")
+            .select("id, full_name, headline")
+            .eq("id", event.host_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      event.village_id
+        ? supabase
+            .from("villages")
+            .select("name")
+            .eq("id", event.village_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      supabase
+        .from("event_registrations")
+        .select("id, status")
+        .eq("event_id", event.id)
+        .eq("profile_id", member.id)
+        .maybeSingle(),
+      supabase
+        .from("event_registrations")
+        .select("profile_id, status")
+        .eq("event_id", event.id)
+        .eq("status", "confirmed")
+        .limit(60),
+    ]);
+
+  const guestIds = (guests ?? [])
+    .map((g) => g.profile_id)
+    .filter(Boolean) as string[];
+  const { data: guestProfiles } = event.show_guest_list && guestIds.length
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, headline")
+        .in("id", guestIds)
+        .limit(30)
+    : { data: [] };
+
+  const blocked = registrationBlock(event, member);
+  const registered = mine && mine.status !== "cancelled";
+  const visiting =
+    event.village_id !== null && event.village_id !== member.village_id;
+  const taken = (guests ?? []).length;
+
+  return (
+    <>
+      <SiteHeader signedIn />
+      <main className="wrap">
+        <section className="band">
+          <p className="muted small">
+            <Link href="/events">Events</Link>
+          </p>
+          <p>
+            {village?.name ? (
+              <span className={`chip ${visiting ? "blue" : "mint"}`}>
+                {village.name}
+              </span>
+            ) : (
+              <span className="chip">Every Village</span>
+            )}{" "}
+            {event.visibility === "public" ? (
+              <span className="chip">Open to everyone</span>
+            ) : null}
+          </p>
+          <h1>{event.title}</h1>
+          <p className="lead">{whenText(event)}</p>
+        </section>
+
+        <section className="band">
+          <div className="cols">
+            <div className="stack">
+              <div className="panel">
+                <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+                  {event.description}
+                </p>
+              </div>
+
+              <div className="panel">
+                <h3>The detail</h3>
+                <dl className="kv">
+                  <dt>When</dt>
+                  <dd>{whenText(event)}</dd>
+                  <dt>Where</dt>
+                  <dd>
+                    {event.is_online
+                      ? "Online. The link is sent after you register."
+                      : `${event.venue ?? "To be confirmed"}. The full address is sent after you register.`}
+                  </dd>
+                  <dt>Host</dt>
+                  <dd>
+                    {host ? (
+                      <Link href={`/members/${host.id}`}>{host.full_name}</Link>
+                    ) : (
+                      "The Local Admins"
+                    )}
+                  </dd>
+                  <dt>Who can register</dt>
+                  <dd>
+                    {audienceText(event, village?.name ?? null)}
+                    {event.requires_approval
+                      ? ". The host approves each registration."
+                      : ""}
+                  </dd>
+                  <dt>Price</dt>
+                  <dd>{priceText(event)}</dd>
+                  <dt>Places</dt>
+                  <dd>
+                    {taken} of {event.capacity} taken
+                    {event.visitor_places
+                      ? `. ${event.visitor_places} kept for visiting members.`
+                      : ""}
+                  </dd>
+                </dl>
+              </div>
+
+              <div className="panel">
+                <h3>Going</h3>
+                {event.show_guest_list ? (
+                  (guestProfiles ?? []).length === 0 ? (
+                    <p className="muted small" style={{ marginTop: 8 }}>
+                      Nobody yet. Be the first.
+                    </p>
+                  ) : (
+                    <div className="rows" style={{ marginTop: 12 }}>
+                      {(guestProfiles ?? []).map((person) => (
+                        <Link
+                          className="rowlink"
+                          key={person.id}
+                          href={`/members/${person.id}`}
+                        >
+                          <div>
+                            <b>{person.full_name}</b>
+                            <div className="muted small">{person.headline}</div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )
+                ) : (
+                  <p className="muted small" style={{ marginTop: 8 }}>
+                    The host keeps the guest list private for this event.{" "}
+                    {taken} people are registered.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="stack">
+              <div className="panel">
+                {registered ? (
+                  <>
+                    <p>
+                      <span className="chip mint">
+                        {mine?.status === "pending"
+                          ? "Waiting for the host"
+                          : "You are registered"}
+                      </span>
+                    </p>
+                    <p className="muted small">
+                      A reminder comes the day before and an hour before it
+                      starts.
+                    </p>
+                    <p>
+                      <a className="btn" href={`/events/${event.slug}/calendar`}>
+                        Add to calendar
+                      </a>
+                    </p>
+                    <CancelForm eventId={event.id} slug={event.slug} />
+                  </>
+                ) : blocked ? (
+                  <>
+                    <h3>{blocked}</h3>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      You can still see what is on. The paid plan opens every
+                      Village, including their events.
+                    </p>
+                  </>
+                ) : taken >= event.capacity ? (
+                  <>
+                    <h3>This one is full</h3>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      Ask the host to put you on the waiting list.
+                    </p>
+                  </>
+                ) : (
+                  <RegisterForm
+                    eventId={event.id}
+                    slug={event.slug}
+                    requiresApproval={event.requires_approval}
+                    isVisitor={visiting}
+                    label={visiting ? "Register as a visitor" : "Register"}
+                  />
+                )}
+              </div>
+
+              {visiting ? (
+                <div className="panel wash">
+                  <h3>Visiting {village?.name}</h3>
+                  <p className="muted small" style={{ marginTop: 6 }}>
+                    The Local Admins will see you are coming and can introduce
+                    you to members.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
+  );
+}

@@ -18,6 +18,7 @@ export default async function AdminLayout({
         </Link>
         <nav>
           <Link href="/admin/applications">Invitation requests</Link>
+          <Link href="/admin/events">Events</Link>
           <Link href="/admin/suggestions">Suggestion box</Link>
           <Link className="btn" href="/home">
             Member view
