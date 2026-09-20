@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -22,6 +23,9 @@ export default async function ApplyPage() {
           <p className="lead">
             Every request is read personally. Tell us about you, your business
             and where your journey has taken you.
+          </p>
+          <p className="muted small">
+            Already asked? <Link href="/apply/status">Check where it stands</Link>.
           </p>
         </section>
         <section className="band">

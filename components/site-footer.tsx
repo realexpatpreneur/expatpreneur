@@ -11,6 +11,7 @@ export function SiteFooter() {
             <Link href="/membership">Membership</Link>
             <Link href="/members">Members</Link>
             <Link href="/learning">Learning</Link>
+            <Link href="/apply/status">Your request</Link>
             <Link href="/legal/terms">Terms of service</Link>
             <Link href="/legal/privacy">Privacy policy</Link>
             <Link href="/contact">Contact</Link>

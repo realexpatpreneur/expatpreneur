@@ -14,6 +14,7 @@ const groups = [
       ["/admin/circles", "Circles"],
       ["/admin/care", "Care"],
       ["/admin/whatsapp", "WhatsApp"],
+      ["/admin/transfers", "Moves"],
     ],
   },
   {
@@ -36,6 +37,7 @@ const groups = [
     links: [
       ["/admin/suggestions", "Suggestion box"],
       ["/admin/insight", "Insight"],
+      ["/admin/settings", "Village settings"],
     ],
   },
 ];

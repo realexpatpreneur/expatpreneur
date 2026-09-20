@@ -43,7 +43,7 @@ export default async function MyVillagePage() {
   ] = await Promise.all([
     supabase
       .from("villages")
-      .select("id, name, city, country, status, summary")
+      .select("id, name, city, country, status, summary, welcome_message, whatsapp_url, meeting_note")
       .eq("id", member.village_id)
       .maybeSingle(),
     supabase
@@ -134,6 +134,27 @@ export default async function MyVillagePage() {
             {village?.city}, {village?.country}. {village?.summary}
           </p>
         </section>
+
+        {village?.welcome_message ? (
+          <section className="band">
+            <div className="panel wash">
+              <h3>From the people who run this Village</h3>
+              <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>
+                {village.welcome_message}
+              </p>
+              {village.meeting_note ? (
+                <p className="muted small">{village.meeting_note}</p>
+              ) : null}
+              {village.whatsapp_url ? (
+                <p style={{ marginTop: 10 }}>
+                  <a className="btn" href={village.whatsapp_url} target="_blank" rel="noreferrer">
+                    The Village WhatsApp group
+                  </a>
+                </p>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
 
         {(announcements ?? []).length ? (
           <section className="band">

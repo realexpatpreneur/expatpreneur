@@ -61,7 +61,7 @@ export async function submitApplication(
     };
   }
 
-  const { error } = await supabase.from("applications").insert({
+  const { data: saved, error } = await supabase.from("applications").insert({
     full_name: fullName,
     email,
     phone: String(formData.get("phone") ?? "").trim() || null,
@@ -78,7 +78,9 @@ export async function submitApplication(
       contribute: String(formData.get("contribute") ?? ""),
       heard_about: String(formData.get("heard_about") ?? ""),
     },
-  });
+  })
+    .select("reference")
+    .maybeSingle();
 
   if (error) {
     return { error: "That did not send. Please try again in a moment." };
@@ -91,10 +93,11 @@ export async function submitApplication(
     [
       `Your request to join ExpatPreneurs is with us, ${fullName.split(" ")[0]}.`,
       "Someone reads every one, so it takes a few days rather than a few minutes. You will hear either way.",
+      `Your reference is ${saved?.reference ?? ""}. Keep it: with your email address it shows you where your request stands.`,
       "If your city does not have a Village yet, we will tell you when it opens.",
     ],
-    { label: "See the Villages", href: url("/villages") }
+    { label: "Check where it stands", href: url("/apply/status") }
   );
 
-  redirect("/apply/sent");
+  redirect(`/apply/sent?ref=${saved?.reference ?? ""}`);
 }
