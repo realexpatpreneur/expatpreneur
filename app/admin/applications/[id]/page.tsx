@@ -41,7 +41,7 @@ export default async function ApplicationPage({
         : Promise.resolve({ data: null }),
       villageId
         ? supabase
-            .from("profiles")
+            .from("member_records")
             .select("nationalities")
             .eq("village_id", villageId)
             .in("status", ["active", "onboarding"])
