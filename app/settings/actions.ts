@@ -138,3 +138,27 @@ export async function saveNotificationPrefs(
   revalidatePath("/settings");
   return { done: "saved" };
 }
+
+// A member asking for their own data, or for it to be removed. European
+// law applies the moment Lisbon and Paris open, and this is the route.
+export async function askAboutMyData(
+  _prev: SettingsState,
+  formData: FormData
+): Promise<SettingsState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=/settings");
+
+  const { error } = await supabase.from("data_requests").insert({
+    profile_id: user.id,
+    kind: String(formData.get("kind") ?? "export"),
+    note: String(formData.get("note") ?? "").trim() || null,
+  });
+
+  if (error) return { error: "That did not send. Try again in a moment." };
+
+  revalidatePath("/settings");
+  return { done: "asked" };
+}

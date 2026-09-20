@@ -5,6 +5,7 @@ import {
   saveProfile,
   leaveCommunity,
   saveNotificationPrefs,
+  askAboutMyData,
   type SettingsState,
 } from "./actions";
 import { Uploader } from "@/components/uploader";
@@ -212,6 +213,54 @@ export function NotificationForm({
 
       <button className="btn" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}
+
+
+export function MyDataForm() {
+  const [state, action, pending] = useActionState<SettingsState, FormData>(
+    askAboutMyData,
+    {}
+  );
+
+  if (state.done === "asked") {
+    return (
+      <div className="panel">
+        <h3>Asked</h3>
+        <p className="muted small" style={{ marginTop: 6 }}>
+          The Global team has it. Somebody will be in touch within a few
+          days.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form action={action} className="panel">
+      <h3>Your own data</h3>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      <p className="muted small" style={{ marginTop: 6 }}>
+        Ask for a copy of everything the platform holds about you, or ask for
+        it to be removed. Either is your right, and neither needs a reason.
+      </p>
+
+      <label className="field">
+        <span>What are you asking for?</span>
+        <select name="kind" defaultValue="export">
+          <option value="export">A copy of my data</option>
+          <option value="delete">My data removed</option>
+        </select>
+      </label>
+
+      <label className="field">
+        <span>Anything to add?</span>
+        <textarea name="note" rows={2} />
+      </label>
+
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Sending" : "Send it"}
       </button>
     </form>
   );

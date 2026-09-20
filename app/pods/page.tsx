@@ -37,13 +37,19 @@ export default async function PodsPage() {
             Small and committed. A handful of members who meet on a rhythm and
             hold each other to what they said they would do.
           </p>
+          <p>
+            <Link className="btn primary" href="/pods/propose">
+              Propose a Pod
+            </Link>
+          </p>
         </section>
 
         <section className="band">
           {(pods ?? []).length === 0 ? (
             <div className="panel wash">
               <p className="muted" style={{ margin: 0 }}>
-                None forming yet. Tell your Local Admin if you would join one.
+                None forming yet. If there is one you would want, propose it:
+                whoever proposes a Pod leads it.
               </p>
             </div>
           ) : (

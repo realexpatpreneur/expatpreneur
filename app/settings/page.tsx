@@ -2,7 +2,12 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
-import { ProfileSettingsForm, LeaveForm, NotificationForm } from "./forms";
+import {
+  ProfileSettingsForm,
+  LeaveForm,
+  NotificationForm,
+  MyDataForm,
+} from "./forms";
 import { signOut } from "./actions";
 
 export const metadata = { title: "Settings, ExpatPreneurs Global" };
@@ -12,7 +17,7 @@ export default async function SettingsPage() {
   const supabase = await createClient();
 
   const { data: profile } = await supabase
-    .from("profiles")
+    .from("member_records")
     .select(
       "full_name, email, headline, business_name, industry, bio, can_help_with, looking_for, phone, languages, markets_known, lived_in, public_profile, avatar_url"
     )
@@ -53,6 +58,19 @@ export default async function SettingsPage() {
 
             <div className="stack">
               <NotificationForm prefs={settings} />
+
+              <div className="panel">
+                <h3>Moving city?</h3>
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  Your profile, your history and the people you know stay with
+                  you. Only the Village and the Circle change.
+                </p>
+                <Link className="btn" href="/settings/transfer">
+                  Ask to transfer
+                </Link>
+              </div>
+
+              <MyDataForm />
 
               <div className="panel">
                 <h3>Your plan</h3>
