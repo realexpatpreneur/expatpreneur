@@ -144,8 +144,9 @@ In the member browser:
 ## 6. The things that should be refused
 
 Before doing any of this by hand, run `supabase/tests/access_rules.sql` in
-the Supabase SQL editor. It checks twenty of these rules in a few seconds
-and rolls itself back. Every line should start with ok. Then do the ones
+the Supabase SQL editor. It checks twenty of these rules in a few seconds,
+returns a table and rolls itself back. Failures come first, so if the top
+row says ok, all of it passed. Then do the ones
 below, which are about the pages rather than the database.
 
 This is the part worth doing slowly, because it is the part that would

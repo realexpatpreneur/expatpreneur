@@ -311,10 +311,9 @@ Two things to keep:
 - The access rules have a test file, `supabase/tests/access_rules.sql`.
   Run it in the SQL editor after any migration that touches a policy, a
   grant or a role. It makes its own Villages and people, checks twenty
-  rules, prints a line each, and rolls everything back, so nothing it
-  makes survives and nothing real is touched. A line beginning FAILED
-  means somebody can see something they should not, or cannot see
-  something they should.
+  rules, returns a table of results and rolls everything back, so nothing
+  it makes survives and nothing real is touched. Failures are listed
+  first: if the top row says ok, all of it passed.
 - Nothing else is tested automatically. The pages, the payments and the
   live rooms were tested by hand.
 - English only.

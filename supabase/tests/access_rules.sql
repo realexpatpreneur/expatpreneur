@@ -2,11 +2,13 @@
 --
 -- Run this in the Supabase SQL editor after any migration that touches a
 -- policy, a grant or a role. It makes its own people and Villages, checks
--- what each of them can see, prints a line per rule, and rolls the whole
--- lot back. Nothing it makes survives, and nothing real is touched.
+-- what each of them can see, and rolls the whole lot back. Nothing it
+-- makes survives, and nothing real is touched.
 --
--- A line saying FAILED means somebody can see something they should not,
--- or cannot see something they should. Both matter.
+-- It finishes by returning a table. Read the first column: FAILED means
+-- somebody can see something they should not, or cannot see something
+-- they should. Failures are listed first, so if the top row says ok, all
+-- of it passed.
 
 begin;
 
@@ -61,14 +63,26 @@ begin
   set local request.jwt.claim.sub = '';
 end $$;
 
+-- The results are collected rather than printed, because the SQL editor
+-- shows tables and swallows notices.
+create temporary table test_results (
+  seq      serial,
+  verdict  text,
+  rule     text,
+  expected boolean,
+  got      boolean
+) on commit drop;
+
+-- The checks run while the session is pretending to be a member or a
+-- stranger, so those roles need to be able to write their result down.
+grant all on test_results to public;
+grant all on sequence test_results_seq_seq to public;
+
 create or replace function pg_temp.check(what text, got boolean, expected boolean)
 returns void language plpgsql as $$
 begin
-  if got = expected then
-    raise notice 'ok      %', what;
-  else
-    raise notice 'FAILED  % (expected %, got %)', what, expected, got;
-  end if;
+  insert into test_results (verdict, rule, expected, got)
+  values (case when got = expected then 'ok' else 'FAILED' end, what, expected, got);
 end $$;
 
 create or replace function pg_temp.can_read(query text)
@@ -87,7 +101,7 @@ declare
   paid  uuid := 'bbbbbbbb-0000-0000-0000-000000000002';
   admin uuid := 'bbbbbbbb-0000-0000-0000-000000000003';
 begin
-  raise notice '--- a member''s private columns ---';
+  insert into test_results (verdict, rule) values ('', '--- a member''s private columns ---');
 
   perform pg_temp.as_person(free);
   perform pg_temp.check(
@@ -119,7 +133,7 @@ begin
     false);
   reset role;
 
-  raise notice '--- who can see whom ---';
+  insert into test_results (verdict, rule) values ('', '--- who can see whom ---');
 
   perform pg_temp.as_person(free);
   perform pg_temp.check(
@@ -135,7 +149,7 @@ begin
     true);
   reset role;
 
-  raise notice '--- Ask and Offer stays in its Village ---';
+  insert into test_results (verdict, rule) values ('', '--- Ask and Offer stays in its Village ---');
 
   perform pg_temp.as_person(free);
   perform pg_temp.check(
@@ -148,7 +162,7 @@ begin
     false);
   reset role;
 
-  raise notice '--- the workspaces ---';
+  insert into test_results (verdict, rule) values ('', '--- the workspaces ---');
 
   perform pg_temp.as_person(free);
   perform pg_temp.check(
@@ -165,7 +179,7 @@ begin
     false);
   reset role;
 
-  raise notice '--- a stranger ---';
+  insert into test_results (verdict, rule) values ('', '--- a stranger ---');
 
   perform pg_temp.as_stranger();
   perform pg_temp.check(
@@ -198,7 +212,14 @@ begin
     false);
   reset role;
 
-  raise notice '--- done ---';
 end $$;
+
+-- Failures first, then everything in the order it was checked.
+select
+  verdict,
+  rule,
+  case when verdict = 'FAILED' then format('expected %s, got %s', expected, got) end as detail
+from test_results
+order by case when verdict = 'FAILED' then 0 else 1 end, seq;
 
 rollback;
