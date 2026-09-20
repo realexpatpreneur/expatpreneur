@@ -233,7 +233,12 @@ export function RecordingControls({
 
       {recording?.status === "ready" && recording.url ? (
         <div style={{ marginTop: 12 }}>
-          <a className="btn" href={recording.url} target="_blank" rel="noreferrer">
+          <a
+            className="btn"
+            href={`/api/live/recording/${recording.id}`}
+            target="_blank"
+            rel="noreferrer"
+          >
             Watch it back
           </a>
           {recording.media_item_id ? null : (

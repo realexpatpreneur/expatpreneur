@@ -36,11 +36,17 @@ export async function POST(request: Request) {
         info.status === 3 || event.event === "egress_ended" ? "ready" : "recording",
     };
 
-    if (file?.location) {
-      patch.url = file.location;
+    if (file?.filename || file?.location) {
+      // What we keep is the path inside our own bucket. The address to
+      // watch it is made later, signed, and only for someone allowed.
+      const raw = file.filename ?? file.location ?? "";
+      const bucket = process.env.S3_BUCKET ?? "recordings";
+      const marker = `/${bucket}/`;
+      const at = raw.indexOf(marker);
+      patch.url = at >= 0 ? raw.slice(at + marker.length) : raw.replace(/^\/+/, "");
       patch.size_bytes = file.size ? Number(file.size) : null;
       patch.duration = seconds
-        ? `${Math.round(seconds / 60)} minutes`
+        ? `${Math.max(1, Math.round(seconds / 60))} minutes`
         : null;
     }
 
