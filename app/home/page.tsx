@@ -226,6 +226,12 @@ export default async function MemberHomePage() {
                 How could this be better? Send it with your name, or without.
               </p>
             </Link>
+            <Link className="panel" href="/live">
+              <h3>Live rooms</h3>
+              <p className="muted small">
+                Roundtables and Circle calls, in the platform itself.
+              </p>
+            </Link>
             <Link className="panel" href="/events">
               <h3>Events</h3>
               <p className="muted small">
