@@ -17,9 +17,14 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
           Watch
         </Link>
         {signedIn ? (
-          <Link className="btn" href="/home">
-            Member space
-          </Link>
+          <>
+            <Link className="hide-small" href="/search">
+              Search
+            </Link>
+            <Link className="btn" href="/home">
+              Member space
+            </Link>
+          </>
         ) : (
           <>
             <Link href="/login">Log in</Link>

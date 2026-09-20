@@ -45,6 +45,7 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/notifications") ||
     path.startsWith("/library") ||
     path.startsWith("/photos") ||
+    path.startsWith("/search") ||
     path.startsWith("/upgrade") ||
     path.startsWith("/settings") ||
     path.startsWith("/report") ||

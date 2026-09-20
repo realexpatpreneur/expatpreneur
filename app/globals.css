@@ -540,3 +540,27 @@ ul.plain {
   --lk-accent-bg: #4074ae;
   --lk-border-radius: 10px;
 }
+
+/* the admin navigation, grouped */
+
+.adminnav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding: 14px 0 6px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 10px;
+}
+
+.adminnav .tabs {
+  margin-top: 6px;
+}
+
+.adminnav .chip:hover {
+  background: #fff;
+  border-color: #c7cdd4;
+}
+
+@media (max-width: 900px) {
+  .adminnav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

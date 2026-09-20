@@ -3,6 +3,43 @@ import { requireAdmin } from "@/lib/access";
 
 export const metadata = { title: "Local Admin, ExpatPreneurs Global" };
 
+// Thirteen links across one line was too many. They are grouped now: the
+// people, what is on, and what there is to read.
+const groups = [
+  {
+    heading: "People",
+    links: [
+      ["/admin/applications", "Requests"],
+      ["/admin/members", "Members"],
+      ["/admin/circles", "Circles"],
+      ["/admin/care", "Care"],
+      ["/admin/whatsapp", "WhatsApp"],
+    ],
+  },
+  {
+    heading: "What is on",
+    links: [
+      ["/admin/events", "Events"],
+      ["/admin/live", "Live rooms"],
+      ["/admin/announcements", "Announcements"],
+    ],
+  },
+  {
+    heading: "What there is to read",
+    links: [
+      ["/admin/resources", "Resources"],
+      ["/admin/media", "Watch and Listen"],
+    ],
+  },
+  {
+    heading: "Listening",
+    links: [
+      ["/admin/suggestions", "Suggestion box"],
+      ["/admin/insight", "Insight"],
+    ],
+  },
+];
+
 export default async function AdminLayout({
   children,
 }: {
@@ -17,31 +54,34 @@ export default async function AdminLayout({
           ExpatPreneurs <span className="chip">Admin</span>
         </Link>
         <nav>
-          <Link href="/admin/applications">Requests</Link>
-          <Link href="/admin/members">Members</Link>
-          <Link href="/admin/circles">Circles</Link>
-          <Link href="/admin/care">Care</Link>
-          <Link href="/admin/insight">Insight</Link>
-          <Link href="/admin/whatsapp">WhatsApp</Link>
-          <Link href="/admin/announcements">Announcements</Link>
-          <Link href="/admin/events">Events</Link>
-          <Link href="/admin/live">Live</Link>
-          <Link href="/admin/resources">Resources</Link>
-          <Link href="/admin/media">Watch</Link>
-          <Link href="/admin/suggestions">Suggestion box</Link>
           {admin.isGlobal ? <Link href="/global">Global team</Link> : null}
+          <Link href="/lead">What you run</Link>
           <Link className="btn" href="/home">
             Member view
           </Link>
         </nav>
       </header>
+
       <div className="wrap">
+        <div className="adminnav">
+          {groups.map((group) => (
+            <div key={group.heading}>
+              <span className="muted small">{group.heading}</span>
+              <div className="tabs">
+                {group.links.map(([href, label]) => (
+                  <Link className="chip" key={href} href={href}>
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
         <p className="muted small">
-          {admin.isGlobal
-            ? "Global team, every Village"
-            : "Local Admin"}
+          {admin.isGlobal ? "Global team, every Village" : "Local Admin"}
         </p>
       </div>
+
       {children}
     </>
   );
