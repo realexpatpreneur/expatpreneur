@@ -120,6 +120,12 @@ export default async function MemberHomePage() {
                 What your Village needs this week, and what you can give.
               </p>
             </Link>
+            <Link className="panel" href="/directory">
+              <h3>Directory</h3>
+              <p className="muted small">
+                Who is in your Village, what they do, and what they know.
+              </p>
+            </Link>
             <Link className="panel" href="/market-exploration">
               <h3>Market Exploration</h3>
               <p className="muted small">

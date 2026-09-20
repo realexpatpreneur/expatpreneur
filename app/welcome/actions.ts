@@ -32,7 +32,7 @@ export async function completeProfile(
     .from("profiles")
     .update({
       full_name: fullName,
-      headline,
+      headline: headline || null,
       business_name: String(formData.get("business_name") ?? "").trim() || null,
       industry: String(formData.get("industry") ?? "").trim() || null,
       bio: String(formData.get("bio") ?? "").trim() || null,
