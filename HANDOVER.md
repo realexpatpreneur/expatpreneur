@@ -308,8 +308,15 @@ Two things to keep:
 - The two legal pages are drafts, marked as such on the page, with
   placeholders for the entity, the address, the fee, the jurisdiction and
   the retention periods. A lawyer signs them off before launch.
-- No automated tests anywhere. The access rules were tested by hand
-  against a local Postgres, with real member rows.
+- The access rules have a test file, `supabase/tests/access_rules.sql`.
+  Run it in the SQL editor after any migration that touches a policy, a
+  grant or a role. It makes its own Villages and people, checks twenty
+  rules, prints a line each, and rolls everything back, so nothing it
+  makes survives and nothing real is touched. A line beginning FAILED
+  means somebody can see something they should not, or cannot see
+  something they should.
+- Nothing else is tested automatically. The pages, the payments and the
+  live rooms were tested by hand.
 - English only.
 - Media is built but was never confirmed as wanted. If it is not, the four
   pages come out and the two tables sit unused.
