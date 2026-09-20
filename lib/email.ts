@@ -101,3 +101,72 @@ export async function sendEmailToMember(
   // them, which is both decent and, once the domain is live, required.
   await sendEmail(to, subject, title, lines, action, true);
 }
+
+
+// ---------------------------------------------------------- templates
+
+// The eight transactional emails are rows rather than code, so the Global
+// team can reword one at /global/emails. If a template is missing or
+// switched off, the caller's own wording is used instead.
+export async function sendTemplate(
+  key: string,
+  to: string | null,
+  values: Record<string, string>,
+  fallback?: { subject: string; title: string; lines: string[]; action?: { label: string; href: string } },
+  forMember?: { profileId: string; kind: Parameters<typeof sendEmailToMember>[1] }
+) {
+  if (!emailReady || !to) return;
+
+  let template: {
+    subject: string;
+    body: string;
+    button_label: string | null;
+    button_path: string | null;
+  } | null = null;
+
+  try {
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const { data } = await createAdminClient()
+      .from("email_templates")
+      .select("subject, body, button_label, button_path")
+      .eq("key", key)
+      .eq("active", true)
+      .maybeSingle();
+    template = data;
+  } catch {
+    // The database is not reachable; fall back to the wording in code.
+  }
+
+  const fill = (text: string) =>
+    Object.entries(values).reduce(
+      (out, [name, value]) => out.split(`{${name}}`).join(value ?? ""),
+      text
+    );
+
+  const subject = template ? fill(template.subject) : fallback?.subject ?? "";
+  const lines = template
+    ? fill(template.body).split("\n").filter((line) => line.trim())
+    : fallback?.lines ?? [];
+  const action = template
+    ? template.button_label
+      ? { label: template.button_label, href: url(template.button_path ?? "/") }
+      : undefined
+    : fallback?.action;
+
+  if (!subject || lines.length === 0) return;
+
+  if (forMember) {
+    await sendEmailToMember(
+      forMember.profileId,
+      forMember.kind,
+      to,
+      subject,
+      template ? subject : fallback?.title ?? subject,
+      lines,
+      action
+    );
+    return;
+  }
+
+  await sendEmail(to, subject, template ? subject : fallback?.title ?? subject, lines, action);
+}

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/access";
-import { sendEmail, url } from "@/lib/email";
+import { sendEmail, sendTemplate, url } from "@/lib/email";
 
 export type DecisionState = { error?: string };
 
@@ -110,6 +110,37 @@ export async function approveApplication(
     });
   }
 
+  // The template wants the Village and the names of its Local Admins.
+  const { data: village } = application.village_id
+    ? await service
+        .from("villages")
+        .select("name")
+        .eq("id", application.village_id)
+        .maybeSingle()
+    : { data: null };
+
+  const villageName = village?.name ?? null;
+
+  const { data: adminRoles } = application.village_id
+    ? await service
+        .from("member_roles")
+        .select("profile_id")
+        .eq("role", "local_admin")
+        .eq("scope_id", application.village_id)
+        .is("ended_at", null)
+    : { data: [] };
+
+  const { data: adminPeople } = (adminRoles ?? []).length
+    ? await service
+        .from("profiles")
+        .select("full_name")
+        .in("id", (adminRoles ?? []).map((r) => r.profile_id))
+    : { data: [] };
+
+  const adminNames = (adminPeople ?? [])
+    .map((p) => p.full_name.split(" ")[0])
+    .join(" and ");
+
   await service.from("audit_log").insert({
     actor_id: admin.userId,
     action: "application.approved",
@@ -118,16 +149,24 @@ export async function approveApplication(
     meta: { profile_id: userId, circle_id: circleId },
   });
 
-  await sendEmail(
+  await sendTemplate(
+    "approved",
     application.email,
-    "You are in",
-    "Welcome to ExpatPreneurs",
-    [
-      `Your request has been approved, ${String(application.full_name).split(" ")[0]}.`,
-      "A separate email carries the link that signs you in. Open it, finish your profile, and your Circle can find you.",
-      "If it has not arrived, look in spam before writing to us.",
-    ],
-    { label: "Go to the platform", href: url("/login") }
+    {
+      first_name: String(application.full_name).split(" ")[0],
+      village: villageName ?? "your",
+      local_admins: adminNames || "Your Local Admins",
+    },
+    {
+      subject: "You are in",
+      title: "Welcome to ExpatPreneurs",
+      lines: [
+        `Your request has been approved, ${String(application.full_name).split(" ")[0]}.`,
+        "A separate email carries the link that signs you in. Open it, finish your profile, and your Circle can find you.",
+        "If it has not arrived, look in spam before writing to us.",
+      ],
+      action: { label: "Go to the platform", href: url("/login") },
+    }
   );
 
   revalidatePath("/admin/applications");
@@ -147,20 +186,35 @@ export async function waitlistApplication(
     .from("applications")
     .update({ status: "waitlisted", local_note: note, reviewed_by: admin.userId })
     .eq("id", id)
-    .select("full_name, email")
+    .select("full_name, email, village_id")
     .maybeSingle();
   if (error) return { error: error.message };
 
   if (application) {
-    await sendEmail(
+    const { data: village } = application.village_id
+      ? await supabase
+          .from("villages")
+          .select("name")
+          .eq("id", application.village_id)
+          .maybeSingle()
+      : { data: null };
+
+    await sendTemplate(
+      "waitlisted",
       application.email,
-      "Your request, and where it stands",
-      "Not yet, but not no",
-      [
-        `Thank you for asking, ${String(application.full_name).split(" ")[0]}.`,
-        "Your Village is at capacity for now, so your request is on the list rather than declined. When the next Circle opens, we come back to this list first.",
-      ],
-      { label: "See the Villages", href: url("/villages") }
+      {
+        first_name: String(application.full_name).split(" ")[0],
+        village: village?.name ?? "your",
+      },
+      {
+        subject: "Your request, and where it stands",
+        title: "Not yet, but not no",
+        lines: [
+          `Thank you for asking, ${String(application.full_name).split(" ")[0]}.`,
+          "Your Village is at capacity for now, so your request is on the list rather than declined. When the next Circle opens, we come back to this list first.",
+        ],
+        action: { label: "See the Villages", href: url("/villages") },
+      }
     );
   }
 
@@ -196,16 +250,19 @@ export async function declineApplication(
 
   // The applicant is told the decision, never the reason.
   if (application) {
-    await sendEmail(
+    await sendTemplate(
+      "declined",
       application.email,
-      "About your request",
-      "Not this time",
-      [
-        `Thank you for asking, ${String(application.full_name).split(" ")[0]}.`,
-        "We are not able to offer you a place at the moment. That is a decision about fit and timing, not about your business.",
-        "You are welcome to ask again in future, and the public events are open to you meanwhile.",
-      ],
-      { label: "See what is open to everyone", href: url("/watch") }
+      { first_name: String(application.full_name).split(" ")[0] },
+      {
+        subject: "About your request",
+        title: "Not this time",
+        lines: [
+          `Thank you for asking, ${String(application.full_name).split(" ")[0]}.`,
+          "We are not able to offer you a place at the moment. That is a decision about fit and timing, not about your business.",
+          "You are welcome to ask again in future, and the public events are open to you meanwhile.",
+        ],
+      }
     );
   }
 

@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { sendEmail, url } from "@/lib/email";
+import { sendTemplate, url } from "@/lib/email";
 
 const list = (value: FormDataEntryValue | null) =>
   String(value ?? "")
@@ -86,17 +86,23 @@ export async function submitApplication(
     return { error: "That did not send. Please try again in a moment." };
   }
 
-  await sendEmail(
+  await sendTemplate(
+    "received",
     email,
-    "We have your request",
-    "Thank you for asking",
-    [
-      `Your request to join ExpatPreneurs is with us, ${fullName.split(" ")[0]}.`,
-      "Someone reads every one, so it takes a few days rather than a few minutes. You will hear either way.",
-      `Your reference is ${saved?.reference ?? ""}. Keep it: with your email address it shows you where your request stands.`,
-      "If your city does not have a Village yet, we will tell you when it opens.",
-    ],
-    { label: "Check where it stands", href: url("/apply/status") }
+    {
+      first_name: fullName.split(" ")[0],
+      reference: saved?.reference ?? "",
+    },
+    {
+      subject: "We have your request",
+      title: "Thank you for asking",
+      lines: [
+        `Your request to join ExpatPreneurs is with us, ${fullName.split(" ")[0]}.`,
+        "Someone reads every one, so it takes a few days rather than a few minutes. You will hear either way.",
+        `Your reference is ${saved?.reference ?? ""}. Keep it: with your email address it shows you where your request stands.`,
+      ],
+      action: { label: "Check where it stands", href: url("/apply/status") },
+    }
   );
 
   redirect(`/apply/sent?ref=${saved?.reference ?? ""}`);
