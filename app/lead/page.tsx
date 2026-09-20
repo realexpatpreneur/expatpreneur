@@ -1,4 +1,5 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
+import { Ic } from "@/components/icon";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
@@ -42,19 +43,15 @@ export default async function LeadPage({
 
   if (!(leadership ?? []).length && !isEducator) {
     return (
-      <WorkspaceShell kind="lead" nav="/lead">
-          <section className="sec">
-            <h1>Nothing to run yet</h1>
-            <p className="lead">
-              This is where Circle Hosts, Industry Leads, Pod Leads and
-              Educators find what they are responsible for. Roles are given
-              by the Global team, and reviewed once a year.
-            </p>
-            <Link className="btn btn-ghost" href="/home">
-              Back to home
-            </Link>
-          </section>
-        </WorkspaceShell>
+      <WorkspaceShell kind="lead">
+        <PageHead
+          title="Nothing to run yet"
+          sub="This is where Circle Hosts, Industry Leads, Pod Leads and Educators find what they are responsible for. Roles are given by the Global team, and reviewed once a year."
+        />
+        <Link className="btn btn-ghost" href="/home">
+          Back to home
+        </Link>
+      </WorkspaceShell>
     );
   }
 
@@ -104,34 +101,52 @@ export default async function LeadPage({
   }));
 
   return (
-    <WorkspaceShell kind="lead" nav="/lead">
-        <section className="sec">
-          <h1>What you run</h1>
-          <p className="lead">
-            The people you are responsible for, and the room you can open for
-            them.
-          </p>
-          {done ? <div className="flag ok">Scheduled.</div> : null}
-        </section>
+    <WorkspaceShell kind="lead">
+        <PageHead
+          title="What you run"
+          sub="The people you are responsible for, and the room you can open for them."
+        />
+        {done ? (
+          <div className="flag ok">
+            <Ic name="check" />
+            <span>Scheduled.</span>
+          </div>
+        ) : null}
+
+        <div className="flag ok" style={{ marginBottom: 16 }}>
+          <Ic name="shield" />
+          <span>
+            You see what you lead and nothing else. Applications, the Village
+            mix and other Circles stay with the Local Admins.
+          </span>
+        </div>
 
         <section className="sec">
           <div className="g3">
-            {(leadership ?? []).map((l) => (
-              <div className="panel" key={`${l.kind}-${l.thing_id}`}>
-                <span className="chip">{roleLabel[l.role] ?? l.role}</span>
-                <h3 style={{ marginTop: 10 }}>{l.thing_name}</h3>
-                <p className="muted small" style={{ marginBottom: 0 }}>
-                  {l.people} {l.people === 1 ? "member" : "members"}
-                </p>
+            {(leadership ?? []).map((l, i) => (
+              <div className="circlecard has-cover" key={`${l.kind}-${l.thing_id}`}>
+                <span className={`ctile ct-${["blue", "mint", "navy", "sun"][i % 4]}`}>
+                  <b>{l.thing_name}</b>
+                  <span>
+                    {l.people} {l.people === 1 ? "member" : "members"}
+                  </span>
+                </span>
+                <div className="row" style={{ justifyContent: "flex-end" }}>
+                  <span className="chip chip-mint">
+                    {roleLabel[l.role] ?? l.role}
+                  </span>
+                </div>
               </div>
             ))}
             {isEducator ? (
-              <Link className="panel" href="/educator">
-                <span className="chip">Educator</span>
-                <h3 style={{ marginTop: 10 }}>Your courses</h3>
-                <p className="muted small" style={{ marginBottom: 0 }}>
-                  Write and publish them here.
-                </p>
+              <Link className="circlecard has-cover linkrow" href="/educator">
+                <span className="ctile ct-pink">
+                  <b>Your courses</b>
+                  <span>Write and publish them here</span>
+                </span>
+                <div className="row" style={{ justifyContent: "flex-end" }}>
+                  <span className="chip">Educator</span>
+                </div>
               </Link>
             ) : null}
           </div>

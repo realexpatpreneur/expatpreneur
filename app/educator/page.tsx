@@ -1,4 +1,6 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
+import { Stat } from "@/components/admin-bits";
+import { Ic } from "@/components/icon";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
@@ -32,35 +34,80 @@ export default async function EducatorPage({
     ["educator", "global_admin"].includes(r.role)
   );
 
+  // Real figures rather than placeholders: how many people are taking
+  // these courses, and what has been bought this month.
+  const courseIds = (courses ?? []).map((c) => c.id);
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+
+  const [{ count: learners }, { count: sales }] = courseIds.length
+    ? await Promise.all([
+        supabase
+          .from("enrolments")
+          .select("id", { count: "exact", head: true })
+          .in("course_id", courseIds),
+        supabase
+          .from("course_purchases")
+          .select("id", { count: "exact", head: true })
+          .in("course_id", courseIds)
+          .eq("status", "paid")
+          .gte("created_at", monthStart.toISOString()),
+      ])
+    : [{ count: 0 }, { count: 0 }];
+
   return (
-    <WorkspaceShell kind="edu" nav="/educator">
-        <section className="sec">
-          <h1>Your courses</h1>
-          <p className="lead">
-            Teach the thing you actually did. Short beats thorough.
-          </p>
-          {done ? <div className="flag ok">Saved.</div> : null}
-          <p>
-            <Link className="btn btn-ghost" href="/educator/sales">
-              Sales
-            </Link>{" "}
-            <Link className="btn btn-ghost" href="/educator/learners">
-              Learners
-            </Link>{" "}
-            <Link className="btn btn-ghost" href="/educator/profile">
-              Educator profile
-            </Link>{" "}
-            <Link className="btn btn-ghost" href="/educator/payouts">
-              Payouts
-            </Link>
-          </p>
-          {!isEducator ? (
-            <div className="flag hold">
+    <WorkspaceShell kind="edu">
+        <PageHead
+          title="Your teaching"
+          sub="Teach the thing you actually did. Short beats thorough."
+        />
+
+        {done ? (
+          <div className="flag ok">
+            <Ic name="check" />
+            <span>Saved.</span>
+          </div>
+        ) : null}
+
+        {!isEducator ? (
+          <div className="flag hold" style={{ marginBottom: 16 }}>
+            <Ic name="info" />
+            <span>
               Courses are written by Educators. Ask the Global team about the
               role, and until then saving will be refused.
-            </div>
-          ) : null}
-        </section>
+            </span>
+          </div>
+        ) : null}
+
+        <div className="g3 g4">
+          <Stat
+            label="Courses"
+            value={(courses ?? []).length}
+            note="Written by you"
+          />
+          <Stat
+            label="Published"
+            value={
+              (courses ?? []).filter(
+                (c) => c.status === "published" && c.review === "approved"
+              ).length
+            }
+            note="Live in Learning"
+          />
+          <Stat
+            label="Learners"
+            value={learners ?? 0}
+            note="All time"
+            href="/educator/learners"
+          />
+          <Stat
+            label="Sales"
+            value={sales ?? 0}
+            note="This month"
+            href="/educator/sales"
+          />
+        </div>
 
         <section className="sec">
           <div className="gside">
