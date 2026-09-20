@@ -11,6 +11,8 @@ import {
 } from "@/lib/events";
 import { SiteHeader } from "@/components/site-header";
 import { RegisterForm, CancelForm } from "../forms";
+import { TicketButton } from "@/app/upgrade/forms";
+import { stripeReady } from "@/lib/stripe";
 
 export default async function EventPage({
   params,
@@ -209,6 +211,9 @@ export default async function EventPage({
                       You can still see what is on. The paid plan opens every
                       Village, including their events.
                     </p>
+                    <Link className="btn" href="/upgrade">
+                      See the paid plan
+                    </Link>
                   </>
                 ) : taken >= event.capacity ? (
                   <>
@@ -216,6 +221,34 @@ export default async function EventPage({
                     <p className="muted small" style={{ marginTop: 6 }}>
                       Ask the host to put you on the waiting list.
                     </p>
+                  </>
+                ) : event.price_cents && stripeReady ? (
+                  <>
+                    <h3>{priceText(event)}</h3>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      A ticket confirms your place. Paying is what registers
+                      you.
+                    </p>
+                    <TicketButton
+                      eventId={event.id}
+                      slug={event.slug}
+                      label="Get a ticket"
+                    />
+                  </>
+                ) : event.price_cents ? (
+                  <>
+                    <h3>{priceText(event)}</h3>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      Tickets are not being taken online yet. Register here and
+                      the host will sort the payment with you.
+                    </p>
+                    <RegisterForm
+                      eventId={event.id}
+                      slug={event.slug}
+                      requiresApproval={event.requires_approval}
+                      isVisitor={visiting}
+                      label={visiting ? "Register as a visitor" : "Register"}
+                    />
                   </>
                 ) : (
                   <RegisterForm

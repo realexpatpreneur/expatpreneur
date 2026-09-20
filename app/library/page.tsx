@@ -107,6 +107,9 @@ export default async function LibraryPage({
                 but some of it travels. The paid plan opens every Village's
                 library.
               </p>
+              <Link className="btn" href="/upgrade">
+                See the paid plan
+              </Link>
             </div>
           ) : null}
         </section>

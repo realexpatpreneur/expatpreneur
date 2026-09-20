@@ -115,7 +115,12 @@ export default async function MemberHomePage() {
             <span className="chip mint">
               {profile.plan === "paid" ? "Paid member" : "Member"}
             </span>{" "}
-            <span className="chip">{profile.status}</span>
+            <span className="chip">{profile.status}</span>{" "}
+            {profile.plan === "paid" ? null : (
+              <Link className="chip" href="/upgrade">
+                See the paid plan
+              </Link>
+            )}
           </p>
           {runsAVillage ? (
             <p>

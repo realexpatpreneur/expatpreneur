@@ -81,7 +81,7 @@ export default async function DirectoryPage({
                 Every Village
               </Link>
             ) : (
-              <Link className="chip" href="/home">
+              <Link className="chip" href="/upgrade">
                 Every Village, with the paid plan
               </Link>
             )}

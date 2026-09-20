@@ -124,6 +124,9 @@ export default async function PostPage({
                         You can read every post. Answering a member in another
                         Village, and messaging them, comes with paid membership.
                       </p>
+                      <Link className="btn" href="/upgrade">
+                        See the paid plan
+                      </Link>
                     </div>
                   )}
                 </div>

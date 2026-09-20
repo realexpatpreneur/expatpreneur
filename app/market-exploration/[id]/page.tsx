@@ -116,6 +116,9 @@ export default async function MarketPostPage({
                         You can read every post here. Answering a member in
                         another Village comes with paid membership.
                       </p>
+                      <Link className="btn" href="/upgrade">
+                        See the paid plan
+                      </Link>
                     </div>
                   )}
                 </div>
