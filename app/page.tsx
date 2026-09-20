@@ -47,8 +47,8 @@ export default async function HomePage() {
             <Link className="btn primary" href="/apply">
               Request your invitation
             </Link>{" "}
-            <Link className="btn" href="/villages">
-              Find your Village
+            <Link className="btn" href="/discover">
+              Look around first
             </Link>
           </p>
         </section>

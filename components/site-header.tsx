@@ -7,6 +7,9 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
         ExpatPreneurs
       </Link>
       <nav>
+        <Link className="hide-small" href="/discover">
+          Discover
+        </Link>
         <Link className="hide-small" href="/villages">
           Villages
         </Link>

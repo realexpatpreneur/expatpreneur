@@ -7,6 +7,8 @@ export function SiteFooter() {
         <div className="inner">
           <span className="brand">ExpatPreneurs</span>
           <div className="links">
+            <Link href="/discover">Discover</Link>
+            <Link href="/membership">Membership</Link>
             <Link href="/legal/terms">Terms of service</Link>
             <Link href="/legal/privacy">Privacy policy</Link>
             <Link href="/contact">Contact</Link>
