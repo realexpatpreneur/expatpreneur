@@ -1,3 +1,72 @@
+# 23-fix-cron-and-restore-session-page.ps1
+# Two fixes.
+# 1. vercel.json asked for an hourly cron, which a Hobby account refuses, and
+#    that is why every deploy since the email slice was rejected before it
+#    built. The file is removed and the hourly schedule moves to GitHub
+#    Actions, which costs nothing.
+# 2. Script 20 ran a second time after script 22 and put back an older copy
+#    of the live session page. This restores the Enter the room button.
+#
+# After running, add two repository secrets in GitHub, under
+# Settings, Secrets and variables, Actions:
+#   CRON_SECRET  the same value as in Vercel
+#   SITE_URL     https://expatpreneur.vercel.app
+#
+#   powershell -ExecutionPolicy Bypass -File .\23-fix-cron-and-restore-session-page.ps1
+
+$ErrorActionPreference = "Stop"
+$root = "C:\Users\HP\Desktop\expatpreneur"
+Set-Location $root
+
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+
+function Write-File($relativePath, $contents) {
+    $full = Join-Path $root $relativePath
+    $dir = Split-Path $full -Parent
+    if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    [System.IO.File]::WriteAllText($full, $contents, $utf8NoBom)
+    Write-Host "wrote $relativePath"
+}
+
+if (Test-Path (Join-Path $root "vercel.json")) {
+    Remove-Item (Join-Path $root "vercel.json")
+    Write-Host "removed vercel.json"
+}
+
+# Keep the Vercel link out of the repository.
+$ignore = Join-Path $root ".gitignore"
+if (-not (Select-String -Path $ignore -Pattern "^\.vercel$" -Quiet)) {
+    Add-Content -Path $ignore -Value ".vercel"
+    Write-Host "added .vercel to .gitignore"
+}
+
+$file0 = @'
+# Event reminders, hourly.
+# Vercel Hobby only allows one cron run a day, so the schedule lives here
+# instead. The job simply calls the same endpoint the platform already has.
+name: Event reminders
+
+on:
+  schedule:
+    - cron: "5 * * * *"      # five past every hour, UTC
+  workflow_dispatch:          # and a button, for testing
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the reminder job
+        run: |
+          code=$(curl -s -o response.txt -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/reminders")
+          echo "status $code"
+          cat response.txt
+          if [ "$code" != "200" ]; then exit 1; fi
+'@
+Write-File ".github\workflows\reminders.yml" $file0
+
+$file1 = @'
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -303,3 +372,12 @@ export default async function LiveSessionPage({
     </>
   );
 }
+'@
+Write-File "app\live\[slug]\page.tsx" $file1
+
+git add .
+git commit -m "Move the reminder schedule to GitHub Actions and restore the live session page"
+git push
+
+Write-Host ""
+Write-Host "Pushed. Deploys should work again now."

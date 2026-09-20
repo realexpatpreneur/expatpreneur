@@ -1,0 +1,22 @@
+# Event reminders, hourly.
+# Vercel Hobby only allows one cron run a day, so the schedule lives here
+# instead. The job simply calls the same endpoint the platform already has.
+name: Event reminders
+
+on:
+  schedule:
+    - cron: "5 * * * *"      # five past every hour, UTC
+  workflow_dispatch:          # and a button, for testing
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the reminder job
+        run: |
+          code=$(curl -s -o response.txt -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/reminders")
+          echo "status $code"
+          cat response.txt
+          if [ "$code" != "200" ]; then exit 1; fi
