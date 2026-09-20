@@ -50,6 +50,7 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/pods") ||
     path.startsWith("/businesses") ||
     path.startsWith("/jobs") ||
+    path.startsWith("/renew") ||
     path.startsWith("/events") ||
     path.startsWith("/admin") ||
     path.startsWith("/global");
