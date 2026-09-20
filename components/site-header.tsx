@@ -10,6 +10,9 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
         <Link className="hide-small" href="/villages">
           Villages
         </Link>
+        <Link className="hide-small" href="/how-it-works">
+          How it works
+        </Link>
         <Link className="hide-small" href="/watch">
           Watch
         </Link>
