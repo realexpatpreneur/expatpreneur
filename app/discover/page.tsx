@@ -21,6 +21,7 @@ const tabs = [
   ["events", "Events"],
   ["learning", "Learning"],
   ["watch", "Watch and listen"],
+  ["media", "Media"],
 ] as const;
 
 export default async function DiscoverPage({
@@ -41,6 +42,7 @@ export default async function DiscoverPage({
     { data: groups },
     { data: events },
     { data: courses },
+    { data: articles },
     { data: media },
   ] = await Promise.all([
     supabase
@@ -73,6 +75,13 @@ export default async function DiscoverPage({
       .eq("status", "published")
       .order("title")
       .limit(12),
+    supabase
+      .from("articles")
+      .select("id, slug, kind, title, standfirst, cover_url")
+      .eq("status", "published")
+      .eq("member_only", false)
+      .order("published_at", { ascending: false })
+      .limit(8),
     supabase
       .from("media_items")
       .select("id, slug, kind, title, summary, duration, published_at")
@@ -346,6 +355,34 @@ export default async function DiscoverPage({
                       {item.duration ? `, ${item.duration}` : ""}
                     </div>
                     <p>{item.summary}</p>
+                  </Link>
+                ))}
+            </div>
+          </section>
+        ) : null}
+
+        {shown("media") ? (
+          <section className="band">
+            <h2>Media</h2>
+            <p className="muted small">
+              Stories about members building a business away from home.
+            </p>
+            <div className="grid" style={{ marginTop: 16 }}>
+              {(articles ?? [])
+                .filter((a) => match(a.title, a.standfirst))
+                .map((article, i) => (
+                  <Link className="card" href={`/media/${article.slug}`} key={article.id}>
+                    <div className={`cover ${covers[(i + 1) % covers.length]}`}>
+                      {article.title}
+                    </div>
+                    <div className="kind">
+                      {article.kind === "guide"
+                        ? "Guide"
+                        : article.kind === "note"
+                          ? "Note"
+                          : "Member story"}
+                    </div>
+                    <p>{article.standfirst}</p>
                   </Link>
                 ))}
             </div>

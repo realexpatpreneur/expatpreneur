@@ -16,6 +16,9 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
         <Link className="hide-small" href="/how-it-works">
           How it works
         </Link>
+        <Link className="hide-small" href="/media">
+          Media
+        </Link>
         <Link className="hide-small" href="/watch">
           Watch
         </Link>

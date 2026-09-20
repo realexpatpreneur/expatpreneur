@@ -240,6 +240,12 @@ export default async function MemberHomePage() {
                 What the rooms looked like, from the people who were there.
               </p>
             </Link>
+            <Link className="panel" href="/media">
+              <h3>Media</h3>
+              <p className="muted small">
+                Stories about members, and what they learned doing it.
+              </p>
+            </Link>
             <Link className="panel" href="/watch">
               <h3>Watch and Listen</h3>
               <p className="muted small">
