@@ -59,7 +59,7 @@ export default async function LearningPage() {
 
   return (
     <DualPage member={Boolean(member)} nav="/learning" active="/learning">
-        <section className={member ? "band" : "hero center"}>
+        <section className={member ? "sec" : "pubsec hero-center"}>
           <h1>Learning</h1>
           <p className="lead">
             Short courses from members who have already done the thing, not

@@ -55,7 +55,7 @@ export default async function PublicMembersPage({
 
   return (
     <WorkspaceShell kind="member" nav="/members">
-        <section className={me ? "band" : "hero center"}>
+        <section className={me ? "sec" : "pubsec hero-center"}>
           <h1>Members</h1>
           <p className="lead">
             People building a business away from home, in every Village. These

@@ -165,7 +165,7 @@ export default async function HomePage() {
       ) : null}
 
       <section className="pubsec" style={{ paddingTop: 0 }}>
-        <div className="sec">
+        <div className="band">
           <div style={{ flex: 1, minWidth: 240 }}>
             <h2 style={{ fontSize: 22 }}>Ready to find your Village?</h2>
             <p style={{ marginTop: 6 }}>

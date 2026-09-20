@@ -42,7 +42,7 @@ export default async function BusinessesPage({
 
   return (
     <DualPage member={Boolean(member)} nav="/businesses" active="/businesses">
-        <section className={member ? "band" : "hero center"}>
+        <section className={member ? "sec" : "pubsec hero-center"}>
           <h1>Businesses</h1>
           <p className="lead">
             What members actually do, and which markets they already sell into.

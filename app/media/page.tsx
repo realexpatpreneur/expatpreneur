@@ -40,7 +40,7 @@ export default async function MediaPage({
 
   return (
     <WorkspaceShell kind="member" nav="/media">
-        <section className={me ? "band" : "hero center"}>
+        <section className={me ? "sec" : "pubsec hero-center"}>
           <h1>Media</h1>
           <p className="lead">
             Stories about members building a business away from home, and what

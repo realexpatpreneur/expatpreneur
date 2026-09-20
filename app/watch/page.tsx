@@ -38,7 +38,7 @@ export default async function WatchPage({
 
   return (
     <DualPage member={Boolean(user)} nav="/watch" active="/watch">
-        <section className={user ? "band" : "hero center"}>
+        <section className={user ? "sec" : "pubsec hero-center"}>
           <h1>Watch and Listen</h1>
           <p className="lead">
             Members talking about what building a business away from home
