@@ -34,12 +34,12 @@ export default async function SuggestionsPage() {
               <div className="panel wash">
                 <h3>This is not a report</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
-                  If something has happened between you and another member, tell
-                  your Local Admin directly. Those are handled privately and are
-                  not suggestions.
+                  If something has happened between you and another member,
+                  report it instead. Those go straight to the Local Admins and
+                  are handled privately.
                 </p>
-                <Link className="btn" href="/home">
-                  Back to home
+                <Link className="btn" href="/report">
+                  Report something
                 </Link>
               </div>
             </div>

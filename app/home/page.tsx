@@ -122,6 +122,11 @@ export default async function MemberHomePage() {
               </Link>
             )}
           </p>
+          <p>
+            <Link className="btn" href="/settings">
+              Settings
+            </Link>
+          </p>
           {runsAVillage ? (
             <p>
               <Link className="btn" href="/admin/applications">

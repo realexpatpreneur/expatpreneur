@@ -91,9 +91,14 @@ export default async function MemberProfilePage({
               <div className="panel">
                 <h3>Getting in touch</h3>
                 {person.id === me.id ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
-                    This is your own profile. Edit it from the welcome page.
-                  </p>
+                  <>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      This is your own profile.
+                    </p>
+                    <Link className="btn" href="/settings">
+                      Edit your profile
+                    </Link>
+                  </>
                 ) : sameVillage ? (
                   <>
                     <p className="muted small" style={{ marginTop: 6 }}>
@@ -132,6 +137,18 @@ export default async function MemberProfilePage({
                   </p>
                 )}
               </div>
+              {person.id === me.id ? null : (
+                <div className="panel wash">
+                  <h3>Something wrong?</h3>
+                  <p className="muted small" style={{ marginTop: 6 }}>
+                    If this member has done something that should not have
+                    happened, tell your Local Admin. It is handled quietly.
+                  </p>
+                  <Link className="btn" href={`/report?member=${person.id}`}>
+                    Report
+                  </Link>
+                </div>
+              )}
               <div className="panel wash">
                 <h3>What is never shown</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
