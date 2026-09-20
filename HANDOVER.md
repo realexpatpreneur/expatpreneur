@@ -22,7 +22,7 @@ Live at https://expatpreneur.vercel.app
 | --- | --- | --- |
 | Next.js 16, App Router | The whole application, pages and server actions | One codebase, server rendering, no separate API to keep in step |
 | Supabase Postgres | Every row of data | Row level security means the rules live with the data, not in the pages |
-| Supabase Auth | Signing in, by emailed link | Members never choose a password |
+| Supabase Auth | Signing in, by emailed link or a password | A link is the default; a member may set a password in their settings |
 | Supabase Storage | Photographs, covers, recordings | Same rules engine as the database |
 | Vercel | Hosting and deployment | Pushes to `main` deploy |
 | Stripe | Membership and event tickets | Checkout and the card portal are theirs, not ours |
@@ -161,6 +161,7 @@ table or deletes a row.
 | 0031_photos_consent | The photograph and consent register |
 | 0032_educator_profile | The profile shown on course pages |
 | 0033_explicit_grants | The table grants, written down rather than inherited |
+| 0034_village_interest | Asking to be told when a Village opens |
 
 **The helper functions to know**, defined in 0002 and used all over the
 policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
@@ -175,7 +176,7 @@ Profiles appear publicly only where the member ticked the public box, and
 only their public columns. Articles are public unless marked members only.
 Everything else needs a member.
 
-**Two things that will bite you if you forget them.**
+**Five things that will bite you if you forget them.**
 
 1. `profiles` does not expose email, phone or nationalities to anybody
    signed in, and a signed-out visitor is not granted the member-only
@@ -282,14 +283,16 @@ Leadership, Moves, Partnered events and Village settings.
 
 **Global team**, at `/global`
 
-Villages, network events, the internal nationality balance, cities people are asking for,
-Groups and Pods, market pathways, roles, moderation, suggestions across
-every Village, money and reporting. Also: Requests (Pods members want to
-start, and members asking about their own data), Learning (reading a
-course before it reaches members), Plans (what membership costs), Media,
-and The record (the audit log). Also: Pages (the public site, edited in
-blocks), Emails (the eight transactional templates), System settings,
-Recognition, Partnered events and Business listings.
+Villages, network events, the internal nationality balance, cities people
+are asking for, Groups and Pods, market pathways, roles, moderation,
+suggestions from every Village, money and reporting.
+
+Also: Requests (Pods members want to start, and members asking about
+their own data), Learning (reading a course before it reaches members),
+Plans (what membership costs), Media, Pages (the public site, edited in
+blocks), Emails (the eight transactional templates), Photos and consent,
+the Resources library, Recognition, Partnered events, Business listings,
+Network intelligence, System settings, and The record (the audit log).
 
 **Two rules about content that are easy to miss**
 
