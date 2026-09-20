@@ -1,0 +1,51 @@
+import Link from "next/link";
+import { requireMember } from "@/lib/member";
+import { SiteHeader } from "@/components/site-header";
+import { SuggestionForm } from "./form";
+
+export const metadata = { title: "Suggestion box, ExpatPreneurs Global" };
+
+export default async function SuggestionsPage() {
+  const member = await requireMember("/suggestions");
+
+  return (
+    <>
+      <SiteHeader signedIn />
+      <main className="wrap">
+        <section className="band">
+          <h1>Suggestion box</h1>
+          <p className="lead">
+            How could ExpatPreneurs be better? Local Admins and the Global team
+            read everything that comes in.
+          </p>
+        </section>
+        <section className="band">
+          <div className="cols">
+            <SuggestionForm villageName={member.villageName} />
+            <div className="stack">
+              <div className="panel">
+                <h3>Who reads it</h3>
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  Suggestions about your Village go to your Local Admins. Ones
+                  about the whole community go to the Global team. Nothing you
+                  write here appears in the Village or in any WhatsApp group.
+                </p>
+              </div>
+              <div className="panel wash">
+                <h3>This is not a report</h3>
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  If something has happened between you and another member, tell
+                  your Local Admin directly. Those are handled privately and are
+                  not suggestions.
+                </p>
+                <Link className="btn" href="/home">
+                  Back to home
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
+  );
+}

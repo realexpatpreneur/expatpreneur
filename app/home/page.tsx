@@ -132,6 +132,12 @@ export default async function MemberHomePage() {
                 Looking into a new country? Say who you need to meet.
               </p>
             </Link>
+            <Link className="panel" href="/suggestions">
+              <h3>Suggestion box</h3>
+              <p className="muted small">
+                How could this be better? Send it with your name, or without.
+              </p>
+            </Link>
             <Link className="panel" href="/events">
               <h3>Events</h3>
               <p className="muted small">

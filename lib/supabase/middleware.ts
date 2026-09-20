@@ -38,6 +38,8 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/village") ||
     path.startsWith("/directory") ||
     path.startsWith("/members") ||
+    path.startsWith("/market-exploration") ||
+    path.startsWith("/suggestions") ||
     path.startsWith("/admin") ||
     path.startsWith("/global");
 
