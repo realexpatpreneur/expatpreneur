@@ -33,6 +33,8 @@ export default async function GlobalLayout({
           <Link href="/global/reporting">Reporting</Link>
           <Link href="/global/learning">Learning</Link>
           <Link href="/global/plans">Plans</Link>
+          <Link href="/global/recognition">Recognition</Link>
+          <Link href="/global/partners">Partnered events</Link>
           <Link href="/global/money">Money</Link>
           <Link href="/global/audit">The record</Link>
           <Link href="/global/settings">System settings</Link>

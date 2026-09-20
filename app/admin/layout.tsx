@@ -23,6 +23,7 @@ const groups = [
       ["/admin/events", "Events"],
       ["/admin/live", "Live rooms"],
       ["/admin/announcements", "Announcements"],
+      ["/admin/partners", "Partnered events"],
     ],
   },
   {

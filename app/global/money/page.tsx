@@ -37,7 +37,7 @@ export default async function GlobalMoneyPage() {
         .select("id, purchase_id, profile_id, reason, status, created_at")
         .eq("status", "new")
         .order("created_at", { ascending: false }),
-      supabase.from("payouts").select("educator_id, net_cents, status"),
+      supabase.from("payouts").select("person_id, net_cents, status, kind"),
     ]);
 
   const owedBy = new Map<string, { owed: number; currency: string }>();
@@ -49,7 +49,7 @@ export default async function GlobalMoneyPage() {
   }
   for (const payout of payouts ?? []) {
     if (payout.status !== "paid") continue;
-    const row = owedBy.get(payout.educator_id);
+    const row = owedBy.get(payout.person_id);
     if (row) row.owed -= payout.net_cents;
   }
 
