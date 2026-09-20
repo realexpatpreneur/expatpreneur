@@ -83,3 +83,31 @@ export async function buyCourse(
 
   redirect(session.url ?? `/learning/${slug}`);
 }
+
+// Asking for a refund. The learner asks; the Global team decides, because
+// the money went through the platform rather than the educator.
+export async function askForRefund(
+  _prev: BuyState,
+  formData: FormData
+): Promise<BuyState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=/learning");
+
+  const reason = String(formData.get("reason") ?? "").trim();
+  if (!reason) return { error: "Say what went wrong." };
+
+  const { error } = await supabase.from("refund_requests").insert({
+    purchase_id: String(formData.get("purchase_id")),
+    profile_id: user.id,
+    reason,
+  });
+
+  if (error) {
+    return { error: "That could not be sent. It may already be asked for." };
+  }
+
+  redirect(`/learning/${String(formData.get("slug"))}?refund=asked`);
+}

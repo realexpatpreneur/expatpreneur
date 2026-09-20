@@ -5,7 +5,7 @@ import { whoIsHere, isPaid } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { EnrolButton } from "../forms";
-import { BuyButton } from "../buy";
+import { BuyButton, RefundForm } from "../buy";
 
 export default async function CoursePage({
   params,
@@ -42,7 +42,7 @@ export default async function CoursePage({
   const { data: bought } = member
     ? await supabase
         .from("course_purchases")
-        .select("id")
+        .select("id, created_at")
         .eq("course_id", course.id)
         .eq("profile_id", member.id)
         .eq("status", "paid")
@@ -150,6 +150,17 @@ export default async function CoursePage({
             </div>
 
             <div className="stack">
+              {bought ? (
+                <div className="panel wash">
+                  <h3>You bought this</h3>
+                  <p className="muted small" style={{ marginTop: 6 }}>
+                    If it was not what you expected, say so. Refunds are
+                    handled by the Global team, not by the educator.
+                  </p>
+                  <RefundForm purchaseId={bought.id} slug={slug} />
+                </div>
+              ) : null}
+
               <div className="panel">
                 {!member ? (
                   <>

@@ -42,6 +42,14 @@ export default async function EducatorPage({
             Teach the thing you actually did. Short beats thorough.
           </p>
           {done ? <div className="notice good">Saved.</div> : null}
+          <p>
+            <Link className="btn" href="/educator/sales">
+              Sales
+            </Link>{" "}
+            <Link className="btn" href="/educator/payouts">
+              Payouts
+            </Link>
+          </p>
           {!isEducator ? (
             <div className="notice bad">
               Courses are written by Educators. Ask the Global team about the

@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { timeAgo } from "@/lib/member";
+import { RefundDecision, PayoutForm } from "../plans/money-forms";
 
 export default async function GlobalMoneyPage() {
   const supabase = await createClient();
@@ -21,8 +23,42 @@ export default async function GlobalMoneyPage() {
         .eq("plan", "paid"),
     ]);
 
+  // The course side of the money: what sold, who wants a refund, and what
+  // each educator is owed.
+  const [{ data: sales }, { data: refundAsks }, { data: payouts }] =
+    await Promise.all([
+      supabase
+        .from("course_sales")
+        .select("purchase_id, course_title, educator_id, amount_cents, educator_cents, currency, status, created_at")
+        .order("created_at", { ascending: false })
+        .limit(100),
+      supabase
+        .from("refund_requests")
+        .select("id, purchase_id, profile_id, reason, status, created_at")
+        .eq("status", "new")
+        .order("created_at", { ascending: false }),
+      supabase.from("payouts").select("educator_id, net_cents, status"),
+    ]);
+
+  const owedBy = new Map<string, { owed: number; currency: string }>();
+  for (const sale of sales ?? []) {
+    if (sale.status !== "paid" || !sale.educator_id) continue;
+    const row = owedBy.get(sale.educator_id) ?? { owed: 0, currency: sale.currency };
+    row.owed += sale.educator_cents ?? 0;
+    owedBy.set(sale.educator_id, row);
+  }
+  for (const payout of payouts ?? []) {
+    if (payout.status !== "paid") continue;
+    const row = owedBy.get(payout.educator_id);
+    if (row) row.owed -= payout.net_cents;
+  }
+
   const ids = [
-    ...new Set((payments ?? []).map((p) => p.profile_id).filter(Boolean)),
+    ...new Set([
+      ...(payments ?? []).map((p) => p.profile_id).filter(Boolean),
+      ...(sales ?? []).map((s) => s.educator_id).filter(Boolean),
+      ...(refundAsks ?? []).map((r) => r.profile_id).filter(Boolean),
+    ]),
   ] as string[];
   const { data: people } = ids.length
     ? await supabase.from("profiles").select("id, full_name").in("id", ids)
@@ -100,6 +136,98 @@ export default async function GlobalMoneyPage() {
           </div>
         )}
       </section>
+
+      <section className="band">
+        <h2>Courses</h2>
+        <div className="cols">
+          <div className="stack">
+            <div className="panel">
+              <h3>Refunds asked for</h3>
+              {(refundAsks ?? []).length === 0 ? (
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  Nothing waiting.
+                </p>
+              ) : (
+                <div className="stack" style={{ marginTop: 12 }}>
+                  {(refundAsks ?? []).map((request) => (
+                    <div className="panel wash" key={request.id}>
+                      <p className="muted small">
+                        {people?.find((p) => p.id === request.profile_id)
+                          ?.full_name ?? "A member"}
+                        . {timeAgo(request.created_at)}
+                      </p>
+                      <p style={{ marginTop: 8 }}>{request.reason}</p>
+                      <RefundDecision id={request.id} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="panel">
+              <h3>Course sales</h3>
+              {(sales ?? []).length === 0 ? (
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  Nothing sold yet.
+                </p>
+              ) : (
+                <div className="rows" style={{ marginTop: 12 }}>
+                  {(sales ?? []).slice(0, 25).map((sale) => (
+                    <div className="rowlink" key={sale.purchase_id}>
+                      <div>
+                        <b>{sale.course_title}</b>
+                        <div className="muted small">
+                          {people?.find((p) => p.id === sale.educator_id)
+                            ?.full_name ?? "An educator"}
+                          . {timeAgo(sale.created_at)}
+                        </div>
+                      </div>
+                      <div className="rowmeta">
+                        <span className={`chip ${sale.status === "paid" ? "mint" : ""}`}>
+                          {(sale.amount_cents / 100).toFixed(0)} {sale.currency}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="stack">
+            {owedBy.size ? (
+              <PayoutForm
+                educators={[...owedBy.entries()].map(([id, row]) => ({
+                  id,
+                  name: people?.find((p) => p.id === id)?.full_name ?? "An educator",
+                  owed: row.owed,
+                  currency: row.currency,
+                }))}
+              />
+            ) : (
+              <div className="panel wash">
+                <h3>Payouts</h3>
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  Nothing to pay out until a course sells.
+                </p>
+              </div>
+            )}
+
+            <div className="panel wash">
+              <h3>The share</h3>
+              <p className="muted small" style={{ marginTop: 6 }}>
+                Educators keep a percentage of each sale, recorded on every
+                payout, so changing it later does not change what was already
+                agreed.
+              </p>
+              <Link className="btn" href="/global/plans">
+                Plans and prices
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   );
 }
