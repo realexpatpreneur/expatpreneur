@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember } from "@/lib/member";
+import { whoIsHere } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { ContactBusinessForm } from "../contact-form";
 
 export default async function BusinessPage({
   params,
@@ -10,7 +12,9 @@ export default async function BusinessPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const member = await requireMember("/businesses");
+  // Open to anybody. A listing that is not public simply does not come
+  // back for a stranger.
+  const member = await whoIsHere();
   const supabase = await createClient();
 
   const { data: business } = await supabase
@@ -41,11 +45,11 @@ export default async function BusinessPage({
       .eq("status", "open"),
   ]);
 
-  const mine = business.owner_id === member.id;
+  const mine = Boolean(member) && business.owner_id === member?.id;
 
   return (
     <>
-      <SiteHeader signedIn />
+      <SiteHeader signedIn={Boolean(member)} />
       <main className="wrap">
         <section className="band">
           <p className="muted small">
@@ -105,6 +109,29 @@ export default async function BusinessPage({
             </div>
 
             <div className="stack">
+              {business.offer ? (
+                <div className="panel wash">
+                  <h3>Current offer</h3>
+                  <p style={{ marginTop: 6 }}>{business.offer}</p>
+                </div>
+              ) : null}
+
+              {(business.services ?? []).length ? (
+                <div className="panel">
+                  <h3>Services</h3>
+                  <div className="rows" style={{ marginTop: 12 }}>
+                    {(business.services ?? []).map((service: string) => (
+                      <div className="rowlink" key={service}>
+                        <div>
+                          <b>{service}</b>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+
               {owner ? (
                 <div className="panel">
                   <h3>Run by</h3>
@@ -133,7 +160,25 @@ export default async function BusinessPage({
             </div>
           </div>
         </section>
+
+        <section className="band">
+          <div className="cols">
+            <div className="panel">
+              <h3>Contact {business.name}</h3>
+              <ContactBusinessForm slug={business.slug} name={business.name} />
+            </div>
+            <div className="panel wash">
+              <h3>How this works</h3>
+              <p className="muted small" style={{ marginTop: 6 }}>
+                Your message goes to the member who runs this business, with
+                your email address so they can reply. Nothing is paid or
+                arranged through ExpatPreneurs.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
+      {member ? null : <SiteFooter />}
     </>
   );
 }

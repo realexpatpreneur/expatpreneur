@@ -23,6 +23,7 @@ export default async function GlobalLayout({
           <Link href="/global/cities">Cities</Link>
           <Link href="/global/groups">Groups</Link>
           <Link href="/global/markets">Markets</Link>
+          <Link href="/global/businesses">Businesses</Link>
           <Link href="/global/media">Media</Link>
           <Link href="/global/content">Pages</Link>
           <Link href="/global/emails">Emails</Link>

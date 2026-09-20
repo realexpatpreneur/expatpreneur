@@ -40,6 +40,12 @@ export async function saveBusiness(
     description: String(formData.get("description") ?? "").trim() || null,
     industry: String(formData.get("industry") ?? "").trim() || null,
     website: String(formData.get("website") ?? "").trim() || null,
+    category: String(formData.get("category") ?? "").trim() || null,
+    services: String(formData.get("services") ?? "")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean),
+    offer: String(formData.get("offer") ?? "").trim() || null,
     founded: String(formData.get("founded") ?? "").trim() || null,
     serves: list(formData.get("serves")),
     public: Boolean(formData.get("public")),

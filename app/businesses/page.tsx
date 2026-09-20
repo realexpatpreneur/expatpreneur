@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember } from "@/lib/member";
+import { whoIsHere } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Businesses, ExpatPreneurs Global" };
 
@@ -11,17 +12,19 @@ export default async function BusinessesPage({
   searchParams: Promise<{ q?: string; show?: string; done?: string }>;
 }) {
   const { q = "", show = "all", done } = await searchParams;
-  const member = await requireMember("/businesses");
+  // The marketplace is open to anybody. What comes back is decided by the
+  // database: a stranger sees the listings whose owners allow it.
+  const member = await whoIsHere();
   const supabase = await createClient();
 
   let query = supabase
     .from("businesses")
-    .select("id, slug, name, tagline, industry, serves, owner_id, village_id")
+    .select("id, slug, name, tagline, industry, serves, owner_id, village_id, category, offer, logo_url")
     .order("name")
     .limit(150);
 
-  if (show === "mine") query = query.eq("owner_id", member.id);
-  if (show === "village" && member.village_id) {
+  if (show === "mine" && member) query = query.eq("owner_id", member.id);
+  if (show === "village" && member?.village_id) {
     query = query.eq("village_id", member.village_id);
   }
   if (q) {
@@ -40,7 +43,7 @@ export default async function BusinessesPage({
 
   return (
     <>
-      <SiteHeader signedIn />
+      <SiteHeader signedIn={Boolean(member)} />
       <main className="wrap">
         <section className="band">
           <h1>Businesses</h1>
@@ -107,7 +110,22 @@ export default async function BusinessesPage({
             </div>
           )}
         </section>
+
+        {member ? null : (
+          <section className="band cta">
+            <h2>Run a business abroad?</h2>
+            <p className="lead">
+              Members can list their business here once they are in.
+            </p>
+            <p>
+              <Link className="btn primary" href="/apply">
+                Request your invitation
+              </Link>
+            </p>
+          </section>
+        )}
       </main>
+      {member ? null : <SiteFooter />}
     </>
   );
 }

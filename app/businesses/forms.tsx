@@ -16,6 +16,9 @@ export function BusinessForm({
     website: string | null;
     founded: string | null;
     serves: string[] | null;
+    category?: string | null;
+    services?: string[] | null;
+    offer?: string | null;
     public: boolean;
     logo_url?: string | null;
   };
@@ -61,6 +64,36 @@ export function BusinessForm({
           <input name="founded" defaultValue={business?.founded ?? ""} placeholder="2021" />
         </label>
       </div>
+
+      <label className="field">
+        <span>Category</span>
+        <input
+          name="category"
+          defaultValue={business?.category ?? ""}
+          placeholder="Consulting, Design and branding, Hospitality"
+        />
+      </label>
+
+      <label className="field">
+        <span>Services, separated by commas</span>
+        <input
+          name="services"
+          defaultValue={(business?.services ?? []).join(", ")}
+          placeholder="Brand identity, Menus and signage"
+        />
+      </label>
+
+      <label className="field">
+        <span>Current offer</span>
+        <input
+          name="offer"
+          defaultValue={business?.offer ?? ""}
+          placeholder="Two free hours for members"
+        />
+        <span className="hint">
+          Shown on the public page. Leave it empty if there is none.
+        </span>
+      </label>
 
       <label className="field">
         <span>Website</span>
