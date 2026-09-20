@@ -17,7 +17,11 @@ export default async function AdminLayout({
           ExpatPreneurs <span className="chip">Admin</span>
         </Link>
         <nav>
-          <Link href="/admin/applications">Invitation requests</Link>
+          <Link href="/admin/applications">Requests</Link>
+          <Link href="/admin/members">Members</Link>
+          <Link href="/admin/circles">Circles</Link>
+          <Link href="/admin/whatsapp">WhatsApp</Link>
+          <Link href="/admin/announcements">Announcements</Link>
           <Link href="/admin/events">Events</Link>
           <Link href="/admin/suggestions">Suggestion box</Link>
           <Link className="btn" href="/home">
