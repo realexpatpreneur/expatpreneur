@@ -177,12 +177,13 @@ Everything else needs a member.
 
 **Two things that will bite you if you forget them.**
 
-1. `profiles` no longer exposes email, phone or nationalities to anybody
+1. `profiles` does not expose email, phone or nationalities to anybody
    signed in, and a signed-out visitor is not granted the member-only
-   columns either, so a page that asks for them while nobody is signed in
-   fails its whole query rather than returning nulls. The pages the public
-   can open ask for fewer columns; see `/members/[id]`. Those columns are revoked at the grant level. Admin pages
-   read `member_records`, a view that checks the Village. Anything
+   columns either. Those columns are revoked at the grant level, not
+   merely filtered, so a page that asks for one while nobody is signed in
+   fails its whole query rather than returning nulls. Pages the public can
+   open ask for fewer columns; see `/members/[id]` for the pattern. Admin
+   pages read `member_records`, a view that checks the Village. Anything
    sending email uses the service role.
 2. `member_records` is a `security_invoker = off` view. Its guard is
    inside the view, not a policy.
@@ -275,12 +276,9 @@ supabase/migrations/ the numbered SQL files
 - Events and Live rooms: create, run, check people in, record, stream.
 - Announcements, Resources, Watch and Listen, Suggestion box, Insight.
 
-**Global team**, at `/global`
-
-Overview, Village mix (the nationality rule, per Village and per Circle),
-Reports, Leadership, plus requests, members, Circles, care, WhatsApp,
-moves, events, live rooms, announcements, partnered events, resources,
-Watch and Listen, the suggestion box, Insight and Village settings.
+Its front door is the Overview, and the workspace also carries Village
+mix (the nationality rule, per Village and per Circle), Reports,
+Leadership, Moves, Partnered events and Village settings.
 
 **Global team**, at `/global`
 
@@ -371,9 +369,6 @@ Two things to keep:
   membership purchasable, which is a decision for the founder.
 - Payouts to educators are recorded by hand. Stripe Connect is the answer
   once there are enough educators to justify it.
-- Six prototype screens were deliberately not built: editing the public
-  pages and the email templates from inside the platform, system
-  settings, sponsored events, a newsletter, and a recognition page.
 - The apply form has a honeypot and a daily limit per address, but no
   captcha. If it gets hammered, that is the next step.
 - The platform has never been used by anyone except the people who built

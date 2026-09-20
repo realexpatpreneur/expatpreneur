@@ -15,7 +15,7 @@ navigation entries across five workspaces, 19 data objects and 24 named
 capabilities. Nothing is left out, including the mobile menus, the saved
 confirmations and the email previews.
 
-The build also carries five things the prototype does not, listed below.
+The build carries five things the prototype does not, listed below.
 
 ---
 
@@ -61,8 +61,6 @@ button that appears exactly where the navigation links disappear. Columns
 collapse to one, tables scroll inside their own box, rows wrap, the
 workspace navigation scrolls sideways, and buttons go full width on a
 narrow screen.
-
----
 
 ---
 
