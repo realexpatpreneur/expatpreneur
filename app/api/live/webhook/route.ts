@@ -4,6 +4,12 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 // LiveKit tells us when a recording finished, where the file went, and how
 // long it runs. Nothing else is trusted to say a recording is ready.
+function readableLength(seconds: number) {
+  if (seconds < 60) return `${Math.max(1, Math.round(seconds))} seconds`;
+  const minutes = Math.round(seconds / 60);
+  return minutes === 1 ? "1 minute" : `${minutes} minutes`;
+}
+
 export async function POST(request: Request) {
   const key = process.env.LIVEKIT_API_KEY;
   const secret = process.env.LIVEKIT_API_SECRET;
@@ -45,9 +51,7 @@ export async function POST(request: Request) {
       const at = raw.indexOf(marker);
       patch.url = at >= 0 ? raw.slice(at + marker.length) : raw.replace(/^\/+/, "");
       patch.size_bytes = file.size ? Number(file.size) : null;
-      patch.duration = seconds
-        ? `${Math.max(1, Math.round(seconds / 60))} minutes`
-        : null;
+      patch.duration = seconds ? readableLength(seconds) : null;
     }
 
     await service

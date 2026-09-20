@@ -16,6 +16,7 @@ type Ready = {
   canSpeak: boolean;
   recording: string;
   title: string;
+  breakout: string | null;
 };
 
 // The room. Everything about who may be here was settled before this
@@ -92,6 +93,13 @@ export function RoomClient({ slug, onLeaveHref }: { slug: string; onLeaveHref: s
 
   return (
     <div className="roomwrap">
+      {ready.breakout ? (
+        <div className="notice good">
+          You are at {ready.breakout}. When the tables close you go back to
+          the main room.
+        </div>
+      ) : null}
+
       {ready.recording !== "off" ? (
         <div className="notice bad">
           This session is recorded. Anything you say or show may be watched

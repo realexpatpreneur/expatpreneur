@@ -369,3 +369,185 @@ export async function publishRecording(
   revalidatePath(`/live/${slug}`);
   return { done: "published" };
 }
+
+// ------------------------------------------------------------------ breakouts
+
+// A Circle of fifty splitting into tables is how these rooms actually run.
+export async function createBreakouts(
+  _prev: LiveState,
+  formData: FormData
+): Promise<LiveState> {
+  const sessionId = String(formData.get("session_id"));
+  const slug = String(formData.get("slug"));
+  if (!(await hostOf(sessionId))) {
+    return { error: "Only a host can set up breakouts." };
+  }
+
+  const howMany = Math.min(12, Math.max(2, Number(formData.get("rooms") ?? 3)));
+  const supabase = await createClient();
+
+  const { data: existing } = await supabase
+    .from("breakout_rooms")
+    .select("position")
+    .eq("session_id", sessionId)
+    .order("position", { ascending: false })
+    .limit(1);
+
+  const from = (existing?.[0]?.position ?? 0) + 1;
+
+  const rows = Array.from({ length: howMany }, (_, i) => ({
+    session_id: sessionId,
+    position: from + i,
+    name: `Table ${from + i}`,
+  }));
+
+  const { error } = await supabase.from("breakout_rooms").insert(rows);
+  if (error) return { error: "Those tables could not be made." };
+
+  revalidatePath(`/live/${slug}`);
+  return {};
+}
+
+// Deal everyone in the room out across the tables, in turn.
+export async function shuffleBreakouts(
+  _prev: LiveState,
+  formData: FormData
+): Promise<LiveState> {
+  const sessionId = String(formData.get("session_id"));
+  const slug = String(formData.get("slug"));
+  if (!(await hostOf(sessionId))) {
+    return { error: "Only a host can do this." };
+  }
+
+  const supabase = await createClient();
+
+  const [{ data: rooms }, { data: people }] = await Promise.all([
+    supabase
+      .from("breakout_rooms")
+      .select("id")
+      .eq("session_id", sessionId)
+      .order("position"),
+    supabase
+      .from("session_participants")
+      .select("id")
+      .eq("session_id", sessionId)
+      .eq("state", "admitted"),
+  ]);
+
+  if (!rooms?.length) return { error: "Make some tables first." };
+  if (!people?.length) return { error: "Nobody is in the room yet." };
+
+  for (const room of rooms) {
+    await supabase.from("breakout_assignments").delete().eq("room_id", room.id);
+  }
+
+  const assignments = people.map((person, i) => ({
+    room_id: rooms[i % rooms.length].id,
+    participant_id: person.id,
+  }));
+
+  const { error } = await supabase.from("breakout_assignments").insert(assignments);
+  if (error) return { error: "Those places could not be saved." };
+
+  revalidatePath(`/live/${slug}`);
+  return {};
+}
+
+export async function setBreakoutsOpen(
+  _prev: LiveState,
+  formData: FormData
+): Promise<LiveState> {
+  const sessionId = String(formData.get("session_id"));
+  const slug = String(formData.get("slug"));
+  if (!(await hostOf(sessionId))) {
+    return { error: "Only a host can do this." };
+  }
+
+  const open = formData.get("open") === "1";
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("breakout_rooms")
+    .update({ open })
+    .eq("session_id", sessionId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/live/${slug}`);
+  return { done: open ? "opened" : "closed" };
+}
+
+export async function renameBreakout(
+  _prev: LiveState,
+  formData: FormData
+): Promise<LiveState> {
+  const sessionId = String(formData.get("session_id"));
+  const slug = String(formData.get("slug"));
+  if (!(await hostOf(sessionId))) {
+    return { error: "Only a host can do this." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("breakout_rooms")
+    .update({
+      name: String(formData.get("name") ?? "").trim() || "Table",
+      topic: String(formData.get("topic") ?? "").trim() || null,
+    })
+    .eq("id", String(formData.get("room_id")));
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/live/${slug}`);
+  return {};
+}
+
+// ------------------------------------------------------------------ questions
+
+export async function askQuestion(
+  _prev: LiveState,
+  formData: FormData
+): Promise<LiveState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const slug = String(formData.get("slug"));
+  if (!user) redirect(`/login?next=/live/${slug}`);
+
+  const body = String(formData.get("body") ?? "").trim();
+  if (!body) return { error: "Write the question first." };
+
+  const { error } = await supabase.from("session_questions").insert({
+    session_id: String(formData.get("session_id")),
+    profile_id: user.id,
+    body,
+  });
+
+  if (error) return { error: "That question could not be asked." };
+
+  revalidatePath(`/live/${slug}`);
+  return { done: "asked" };
+}
+
+export async function answerQuestion(
+  _prev: LiveState,
+  formData: FormData
+): Promise<LiveState> {
+  const sessionId = String(formData.get("session_id"));
+  const slug = String(formData.get("slug"));
+  if (!(await hostOf(sessionId))) {
+    return { error: "Only a host can do this." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("session_questions")
+    .update({ answered_at: new Date().toISOString() })
+    .eq("id", String(formData.get("question_id")));
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/live/${slug}`);
+  return {};
+}

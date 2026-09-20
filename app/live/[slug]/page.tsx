@@ -19,6 +19,8 @@ import {
   SessionControls,
   RecordingControls,
   StreamingControls,
+  BreakoutPanel,
+  QuestionsPanel,
 } from "../forms";
 import { recordingReady } from "@/lib/egress";
 
@@ -90,11 +92,35 @@ export default async function LiveSessionPage({
       ])
     : [{ data: [] }, { data: [] }];
 
+  const [{ data: breakouts }, { data: seatsTaken }, { data: questions }] =
+    await Promise.all([
+      supabase
+        .from("breakout_rooms")
+        .select("id, name, topic, open")
+        .eq("session_id", session.id)
+        .order("position"),
+      supabase.from("breakout_assignments").select("room_id"),
+      supabase
+        .from("session_questions")
+        .select("id, body, answered_at, profile_id, created_at")
+        .eq("session_id", session.id)
+        .order("created_at"),
+    ]);
+
   const ids = (participants ?? [])
     .map((p) => p.profile_id)
     .filter(Boolean) as string[];
-  const { data: people } = ids.length
-    ? await supabase.from("profiles").select("id, full_name, headline").in("id", ids)
+  const askerIds = (questions ?? [])
+    .map((q) => q.profile_id)
+    .filter(Boolean) as string[];
+
+  const everyone = [...new Set([...ids, ...askerIds])];
+
+  const { data: people } = everyone.length
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, headline")
+        .in("id", everyone)
     : { data: [] };
 
   const nameOf = (row: { profile_id: string | null; guest_name: string | null }) =>
@@ -176,6 +202,45 @@ export default async function LiveSessionPage({
                         : "Recorded if the host chooses, and everyone is told"}
                   </dd>
                 </dl>
+              </div>
+
+              {isHost ? (
+                <div className="panel">
+                  <h3>Tables</h3>
+                  <p className="muted small" style={{ marginTop: 6 }}>
+                    Break a big room into small ones. People go to their table
+                    when they rejoin, and come back when you call them.
+                  </p>
+                  <BreakoutPanel
+                    sessionId={session.id}
+                    slug={slug}
+                    rooms={(breakouts ?? []).map((room) => ({
+                      id: room.id,
+                      name: room.name,
+                      topic: room.topic,
+                      open: room.open,
+                      seats: (seatsTaken ?? []).filter((s) => s.room_id === room.id)
+                        .length,
+                    }))}
+                  />
+                </div>
+              ) : null}
+
+              <div className="panel">
+                <h3>Questions</h3>
+                <QuestionsPanel
+                  sessionId={session.id}
+                  slug={slug}
+                  isHost={isHost}
+                  questions={(questions ?? []).map((q) => ({
+                    id: q.id,
+                    body: q.body,
+                    answered_at: q.answered_at,
+                    asker:
+                      people?.find((p) => p.id === q.profile_id)?.full_name ??
+                      "A member",
+                  }))}
+                />
               </div>
 
               {isHost ? (

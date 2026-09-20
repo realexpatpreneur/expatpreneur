@@ -66,15 +66,49 @@ export async function POST(request: Request) {
     }
   }
 
-  const roomName = session.provider_room ?? `session-${session.id}`;
+  const mainRoom = session.provider_room ?? `session-${session.id}`;
   const effectiveRole = isHost ? myRole : seat?.role ?? "participant";
 
-  // Opening the room is what a host does first, and it is recorded so
+  // If the tables are open and this person has a place at one, that is
+  // where they go. Hosts stay in the main room unless they pick a table.
+  let roomName = mainRoom;
+  let breakoutName: string | null = null;
+
+  if (seat) {
+    const { data: place } = await supabase
+      .from("breakout_assignments")
+      .select("room_id, breakout_rooms!inner(id, name, open, provider_room)")
+      .eq("participant_id", seat.id)
+      .maybeSingle();
+
+    const table = place?.breakout_rooms as
+      | { id: string; name: string; open: boolean; provider_room: string | null }
+      | undefined;
+
+    if (table?.open) {
+      roomName = table.provider_room ?? `breakout-${table.id}`;
+      breakoutName = table.name;
+
+      if (!table.provider_room) {
+        try {
+          await roomService().createRoom({ name: roomName, emptyTimeout: 60 * 30 });
+        } catch {
+          // Already there.
+        }
+        await supabase
+          .from("breakout_rooms")
+          .update({ provider_room: roomName })
+          .eq("id", table.id);
+      }
+    }
+  }
+
+  // Opening the main room is what a host does first, and it is recorded so
   // everyone else lands in the same place.
   if (!session.provider_room) {
     try {
       await roomService().createRoom({
-        name: roomName,
+        name: mainRoom,
         emptyTimeout: 60 * 30,
         maxParticipants: session.max_participants,
       });
@@ -83,7 +117,7 @@ export async function POST(request: Request) {
     }
     await supabase
       .from("live_sessions")
-      .update({ provider: "livekit", provider_room: roomName })
+      .update({ provider: "livekit", provider_room: mainRoom })
       .eq("id", session.id);
   }
 
@@ -128,5 +162,6 @@ export async function POST(request: Request) {
     canSpeak: speaksByDefault(effectiveRole, session.max_participants),
     recording: session.recording,
     title: session.title,
+    breakout: breakoutName,
   });
 }

@@ -13,6 +13,11 @@ import {
   endStreaming,
   addStreamTarget,
   publishRecording,
+  createBreakouts,
+  shuffleBreakouts,
+  setBreakoutsOpen,
+  askQuestion,
+  answerQuestion,
   type LiveState,
 } from "./actions";
 
@@ -354,6 +359,205 @@ export function StreamingControls({
           ) : null}
         </>
       )}
+    </div>
+  );
+}
+
+export function BreakoutPanel({
+  sessionId,
+  slug,
+  rooms,
+}: {
+  sessionId: string;
+  slug: string;
+  rooms: { id: string; name: string; topic: string | null; open: boolean; seats: number }[];
+}) {
+  const [makeState, makeAction, making] = useActionState<LiveState, FormData>(
+    createBreakouts,
+    {}
+  );
+  const [shuffleState, shuffleAction, shuffling] = useActionState<LiveState, FormData>(
+    shuffleBreakouts,
+    {}
+  );
+  const [openState, openAction, opening] = useActionState<LiveState, FormData>(
+    setBreakoutsOpen,
+    {}
+  );
+
+  const open = rooms.some((room) => room.open);
+
+  return (
+    <div>
+      {makeState.error ? <div className="notice bad">{makeState.error}</div> : null}
+      {shuffleState.error ? (
+        <div className="notice bad">{shuffleState.error}</div>
+      ) : null}
+      {openState.error ? <div className="notice bad">{openState.error}</div> : null}
+
+      {rooms.length ? (
+        <div className="rows" style={{ marginBottom: 12 }}>
+          {rooms.map((room) => (
+            <div className="rowlink" key={room.id}>
+              <div>
+                <b>{room.name}</b>
+                <div className="muted small">
+                  {room.seats} {room.seats === 1 ? "person" : "people"}
+                  {room.topic ? `. ${room.topic}` : ""}
+                </div>
+              </div>
+              <div className="rowmeta">
+                {room.open ? <span className="chip mint">Open</span> : null}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="muted small" style={{ marginTop: 6 }}>
+          No tables yet.
+        </p>
+      )}
+
+      {open ? (
+        <form action={openAction}>
+          <input type="hidden" name="session_id" value={sessionId} />
+          <input type="hidden" name="slug" value={slug} />
+          <input type="hidden" name="open" value="0" />
+          <button className="btn" type="submit" disabled={opening}>
+            {opening ? "Closing" : "Call everyone back"}
+          </button>
+        </form>
+      ) : (
+        <div className="row">
+          <form action={makeAction} className="row">
+            <input type="hidden" name="session_id" value={sessionId} />
+            <input type="hidden" name="slug" value={slug} />
+            <input
+              name="rooms"
+              type="number"
+              min={2}
+              max={12}
+              defaultValue={3}
+              style={{ width: 70 }}
+            />
+            <button className="btn" type="submit" disabled={making}>
+              {making ? "Making" : "Make tables"}
+            </button>
+          </form>
+
+          {rooms.length ? (
+            <>
+              <form action={shuffleAction}>
+                <input type="hidden" name="session_id" value={sessionId} />
+                <input type="hidden" name="slug" value={slug} />
+                <button className="btn" type="submit" disabled={shuffling}>
+                  {shuffling ? "Dealing" : "Deal everyone out"}
+                </button>
+              </form>
+              <form action={openAction}>
+                <input type="hidden" name="session_id" value={sessionId} />
+                <input type="hidden" name="slug" value={slug} />
+                <input type="hidden" name="open" value="1" />
+                <button className="btn primary" type="submit" disabled={opening}>
+                  {opening ? "Opening" : "Send them to the tables"}
+                </button>
+              </form>
+            </>
+          ) : null}
+        </div>
+      )}
+
+      {open ? (
+        <p className="muted small" style={{ marginTop: 10 }}>
+          People rejoin the room to land at their table. Calling them back
+          does the same in reverse.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export function QuestionsPanel({
+  sessionId,
+  slug,
+  isHost,
+  questions,
+}: {
+  sessionId: string;
+  slug: string;
+  isHost: boolean;
+  questions: {
+    id: string;
+    body: string;
+    answered_at: string | null;
+    asker: string;
+  }[];
+}) {
+  const [askState, askAction, asking] = useActionState<LiveState, FormData>(
+    askQuestion,
+    {}
+  );
+  const [, answerAction, answering] = useActionState<LiveState, FormData>(
+    answerQuestion,
+    {}
+  );
+
+  const waiting = questions.filter((q) => !q.answered_at);
+  const done = questions.filter((q) => q.answered_at);
+
+  return (
+    <div>
+      {askState.error ? <div className="notice bad">{askState.error}</div> : null}
+      {askState.done === "asked" ? (
+        <div className="notice good">Asked. The host sees it.</div>
+      ) : null}
+
+      {waiting.length ? (
+        <div className="rows" style={{ margin: "12px 0" }}>
+          {waiting.map((question) => (
+            <div className="rowlink" key={question.id}>
+              <div>
+                <b>{question.body}</b>
+                <div className="muted small">{question.asker}</div>
+              </div>
+              {isHost ? (
+                <div className="rowmeta">
+                  <form action={answerAction}>
+                    <input type="hidden" name="session_id" value={sessionId} />
+                    <input type="hidden" name="slug" value={slug} />
+                    <input type="hidden" name="question_id" value={question.id} />
+                    <button className="btn" type="submit" disabled={answering}>
+                      Answered
+                    </button>
+                  </form>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="muted small" style={{ marginTop: 6 }}>
+          Nothing asked yet.
+        </p>
+      )}
+
+      <form action={askAction} style={{ marginTop: 12 }}>
+        <input type="hidden" name="session_id" value={sessionId} />
+        <input type="hidden" name="slug" value={slug} />
+        <label className="field">
+          <span>Ask something</span>
+          <input name="body" placeholder="Put it plainly" />
+        </label>
+        <button className="btn" type="submit" disabled={asking}>
+          {asking ? "Asking" : "Ask"}
+        </button>
+      </form>
+
+      {isHost && done.length ? (
+        <p className="muted small" style={{ marginTop: 10 }}>
+          {done.length} answered already.
+        </p>
+      ) : null}
     </div>
   );
 }
