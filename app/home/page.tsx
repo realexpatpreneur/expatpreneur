@@ -1,9 +1,23 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
+import { FeedPost, Compose, WaRow, EventRow, type FeedItem } from "@/components/feed";
+import { Av } from "@/components/bits";
+import { Ic } from "@/components/icon";
 
 export const metadata = { title: "Home, ExpatPreneurs Global" };
+
+// How long ago something happened, in the plain words the prototype uses.
+function ago(iso: string) {
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (days <= 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 7) return `${days} days ago`;
+  if (days < 14) return "Last week";
+  if (days < 60) return `${Math.floor(days / 7)} weeks ago`;
+  return new Date(iso).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+}
 
 export default async function MemberHomePage() {
   const supabase = await createClient();
@@ -15,37 +29,34 @@ export default async function MemberHomePage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("full_name, status, plan, village_id, circle_id")
+    .select("full_name, headline, status, plan, village_id, circle_id")
     .eq("id", user.id)
     .maybeSingle();
 
   if (error) {
     return (
-      <WorkspaceShell kind="member" nav="/home">
-          <section className="band">
-            <h1>Your profile did not load</h1>
-            <div className="notice bad">{error.message}</div>
-            <p className="muted small">
-              Signed in as {user.email}. If this persists, send the message
-              above to the build team.
-            </p>
-          </section>
-        </WorkspaceShell>
+      <WorkspaceShell kind="member">
+        <PageHead title="Your profile did not load" />
+        <div className="flag hold">
+          <Ic name="info" />
+          <span>{error.message}</span>
+        </div>
+        <p className="muted small" style={{ marginTop: 10 }}>
+          Signed in as {user.email}. If this persists, send the message above
+          to the build team.
+        </p>
+      </WorkspaceShell>
     );
   }
 
   if (!profile) {
     return (
-      <WorkspaceShell kind="member" nav="/home">
-          <section className="band">
-            <h1>Almost there</h1>
-            <p className="lead">
-              You are signed in as {user.email}, but there is no member profile
-              on this account yet. Your Local Admin sets that up when an
-              invitation is approved.
-            </p>
-          </section>
-        </WorkspaceShell>
+      <WorkspaceShell kind="member">
+        <PageHead
+          title="Almost there"
+          sub={`You are signed in as ${user.email}, but there is no member profile on this account yet. Your Local Admin sets that up when an invitation is approved.`}
+        />
+      </WorkspaceShell>
     );
   }
 
@@ -54,222 +65,261 @@ export default async function MemberHomePage() {
 
   const [villageRes, circleRes] = await Promise.all([
     profile.village_id
-      ? supabase
-          .from("villages")
-          .select("name")
-          .eq("id", profile.village_id)
-          .maybeSingle()
+      ? supabase.from("villages").select("name").eq("id", profile.village_id).maybeSingle()
       : Promise.resolve({ data: null }),
     profile.circle_id
-      ? supabase
-          .from("circles")
-          .select("name")
-          .eq("id", profile.circle_id)
-          .maybeSingle()
+      ? supabase.from("circles").select("name").eq("id", profile.circle_id).maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
 
   const villageName = villageRes.data?.name ?? null;
   const circleName = circleRes.data?.name ?? null;
 
-  const [{ count: unreadMessages }, { count: unreadNotifications }] =
+  // What has happened lately, and what is coming.
+  const [{ data: asks }, { data: announcements }, { data: events }] =
     await Promise.all([
       supabase
-        .from("messages")
-        .select("id", { count: "exact", head: true })
-        .eq("recipient_id", user.id)
-        .is("read_at", null),
+        .from("asks")
+        .select("id, kind, title, body, status, created_at, author_id, village_id")
+        .eq("status", "open")
+        .order("created_at", { ascending: false })
+        .limit(6),
       supabase
-        .from("notifications")
-        .select("id", { count: "exact", head: true })
-        .eq("profile_id", user.id)
-        .is("read_at", null),
+        .from("announcements")
+        .select("id, title, body, sent_at, author_id")
+        .not("sent_at", "is", null)
+        .order("sent_at", { ascending: false })
+        .limit(3),
+      supabase
+        .from("events")
+        .select("id, slug, title, starts_at, venue, is_online, village_id")
+        .eq("status", "published")
+        .gte("starts_at", new Date().toISOString())
+        .order("starts_at")
+        .limit(4),
     ]);
 
-  const { data: roles } = await supabase
-    .from("member_roles")
-    .select("role")
-    .eq("profile_id", user.id)
-    .is("ended_at", null);
-  const runsAVillage = (roles ?? []).some((r) =>
-    ["local_admin", "global_admin"].includes(r.role)
-  );
-  const leadsSomething = (roles ?? []).some((r) =>
-    ["circle_host", "industry_lead", "pod_lead", "educator"].includes(r.role)
-  );
+  // The names behind the posts, in one query.
+  const authorIds = [
+    ...new Set(
+      [...(asks ?? []).map((a) => a.author_id), ...(announcements ?? []).map((a) => a.author_id)]
+        .filter(Boolean)
+    ),
+  ] as string[];
+  const { data: authors } = authorIds.length
+    ? await supabase.from("profiles").select("id, full_name, headline").in("id", authorIds)
+    : { data: [] };
+  const who = (id: string | null) =>
+    authors?.find((a) => a.id === id) ?? { full_name: "A member", headline: null };
+
+  const items: FeedItem[] = [];
+
+  for (const a of announcements ?? []) {
+    const person = who(a.author_id);
+    items.push({
+      who: person.full_name,
+      role: person.headline,
+      when: ago(a.sent_at as string),
+      kind: "Village announcement",
+      tone: "blue",
+      text: a.body.length > 220 ? `${a.body.slice(0, 220)}…` : a.body,
+      embedTitle: a.title,
+      embedLine: villageName ? `${villageName} Village` : null,
+      href: "/my-village/announcements",
+      actions: [["Read the announcement", "/my-village/announcements"]],
+    });
+  }
+
+  for (const a of asks ?? []) {
+    const person = who(a.author_id);
+    items.push({
+      who: person.full_name,
+      role: person.headline,
+      when: ago(a.created_at),
+      kind: a.kind === "offer" ? "Offer" : "Ask",
+      tone: a.kind === "offer" ? "mint" : "sun",
+      text: a.body.length > 220 ? `${a.body.slice(0, 220)}…` : a.body,
+      embedTitle: a.title,
+      embedLine: a.village_id === profile.village_id ? "Your Village" : "All Villages",
+      href: `/my-village/${a.id}`,
+      actions: [["Reply", `/my-village/${a.id}`], ["See all Asks", "/my-village"]],
+    });
+  }
+
+  for (const e of events ?? []) {
+    const when = new Date(e.starts_at);
+    items.push({
+      who: villageName ? `${villageName} Village` : "ExpatPreneurs",
+      role: "Events",
+      when: "Coming up",
+      kind: "Event",
+      tone: "navy",
+      text: `${e.title} is on ${when.toLocaleDateString("en-GB", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      })}${e.is_online ? ", online" : e.venue ? `, at ${e.venue}` : ""}.`,
+      embedTitle: e.title,
+      embedLine: when.toLocaleString("en-GB", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      href: `/events/${e.slug}`,
+      actions: [["Register", `/events/${e.slug}`]],
+    });
+  }
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const firstName = profile.full_name.split(" ")[0];
 
   return (
-    <WorkspaceShell kind="member" nav="/home">
-        <section className="band">
-          <h1>{profile.full_name.split(" ")[0]}, welcome back.</h1>
-          <p className="lead">
-            {villageName ? `${villageName} Village` : "No Village yet"}
-            {circleName ? `, ${circleName}` : ""}
-          </p>
-          <p>
-            <span className="chip mint">
-              {profile.plan === "paid" ? "Paid member" : "Member"}
-            </span>{" "}
-            <span className="chip">{profile.status}</span>{" "}
-            {profile.plan === "paid" ? null : (
-              <Link className="chip" href="/upgrade">
-                See the paid plan
-              </Link>
-            )}
-          </p>
-          <p className="row">
-            <Link className="btn primary" href="/my-village">
-              Your Village
-            </Link>
-            <Link className="btn" href="/settings">
-              Settings
-            </Link>
-          </p>
-          {runsAVillage || leadsSomething ? (
-            <p className="row">
-              {runsAVillage ? (
-                <Link className="btn" href="/admin/applications">
-                  Local Admin workspace
-                </Link>
-              ) : null}
-              {leadsSomething || runsAVillage ? (
-                <Link className="btn" href="/lead">
-                  What you run
-                </Link>
-              ) : null}
-            </p>
-          ) : null}
-        </section>
+    <WorkspaceShell kind="member">
+      <PageHead
+        title={`${greeting}, ${firstName}`}
+        sub={
+          villageName
+            ? `What is happening in ${villageName} this week.`
+            : "What is happening across the network this week."
+        }
+        actions={
+          <Link className="btn btn-primary" href="/my-village/new">
+            <Ic name="plus" />
+            Post an Ask or Offer
+          </Link>
+        }
+      />
 
-        <section className="band">
-          <div className="grid three">
-            <Link className="panel" href="/village">
-              <h3>Ask &amp; Offer</h3>
-              <p className="muted small">
-                What your Village needs this week, and what you can give.
+      <div className="feedlayout">
+        <div className="feedcol">
+          <Compose name={profile.full_name} />
+          {items.length ? (
+            items.map((item, i) => <FeedPost key={i} item={item} />)
+          ) : (
+            <div className="panel panel-wash">
+              <h3 style={{ fontSize: 14 }}>Nothing here yet</h3>
+              <p className="muted small" style={{ marginTop: 6 }}>
+                When members post an Ask or an Offer, and when your Village
+                announces something, it appears here.
               </p>
-            </Link>
-            <Link className="panel" href="/network">
-              <h3>The Global network</h3>
-              <p className="muted small">
-                Every Village, what is open, and what is on the way.
-              </p>
-            </Link>
-            <Link className="panel" href="/for-you">
-              <h3>For you</h3>
-              <p className="muted small">
-                People worth meeting and openings worth answering, from what
-                you wrote on your profile.
-              </p>
-            </Link>
-            <Link className="panel" href="/directory">
-              <h3>Directory</h3>
-              <p className="muted small">
-                Who is in your Village, what they do, and what they know.
-              </p>
-            </Link>
-            <Link className="panel" href="/market-exploration">
-              <h3>Market Exploration</h3>
-              <p className="muted small">
-                Looking into a new country? Say who you need to meet.
-              </p>
-            </Link>
-            <Link className="panel" href="/messages">
-              <h3>
-                Messages{unreadMessages ? ` (${unreadMessages})` : ""}
-              </h3>
-              <p className="muted small">
-                Your Village writes directly. Other Villages ask first.
-              </p>
-            </Link>
-            <Link className="panel" href="/notifications">
-              <h3>
-                Notifications{unreadNotifications ? ` (${unreadNotifications})` : ""}
-              </h3>
-              <p className="muted small">
-                Replies, requests and what is happening around you.
-              </p>
-            </Link>
-            <Link className="panel" href="/businesses">
-              <h3>Businesses</h3>
-              <p className="muted small">
-                What members do, and which markets they already sell into.
-              </p>
-            </Link>
-            <Link className="panel" href="/jobs">
-              <h3>Jobs and freelance</h3>
-              <p className="muted small">
-                Members hiring members, projects and partners.
-              </p>
-            </Link>
-            <Link className="panel" href="/groups">
-              <h3>Industry Groups</h3>
-              <p className="muted small">
-                Your trade, across every Village.
-              </p>
-            </Link>
-            <Link className="panel" href="/pods">
-              <h3>Pods</h3>
-              <p className="muted small">
-                A few members who meet on a rhythm and keep each other honest.
-              </p>
-            </Link>
-            <Link className="panel" href="/library">
-              <h3>Resources</h3>
-              <p className="muted small">
-                Guides, templates and recordings your Village put together.
-              </p>
-            </Link>
-            <Link className="panel" href="/markets">
-              <h3>Market pathways</h3>
-              <p className="muted small">
-                The route into one country, step by step.
-              </p>
-            </Link>
-            <Link className="panel" href="/learning">
-              <h3>Learning</h3>
-              <p className="muted small">
-                Short courses from members who have already done it.
-              </p>
-            </Link>
-            <Link className="panel" href="/photos">
-              <h3>Photographs</h3>
-              <p className="muted small">
-                What the rooms looked like, from the people who were there.
-              </p>
-            </Link>
-            <Link className="panel" href="/media">
-              <h3>Media</h3>
-              <p className="muted small">
-                Stories about members, and what they learned doing it.
-              </p>
-            </Link>
-            <Link className="panel" href="/watch">
-              <h3>Watch and Listen</h3>
-              <p className="muted small">
-                Members on what building away from home actually takes.
-              </p>
-            </Link>
-            <Link className="panel" href="/suggestions">
-              <h3>Suggestion box</h3>
-              <p className="muted small">
-                How could this be better? Send it with your name, or without.
-              </p>
-            </Link>
-            <Link className="panel" href="/live">
-              <h3>Live rooms</h3>
-              <p className="muted small">
-                Roundtables and Circle calls, in the platform itself.
-              </p>
-            </Link>
-            <Link className="panel" href="/events">
-              <h3>Events</h3>
-              <p className="muted small">
-                Gatherings in your Village, in other Villages and online.
-              </p>
-            </Link>
+            </div>
+          )}
+        </div>
+
+        <aside className="feedside">
+          <div className="panel">
+            <div className="row" style={{ gap: 12 }}>
+              <Av name={profile.full_name} className="av-lg" />
+              <div className="grow">
+                <b>{profile.full_name}</b>
+                <p className="muted small">{profile.headline}</p>
+                <div className="tags" style={{ marginTop: 6 }}>
+                  <span className={`tiertag ${profile.plan === "paid" ? "" : "free"}`}>
+                    {profile.plan === "paid" ? "Paid member" : "Member"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="path" style={{ marginTop: 12 }}>
+              <Link className="pnode" href="/network">
+                <Ic name="globe" />
+                Global network
+              </Link>
+              <Ic name="chev" />
+              <Link className="pnode" href="/my-village">
+                <Ic name="pin" />
+                {villageName ?? "Your Village"}
+              </Link>
+              {circleName ? (
+                <>
+                  <Ic name="chev" />
+                  <Link className="pnode on" href="/my-circle">
+                    <Ic name="rings" />
+                    {circleName}
+                  </Link>
+                </>
+              ) : null}
+            </div>
+            <div className="row" style={{ marginTop: 12 }}>
+              <Link className="btn btn-ghost btn-sm" href="/me">
+                My profile
+              </Link>
+              <Link className="btn btn-ghost btn-sm" href="/me/edit">
+                Edit
+              </Link>
+            </div>
           </div>
-        </section>
-      </WorkspaceShell>
+
+          {events && events.length ? (
+            <div className="panel">
+              <div className="sechead">
+                <h3>Coming up</h3>
+                <Link href="/events">All events</Link>
+              </div>
+              <div className="divide">
+                {events.map((e) => {
+                  const d = new Date(e.starts_at);
+                  return (
+                    <EventRow
+                      key={e.id}
+                      href={`/events/${e.slug}`}
+                      day={String(d.getDate())}
+                      month={d.toLocaleDateString("en-GB", { month: "short" })}
+                      title={e.title}
+                      line={`${d.toLocaleDateString("en-GB", {
+                        weekday: "long",
+                      })}, ${d.toLocaleTimeString("en-GB", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}${e.is_online ? ", online" : e.venue ? `, ${e.venue}` : ""}`}
+                      visiting={e.village_id !== profile.village_id}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
+          {circleName ? (
+            <div className="panel">
+              <div className="sechead">
+                <h3>Your WhatsApp groups</h3>
+              </div>
+              <div className="stack">
+                <WaRow
+                  title={circleName}
+                  sub="Your home base"
+                  background="#E7EEF7"
+                  colour="#4074AE"
+                  icon="rings"
+                  href="/my-circle"
+                />
+                <WaRow
+                  title={`${villageName ?? "Village"} announcements`}
+                  sub="Village news, read only"
+                  background="#E6F4F1"
+                  colour="#24675A"
+                  icon="bell"
+                  href="/my-village/announcements"
+                />
+              </div>
+            </div>
+          ) : null}
+
+          {profile.plan === "paid" ? null : (
+            <Link className="panel panel-wash linkrow" href="/upgrade">
+              <h3 style={{ fontSize: 14 }}>The paid plan</h3>
+              <p className="muted small" style={{ marginTop: 6 }}>
+                Contact members in any Village, attend their events, and
+                promote what you do.
+              </p>
+            </Link>
+          )}
+        </aside>
+      </div>
+    </WorkspaceShell>
   );
 }

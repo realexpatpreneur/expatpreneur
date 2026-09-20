@@ -1,4 +1,6 @@
 import { DualPage } from "@/components/dual-page";
+import { ProfileView, SideCard } from "@/components/profile-view";
+import { Ic } from "@/components/icon";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -52,10 +54,12 @@ export default async function MemberProfilePage({
   const { data: village } = person.village_id
     ? await supabase
         .from("villages")
-        .select("name")
+        .select("name, slug")
         .eq("id", person.village_id)
         .maybeSingle()
     : { data: null };
+
+  const villageSlug = (village as { slug?: string } | null)?.slug ?? null;
 
   const sameVillage = Boolean(me) && person.village_id === me?.village_id;
   const canContact =
@@ -72,144 +76,149 @@ export default async function MemberProfilePage({
           )
           .maybeSingle();
 
+  const country = null;
+
+  // What a member may do about this person, in the order the prototype
+  // puts it: the one action that matters, then share and report.
+  let action: React.ReactNode;
+  if (!me) {
+    action = (
+      <Link className="sp-cta" href="/apply">
+        <Ic name="hand" />
+        Request your invitation
+      </Link>
+    );
+  } else if (person.id === me.id) {
+    action = (
+      <Link className="sp-cta sp-cta-glass" href="/me/edit">
+        <Ic name="edit" />
+        Edit profile
+      </Link>
+    );
+  } else if (sameVillage) {
+    action = (
+      <Link className="sp-cta" href={`/messages/${person.id}`}>
+        <Ic name="chat" />
+        Message
+      </Link>
+    );
+  } else if (connection?.status === "accepted") {
+    action = (
+      <Link className="sp-cta" href={`/messages/${person.id}`}>
+        <Ic name="chat" />
+        Open the thread
+      </Link>
+    );
+  } else if (connection?.status === "pending") {
+    action = (
+      <span className="sp-cta sp-cta-soft">
+        <Ic name="check" />
+        {connection.requester_id === me.id ? "Request sent" : "They asked to connect"}
+      </span>
+    );
+  } else if (canContact) {
+    action = <ConnectionRequestForm recipientId={person.id} />;
+  } else {
+    action = (
+      <Link className="sp-cta" href="/upgrade">
+        <Ic name="lock" />
+        Connect
+      </Link>
+    );
+  }
+
+  const relation =
+    me && person.id === me.id
+      ? "This is you"
+      : sameVillage
+        ? person.circle_id && person.circle_id === me?.circle_id
+          ? "In your Circle"
+          : "In your Village"
+        : connection?.status === "accepted"
+          ? "Connected"
+          : null;
+
+  const notice =
+    me && person.id !== me.id && !sameVillage && !canContact ? (
+      <div className="sp-notice">
+        <Ic name="lock" />
+        <span>
+          <b>{person.full_name.split(" ")[0]} is in the {village?.name ?? "another"} Village.</b>{" "}
+          Paid members can connect across Villages.
+        </span>
+        <Link className="sp-mini" href="/upgrade">
+          See the paid plan
+        </Link>
+      </div>
+    ) : null;
+
   return (
-    <DualPage member={Boolean(me)} nav="/members" active="/members">
-        <section className="band">
-          <p className="muted small">
-            <Link href={me ? "/directory" : "/members"}>
-              {me ? "Directory" : "Members"}
-            </Link>
-          </p>
-          <div className="facerow">
-            {person.avatar_url ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img className="face big" src={person.avatar_url} alt="" />
+    <DualPage member={Boolean(me)} nav="/members" active="/discover">
+      <div className={me ? "sp-stage" : "pubsec sp-stage"}>
+        <nav className="crumbs" aria-label="Breadcrumb">
+          <Link href={me ? "/directory" : "/members"}>{me ? "Directory" : "Members"}</Link>
+          <Ic name="chev" />
+          <span>{person.full_name}</span>
+        </nav>
+
+        <div className="sp-layout">
+          <div>
+            <ProfileView
+              person={{ ...person, founding: null }}
+              villageName={village?.name ?? null}
+              villageSlug={villageSlug}
+              circleName={null}
+              country={country}
+              relation={relation}
+              publicView={!me}
+              actions={
+                <>
+                  {action}
+                  {me && person.id !== me.id ? (
+                    <Link
+                      className="sp-icon"
+                      aria-label="Report"
+                      href={`/report?member=${person.id}`}
+                    >
+                      <Ic name="flag" />
+                    </Link>
+                  ) : null}
+                </>
+              }
+              notice={notice}
+            />
+          </div>
+
+          <aside className="sp-aside">
+            {person.business_name ? (
+              <SideCard
+                icon="briefcase"
+                title={person.business_name}
+                line={person.industry}
+              />
             ) : null}
-            <h1 style={{ margin: 0 }}>{person.full_name}</h1>
-          </div>
-          <p className="lead">
-            {person.headline || person.business_name || "Member"}
-          </p>
-          <p>
-            {village?.name ? <span className="chip">{village.name}</span> : null}{" "}
-            {person.industry ? <span className="chip">{person.industry}</span> : null}
-          </p>
-        </section>
-
-        <section className="band">
-          <div className="cols">
-            <div className="panel">
-              <h3>About</h3>
-              <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>
-                {person.bio || "Nothing written yet."}
-              </p>
-              <dl className="kv">
-                <dt>Business</dt>
-                <dd>{person.business_name || "Not given"}</dd>
-                {me ? (
-                  <>
-                    <dt>Can help with</dt>
-                    <dd>{person.can_help_with || "Not given"}</dd>
-                    <dt>Looking for</dt>
-                    <dd>{person.looking_for || "Not given"}</dd>
-                  </>
-                ) : null}
-                {me ? (
-                  <>
-                    <dt>Languages</dt>
-                    <dd>{(person.languages ?? []).join(", ") || "Not given"}</dd>
-                    <dt>Markets they know</dt>
-                    <dd>{(person.markets_known ?? []).join(", ") || "Not given"}</dd>
-                  </>
-                ) : null}
-                <dt>Where they have lived</dt>
-                <dd>{(person.lived_in ?? []).join(", ") || "Not given"}</dd>
-              </dl>
-            </div>
-
-            <div className="stack">
-              <div className="panel">
-                <h3>Getting in touch</h3>
-                {!me ? (
-                  <>
-                    <p className="muted small" style={{ marginTop: 6 }}>
-                      Members write to each other inside the platform. There is
-                      no way to reach somebody from out here, which is the
-                      point of it.
-                    </p>
-                    <Link className="btn primary" href="/apply">
-                      Request an invitation
-                    </Link>
-                  </>
-                ) : person.id === me.id ? (
-                  <>
-                    <p className="muted small" style={{ marginTop: 6 }}>
-                      This is your own profile.
-                    </p>
-                    <Link className="btn" href="/settings">
-                      Edit your profile
-                    </Link>
-                  </>
-                ) : sameVillage ? (
-                  <>
-                    <p className="muted small" style={{ marginTop: 6 }}>
-                      You are in the same Village, so you can write to them
-                      directly.
-                    </p>
-                    <Link className="btn primary" href={`/messages/${person.id}`}>
-                      Send a message
-                    </Link>
-                  </>
-                ) : connection?.status === "accepted" ? (
-                  <>
-                    <p className="muted small" style={{ marginTop: 6 }}>
-                      They accepted your request, so the thread is open.
-                    </p>
-                    <Link className="btn primary" href={`/messages/${person.id}`}>
-                      Open the thread
-                    </Link>
-                  </>
-                ) : connection?.status === "pending" ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
-                    {connection.requester_id === me.id
-                      ? "Your request is with them."
-                      : "They asked to connect. Answer it from Messages."}
-                  </p>
-                ) : canContact ? (
-                  <>
-                    <p className="muted small" style={{ marginTop: 6 }}>
-                      They are in another Village, so it starts with a request.
-                    </p>
-                    <ConnectionRequestForm recipientId={person.id} />
-                  </>
-                ) : (
-                  <p className="muted small" style={{ marginTop: 6 }}>
-                    Reaching members in other Villages is part of the paid plan.
-                  </p>
-                )}
+            {me ? null : (
+              <div className="sp-side sp-join">
+                <b className="sp-side-title">
+                  Connect with {person.full_name.split(" ")[0]}
+                </b>
+                <span>Messaging and introductions are for members.</span>
+                <Link className="sp-cta" href="/login">
+                  Log in
+                </Link>
+                <Link className="sp-cta sp-cta-glass" href="/apply">
+                  Request your invitation
+                </Link>
               </div>
-              {!me || person.id === me.id ? null : (
-                <div className="panel wash">
-                  <h3>Something wrong?</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
-                    If this member has done something that should not have
-                    happened, tell your Local Admin. It is handled quietly.
-                  </p>
-                  <Link className="btn" href={`/report?member=${person.id}`}>
-                    Report
-                  </Link>
-                </div>
-              )}
-              <div className="panel wash">
-                <h3>What is never shown</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
-                  Email, phone and anything a member wrote for admins stay
-                  private. What you see here is what they chose to show.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </DualPage>
-        );
+            )}
+            <SideCard
+              icon="shield"
+              title="What is never shown"
+              line="Email, phone and anything written for admins stay private."
+            />
+          </aside>
+        </div>
+      </div>
+    </DualPage>
+  );
 }
