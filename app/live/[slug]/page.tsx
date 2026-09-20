@@ -131,8 +131,9 @@ export default async function LiveSessionPage({
               <div className="panel">
                 <h3>The room</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
-                  Camera, microphone, screen share and chat. Hosts can mute
-                  someone, give them the floor or remove them.
+                  Audio and video are not wired up yet. What works today is
+                  everything around them: who may come in, who runs it, the
+                  lobby, and who actually turned up.
                 </p>
                 <dl className="kv">
                   <dt>Your role</dt>
@@ -234,13 +235,6 @@ export default async function LiveSessionPage({
                         ? "Waiting to be let in"
                         : "You are in"}
                     </h3>
-                    {mine.state === "admitted" ? (
-                      <p>
-                        <Link className="btn primary" href={`/live/${slug}/room`}>
-                          Enter the room
-                        </Link>
-                      </p>
-                    ) : null}
                     <LeaveButton sessionId={session.id} slug={slug} />
                   </>
                 ) : !open ? (
@@ -274,11 +268,6 @@ export default async function LiveSessionPage({
                     slug={slug}
                     status={session.status}
                   />
-                  <p style={{ marginTop: 12 }}>
-                    <Link className="btn primary" href={`/live/${slug}/room`}>
-                      Enter the room
-                    </Link>
-                  </p>
                 </div>
               ) : null}
 
