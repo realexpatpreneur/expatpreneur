@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { TemplateForm } from "../forms";
 
 export default async function EmailTemplatePage({
@@ -26,9 +25,7 @@ export default async function EmailTemplatePage({
   if (!template) notFound();
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global/emails">Emails</Link>
@@ -79,7 +76,6 @@ export default async function EmailTemplatePage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

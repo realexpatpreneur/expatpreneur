@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { ProposePartnerForm } from "./forms";
 
 export const metadata = { title: "Partnered events, the Local Admin workspace" };
@@ -23,9 +22,7 @@ export default async function AdminPartnersPage({
     .limit(30);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/admin/events">Events</Link>
@@ -87,7 +84,6 @@ export default async function AdminPartnersPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

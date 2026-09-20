@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { SuggestLeaderForm } from "./forms";
 
 export const metadata = { title: "Leadership, the Local Admin workspace" };
@@ -54,9 +53,7 @@ export default async function LeadershipPage() {
   const doing = (members ?? []).filter((m) => holds(m.id).length > 0);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/admin">Overview</Link>
@@ -149,7 +146,6 @@ export default async function LeadershipPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { PlanForm } from "./forms";
 
 export const metadata = { title: "Plans, the Global team" };
@@ -21,9 +20,7 @@ export default async function PlansPage() {
     envPrice && paid?.stripe_price_id && envPrice !== paid.stripe_price_id;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -62,7 +59,6 @@ export default async function PlansPage() {
             </p>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

@@ -1,24 +1,23 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/access";
+import { WorkspaceNav } from "@/components/workspace-nav";
 
 export const metadata = { title: "Local Admin, ExpatPreneurs Global" };
 
-// Thirteen links across one line was too many. They are grouped now: the
-// people, what is on, and what there is to read.
 const groups = [
   {
     heading: "People",
     links: [
       ["/admin", "Overview"],
-      ["/admin/applications", "Requests"],
+      ["/admin/applications", "Invitation requests"],
       ["/admin/members", "Members"],
       ["/admin/circles", "Circles"],
-      ["/admin/care", "Care"],
-      ["/admin/whatsapp", "WhatsApp"],
+      ["/admin/care", "Member care"],
+      ["/admin/whatsapp", "WhatsApp sync"],
       ["/admin/transfers", "Moves"],
       ["/admin/mix", "Village mix"],
       ["/admin/leadership", "Leadership"],
-    ],
+    ] as [string, string][],
   },
   {
     heading: "What is on",
@@ -27,14 +26,14 @@ const groups = [
       ["/admin/live", "Live rooms"],
       ["/admin/announcements", "Announcements"],
       ["/admin/partners", "Partnered events"],
-    ],
+    ] as [string, string][],
   },
   {
     heading: "What there is to read",
     links: [
       ["/admin/resources", "Resources"],
       ["/admin/media", "Watch and Listen"],
-    ],
+    ] as [string, string][],
   },
   {
     heading: "Listening",
@@ -44,7 +43,7 @@ const groups = [
       ["/admin/insight", "Insight"],
       ["/admin/settings", "Village settings"],
       ["/admin/more", "More"],
-    ],
+    ] as [string, string][],
   },
 ];
 
@@ -58,37 +57,32 @@ export default async function AdminLayout({
   return (
     <>
       <header className="top">
-        <Link className="brand" href="/admin/applications">
+        <Link className="brand" href="/admin">
           ExpatPreneurs <span className="chip">Admin</span>
         </Link>
         <nav>
-          {admin.isGlobal ? <Link href="/global">Global team</Link> : null}
-          <Link href="/lead">What you run</Link>
+          {admin.isGlobal ? (
+            <Link className="hide-small" href="/global">
+              Global team
+            </Link>
+          ) : null}
+          <Link className="hide-small" href="/lead">
+            What you run
+          </Link>
+          <Link className="btn only-small" href="/admin/more">
+            Menu
+          </Link>
           <Link className="btn" href="/home">
             Member view
           </Link>
         </nav>
       </header>
 
-      <div className="wrap">
-        <div className="adminnav">
-          {groups.map((group) => (
-            <div key={group.heading}>
-              <span className="muted small">{group.heading}</span>
-              <div className="tabs">
-                {group.links.map(([href, label]) => (
-                  <Link className="chip" key={href} href={href}>
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-        <p className="muted small">
-          {admin.isGlobal ? "Global team, every Village" : "Local Admin"}
-        </p>
-      </div>
+      <WorkspaceNav
+        title={admin.isGlobal ? "Every Village" : "Your Village"}
+        subtitle="Local Admin"
+        groups={groups}
+      />
 
       {children}
     </>

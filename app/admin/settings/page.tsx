@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { VillageSettingsForm, ContactGlobalForm } from "./forms";
 
 export const metadata = { title: "Village settings, the Local Admin workspace" };
@@ -50,9 +49,7 @@ export default async function VillageSettingsPage() {
     : { data: [] };
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/admin/members">The Local Admin workspace</Link>
@@ -119,7 +116,6 @@ export default async function VillageSettingsPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

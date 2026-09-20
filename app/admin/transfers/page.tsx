@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { TransferButtons } from "./forms";
 
 export const metadata = { title: "Moves, the Local Admin workspace" };
@@ -32,9 +31,7 @@ export default async function TransfersPage() {
   const settled = (transfers ?? []).filter((t) => ["done", "declined"].includes(t.status));
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/admin/members">Members</Link>
@@ -107,7 +104,6 @@ export default async function TransfersPage() {
             </div>
           ) : null}
         </section>
-      </main>
-    </>
+    </main>
   );
 }

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Saved, the Local Admin workspace" };
 
@@ -23,9 +22,7 @@ export default async function AdminSavedPage({
   const [href, label] = back[from] ?? back.settings;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <h1>Saved</h1>
           <p className="lead">
@@ -39,7 +36,6 @@ export default async function AdminSavedPage({
             </Link>
           </p>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

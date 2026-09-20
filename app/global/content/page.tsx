@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Pages, the Global team" };
 
@@ -16,9 +15,7 @@ export default async function PagesListPage() {
     .order("title");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -62,7 +59,6 @@ export default async function PagesListPage() {
             </p>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

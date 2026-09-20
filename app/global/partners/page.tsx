@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { PartnerDecision } from "./forms";
 
 export const metadata = { title: "Partnered events, the Global team" };
@@ -34,9 +33,7 @@ export default async function PartneredEventsPage() {
   const settled = (requests ?? []).filter((r) => r.status !== "new");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -104,7 +101,6 @@ export default async function PartneredEventsPage() {
             </div>
           ) : null}
         </section>
-      </main>
-    </>
+    </main>
   );
 }

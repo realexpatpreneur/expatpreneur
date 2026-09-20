@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { PodDecision, DataDecision } from "./forms";
 
 export const metadata = { title: "Requests, the Global team" };
@@ -49,9 +48,7 @@ export default async function GlobalRequestsPage() {
   );
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -131,7 +128,6 @@ export default async function GlobalRequestsPage() {
             </div>
           )}
         </section>
-      </main>
-    </>
+    </main>
   );
 }

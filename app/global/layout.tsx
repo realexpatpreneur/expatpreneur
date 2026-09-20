@@ -1,7 +1,62 @@
 import Link from "next/link";
 import { requireGlobal } from "@/lib/access";
+import { WorkspaceNav } from "@/components/workspace-nav";
 
 export const metadata = { title: "Global team, ExpatPreneurs Global" };
+
+// The prototype groups the Global workspace four ways. Same grouping.
+const groups = [
+  {
+    heading: "Network",
+    links: [
+      ["/global", "Overview"],
+      ["/admin/applications", "Invitation requests"],
+      ["/global/villages", "Villages"],
+      ["/global/events", "Events"],
+      ["/global/cities", "City suggestions"],
+      ["/admin/members", "Members and roles"],
+      ["/global/roles", "Permissions"],
+      ["/global/plans", "Plans and benefits"],
+      ["/global/mix", "Nationality limits"],
+      ["/global/groups", "Groups and Pods"],
+      ["/global/requests", "Requests"],
+      ["/global/moderation", "Moderation"],
+      ["/global/suggestions", "Suggestions"],
+    ] as [string, string][],
+  },
+  {
+    heading: "Content",
+    links: [
+      ["/global/content", "Pages"],
+      ["/global/media", "Articles"],
+      ["/global/photos", "Photos and consent"],
+      ["/global/library", "Resources library"],
+      ["/admin/media", "Watch and Listen"],
+      ["/global/emails", "Emails"],
+    ] as [string, string][],
+  },
+  {
+    heading: "Money and marketplaces",
+    links: [
+      ["/global/money", "Payments and tickets"],
+      ["/global/recognition", "Team recognition"],
+      ["/global/learning", "Educators and courses"],
+      ["/global/businesses", "Business listings"],
+      ["/global/partners", "Partnered events"],
+      ["/global/markets", "Market pathways"],
+    ] as [string, string][],
+  },
+  {
+    heading: "Insight",
+    links: [
+      ["/global/reporting", "Analytics"],
+      ["/global/network", "Network intelligence"],
+      ["/global/audit", "Audit log"],
+      ["/global/settings", "System settings"],
+      ["/global/more", "More"],
+    ] as [string, string][],
+  },
+];
 
 export default async function GlobalLayout({
   children,
@@ -17,38 +72,24 @@ export default async function GlobalLayout({
           ExpatPreneurs <span className="chip">Global</span>
         </Link>
         <nav>
-          <Link href="/global">Overview</Link>
-          <Link href="/global/villages">Villages</Link>
-          <Link href="/global/events">Events</Link>
-          <Link href="/global/mix">Balance</Link>
-          <Link href="/global/cities">Cities</Link>
-          <Link href="/global/groups">Groups</Link>
-          <Link href="/global/markets">Markets</Link>
-          <Link href="/global/businesses">Businesses</Link>
-          <Link href="/global/media">Media</Link>
-          <Link href="/global/photos">Photos and consent</Link>
-          <Link href="/global/library">Resources library</Link>
-          <Link href="/global/content">Pages</Link>
-          <Link href="/global/emails">Emails</Link>
-          <Link href="/global/roles">Roles</Link>
-          <Link href="/global/moderation">Moderation</Link>
-          <Link href="/global/suggestions">Suggestions</Link>
-          <Link href="/global/requests">Requests</Link>
-          <Link href="/global/reporting">Reporting</Link>
-          <Link href="/global/network">Network intelligence</Link>
-          <Link href="/global/learning">Learning</Link>
-          <Link href="/global/plans">Plans</Link>
-          <Link href="/global/recognition">Recognition</Link>
-          <Link href="/global/partners">Partnered events</Link>
-          <Link href="/global/money">Money</Link>
-          <Link href="/global/audit">The record</Link>
-          <Link href="/global/settings">System settings</Link>
-          <Link href="/global/more">More</Link>
-          <Link className="btn" href="/admin/applications">
+          <Link className="hide-small" href="/admin">
             Village view
+          </Link>
+          <Link className="btn only-small" href="/global/more">
+            Menu
+          </Link>
+          <Link className="btn" href="/home">
+            Member view
           </Link>
         </nav>
       </header>
+
+      <WorkspaceNav
+        title="The Global team"
+        subtitle="Every Village"
+        groups={groups}
+      />
+
       {children}
     </>
   );

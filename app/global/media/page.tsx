@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { ArticleForm, SuggestionDecision } from "./forms";
 
 export const metadata = { title: "Media, the Global team" };
@@ -42,9 +41,7 @@ export default async function GlobalMediaPage({
   const editing = (articles ?? []).find((a) => a.id === edit);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -132,7 +129,6 @@ export default async function GlobalMediaPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

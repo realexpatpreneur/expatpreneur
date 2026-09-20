@@ -1,5 +1,4 @@
 import { requireAdmin } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { MenuList } from "@/components/menu-list";
 
 export const metadata = { title: "More, the Local Admin workspace" };
@@ -8,9 +7,7 @@ export default async function AdminMorePage() {
   await requireAdmin();
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <h1>More</h1>
         </section>
@@ -41,7 +38,6 @@ export default async function AdminMorePage() {
             ]}
           />
         </section>
-      </main>
-    </>
+    </main>
   );
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { PhotoForm, RetireButton, RotationForm } from "./forms";
 
 export const metadata = { title: "Photos and consent, the Global team" };
@@ -40,9 +39,7 @@ export default async function PhotosConsentPage() {
   const waiting = live.filter((p) => p.consent === "waiting");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -167,7 +164,6 @@ export default async function PhotosConsentPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

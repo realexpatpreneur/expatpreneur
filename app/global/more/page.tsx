@@ -1,5 +1,4 @@
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { MenuList } from "@/components/menu-list";
 
 export const metadata = { title: "More, the Global team" };
@@ -8,9 +7,7 @@ export default async function GlobalMorePage() {
   await requireGlobal();
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <h1>More</h1>
         </section>
@@ -51,7 +48,6 @@ export default async function GlobalMorePage() {
             ]}
           />
         </section>
-      </main>
-    </>
+    </main>
   );
 }

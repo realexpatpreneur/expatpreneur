@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { PageEditor, AddBlockForm, StatusButton } from "../forms";
 import type { Block } from "@/lib/blocks";
 
@@ -27,9 +26,7 @@ export default async function PageEditorPage({
   if (!page) notFound();
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global/content">Pages</Link>
@@ -63,7 +60,6 @@ export default async function PageEditorPage({
         <section className="band">
           <AddBlockForm slug={page.slug} />
         </section>
-      </main>
-    </>
+    </main>
   );
 }

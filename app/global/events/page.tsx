@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { whenText } from "@/lib/events";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Events, the Global team" };
 
@@ -43,9 +42,7 @@ export default async function GlobalEventsPage() {
   );
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -142,7 +139,6 @@ export default async function GlobalEventsPage() {
             </div>
           )}
         </section>
-      </main>
-    </>
+    </main>
   );
 }

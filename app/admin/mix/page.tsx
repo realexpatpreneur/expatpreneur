@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Village mix, the Local Admin workspace" };
 
@@ -55,9 +54,7 @@ export default async function VillageMixPage() {
   const headcount = (mix ?? [])[0]?.people ?? 0;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/admin">Overview</Link>
@@ -190,7 +187,6 @@ export default async function VillageMixPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { ReportDecision } from "./forms";
 
 export const metadata = { title: "Reports, the Local Admin workspace" };
@@ -41,9 +40,7 @@ export default async function AdminReportsPage() {
   );
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/admin">Overview</Link>
@@ -113,7 +110,6 @@ export default async function AdminReportsPage() {
             </p>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 import { AmountsForm, RunButton, PaidForm } from "./forms";
 
 export const metadata = { title: "Team recognition, the Global team" };
@@ -75,9 +74,7 @@ export default async function RecognitionPage() {
   const owed = (payouts ?? []).filter((p) => p.status === "due");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -185,7 +182,6 @@ export default async function RecognitionPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Network intelligence, the Global team" };
 
@@ -78,9 +77,7 @@ export default async function NetworkIntelligencePage() {
   const accepted = (connections ?? []).filter((c) => c.status === "accepted").length;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <p className="muted small">
             <Link href="/global">The Global team</Link>
@@ -184,7 +181,6 @@ export default async function NetworkIntelligencePage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

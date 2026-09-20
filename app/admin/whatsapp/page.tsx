@@ -21,7 +21,7 @@ export default async function WhatsappTasksPage() {
 
   const ids = [...new Set(rows.map((t) => t.profile_id).filter(Boolean))] as string[];
   const { data: people } = ids.length
-    ? await supabase.from("profiles").select("id, full_name, phone").in("id", ids)
+    ? await supabase.from("member_records").select("id, full_name, phone").in("id", ids)
     : { data: [] };
 
   const open = rows.filter((t) => !t.done_at);

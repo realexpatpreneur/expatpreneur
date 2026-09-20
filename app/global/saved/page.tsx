@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { requireGlobal } from "@/lib/access";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Saved, the Global team" };
 
@@ -14,9 +13,7 @@ export default async function GlobalSavedPage({
   await requireGlobal();
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <h1>Saved</h1>
           <p className="lead">
@@ -31,7 +28,6 @@ export default async function GlobalSavedPage({
             </Link>
           </p>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

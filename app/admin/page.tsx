@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { whenText } from "@/lib/events";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Overview, the Local Admin workspace" };
 
@@ -105,9 +104,7 @@ export default async function AdminOverviewPage() {
   ];
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <main className="wrap">
         <section className="band">
           <h1>{village?.name ?? "Your"} Village</h1>
           <p className="lead">How the Village is doing this month.</p>
@@ -323,7 +320,6 @@ export default async function AdminOverviewPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+    </main>
   );
 }

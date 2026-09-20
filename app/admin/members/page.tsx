@@ -13,8 +13,10 @@ export default async function AdminMembersPage({
   const admin = await requireAdmin();
   const supabase = await createClient();
 
+  // The full record, including the email, comes from the admin view. The
+  // profiles table no longer hands those columns to anybody signed in.
   let query = supabase
-    .from("profiles")
+    .from("member_records")
     .select("id, full_name, email, headline, status, plan, village_id, circle_id")
     .order("full_name")
     .limit(200);
