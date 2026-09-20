@@ -212,6 +212,7 @@ app/
                      /contact, /legal
   home, my-village   the member's own landing pages
   for-you            people and openings, from the member's own profile
+  menu, more         the navigation pages for phones, one per workspace
   apply/status       where somebody's invitation request stands
   village            Ask & Offer
   directory, members the people

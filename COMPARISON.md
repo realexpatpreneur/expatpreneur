@@ -12,10 +12,10 @@ Date of this check: 20 September 2026.
 
 Everything in the prototype is built. 239 screens, 170 addresses, 88
 navigation entries across five workspaces, 19 data objects and 24 named
-capabilities, all accounted for.
+capabilities. Nothing is left out, including the mobile menus, the saved
+confirmations and the email previews.
 
-Six screens are deliberately absent and one section of the build goes
-beyond the prototype. Both are listed at the end, with reasons.
+The build also carries five things the prototype does not, listed below.
 
 ---
 
@@ -54,22 +54,17 @@ password reset. All four are now built.
 | Leaders | 17 | `/lead` |
 | Educators | 11 | `/educator` and four pages beneath it |
 
-140 pages, 9 API routes, 34 migrations, 2 test files.
+150 pages, 9 API routes, 34 migrations, 2 test files.
+
+**On phones.** Every workspace has its own menu page, reached from a Menu
+button that appears exactly where the navigation links disappear. Columns
+collapse to one, tables scroll inside their own box, rows wrap, the
+workspace navigation scrolls sideways, and buttons go full width on a
+narrow screen.
 
 ---
 
-## Nothing is left out
-
-Every screen in the prototype is built, including the six I had earlier
-argued against and should not have. The mobile menus are real pages now,
-one per workspace, reached from a Menu button that appears exactly where
-the navigation links disappear. The saved confirmations and the email
-previews are built as specified.
-
-The stylesheet was also changed rather than only the pages: columns
-collapse, tables scroll inside their own box, rows wrap, and buttons go
-full width below 520 pixels. Hiding links on a phone was never mobile
-support.
+---
 
 ## Where the build goes beyond the prototype
 

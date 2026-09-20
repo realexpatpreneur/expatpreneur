@@ -203,6 +203,19 @@ In the admin browser:
 - [ ] /admin/partners: propose a partnered event. Approve it at
       /global/partners with conditions. The proposer is told.
 
+## 6c. On a phone
+
+Do this section on an actual phone, not a narrow browser window.
+
+- [ ] The Menu button appears in the header and opens the menu page.
+- [ ] Every workspace you belong to is reachable from /more, including
+      the admin and Global links if you hold those roles.
+- [ ] A table, for example the Directory or Insight, scrolls inside its
+      own box rather than stretching the page sideways.
+- [ ] A form is usable one field at a time, and the buttons are full
+      width rather than squeezed.
+- [ ] The live room works: camera, microphone and leaving.
+
 ## 7. The admin work
 
 Start at /admin, which is now the workspace's front door.
