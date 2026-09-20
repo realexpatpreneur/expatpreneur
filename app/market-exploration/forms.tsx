@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import {
   createMarketPost,
   replyToMarketPost,
+  closeMarketPost,
   type MarketState,
 } from "./actions";
 
@@ -103,6 +104,31 @@ export function MarketReplyForm({ postId }: { postId: string }) {
       </label>
       <button className="btn primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Reply"}
+      </button>
+    </form>
+  );
+}
+
+
+export function CloseMarketForm({ postId }: { postId: string }) {
+  const [state, action, pending] = useActionState<MarketState, FormData>(
+    closeMarketPost,
+    {}
+  );
+
+  return (
+    <form action={action}>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      <input type="hidden" name="post_id" value={postId} />
+      <label className="field">
+        <span>What came of it?</span>
+        <input name="outcome" placeholder="Who you met, or what you decided" />
+        <span className="hint">
+          Worth a line. The next person looking at that market reads it.
+        </span>
+      </label>
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Closing" : "Close this"}
       </button>
     </form>
   );

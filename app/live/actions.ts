@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notify } from "@/lib/notify";
 import {
   recordingReady,
   startRecording,
@@ -112,6 +113,47 @@ export async function setParticipantRole(
 
   revalidatePath(`/live/${slug}`);
   return {};
+}
+
+// Calling a room off. The people at the door and in it are told, which is
+// the whole point of doing it here rather than just deleting the row.
+export async function cancelSession(
+  _prev: LiveState,
+  formData: FormData
+): Promise<LiveState> {
+  const sessionId = String(formData.get("session_id"));
+  const slug = String(formData.get("slug"));
+  const session = await hostOf(sessionId);
+  if (!session) return { error: "Only a host can call this off." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("live_sessions")
+    .update({ status: "cancelled", ended_at: new Date().toISOString() })
+    .eq("id", sessionId);
+
+  if (error) return { error: error.message };
+
+  const service = createAdminClient();
+  const { data: people } = await service
+    .from("session_participants")
+    .select("profile_id")
+    .eq("session_id", sessionId)
+    .in("state", ["waiting", "admitted", "invited"]);
+
+  for (const person of people ?? []) {
+    if (!person.profile_id) continue;
+    await notify(
+      person.profile_id,
+      "event",
+      `Called off: ${session.title}`,
+      "The host has called this room off.",
+      "/live"
+    );
+  }
+
+  revalidatePath(`/live/${slug}`);
+  redirect("/live?cancelled=1");
 }
 
 export async function setSessionStatus(

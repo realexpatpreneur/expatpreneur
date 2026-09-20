@@ -6,6 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { slugify } from "@/lib/events";
 import { offerThePlaceOn } from "@/app/events/actions";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { notify } from "@/lib/notify";
+import { sendEmailToMember, url } from "@/lib/email";
+import { whenText } from "@/lib/events";
 
 export type EventFormState = { error?: string };
 
@@ -23,6 +27,47 @@ function audienceFrom(formData: FormData) {
     return { visibility, audience: "global", audience_id: null };
   }
   return { visibility, audience: "village", audience_id: choice.slice(8) || null };
+}
+
+// Telling the people who are coming. Used when something moves and when an
+// event is called off, which are the two moments a member cannot find out
+// by themselves.
+async function tellTheGuests(
+  eventId: string,
+  slug: string,
+  title: string,
+  heading: string,
+  lines: string[]
+) {
+  const service = createAdminClient();
+
+  const { data: guests } = await service
+    .from("event_registrations")
+    .select("profile_id")
+    .eq("event_id", eventId)
+    .in("status", ["confirmed", "pending", "waitlist"]);
+
+  for (const guest of guests ?? []) {
+    if (!guest.profile_id) continue;
+
+    await notify(guest.profile_id, "event", heading, lines[0], `/events/${slug}`);
+
+    const { data: person } = await service
+      .from("profiles")
+      .select("email")
+      .eq("id", guest.profile_id)
+      .maybeSingle();
+
+    await sendEmailToMember(
+      guest.profile_id,
+      "events",
+      person?.email ?? null,
+      `${heading}: ${title}`,
+      heading,
+      lines,
+      { label: "Open the event", href: url(`/events/${slug}`) }
+    );
+  }
 }
 
 export async function saveEvent(
@@ -87,8 +132,38 @@ export async function saveEvent(
   };
 
   if (id) {
+    // What it looked like before, so the guests can be told what moved.
+    const { data: before } = await supabase
+      .from("events")
+      .select("slug, title, starts_at, ends_at, timezone, venue, address, status, reminders")
+      .eq("id", id)
+      .maybeSingle();
+
     const { error } = await supabase.from("events").update(row).eq("id", id);
     if (error) return { error: error.message };
+
+    if (before) {
+      const calledOff =
+        before.status !== "cancelled" && row.status === "cancelled";
+      const moved =
+        before.starts_at !== row.starts_at ||
+        (before.venue ?? "") !== (row.venue ?? "") ||
+        (before.address ?? "") !== (row.address ?? "");
+
+      if (calledOff) {
+        await tellTheGuests(id, before.slug, title, "This event is off", [
+          "The host has called it off. Nothing is expected of you.",
+          "If you paid for a ticket, the refund follows automatically.",
+        ]);
+      } else if (moved && (before.reminders as Record<string, boolean>)?.changes) {
+        await tellTheGuests(id, before.slug, title, "Something has changed", [
+          "The time or the place has moved.",
+          whenText({ starts_at: row.starts_at, ends_at: row.ends_at, timezone: row.timezone }),
+          row.venue ?? "See the event page.",
+        ]);
+      }
+    }
+
     revalidatePath("/admin/events");
     redirect(`/admin/events/${id}?done=saved`);
   }

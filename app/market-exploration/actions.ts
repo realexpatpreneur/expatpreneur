@@ -89,3 +89,32 @@ export async function replyToMarketPost(
   revalidatePath(`/market-exploration/${postId}`);
   return {};
 }
+
+// The person who asked says it is done, so the board stays honest.
+export async function closeMarketPost(
+  _prev: MarketState,
+  formData: FormData
+): Promise<MarketState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=/market-exploration");
+
+  const postId = String(formData.get("post_id"));
+
+  const { error } = await supabase
+    .from("market_posts")
+    .update({
+      status: "resolved",
+      outcome: String(formData.get("outcome") ?? "").trim() || null,
+      resolved_at: new Date().toISOString(),
+    })
+    .eq("id", postId)
+    .eq("author_id", user.id);
+
+  if (error) return { error: "Only the person who asked can close it." };
+
+  revalidatePath(`/market-exploration/${postId}`);
+  return {};
+}

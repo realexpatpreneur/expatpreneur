@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
-import { MarketReplyForm } from "../forms";
+import { MarketReplyForm, CloseMarketForm } from "../forms";
 import { stageLabel } from "../page";
 
 export default async function MarketPostPage({
@@ -76,6 +76,22 @@ export default async function MarketPostPage({
         <section className="band">
           <div className="cols">
             <div className="stack">
+            {post.author_id === member.id && post.status === "open" ? (
+              <div className="panel">
+                <h3>Done with this one?</h3>
+                <CloseMarketForm postId={id} />
+              </div>
+            ) : null}
+
+              {post.status === "resolved" ? (
+                <div className="panel wash">
+                  <h3>Closed</h3>
+                  <p className="muted small" style={{ marginTop: 6 }}>
+                    {post.outcome ?? "The person who asked has what they needed."}
+                  </p>
+                </div>
+              ) : null}
+
               <div className="panel">
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{post.body}</p>
               </div>

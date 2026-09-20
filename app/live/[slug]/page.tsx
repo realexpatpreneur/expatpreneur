@@ -21,6 +21,7 @@ import {
   StreamingControls,
   BreakoutPanel,
   QuestionsPanel,
+  CancelSessionButton,
 } from "../forms";
 import { recordingReady } from "@/lib/egress";
 
@@ -372,6 +373,9 @@ export default async function LiveSessionPage({
                       Enter the room
                     </Link>
                   </p>
+                  {session.status !== "ended" ? (
+                    <CancelSessionButton sessionId={session.id} slug={slug} />
+                  ) : null}
                 </div>
               ) : null}
 

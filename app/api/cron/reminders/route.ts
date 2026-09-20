@@ -21,9 +21,11 @@ export async function GET(request: Request) {
 
   const { data: events } = await service
     .from("events")
-    .select("id, slug, title, starts_at, ends_at, timezone, venue, is_online, online_url, reminders")
+    .select("id, slug, title, starts_at, ends_at, timezone, venue, address, is_online, online_url, reminders, village_id")
     .eq("status", "published")
-    .gte("starts_at", new Date(now).toISOString())
+    // Everything from yesterday to a week out: the ones coming up, and the
+    // ones just finished that owe people a thank you.
+    .gte("starts_at", new Date(now - 2 * 86400000).toISOString())
     .lte("starts_at", new Date(now + 8 * 86400000).toISOString());
 
   let sent = 0;
@@ -34,10 +36,27 @@ export async function GET(request: Request) {
 
     // Which reminder, if any, is due right now.
     let kind: string | null = null;
-    if (reminders.hour && hoursAway <= 1.5 && hoursAway > 0) kind = "hour";
+    if (reminders.thanks && hoursAway <= -14 && hoursAway > -40) kind = "thanks";
+    else if (reminders.hour && hoursAway <= 1.5 && hoursAway > 0) kind = "hour";
     else if (reminders.day && hoursAway <= 26 && hoursAway > 22) kind = "day";
     else if (reminders.week && hoursAway <= 170 && hoursAway > 166) kind = "week";
     if (!kind) continue;
+
+    // The thank you carries whatever is on next in that Village, which is
+    // the only reason a thank you is worth sending.
+    let nextUp: { title: string; slug: string } | null = null;
+    if (kind === "thanks") {
+      const { data: after } = await service
+        .from("events")
+        .select("title, slug")
+        .eq("status", "published")
+        .eq("village_id", event.village_id)
+        .gt("starts_at", new Date(now).toISOString())
+        .order("starts_at")
+        .limit(1)
+        .maybeSingle();
+      nextUp = after ?? null;
+    }
 
     const { data: registrations } = await service
       .from("event_registrations")
@@ -89,21 +108,33 @@ export async function GET(request: Request) {
             sendEmail(to as string, subject, heading, lines, action);
 
       await send(
-        kind === "hour"
-          ? `Starting soon: ${event.title}`
-          : kind === "day"
-            ? `Tomorrow: ${event.title}`
-            : `Next week: ${event.title}`,
+        kind === "thanks"
+          ? `Thank you for coming: ${event.title}`
+          : kind === "hour"
+            ? `Starting soon: ${event.title}`
+            : kind === "day"
+              ? `Tomorrow: ${event.title}`
+              : `Next week: ${event.title}`,
         event.title,
-        [
-          `${name ? `${name.split(" ")[0]}, a` : "A"} reminder about ${event.title}.`,
-          whenText(event),
-          where,
-          kind === "hour"
-            ? "If you can no longer make it, cancel your place so someone else can take it."
-            : "See you there.",
-        ],
-        { label: "Open the event", href: url(`/events/${event.slug}`) }
+        kind === "thanks"
+          ? [
+              `${name ? `${name.split(" ")[0]}, thank` : "Thank"} you for coming to ${event.title}.`,
+              nextUp
+                ? `Next in your Village: ${nextUp.title}.`
+                : "The next one goes up shortly.",
+              "If you met somebody worth following up with, the Directory has them.",
+            ]
+          : [
+              `${name ? `${name.split(" ")[0]}, a` : "A"} reminder about ${event.title}.`,
+              whenText(event),
+              where,
+              kind === "hour"
+                ? "If you can no longer make it, cancel your place so someone else can take it."
+                : "See you there.",
+            ],
+        kind === "thanks" && nextUp
+          ? { label: "See what is next", href: url(`/events/${nextUp.slug}`) }
+          : { label: "Open the event", href: url(`/events/${event.slug}`) }
       );
 
       await service.from("event_reminders_sent").insert({

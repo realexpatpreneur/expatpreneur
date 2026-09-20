@@ -36,6 +36,7 @@ export function EventForm({
     cover_url?: string | null;
     address?: string | null;
     release_hours?: number | null;
+    status?: string;
   };
 }) {
   const [state, action, pending] = useActionState<EventFormState, FormData>(
@@ -312,6 +313,24 @@ export function EventForm({
           </span>
         </label>
       </div>
+
+      {event ? (
+        <div className="panel" style={{ maxWidth: 820, marginTop: 16 }}>
+          <h3>Is it still on?</h3>
+          <label className="field" style={{ marginTop: 12 }}>
+            <span>Status</span>
+            <select name="status" defaultValue={event.status ?? "published"}>
+              <option value="published">On, and members can see it</option>
+              <option value="draft">A draft, nobody sees it</option>
+              <option value="cancelled">Called off</option>
+            </select>
+            <span className="hint">
+              Calling it off tells everybody who was coming, on the platform
+              and by email. Moving the time or the place tells them too.
+            </span>
+          </label>
+        </div>
+      ) : null}
 
       <p style={{ marginTop: 16 }}>
         <button className="btn primary" type="submit" disabled={pending}>

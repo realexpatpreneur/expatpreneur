@@ -18,6 +18,7 @@ import {
   setBreakoutsOpen,
   askQuestion,
   answerQuestion,
+  cancelSession,
   type LiveState,
 } from "./actions";
 
@@ -171,6 +172,30 @@ export function SessionControls({
           End the session
         </button>
       )}
+    </form>
+  );
+}
+
+export function CancelSessionButton({
+  sessionId,
+  slug,
+}: {
+  sessionId: string;
+  slug: string;
+}) {
+  const [state, action, pending] = useActionState<LiveState, FormData>(
+    cancelSession,
+    {}
+  );
+
+  return (
+    <form action={action} style={{ marginTop: 10 }}>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      <input type="hidden" name="session_id" value={sessionId} />
+      <input type="hidden" name="slug" value={slug} />
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Calling it off" : "Call it off"}
+      </button>
     </form>
   );
 }
