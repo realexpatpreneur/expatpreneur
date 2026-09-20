@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail, emailReady, url } from "@/lib/email";
+import { sendEmail, sendEmailToMember, emailReady, url } from "@/lib/email";
 import { whenText } from "@/lib/events";
 
 // Runs on a schedule. It sends each reminder once, because every send is
@@ -74,8 +74,21 @@ export async function GET(request: Request) {
         ? `Online. ${event.online_url ?? "The link is on the event page."}`
         : event.venue ?? "The venue is on the event page.";
 
-      await sendEmail(
-        to,
+      const send = registration.profile_id
+        ? (subject: string, heading: string, lines: string[], action: { label: string; href: string }) =>
+            sendEmailToMember(
+              registration.profile_id as string,
+              "events",
+              to,
+              subject,
+              heading,
+              lines,
+              action
+            )
+        : (subject: string, heading: string, lines: string[], action: { label: string; href: string }) =>
+            sendEmail(to as string, subject, heading, lines, action);
+
+      await send(
         kind === "hour"
           ? `Starting soon: ${event.title}`
           : kind === "day"

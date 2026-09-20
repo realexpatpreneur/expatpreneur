@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { notify } from "@/lib/notify";
-import { sendEmail, url } from "@/lib/email";
+import { sendEmailToMember, url } from "@/lib/email";
 
 export type CareState = { error?: string };
 
@@ -51,18 +51,18 @@ export async function openRenewalRound(
       "/renew"
     );
 
-    if (member.email) {
-      await sendEmail(
-        member.email,
-        "Another year?",
-        "Are you staying?",
-        [
-          `${member.full_name.split(" ")[0]}, it is that time of year.`,
-          "Membership here is renewed by a decision rather than by silence, so we ask everyone once a year. Either answer is a good one, and it takes a minute.",
-        ],
-        { label: "Give your answer", href: url("/renew") }
-      );
-    }
+    await sendEmailToMember(
+      member.id,
+      "renewal",
+      member.email,
+      "Another year?",
+      "Are you staying?",
+      [
+        `${member.full_name.split(" ")[0]}, it is that time of year.`,
+        "Membership here is renewed by a decision rather than by silence, so we ask everyone once a year. Either answer is a good one, and it takes a minute.",
+      ],
+      { label: "Give your answer", href: url("/renew") }
+    );
   }
 
   revalidatePath("/admin/care");

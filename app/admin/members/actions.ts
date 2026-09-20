@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
-import { sendEmail, url } from "@/lib/email";
+import { sendEmailToMember, url } from "@/lib/email";
 import { notify } from "@/lib/notify";
 
 export type MemberAdminState = { error?: string };
@@ -143,12 +143,15 @@ export async function sendAnnouncement(
 
   for (const member of members ?? []) {
     await notify(member.id, "announcement", title, body.slice(0, 120), "/home");
-    if (member.email) {
-      await sendEmail(member.email, title, title, [body], {
-        label: "Open the platform",
-        href: url("/home"),
-      });
-    }
+    await sendEmailToMember(
+      member.id,
+      "announcements",
+      member.email,
+      title,
+      title,
+      [body],
+      { label: "Open the platform", href: url("/home") }
+    );
   }
 
   revalidatePath("/admin/announcements");

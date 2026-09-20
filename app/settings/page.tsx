@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
-import { ProfileSettingsForm, LeaveForm } from "./forms";
+import { ProfileSettingsForm, LeaveForm, NotificationForm } from "./forms";
 import { signOut } from "./actions";
 
 export const metadata = { title: "Settings, ExpatPreneurs Global" };
@@ -21,6 +21,21 @@ export default async function SettingsPage() {
 
   if (!profile) return null;
 
+  const { data: prefs } = await supabase
+    .from("notification_prefs")
+    .select("messages, replies, connections, events, announcements, renewal")
+    .eq("profile_id", member.id)
+    .maybeSingle();
+
+  const settings = prefs ?? {
+    messages: true,
+    replies: true,
+    connections: true,
+    events: true,
+    announcements: true,
+    renewal: true,
+  };
+
   return (
     <>
       <SiteHeader signedIn />
@@ -37,6 +52,8 @@ export default async function SettingsPage() {
             <ProfileSettingsForm profile={profile} />
 
             <div className="stack">
+              <NotificationForm prefs={settings} />
+
               <div className="panel">
                 <h3>Your plan</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>

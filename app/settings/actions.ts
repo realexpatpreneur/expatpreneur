@@ -103,3 +103,33 @@ export async function leaveCommunity(
   await supabase.auth.signOut();
   redirect("/?left=1");
 }
+
+// What reaches the inbox. Notifications inside the platform are unaffected.
+export async function saveNotificationPrefs(
+  _prev: SettingsState,
+  formData: FormData
+): Promise<SettingsState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login?next=/settings");
+
+  const { error } = await supabase.from("notification_prefs").upsert(
+    {
+      profile_id: user.id,
+      messages: Boolean(formData.get("messages")),
+      replies: Boolean(formData.get("replies")),
+      connections: Boolean(formData.get("connections")),
+      events: Boolean(formData.get("events")),
+      announcements: Boolean(formData.get("announcements")),
+      renewal: Boolean(formData.get("renewal")),
+    },
+    { onConflict: "profile_id" }
+  );
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/settings");
+  return { done: "saved" };
+}

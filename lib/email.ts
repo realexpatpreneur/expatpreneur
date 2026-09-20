@@ -60,3 +60,32 @@ export async function sendEmail(
 }
 
 export const url = (path: string) => `${siteUrl}${path}`;
+
+// Sending to a member rather than to an address: the member decides which
+// of these they want. Anything with no preference set goes out, because
+// everything is on until someone turns it off.
+export async function sendEmailToMember(
+  profileId: string,
+  kind: "messages" | "replies" | "connections" | "events" | "announcements" | "renewal",
+  to: string | null,
+  subject: string,
+  title: string,
+  lines: string[],
+  action?: { label: string; href: string }
+) {
+  if (!emailReady || !to) return;
+
+  try {
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const service = createAdminClient();
+    const { data: wanted } = await service.rpc("wants_email", {
+      who: profileId,
+      what: kind,
+    });
+    if (wanted === false) return;
+  } catch {
+    // If the check itself fails, the message still goes.
+  }
+
+  await sendEmail(to, subject, title, lines, action);
+}

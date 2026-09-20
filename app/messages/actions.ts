@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { notify } from "@/lib/notify";
+import { sendEmailToMember, url } from "@/lib/email";
 
 export type MessageState = { error?: string; done?: string };
 
@@ -44,6 +45,22 @@ export async function sendMessage(
     `${me?.full_name ?? "A member"} sent you a message`,
     body.slice(0, 120),
     `/messages/${user.id}`
+  );
+
+  const { data: them } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("id", recipientId)
+    .maybeSingle();
+
+  await sendEmailToMember(
+    recipientId,
+    "messages",
+    them?.email ?? null,
+    `${me?.full_name ?? "A member"} wrote to you`,
+    "You have a message",
+    [body.slice(0, 200)],
+    { label: "Read it", href: url(`/messages/${user.id}`) }
   );
 
   revalidatePath(`/messages/${recipientId}`);

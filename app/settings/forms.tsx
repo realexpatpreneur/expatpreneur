@@ -1,7 +1,12 @@
 "use client";
 
 import { useActionState } from "react";
-import { saveProfile, leaveCommunity, type SettingsState } from "./actions";
+import {
+  saveProfile,
+  leaveCommunity,
+  saveNotificationPrefs,
+  type SettingsState,
+} from "./actions";
 import { Uploader } from "@/components/uploader";
 
 type Profile = {
@@ -153,6 +158,60 @@ export function LeaveForm() {
       </label>
       <button className="btn" type="submit" disabled={pending}>
         {pending ? "Leaving" : "Leave ExpatPreneurs"}
+      </button>
+    </form>
+  );
+}
+
+
+export function NotificationForm({
+  prefs,
+}: {
+  prefs: {
+    messages: boolean;
+    replies: boolean;
+    connections: boolean;
+    events: boolean;
+    announcements: boolean;
+    renewal: boolean;
+  };
+}) {
+  const [state, action, pending] = useActionState<SettingsState, FormData>(
+    saveNotificationPrefs,
+    {}
+  );
+
+  const rows: [keyof typeof prefs, string, string][] = [
+    ["messages", "Messages", "When a member writes to you."],
+    ["replies", "Answers to your posts", "When somebody answers your ask or your market question."],
+    ["connections", "Requests to connect", "When a member in another Village asks to reach you."],
+    ["events", "Events", "Reminders, and when the time or place changes."],
+    ["announcements", "From your Local Admin", "The occasional message to the whole Village."],
+    ["renewal", "The yearly question", "Whether you are staying another year."],
+  ];
+
+  return (
+    <form action={action} className="panel">
+      <h3>What reaches your inbox</h3>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.done ? <div className="notice good">Saved.</div> : null}
+      <p className="muted small" style={{ marginTop: 6 }}>
+        Everything still appears in Notifications on the platform. This is
+        only about email.
+      </p>
+
+      {rows.map(([key, label, line]) => (
+        <label className="check" key={key}>
+          <input type="checkbox" name={key} defaultChecked={prefs[key]} />
+          <span>
+            <b>{label}</b>
+            <small>{line}</small>
+          </span>
+        </label>
+      ))}
+
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Saving" : "Save"}
       </button>
     </form>
   );
