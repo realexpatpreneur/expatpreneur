@@ -7,6 +7,12 @@ import {
   decideOnParticipant,
   setParticipantRole,
   setSessionStatus,
+  beginRecording,
+  endRecording,
+  beginStreaming,
+  endStreaming,
+  addStreamTarget,
+  publishRecording,
   type LiveState,
 } from "./actions";
 
@@ -161,5 +167,188 @@ export function SessionControls({
         </button>
       )}
     </form>
+  );
+}
+
+export function RecordingControls({
+  sessionId,
+  slug,
+  recording,
+}: {
+  sessionId: string;
+  slug: string;
+  recording: { id: string; status: string; url: string | null; media_item_id: string | null } | null;
+}) {
+  const [startState, startAction, starting] = useActionState<LiveState, FormData>(
+    beginRecording,
+    {}
+  );
+  const [stopState, stopAction, stopping] = useActionState<LiveState, FormData>(
+    endRecording,
+    {}
+  );
+  const [publishState, publishAction, publishing] = useActionState<LiveState, FormData>(
+    publishRecording,
+    {}
+  );
+
+  const running = recording?.status === "recording";
+
+  return (
+    <div>
+      {startState.error ? <div className="notice bad">{startState.error}</div> : null}
+      {stopState.error ? <div className="notice bad">{stopState.error}</div> : null}
+      {publishState.error ? (
+        <div className="notice bad">{publishState.error}</div>
+      ) : null}
+      {publishState.done === "published" ? (
+        <div className="notice good">
+          It is in Watch and Listen, for members only.
+        </div>
+      ) : null}
+
+      {running ? (
+        <form action={stopAction}>
+          <input type="hidden" name="session_id" value={sessionId} />
+          <input type="hidden" name="slug" value={slug} />
+          <button className="btn" type="submit" disabled={stopping}>
+            {stopping ? "Stopping" : "Stop recording"}
+          </button>
+        </form>
+      ) : (
+        <form action={startAction}>
+          <input type="hidden" name="session_id" value={sessionId} />
+          <input type="hidden" name="slug" value={slug} />
+          <button className="btn primary" type="submit" disabled={starting}>
+            {starting ? "Starting" : "Start recording"}
+          </button>
+        </form>
+      )}
+
+      {recording && recording.status === "processing" ? (
+        <p className="muted small" style={{ marginTop: 10 }}>
+          Being processed. It appears here when it is ready.
+        </p>
+      ) : null}
+
+      {recording?.status === "ready" && recording.url ? (
+        <div style={{ marginTop: 12 }}>
+          <a className="btn" href={recording.url} target="_blank" rel="noreferrer">
+            Watch it back
+          </a>
+          {recording.media_item_id ? null : (
+            <form action={publishAction} style={{ marginTop: 8 }}>
+              <input type="hidden" name="session_id" value={sessionId} />
+              <input type="hidden" name="slug" value={slug} />
+              <input type="hidden" name="recording_id" value={recording.id} />
+              <button className="btn" type="submit" disabled={publishing}>
+                {publishing ? "Publishing" : "Put it in Watch and Listen"}
+              </button>
+            </form>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export function StreamingControls({
+  sessionId,
+  slug,
+  targets,
+}: {
+  sessionId: string;
+  slug: string;
+  targets: { id: string; platform: string; status: string }[];
+}) {
+  const [addState, addAction, adding] = useActionState<LiveState, FormData>(
+    addStreamTarget,
+    {}
+  );
+  const [startState, startAction, starting] = useActionState<LiveState, FormData>(
+    beginStreaming,
+    {}
+  );
+  const [stopState, stopAction, stopping] = useActionState<LiveState, FormData>(
+    endStreaming,
+    {}
+  );
+
+  const live = targets.some((t) => t.status === "live");
+
+  return (
+    <div>
+      {addState.error ? <div className="notice bad">{addState.error}</div> : null}
+      {startState.error ? <div className="notice bad">{startState.error}</div> : null}
+      {stopState.error ? <div className="notice bad">{stopState.error}</div> : null}
+
+      {targets.length ? (
+        <div className="rows" style={{ marginBottom: 12 }}>
+          {targets.map((target) => (
+            <div className="rowlink" key={target.id}>
+              <div>
+                <b>{target.platform}</b>
+              </div>
+              <div className="rowmeta">
+                <span className={`chip ${target.status === "live" ? "mint" : ""}`}>
+                  {target.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {live ? (
+        <form action={stopAction}>
+          <input type="hidden" name="session_id" value={sessionId} />
+          <input type="hidden" name="slug" value={slug} />
+          <button className="btn" type="submit" disabled={stopping}>
+            {stopping ? "Stopping" : "Stop streaming"}
+          </button>
+        </form>
+      ) : (
+        <>
+          <form action={addAction}>
+            <input type="hidden" name="session_id" value={sessionId} />
+            <input type="hidden" name="slug" value={slug} />
+            <label className="field">
+              <span>Where to</span>
+              <select name="platform" defaultValue="youtube">
+                <option value="youtube">YouTube</option>
+                <option value="linkedin">LinkedIn</option>
+                <option value="instagram">Instagram</option>
+                <option value="facebook">Facebook</option>
+                <option value="custom">Somewhere else</option>
+              </select>
+            </label>
+            <label className="field">
+              <span>RTMP address</span>
+              <input name="rtmp_url" placeholder="rtmp://a.rtmp.youtube.com/live2" />
+            </label>
+            <label className="field">
+              <span>Stream key</span>
+              <input name="stream_key" />
+              <span className="hint">
+                Only hosts of this session can see these.
+              </span>
+            </label>
+            <button className="btn" type="submit" disabled={adding}>
+              {adding ? "Saving" : "Add destination"}
+            </button>
+          </form>
+
+          {targets.length ? (
+            <form action={startAction} style={{ marginTop: 12 }}>
+              <input type="hidden" name="session_id" value={sessionId} />
+              <input type="hidden" name="slug" value={slug} />
+              <button className="btn primary" type="submit" disabled={starting}>
+                {starting ? "Starting" : "Go live to them"}
+              </button>
+            </form>
+          ) : null}
+        </>
+      )}
+    </div>
   );
 }

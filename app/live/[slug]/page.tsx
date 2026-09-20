@@ -17,7 +17,10 @@ import {
   DoorDecision,
   RoleSelect,
   SessionControls,
+  RecordingControls,
+  StreamingControls,
 } from "../forms";
+import { recordingReady } from "@/lib/egress";
 
 export default async function LiveSessionPage({
   params,
@@ -69,6 +72,23 @@ export default async function LiveSessionPage({
             .maybeSingle()
         : Promise.resolve({ data: null }),
     ]);
+
+  // Hosts see the recording and the places it is being sent. Nobody else
+  // can even read those rows.
+  const [{ data: recordings }, { data: targets }] = isHost
+    ? await Promise.all([
+        supabase
+          .from("session_recordings")
+          .select("id, status, url, media_item_id")
+          .eq("session_id", session.id)
+          .order("created_at", { ascending: false })
+          .limit(1),
+        supabase
+          .from("stream_targets")
+          .select("id, platform, status")
+          .eq("session_id", session.id),
+      ])
+    : [{ data: [] }, { data: [] }];
 
   const ids = (participants ?? [])
     .map((p) => p.profile_id)
@@ -287,6 +307,45 @@ export default async function LiveSessionPage({
                       Enter the room
                     </Link>
                   </p>
+                </div>
+              ) : null}
+
+              {isHost && session.recording !== "off" ? (
+                <div className="panel">
+                  <h3>Recording</h3>
+                  {recordingReady ? (
+                    <>
+                      <p className="muted small" style={{ marginTop: 6 }}>
+                        Everyone in the room is told when it starts. The file
+                        lands in our own storage, and only the people this
+                        session was open to can watch it.
+                      </p>
+                      <RecordingControls
+                        sessionId={session.id}
+                        slug={slug}
+                        recording={(recordings ?? [])[0] ?? null}
+                      />
+                    </>
+                  ) : (
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      Recording needs the storage keys before it can run.
+                    </p>
+                  )}
+                </div>
+              ) : null}
+
+              {isHost ? (
+                <div className="panel">
+                  <h3>Streaming out</h3>
+                  <p className="muted small" style={{ marginTop: 6 }}>
+                    Send the room to YouTube, LinkedIn or anywhere that takes
+                    RTMP, to more than one at a time.
+                  </p>
+                  <StreamingControls
+                    sessionId={session.id}
+                    slug={slug}
+                    targets={targets ?? []}
+                  />
                 </div>
               ) : null}
 
