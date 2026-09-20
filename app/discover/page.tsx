@@ -105,7 +105,7 @@ export default async function DiscoverPage({
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="hero center">
           <h1>Wherever you have landed, there is a Village for you</h1>
           <p className="lead">
             The Villages, Circles, people and events of a network of people

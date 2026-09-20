@@ -58,7 +58,7 @@ export default async function PublicMembersPage({
     <>
       <SiteHeader signedIn={Boolean(me)} />
       <main className="wrap">
-        <section className="band">
+        <section className={me ? "band" : "hero center"}>
           <h1>Members</h1>
           <p className="lead">
             People building a business away from home, in every Village. These

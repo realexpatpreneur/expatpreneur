@@ -45,7 +45,7 @@ export default async function BusinessesPage({
     <>
       <SiteHeader signedIn={Boolean(member)} />
       <main className="wrap">
-        <section className="band">
+        <section className={member ? "band" : "hero center"}>
           <h1>Businesses</h1>
           <p className="lead">
             What members actually do, and which markets they already sell into.

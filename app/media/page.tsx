@@ -43,7 +43,7 @@ export default async function MediaPage({
     <>
       <SiteHeader signedIn={Boolean(me)} />
       <main className="wrap">
-        <section className="band">
+        <section className={me ? "band" : "hero center"}>
           <h1>Media</h1>
           <p className="lead">
             Stories about members building a business away from home, and what

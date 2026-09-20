@@ -26,7 +26,7 @@ export default async function HowItWorksPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="hero center">
           <h1>How it works</h1>
           <p className="lead">
             A small, trusted community in your city, and people you can trust in

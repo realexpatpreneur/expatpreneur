@@ -62,7 +62,7 @@ export default async function LearningPage() {
     <>
       <SiteHeader signedIn={Boolean(member)} />
       <main className="wrap">
-        <section className="band">
+        <section className={member ? "band" : "hero center"}>
           <h1>Learning</h1>
           <p className="lead">
             Short courses from members who have already done the thing, not

@@ -682,3 +682,212 @@ a.nav.on {
   margin-right: auto;
   gap: 22px;
 }
+
+/* ------------------------------------------------- the public pages
+
+   The prototype gives a public page a hero, wider sections and a footer
+   in columns. These are its own rules. */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  padding: 56px 0 48px;
+  background: linear-gradient(180deg, #fff 0%, var(--wash) 100%);
+}
+
+.hero.center {
+  display: block;
+  text-align: center;
+  padding-bottom: 24px;
+}
+
+.hero h1 {
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+}
+
+.hero.center h1 {
+  margin: 14px auto 0;
+  max-width: 20ch;
+}
+
+.hero .lead {
+  font-size: 16px;
+  margin-top: 12px;
+}
+
+.hero.center .lead {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #3b4650;
+  margin-bottom: 14px;
+}
+
+.hero .note {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* A public section is roomier than a workspace one. */
+main.wrap > section.band.public {
+  padding: 48px 0 8px;
+}
+
+main.wrap > section.band.public h2 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  max-width: 34ch;
+}
+
+/* The three layers panel from the home page. */
+.layers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.layer {
+  padding: 18px;
+  border-right: 1px solid var(--line);
+}
+
+.layer:last-child {
+  border-right: 0;
+}
+
+.layer b {
+  display: block;
+  font-family: var(--display);
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+/* The blue band that carries an invitation to act. */
+.dband {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 28px 32px;
+  border-radius: 16px;
+  background: var(--blue);
+  color: #fff;
+  margin: 30px 0;
+}
+
+.dband h2,
+.dband .lead {
+  color: #fff;
+  margin: 0;
+}
+
+.dband .btn {
+  background: #fff;
+  border-color: #fff;
+  color: var(--navy);
+  margin-left: auto;
+}
+
+/* The membership plans. */
+.plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+  align-items: start;
+}
+
+.plan {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan.best {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-soft);
+}
+
+.plan .price {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* The footer in columns, as the prototype has it. */
+footer.site .cols-foot {
+  max-width: var(--shell);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  padding: 36px 28px;
+}
+
+footer.site .cols-foot b {
+  display: block;
+  color: #fff;
+  font-family: var(--display);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+footer.site .cols-foot a {
+  display: block;
+  color: #c9d6e2;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+footer.site .cols-foot a:hover {
+  color: #fff;
+}
+
+footer.site .bottom {
+  max-width: var(--shell);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  color: #93a6b8;
+}
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 24px; padding: 40px 0 32px; }
+  .layers { grid-template-columns: 1fr; }
+  .layer { border-right: 0; border-bottom: 1px solid var(--line); }
+  .plans { grid-template-columns: 1fr; }
+  footer.site .cols-foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

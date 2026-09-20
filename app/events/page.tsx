@@ -46,7 +46,7 @@ export default async function EventsPage({
     <>
       <SiteHeader signedIn />
       <main className="wrap">
-        <section className="band">
+        <section className={member ? "band" : "hero center"}>
           <h1>Events</h1>
           <p className="lead">
             Gatherings in your Village, in other Villages and online.

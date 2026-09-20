@@ -41,7 +41,7 @@ export default async function WatchPage({
     <>
       <SiteHeader signedIn={Boolean(user)} />
       <main className="wrap">
-        <section className="band">
+        <section className={user ? "band" : "hero center"}>
           <h1>Watch and Listen</h1>
           <p className="lead">
             Members talking about what building a business away from home

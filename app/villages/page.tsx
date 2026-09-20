@@ -16,7 +16,7 @@ export default async function VillagesPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="hero center">
           <h1>Villages</h1>
           <p className="lead">
             A Village opens where there are enough expat entrepreneurs, a shared

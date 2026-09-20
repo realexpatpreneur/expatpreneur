@@ -52,7 +52,7 @@ export default async function MembershipPage() {
     <>
       <SiteHeader />
       <main className="wrap">
-        <section className="band">
+        <section className="hero center">
           <h1>Membership</h1>
           <p className="lead">
             Membership is by invitation and costs nothing. One paid plan opens

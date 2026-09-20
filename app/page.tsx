@@ -53,24 +53,54 @@ export default async function HomePage() {
       <SiteHeader signedIn={Boolean(user?.user)} />
 
       <main className="wrap">
-        <section className="band">
-          <h1>Your business needs a village too.</h1>
-          <p className="lead">
-            A curated network of expat entrepreneurs. Belong to a small, trusted
-            community in your city, and reach people you can trust in other
-            markets.
-          </p>
-          <p>
-            <Link className="btn primary" href="/apply">
-              Request your invitation
-            </Link>{" "}
-            <Link className="btn" href="/discover">
-              Look around first
-            </Link>
-          </p>
+        <section className="hero">
+          <div>
+            <span className="kicker">By invitation, in eleven cities</span>
+            <h1>Your business needs a village too.</h1>
+            <p className="lead">
+              A curated network of expat entrepreneurs. Belong to a small,
+              trusted community in your city, and reach people you can trust
+              in other markets.
+            </p>
+            <p style={{ marginTop: 18 }}>
+              <Link className="btn primary" href="/apply">
+                Request your invitation
+              </Link>{" "}
+              <Link className="btn" href="/discover">
+                Look around first
+              </Link>
+            </p>
+            <p className="note">
+              Membership is free. Somebody reads every request.
+            </p>
+          </div>
+
+          <div className="panel">
+            <h3>Three places at once</h3>
+            <div className="layers" style={{ marginTop: 14 }}>
+              <div className="layer">
+                <b>Your Circle</b>
+                <span className="muted small">
+                  Up to fifty people who actually know each other.
+                </span>
+              </div>
+              <div className="layer">
+                <b>Your Village</b>
+                <span className="muted small">
+                  Everybody in your city, and what is on this month.
+                </span>
+              </div>
+              <div className="layer">
+                <b>The network</b>
+                <span className="muted small">
+                  Every other city, when you need a market you do not know.
+                </span>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <section className="band">
+        <section className="band public">
           <h2>Villages</h2>
           <div className="grid">
             {ordered.map((village, i) => (
@@ -90,12 +120,14 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="band cta">
-          <h2>Ready to find your Village?</h2>
-          <p style={{ color: "#fff" }}>
-            ExpatPreneurs is by invitation. Membership itself is free. The paid
-            plan adds every Village.
-          </p>
+        <section className="dband">
+          <div>
+            <h2>Ready to find your Village?</h2>
+            <p className="lead">
+              ExpatPreneurs is by invitation. Membership itself is free, and
+              the paid plan adds every other Village.
+            </p>
+          </div>
           <Link className="btn" href="/apply">
             Request your invitation
           </Link>
