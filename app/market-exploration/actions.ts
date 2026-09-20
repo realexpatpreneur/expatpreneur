@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { notify } from "@/lib/notify";
 
 export type MarketState = { error?: string };
 
@@ -64,6 +65,25 @@ export async function replyToMarketPost(
       error:
         "That reply was refused. Answering a member in another Village is part of the paid plan.",
     };
+  }
+
+  const [{ data: post }, { data: me }] = await Promise.all([
+    supabase
+      .from("market_posts")
+      .select("author_id, title")
+      .eq("id", postId)
+      .maybeSingle(),
+    supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+  ]);
+
+  if (post && post.author_id !== user.id) {
+    await notify(
+      post.author_id,
+      "reply",
+      `${me?.full_name ?? "A member"} answered your market question`,
+      post.title,
+      `/market-exploration/${postId}`
+    );
   }
 
   revalidatePath(`/market-exploration/${postId}`);

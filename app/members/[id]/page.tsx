@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
+import { ConnectionRequestForm } from "@/app/messages/forms";
 
 export default async function MemberProfilePage({
   params,
@@ -33,6 +34,17 @@ export default async function MemberProfilePage({
 
   const sameVillage = person.village_id === me.village_id;
   const canContact = person.id !== me.id && (sameVillage || isPaid(me));
+
+  const { data: connection } =
+    person.id === me.id || sameVillage
+      ? { data: null }
+      : await supabase
+          .from("connection_requests")
+          .select("status, requester_id")
+          .or(
+            `and(requester_id.eq.${me.id},recipient_id.eq.${person.id}),and(requester_id.eq.${person.id},recipient_id.eq.${me.id})`
+          )
+          .maybeSingle();
 
   return (
     <>
@@ -82,12 +94,38 @@ export default async function MemberProfilePage({
                   <p className="muted small" style={{ marginTop: 6 }}>
                     This is your own profile. Edit it from the welcome page.
                   </p>
-                ) : canContact ? (
+                ) : sameVillage ? (
+                  <>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      You are in the same Village, so you can write to them
+                      directly.
+                    </p>
+                    <Link className="btn primary" href={`/messages/${person.id}`}>
+                      Send a message
+                    </Link>
+                  </>
+                ) : connection?.status === "accepted" ? (
+                  <>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      They accepted your request, so the thread is open.
+                    </p>
+                    <Link className="btn primary" href={`/messages/${person.id}`}>
+                      Open the thread
+                    </Link>
+                  </>
+                ) : connection?.status === "pending" ? (
                   <p className="muted small" style={{ marginTop: 6 }}>
-                    {sameVillage
-                      ? "You are in the same Village, so you can message them directly. Messaging arrives in the next slice."
-                      : "Your paid plan lets you reach members in other Villages. Messaging arrives in the next slice."}
+                    {connection.requester_id === me.id
+                      ? "Your request is with them."
+                      : "They asked to connect. Answer it from Messages."}
                   </p>
+                ) : canContact ? (
+                  <>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      They are in another Village, so it starts with a request.
+                    </p>
+                    <ConnectionRequestForm recipientId={person.id} />
+                  </>
                 ) : (
                   <p className="muted small" style={{ marginTop: 6 }}>
                     Reaching members in other Villages is part of the paid plan.

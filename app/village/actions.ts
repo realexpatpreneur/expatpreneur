@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { notify } from "@/lib/notify";
 
 export type PostState = { error?: string };
 
@@ -67,6 +68,21 @@ export async function replyToPost(
       error:
         "That reply was refused. Replying to a member in another Village is part of the paid plan.",
     };
+  }
+
+  const [{ data: ask }, { data: me }] = await Promise.all([
+    supabase.from("asks").select("author_id, title").eq("id", askId).maybeSingle(),
+    supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+  ]);
+
+  if (ask && ask.author_id !== user.id) {
+    await notify(
+      ask.author_id,
+      "reply",
+      `${me?.full_name ?? "A member"} answered your post`,
+      ask.title,
+      `/village/${askId}`
+    );
   }
 
   revalidatePath(`/village/${askId}`);

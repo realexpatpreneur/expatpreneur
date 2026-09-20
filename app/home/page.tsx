@@ -78,6 +78,20 @@ export default async function MemberHomePage() {
   const villageName = villageRes.data?.name ?? null;
   const circleName = circleRes.data?.name ?? null;
 
+  const [{ count: unreadMessages }, { count: unreadNotifications }] =
+    await Promise.all([
+      supabase
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .eq("recipient_id", user.id)
+        .is("read_at", null),
+      supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("profile_id", user.id)
+        .is("read_at", null),
+    ]);
+
   const { data: roles } = await supabase
     .from("member_roles")
     .select("role")
@@ -130,6 +144,22 @@ export default async function MemberHomePage() {
               <h3>Market Exploration</h3>
               <p className="muted small">
                 Looking into a new country? Say who you need to meet.
+              </p>
+            </Link>
+            <Link className="panel" href="/messages">
+              <h3>
+                Messages{unreadMessages ? ` (${unreadMessages})` : ""}
+              </h3>
+              <p className="muted small">
+                Your Village writes directly. Other Villages ask first.
+              </p>
+            </Link>
+            <Link className="panel" href="/notifications">
+              <h3>
+                Notifications{unreadNotifications ? ` (${unreadNotifications})` : ""}
+              </h3>
+              <p className="muted small">
+                Replies, requests and what is happening around you.
               </p>
             </Link>
             <Link className="panel" href="/suggestions">
