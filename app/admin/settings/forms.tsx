@@ -13,11 +13,9 @@ export function VillageSettingsForm({
   village: {
     id: string;
     name: string;
+    timezone: string;
+    visitor_places: number;
     summary: string | null;
-    welcome_message: string | null;
-    whatsapp_url: string | null;
-    meeting_note: string | null;
-    quiet_days: number;
   };
 }) {
   const [state, action, pending] = useActionState<VillageSettingsState, FormData>(
@@ -27,68 +25,49 @@ export function VillageSettingsForm({
 
   return (
     <form action={action} className="panel">
-      <h3>{village.name}</h3>
       {state.error ? <div className="notice bad">{state.error}</div> : null}
       {state.done ? <div className="notice good">Saved.</div> : null}
       <input type="hidden" name="village_id" value={village.id} />
 
+      <div className="two">
+        <label className="field">
+          <span>Village name</span>
+          <input name="name" defaultValue={village.name} required />
+        </label>
+        <label className="field">
+          <span>Time zone</span>
+          <select name="timezone" defaultValue={village.timezone}>
+            <option value="Asia/Dubai">Gulf Standard Time</option>
+            <option value="Europe/Lisbon">Western European Time</option>
+            <option value="Europe/Paris">Central European Time</option>
+            <option value="Europe/Madrid">Central European Time (Madrid)</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="two">
+        <label className="field">
+          <span>Circle capacity</span>
+          <input value="50 members" readOnly disabled />
+          <span className="hint">
+            The same for every Village. The Village itself has no limit.
+          </span>
+        </label>
+        <label className="field">
+          <span>Default visitor places per event</span>
+          <input
+            name="visitor_places"
+            type="number"
+            min={0}
+            max={50}
+            defaultValue={village.visitor_places ?? 6}
+          />
+        </label>
+      </div>
+
       <label className="field">
-        <span>What this Village is</span>
+        <span>Village description</span>
         <textarea name="summary" rows={3} defaultValue={village.summary ?? ""} />
-        <span className="hint">
-          The line people read on the public Villages page.
-        </span>
-      </label>
-
-      <label className="field">
-        <span>What a new member reads first</span>
-        <textarea
-          name="welcome_message"
-          rows={5}
-          defaultValue={village.welcome_message ?? ""}
-          placeholder="Who you are, what happens here, and what to do in the first week"
-        />
-        <span className="hint">
-          This is the one piece of writing most worth your time. It is the
-          first thing somebody sees after they are let in.
-        </span>
-      </label>
-
-      <label className="field">
-        <span>The Village WhatsApp group</span>
-        <input
-          name="whatsapp_url"
-          defaultValue={village.whatsapp_url ?? ""}
-          placeholder="https://chat.whatsapp.com/..."
-        />
-        <span className="hint">
-          Members see this after they join. Circle groups are set on the
-          Circles page.
-        </span>
-      </label>
-
-      <label className="field">
-        <span>When you meet</span>
-        <input
-          name="meeting_note"
-          defaultValue={village.meeting_note ?? ""}
-          placeholder="First Tuesday of the month, usually somewhere in Marina"
-        />
-      </label>
-
-      <label className="field">
-        <span>Count somebody quiet after how many days?</span>
-        <input
-          name="quiet_days"
-          type="number"
-          min={14}
-          max={180}
-          defaultValue={village.quiet_days ?? 45}
-        />
-        <span className="hint">
-          This is what member care uses. Shorter means you chase people
-          sooner, which is not always kinder.
-        </span>
       </label>
 
       <button className="btn primary" type="submit" disabled={pending}>

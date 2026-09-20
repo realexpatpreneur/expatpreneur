@@ -2,31 +2,105 @@
 
 import { useActionState } from "react";
 import {
+  saveAccount,
   saveProfile,
-  leaveCommunity,
   saveNotificationPrefs,
+  savePrivacy,
   askAboutMyData,
+  unblockMember,
+  leaveCommunity,
   type SettingsState,
 } from "./actions";
 import { Uploader } from "@/components/uploader";
 
-type Profile = {
-  full_name: string;
-  headline: string | null;
-  business_name: string | null;
-  industry: string | null;
-  bio: string | null;
-  can_help_with: string | null;
-  looking_for: string | null;
-  phone: string | null;
-  languages: string[] | null;
-  markets_known: string[] | null;
-  lived_in: string[] | null;
-  public_profile: boolean;
-  avatar_url: string | null;
-};
+// ---------------------------------------------------------------- Account
 
-export function ProfileSettingsForm({ profile }: { profile: Profile }) {
+export function AccountForm({
+  account,
+}: {
+  account: {
+    email: string;
+    phone: string | null;
+    time_zone: string;
+    language: string;
+  };
+}) {
+  const [state, action, pending] = useActionState<SettingsState, FormData>(
+    saveAccount,
+    {}
+  );
+
+  return (
+    <form action={action} className="panel">
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.done ? <div className="notice good">Saved.</div> : null}
+
+      <div className="two">
+        <label className="field">
+          <span>Email</span>
+          <input name="email" type="email" defaultValue={account.email} />
+        </label>
+        <label className="field">
+          <span>Phone (WhatsApp)</span>
+          <input name="phone" defaultValue={account.phone ?? ""} />
+          <span className="hint">
+            Used by Local Admins to add you to your groups. Never shown on
+            your profile.
+          </span>
+        </label>
+      </div>
+
+      <div className="two">
+        <label className="field">
+          <span>Password</span>
+          <input name="password" type="password" placeholder="••••••••" />
+          <span className="hint">
+            Leave it empty to keep signing in by emailed link.
+          </span>
+        </label>
+        <label className="field">
+          <span>Time zone</span>
+          <select name="time_zone" defaultValue={account.time_zone}>
+            <option>Gulf Standard Time (Dubai)</option>
+            <option>Western European Time (Lisbon)</option>
+            <option>Central European Time (Paris)</option>
+          </select>
+        </label>
+      </div>
+
+      <label className="field">
+        <span>Language</span>
+        <select name="language" defaultValue={account.language}>
+          <option>English</option>
+        </select>
+      </label>
+
+      <button className="btn primary" type="submit" disabled={pending}>
+        {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}
+
+// ---------------------------------------------------------------- Profile
+
+export function ProfileSettingsForm({
+  profile,
+}: {
+  profile: {
+    full_name: string;
+    avatar_url: string | null;
+    headline: string | null;
+    business_name: string | null;
+    industry: string | null;
+    bio: string | null;
+    can_help_with: string | null;
+    looking_for: string | null;
+    languages: string[] | null;
+    markets_known: string[] | null;
+    lived_in: string[] | null;
+  };
+}) {
   const [state, action, pending] = useActionState<SettingsState, FormData>(
     saveProfile,
     {}
@@ -40,11 +114,9 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
 
       <Uploader
         name="avatar_url"
-        bucket="avatars"
-        label="Your photograph"
-        hint="A face makes the Directory worth opening. Square works best."
+        folder="avatars"
+        label="Photograph"
         current={profile.avatar_url}
-        shape="round"
       />
 
       <label className="field">
@@ -53,13 +125,13 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
       </label>
 
       <label className="field">
-        <span>One line about you</span>
+        <span>Headline</span>
         <input name="headline" defaultValue={profile.headline ?? ""} />
       </label>
 
       <div className="two">
         <label className="field">
-          <span>Your business</span>
+          <span>Business</span>
           <input name="business_name" defaultValue={profile.business_name ?? ""} />
         </label>
         <label className="field">
@@ -70,7 +142,7 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
 
       <label className="field">
         <span>About you</span>
-        <textarea name="bio" rows={3} defaultValue={profile.bio ?? ""} />
+        <textarea name="bio" rows={4} defaultValue={profile.bio ?? ""} />
       </label>
 
       <label className="field">
@@ -89,52 +161,212 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
           rows={2}
           defaultValue={profile.looking_for ?? ""}
         />
-        <span className="hint">Members see this. The public never does.</span>
-      </label>
-
-      <label className="field">
-        <span>Phone</span>
-        <input name="phone" defaultValue={profile.phone ?? ""} />
-        <span className="hint">
-          Only your Local Admin sees this, for the WhatsApp groups.
-        </span>
+        <span className="hint">Members only. Never public.</span>
       </label>
 
       <label className="field">
         <span>Languages</span>
-        <input name="languages" defaultValue={(profile.languages ?? []).join(", ")} />
-      </label>
-
-      <label className="field">
-        <span>Markets you know</span>
         <input
-          name="markets_known"
-          defaultValue={(profile.markets_known ?? []).join(", ")}
+          name="languages"
+          defaultValue={(profile.languages ?? []).join(", ")}
         />
       </label>
 
-      <label className="field">
-        <span>Where you have lived</span>
-        <input name="lived_in" defaultValue={(profile.lived_in ?? []).join(", ")} />
-      </label>
+      <div className="two">
+        <label className="field">
+          <span>Markets you know</span>
+          <input
+            name="markets_known"
+            defaultValue={(profile.markets_known ?? []).join(", ")}
+          />
+        </label>
+        <label className="field">
+          <span>Where you have lived</span>
+          <input
+            name="lived_in"
+            defaultValue={(profile.lived_in ?? []).join(", ")}
+          />
+        </label>
+      </div>
+
+      <button className="btn primary" type="submit" disabled={pending}>
+        {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}
+
+// ---------------------------------------------------------- Notifications
+
+export function NotificationForm({
+  prefs,
+}: {
+  prefs: {
+    replies: boolean;
+    messages: boolean;
+    events: boolean;
+    announcements: boolean;
+    digest: boolean;
+    newsletter: boolean;
+  };
+}) {
+  const [state, action, pending] = useActionState<SettingsState, FormData>(
+    saveNotificationPrefs,
+    {}
+  );
+
+  const rows: [keyof typeof prefs, string, string][] = [
+    ["replies", "Replies to my Asks and Offers", "Email and push"],
+    [
+      "messages",
+      "New messages",
+      "Email and push. Important because daily chat is on WhatsApp.",
+    ],
+    ["events", "Event reminders", "The day before, in your time zone"],
+    ["announcements", "Village announcements", ""],
+    ["digest", "Weekly digest", "A summary every Monday"],
+    [
+      "newsletter",
+      "Newsletter and news",
+      "Marketing emails, separate from service messages",
+    ],
+  ];
+
+  return (
+    <form action={action} className="panel">
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.done ? <div className="notice good">Saved.</div> : null}
+
+      {rows.map(([key, label, hint]) => (
+        <label className="check" key={key}>
+          <input type="checkbox" name={key} defaultChecked={prefs[key]} />
+          <span>
+            <b>{label}</b>
+            {hint ? <small>{hint}</small> : null}
+          </span>
+        </label>
+      ))}
+
+      <button className="btn primary" type="submit" disabled={pending}>
+        {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}
+
+// ---------------------------------------------------------------- Privacy
+
+export function PrivacyForm({
+  privacy,
+}: {
+  privacy: {
+    public_profile: boolean;
+    show_business: boolean;
+    findable_elsewhere: boolean;
+  };
+}) {
+  const [state, action, pending] = useActionState<SettingsState, FormData>(
+    savePrivacy,
+    {}
+  );
+
+  return (
+    <form action={action} className="panel">
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.done ? <div className="notice good">Saved.</div> : null}
 
       <label className="check">
         <input
           type="checkbox"
           name="public_profile"
-          defaultChecked={profile.public_profile}
+          defaultChecked={privacy.public_profile}
         />
         <span>
-          <b>Show my profile on the public site</b>
+          <b>Show my public profile on the website</b>
           <small>
-            Only your name, headline, business and journey. Never your email,
-            phone or what you are looking for.
+            Business, offers, expat journey, nationalities and languages
           </small>
         </span>
       </label>
 
+      <label className="check">
+        <input
+          type="checkbox"
+          name="show_business"
+          defaultChecked={privacy.show_business}
+        />
+        <span>
+          <b>Show my business in the public marketplace</b>
+        </span>
+      </label>
+
+      <label className="check">
+        <input
+          type="checkbox"
+          name="findable_elsewhere"
+          defaultChecked={privacy.findable_elsewhere}
+        />
+        <span>
+          <b>Let members in other Villages find me</b>
+        </span>
+      </label>
+
+      <p className="muted small" style={{ marginTop: 6 }}>
+        What you are looking for is always members only. Your email and phone
+        are never public.
+      </p>
+
       <button className="btn primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}
+
+export function MyDataButtons() {
+  const [state, action, pending] = useActionState<SettingsState, FormData>(
+    askAboutMyData,
+    {}
+  );
+
+  if (state.done === "asked") {
+    return (
+      <div className="notice good">
+        Asked. The Global team has it and will be in touch.
+      </div>
+    );
+  }
+
+  return (
+    <form action={action} className="row">
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      <button className="btn" name="kind" value="export" disabled={pending}>
+        Export my data
+      </button>
+      <button className="btn" name="kind" value="delete" disabled={pending}>
+        Delete my account
+      </button>
+    </form>
+  );
+}
+
+export function UnblockButton({
+  id,
+  name,
+}: {
+  id: string;
+  name: string;
+}) {
+  const [, action, pending] = useActionState<SettingsState, FormData>(
+    unblockMember,
+    {}
+  );
+
+  return (
+    <form action={action}>
+      <input type="hidden" name="blocked_id" value={id} />
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Unblocking" : `Unblock ${name}`}
       </button>
     </form>
   );
@@ -152,115 +384,9 @@ export function LeaveForm() {
       <label className="field">
         <span>Type LEAVE to confirm</span>
         <input name="confirm" placeholder="LEAVE" />
-        <span className="hint">
-          Your profile comes down, you are taken out of the groups, and nothing
-          you posted is deleted unless you ask.
-        </span>
       </label>
       <button className="btn" type="submit" disabled={pending}>
-        {pending ? "Leaving" : "Leave ExpatPreneurs"}
-      </button>
-    </form>
-  );
-}
-
-
-export function NotificationForm({
-  prefs,
-}: {
-  prefs: {
-    messages: boolean;
-    replies: boolean;
-    connections: boolean;
-    events: boolean;
-    announcements: boolean;
-    renewal: boolean;
-  };
-}) {
-  const [state, action, pending] = useActionState<SettingsState, FormData>(
-    saveNotificationPrefs,
-    {}
-  );
-
-  const rows: [keyof typeof prefs, string, string][] = [
-    ["messages", "Messages", "When a member writes to you."],
-    ["replies", "Answers to your posts", "When somebody answers your ask or your market question."],
-    ["connections", "Requests to connect", "When a member in another Village asks to reach you."],
-    ["events", "Events", "Reminders, and when the time or place changes."],
-    ["announcements", "From your Local Admin", "The occasional message to the whole Village."],
-    ["renewal", "The yearly question", "Whether you are staying another year."],
-  ];
-
-  return (
-    <form action={action} className="panel">
-      <h3>What reaches your inbox</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      {state.done ? <div className="notice good">Saved.</div> : null}
-      <p className="muted small" style={{ marginTop: 6 }}>
-        Everything still appears in Notifications on the platform. This is
-        only about email.
-      </p>
-
-      {rows.map(([key, label, line]) => (
-        <label className="check" key={key}>
-          <input type="checkbox" name={key} defaultChecked={prefs[key]} />
-          <span>
-            <b>{label}</b>
-            <small>{line}</small>
-          </span>
-        </label>
-      ))}
-
-      <button className="btn" type="submit" disabled={pending}>
-        {pending ? "Saving" : "Save"}
-      </button>
-    </form>
-  );
-}
-
-
-export function MyDataForm() {
-  const [state, action, pending] = useActionState<SettingsState, FormData>(
-    askAboutMyData,
-    {}
-  );
-
-  if (state.done === "asked") {
-    return (
-      <div className="panel">
-        <h3>Asked</h3>
-        <p className="muted small" style={{ marginTop: 6 }}>
-          The Global team has it. Somebody will be in touch within a few
-          days.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <form action={action} className="panel">
-      <h3>Your own data</h3>
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
-      <p className="muted small" style={{ marginTop: 6 }}>
-        Ask for a copy of everything the platform holds about you, or ask for
-        it to be removed. Either is your right, and neither needs a reason.
-      </p>
-
-      <label className="field">
-        <span>What are you asking for?</span>
-        <select name="kind" defaultValue="export">
-          <option value="export">A copy of my data</option>
-          <option value="delete">My data removed</option>
-        </select>
-      </label>
-
-      <label className="field">
-        <span>Anything to add?</span>
-        <textarea name="note" rows={2} />
-      </label>
-
-      <button className="btn" type="submit" disabled={pending}>
-        {pending ? "Sending" : "Send it"}
+        {pending ? "Leaving" : "Leave the community"}
       </button>
     </form>
   );

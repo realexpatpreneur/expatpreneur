@@ -6,15 +6,48 @@ import { VillageSettingsForm, ContactGlobalForm } from "./forms";
 
 export const metadata = { title: "Village settings, the Local Admin workspace" };
 
+// What is decided by the Global team rather than here, listed on the page
+// so a Local Admin is never left wondering.
+const decidedByGlobal = [
+  "Membership plans and prices",
+  "Network nationality ceiling",
+  "Brand, domains and official channels",
+  "Paid events, sponsors and partnerships",
+  "Removing members in contested cases",
+];
+
 export default async function VillageSettingsPage() {
   const admin = await requireAdmin();
   const supabase = await createClient();
 
   const { data: villages } = await supabase
     .from("villages")
-    .select("id, name, summary, welcome_message, whatsapp_url, meeting_note, quiet_days")
-    .in("id", admin.villageIds.length ? admin.villageIds : ["00000000-0000-0000-0000-000000000000"])
+    .select("id, name, timezone, visitor_places, summary")
+    .in(
+      "id",
+      admin.villageIds.length
+        ? admin.villageIds
+        : ["00000000-0000-0000-0000-000000000000"]
+    )
     .order("name");
+
+  // The Local Admins of these Villages, which the prototype lists here.
+  const { data: adminRoles } = await supabase
+    .from("member_roles")
+    .select("profile_id, scope_id")
+    .eq("role", "local_admin")
+    .is("ended_at", null)
+    .in(
+      "scope_id",
+      admin.villageIds.length
+        ? admin.villageIds
+        : ["00000000-0000-0000-0000-000000000000"]
+    );
+
+  const ids = [...new Set((adminRoles ?? []).map((r) => r.profile_id))];
+  const { data: people } = ids.length
+    ? await supabase.from("profiles").select("id, full_name").in("id", ids)
+    : { data: [] };
 
   return (
     <>
@@ -26,39 +59,63 @@ export default async function VillageSettingsPage() {
           </p>
           <h1>Village settings</h1>
           <p className="lead">
-            What you can change about your own Village. Its name, its city and
-            whether it is open stay with the Global team.
+            Settings a Local Admin can change. Anything touching brand, money
+            or membership rules is a Global decision.
           </p>
         </section>
 
         <section className="band">
-          <div className="cols">
-            <div className="stack">
-              {(villages ?? []).length === 0 ? (
-                <p className="muted">
-                  You do not run a Village yet.
-                </p>
-              ) : (
-                (villages ?? []).map((village) => (
-                  <VillageSettingsForm key={village.id} village={village} />
-                ))
-              )}
+          <div className="stack" style={{ maxWidth: 820 }}>
+            {(villages ?? []).length === 0 ? (
+              <p className="muted">You do not run a Village yet.</p>
+            ) : (
+              (villages ?? []).map((village) => (
+                <VillageSettingsForm key={village.id} village={village} />
+              ))
+            )}
+
+            <div className="panel">
+              <div className="row" style={{ justifyContent: "space-between" }}>
+                <div>
+                  <h3>Your monthly recognition</h3>
+                  <p className="muted small">
+                    A thank you for the energy you give the Village. Amount to
+                    be decided.
+                  </p>
+                </div>
+                <span className="chip">Scheduled</span>
+              </div>
             </div>
 
-            <div className="stack">
-              <ContactGlobalForm />
-
-              <div className="panel wash">
-                <h3>What lives elsewhere</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
-                  Circles and their WhatsApp groups are on the Circles page.
-                  Who holds a role is with the Global team. Your own profile
-                  and what reaches your inbox are in your settings.
-                </p>
-                <Link className="btn" href="/admin/circles">
-                  Circles
-                </Link>
+            <div className="panel">
+              <h3>Local Admins</h3>
+              <div className="rows" style={{ marginTop: 12 }}>
+                {(adminRoles ?? []).map((role) => (
+                  <div className="rowlink" key={`${role.profile_id}-${role.scope_id}`}>
+                    <div>
+                      <b>
+                        {people?.find((p) => p.id === role.profile_id)
+                          ?.full_name ?? "A member"}
+                      </b>
+                      <div className="muted small">Local Admin</div>
+                    </div>
+                  </div>
+                ))}
               </div>
+              <p className="muted small" style={{ marginTop: 10 }}>
+                Adding or removing a Local Admin is done by the Global team.
+              </p>
+            </div>
+
+            <ContactGlobalForm />
+
+            <div className="panel wash">
+              <h3>Decided by Global</h3>
+              <ul>
+                {decidedByGlobal.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>

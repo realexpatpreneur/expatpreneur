@@ -8,9 +8,9 @@ import { notify } from "@/lib/notify";
 
 export type VillageSettingsState = { error?: string; done?: string };
 
-// What a Local Admin may change about their own Village. Its name, city and
-// status stay with the Global team, because those decide what the network
-// looks like from outside.
+// The fields the prototype's Village settings screen carries: name, time
+// zone, default visitor places and the description. Circle capacity is
+// shown locked, because it is the same for every Village.
 export async function saveVillageSettings(
   _prev: VillageSettingsState,
   formData: FormData
@@ -26,11 +26,10 @@ export async function saveVillageSettings(
   const { error } = await supabase
     .from("villages")
     .update({
+      name: String(formData.get("name") ?? "").trim(),
+      timezone: String(formData.get("timezone") ?? "Asia/Dubai"),
+      visitor_places: Math.max(0, Number(formData.get("visitor_places") ?? 6)),
       summary: String(formData.get("summary") ?? "").trim() || null,
-      welcome_message: String(formData.get("welcome_message") ?? "").trim() || null,
-      whatsapp_url: String(formData.get("whatsapp_url") ?? "").trim() || null,
-      meeting_note: String(formData.get("meeting_note") ?? "").trim() || null,
-      quiet_days: Math.max(14, Number(formData.get("quiet_days") ?? 45)),
     })
     .eq("id", villageId);
 
@@ -40,8 +39,6 @@ export async function saveVillageSettings(
   return { done: "saved" };
 }
 
-// A Local Admin writing to the Global team. It lands where the team
-// already looks, rather than in somebody's inbox.
 export async function writeToGlobal(
   _prev: VillageSettingsState,
   formData: FormData
@@ -64,7 +61,6 @@ export async function writeToGlobal(
 
   if (error) return { error: error.message };
 
-  // The Global team hears about it rather than finding it later.
   const service = createAdminClient();
   const { data: team } = await service
     .from("member_roles")
