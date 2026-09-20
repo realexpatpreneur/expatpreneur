@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { slugify } from "@/lib/events";
+import { offerThePlaceOn } from "@/app/events/actions";
 
 export type EventFormState = { error?: string };
 
@@ -59,6 +60,8 @@ export async function saveEvent(
     ends_at: endsAt,
     timezone: String(formData.get("timezone") ?? "Asia/Dubai"),
     venue: venue || null,
+    address: String(formData.get("address") ?? "").trim() || null,
+    release_hours: Number(formData.get("release_hours") ?? 48),
     is_online: venue.toLowerCase() === "online",
     visibility,
     audience,
@@ -116,7 +119,18 @@ export async function decideRegistration(
 
   if (error) return { error: error.message };
 
-  revalidatePath(`/admin/events/${String(formData.get("event_id"))}`);
+  // Declining somebody frees a place, and the next person waiting takes it.
+  const eventId = String(formData.get("event_id"));
+  if (String(formData.get("decision")) === "declined") {
+    const { data: event } = await supabase
+      .from("events")
+      .select("slug")
+      .eq("id", eventId)
+      .maybeSingle();
+    if (event?.slug) await offerThePlaceOn(eventId, event.slug);
+  }
+
+  revalidatePath(`/admin/events/${eventId}`);
   return {};
 }
 

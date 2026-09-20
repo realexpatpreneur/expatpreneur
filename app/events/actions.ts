@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { notify } from "@/lib/notify";
 import { sendEmail, url } from "@/lib/email";
 import { whenText } from "@/lib/events";
 
@@ -25,11 +27,13 @@ export async function registerForEvent(
   const requiresApproval = formData.get("requires_approval") === "1";
   const isVisitor = formData.get("is_visitor") === "1";
 
+  const waiting = formData.get("waiting_list") === "1";
+
   const { error } = await supabase.from("event_registrations").insert({
     event_id: eventId,
     profile_id: user.id,
     is_visitor: isVisitor,
-    status: requiresApproval ? "pending" : "confirmed",
+    status: waiting ? "waitlist" : requiresApproval ? "pending" : "confirmed",
     note: String(formData.get("note") ?? "").trim() || null,
     dietary: String(formData.get("dietary") ?? "").trim() || null,
   });
@@ -54,6 +58,11 @@ export async function registerForEvent(
       .maybeSingle(),
   ]);
 
+  if (waiting) {
+    revalidatePath(`/events/${slug}`);
+    return { done: "waiting" };
+  }
+
   if (event && profile?.email) {
     await sendEmail(
       profile.email,
@@ -77,6 +86,76 @@ export async function registerForEvent(
   return { done: requiresApproval ? "pending" : "confirmed" };
 }
 
+// A place that comes free goes to whoever has waited longest, and they are
+// told rather than left to notice.
+export async function offerThePlaceOn(eventId: string, slug: string) {
+  const service = createAdminClient();
+
+  const { data: event } = await service
+    .from("events")
+    .select("id, title, capacity, starts_at, ends_at, timezone, venue, address, is_online, online_url")
+    .eq("id", eventId)
+    .maybeSingle();
+
+  if (!event) return;
+
+  const { count: taken } = await service
+    .from("event_registrations")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId)
+    .eq("status", "confirmed");
+
+  if ((taken ?? 0) >= event.capacity) return;
+
+  const { data: next } = await service
+    .from("event_registrations")
+    .select("id, profile_id")
+    .eq("event_id", eventId)
+    .eq("status", "waitlist")
+    .order("created_at")
+    .limit(1)
+    .maybeSingle();
+
+  if (!next?.profile_id) return;
+
+  await service
+    .from("event_registrations")
+    .update({ status: "confirmed" })
+    .eq("id", next.id);
+
+  await notify(
+    next.profile_id,
+    "event",
+    `A place came free: ${event.title}`,
+    "You were next on the list, and you are in.",
+    `/events/${slug}`
+  );
+
+  const { data: person } = await service
+    .from("profiles")
+    .select("email, full_name")
+    .eq("id", next.profile_id)
+    .maybeSingle();
+
+  if (person?.email) {
+    await sendEmail(
+      person.email,
+      `A place came free: ${event.title}`,
+      "You are in",
+      [
+        `${person.full_name.split(" ")[0]}, somebody gave up their place and you were next.`,
+        whenText(event),
+        event.is_online
+          ? `Online. ${event.online_url ?? "The link is on the event page."}`
+          : `${event.venue ?? ""} ${event.address ?? ""}`.trim() ||
+            "The venue is on the event page.",
+        "If you can no longer make it, cancel so the next person gets it.",
+      ],
+      { label: "Open the event", href: url(`/events/${slug}`) }
+    );
+  }
+}
+
 export async function cancelRegistration(
   _prev: RegisterState,
   formData: FormData
@@ -88,13 +167,17 @@ export async function cancelRegistration(
   const slug = String(formData.get("slug"));
   if (!user) redirect(`/login?next=/events/${slug}`);
 
+  const eventId = String(formData.get("event_id"));
+
   const { error } = await supabase
     .from("event_registrations")
     .update({ status: "cancelled" })
-    .eq("event_id", String(formData.get("event_id")))
+    .eq("event_id", eventId)
     .eq("profile_id", user.id);
 
   if (error) return { error: error.message };
+
+  await offerThePlaceOn(eventId, slug);
 
   revalidatePath(`/events/${slug}`);
   return { done: "cancelled" };

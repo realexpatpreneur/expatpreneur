@@ -82,6 +82,11 @@ export default async function EventPage({
     .limit(24);
 
   const isOver = new Date(event.starts_at).getTime() < Date.now();
+
+  // The address and the link are not left sitting on a page for weeks.
+  const hoursAway =
+    (new Date(event.starts_at).getTime() - Date.now()) / 3600000;
+  const detailsOut = hoursAway <= (event.release_hours ?? 48);
   const blocked = registrationBlock(event, member);
   const registered = mine && mine.status !== "cancelled";
   const visiting =
@@ -134,9 +139,23 @@ export default async function EventPage({
                   <dd>{whenText(event)}</dd>
                   <dt>Where</dt>
                   <dd>
-                    {event.is_online
-                      ? "Online. The link is sent after you register."
-                      : `${event.venue ?? "To be confirmed"}. The full address is sent after you register.`}
+                    {event.is_online ? (
+                      registered && detailsOut && event.online_url ? (
+                        <a href={event.online_url} target="_blank" rel="noreferrer">
+                          {event.online_url}
+                        </a>
+                      ) : registered ? (
+                        `Online. The link appears here ${event.release_hours ?? 48} hours before, and comes by email.`
+                      ) : (
+                        "Online. The link goes to people who are registered."
+                      )
+                    ) : registered && detailsOut ? (
+                      `${event.venue ?? ""}${event.address ? `. ${event.address}` : ""}`
+                    ) : registered ? (
+                      `${event.venue ?? "To be confirmed"}. The full address appears here ${event.release_hours ?? 48} hours before, and comes by email.`
+                    ) : (
+                      `${event.venue ?? "To be confirmed"}. The full address goes to people who are registered.`
+                    )}
                   </dd>
                   <dt>Host</dt>
                   <dd>
@@ -236,9 +255,11 @@ export default async function EventPage({
                   <>
                     <p>
                       <span className="chip mint">
-                        {mine?.status === "pending"
-                          ? "Waiting for the host"
-                          : "You are registered"}
+                        {mine?.status === "waitlist"
+                          ? "On the waiting list"
+                          : mine?.status === "pending"
+                            ? "Waiting for the host"
+                            : "You are registered"}
                       </span>
                     </p>
                     <p className="muted small">
@@ -264,12 +285,30 @@ export default async function EventPage({
                     </Link>
                   </>
                 ) : taken >= event.capacity ? (
-                  <>
-                    <h3>This one is full</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
-                      Ask the host to put you on the waiting list.
-                    </p>
-                  </>
+                  event.waitlist ? (
+                    <>
+                      <h3>Full, but there is a list</h3>
+                      <p className="muted small" style={{ marginTop: 6 }}>
+                        People do drop out. Whoever has waited longest takes
+                        the place, and hears straight away.
+                      </p>
+                      <RegisterForm
+                        eventId={event.id}
+                        slug={event.slug}
+                        requiresApproval={event.requires_approval}
+                        isVisitor={visiting}
+                        label="Join the waiting list"
+                        waitingList
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <h3>This one is full</h3>
+                      <p className="muted small" style={{ marginTop: 6 }}>
+                        No waiting list for this one. Ask the host.
+                      </p>
+                    </>
+                  )
                 ) : event.price_cents && stripeReady ? (
                   <>
                     <h3>{priceText(event)}</h3>

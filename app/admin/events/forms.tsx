@@ -34,6 +34,8 @@ export function EventForm({
     show_guest_list: boolean;
     reminders: Record<string, boolean>;
     cover_url?: string | null;
+    address?: string | null;
+    release_hours?: number | null;
   };
 }) {
   const [state, action, pending] = useActionState<EventFormState, FormData>(
@@ -93,9 +95,29 @@ export function EventForm({
           <span>Venue</span>
           <input name="venue" defaultValue={event?.venue ?? ""} />
           <span className="hint">
-            Write Online for a call, and the link goes out after registration.
+            The name of the place, which everyone can see. Write Online for a
+            call.
           </span>
         </label>
+        <div className="two">
+          <label className="field">
+            <span>Full address, or the link for a call</span>
+            <input name="address" defaultValue={event?.address ?? ""} />
+            <span className="hint">
+              Only people who are going see this, and only near the time.
+            </span>
+          </label>
+          <label className="field">
+            <span>Show it how many hours before?</span>
+            <input
+              name="release_hours"
+              type="number"
+              min={1}
+              max={336}
+              defaultValue={event?.release_hours ?? 48}
+            />
+          </label>
+        </div>
         <Uploader
           name="cover_url"
           folder="events"

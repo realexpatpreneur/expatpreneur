@@ -14,12 +14,14 @@ export function RegisterForm({
   requiresApproval,
   isVisitor,
   label,
+  waitingList = false,
 }: {
   eventId: string;
   slug: string;
   requiresApproval: boolean;
   isVisitor: boolean;
   label: string;
+  waitingList?: boolean;
 }) {
   const [state, action, pending] = useActionState<RegisterState, FormData>(
     registerForEvent,
@@ -31,6 +33,14 @@ export function RegisterForm({
       <div className="notice good">
         You are registered. A reminder comes the day before and an hour before
         it starts.
+      </div>
+    );
+  }
+  if (state.done === "waiting") {
+    return (
+      <div className="notice good">
+        You are on the list. If a place comes free you get it, and you will
+        hear by email.
       </div>
     );
   }
@@ -49,6 +59,7 @@ export function RegisterForm({
       <input type="hidden" name="slug" value={slug} />
       <input type="hidden" name="requires_approval" value={requiresApproval ? "1" : "0"} />
       <input type="hidden" name="is_visitor" value={isVisitor ? "1" : "0"} />
+      <input type="hidden" name="waiting_list" value={waitingList ? "1" : "0"} />
 
       {isVisitor ? (
         <label className="field">

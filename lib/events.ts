@@ -10,7 +10,11 @@ export type EventRow = {
   ends_at: string | null;
   timezone: string;
   venue: string | null;
+  address: string | null;
+  release_hours: number;
   is_online: boolean;
+  online_url: string | null;
+  waitlist: boolean;
   visibility: string;
   audience: string;
   audience_id: string | null;
