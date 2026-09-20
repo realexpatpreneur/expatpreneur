@@ -100,6 +100,9 @@ export default async function MemberHomePage() {
   const runsAVillage = (roles ?? []).some((r) =>
     ["local_admin", "global_admin"].includes(r.role)
   );
+  const leadsSomething = (roles ?? []).some((r) =>
+    ["circle_host", "industry_lead", "pod_lead", "educator"].includes(r.role)
+  );
 
   return (
     <>
@@ -130,11 +133,18 @@ export default async function MemberHomePage() {
               Settings
             </Link>
           </p>
-          {runsAVillage ? (
-            <p>
-              <Link className="btn" href="/admin/applications">
-                Local Admin workspace
-              </Link>
+          {runsAVillage || leadsSomething ? (
+            <p className="row">
+              {runsAVillage ? (
+                <Link className="btn" href="/admin/applications">
+                  Local Admin workspace
+                </Link>
+              ) : null}
+              {leadsSomething || runsAVillage ? (
+                <Link className="btn" href="/lead">
+                  What you run
+                </Link>
+              ) : null}
             </p>
           ) : null}
         </section>
