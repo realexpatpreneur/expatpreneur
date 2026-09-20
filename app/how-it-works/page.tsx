@@ -1,10 +1,27 @@
 import Link from "next/link";
+import { livePage } from "@/lib/pages";
+import { Blocks } from "@/components/blocks";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "How it works, ExpatPreneurs Global" };
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  // A published page replaces what is written below.
+  const page = await livePage("how");
+
+  if (page) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="wrap">
+          <Blocks blocks={page.blocks} />
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
+
   return (
     <>
       <SiteHeader />

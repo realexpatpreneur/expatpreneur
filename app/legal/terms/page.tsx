@@ -1,11 +1,28 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { livePage } from "@/lib/pages";
+import { Blocks } from "@/components/blocks";
 
 export const metadata = { title: "Terms of service, ExpatPreneurs Global" };
 
 // Draft only. The company details, the governing law and the fee terms are
 // placeholders, and a lawyer signs this off before launch.
-export default function TermsPage() {
+export default async function TermsPage() {
+  // A published page replaces what is written below.
+  const page = await livePage("terms");
+
+  if (page) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="wrap">
+          <Blocks blocks={page.blocks} />
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
+
   return (
     <>
       <SiteHeader />

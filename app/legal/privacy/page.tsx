@@ -1,11 +1,28 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { livePage } from "@/lib/pages";
+import { Blocks } from "@/components/blocks";
 
 export const metadata = { title: "Privacy policy, ExpatPreneurs Global" };
 
 // Draft only. It describes what the platform actually does today, which is
 // the right starting point for the lawyer rather than a generic template.
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  // A published page replaces what is written below.
+  const page = await livePage("privacy");
+
+  if (page) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="wrap">
+          <Blocks blocks={page.blocks} />
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
+
   return (
     <>
       <SiteHeader />

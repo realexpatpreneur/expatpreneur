@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { livePage } from "@/lib/pages";
+import { Blocks } from "@/components/blocks";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -30,6 +32,21 @@ export default async function MembershipPage() {
     .select("id, slug, name, blurb, price_cents, currency, interval, features")
     .eq("active", true)
     .order("position");
+
+  // A published page replaces what is written below.
+  const page = await livePage("membership");
+
+  if (page) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="wrap">
+          <Blocks blocks={page.blocks} />
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
 
   return (
     <>

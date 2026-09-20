@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { livePage } from "@/lib/pages";
+import { Blocks } from "@/components/blocks";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -20,7 +22,7 @@ export default async function HomePage() {
     supabase.auth.getUser(),
     supabase
       .from("villages")
-      .select("id, slug, name, country, status, summary")
+      .select("id, slug, name, city, country, status, summary")
       .in("status", ["open", "launching", "exploring"])
       .limit(8),
   ]);
@@ -30,6 +32,21 @@ export default async function HomePage() {
   const ordered = [...(villages ?? [])].sort(
     (a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9)
   );
+
+  // A published page replaces what is written below. A draft leaves it be.
+  const page = await livePage("home");
+
+  if (page) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="wrap">
+          <Blocks blocks={page.blocks} villages={villages ?? []} />
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
 
   return (
     <>
