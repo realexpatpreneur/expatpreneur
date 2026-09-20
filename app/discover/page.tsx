@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
+import { DCard, DPerson, DSec, DBand } from "@/components/discover-cards";
+import { Ic } from "@/components/icon";
 import { whenText } from "@/lib/events";
 
 export const metadata = {
@@ -10,19 +11,24 @@ export const metadata = {
     "The Villages, Circles, people and events of a network of people building a business away from home.",
 };
 
-const covers = ["blue", "mint", "pink", "paper", "navy", "sun"] as const;
-
-const tabs = [
+const TABS: [string, string][] = [
   ["featured", "Featured"],
   ["villages", "Villages"],
   ["circles", "Circles"],
   ["people", "People"],
-  ["groups", "Industry Groups"],
+  ["groups", "Groups and Pods"],
   ["events", "Events"],
-  ["learning", "Learning"],
-  ["watch", "Watch and listen"],
-  ["media", "Media"],
-] as const;
+  ["learning", "Learning and business"],
+  ["media", "Watch and listen"],
+];
+
+const statusLine: Record<string, string> = {
+  open: "Open for invitation requests",
+  launching: "Launching soon",
+  exploring: "Being explored",
+  paused: "Paused",
+  archived: "Archived",
+};
 
 export default async function DiscoverPage({
   searchParams,
@@ -42,7 +48,7 @@ export default async function DiscoverPage({
     { data: groups },
     { data: events },
     { data: courses },
-    { data: articles },
+    { data: businesses },
     { data: media },
   ] = await Promise.all([
     supabase
@@ -60,10 +66,15 @@ export default async function DiscoverPage({
       .eq("status", "active")
       .order("full_name")
       .limit(24),
-    supabase.from("industry_groups").select("id, slug, name, description").order("name"),
+    supabase
+      .from("industry_groups")
+      .select("id, slug, name, description")
+      .order("name"),
     supabase
       .from("events")
-      .select("id, slug, title, description, starts_at, ends_at, timezone, venue, is_online, village_id")
+      .select(
+        "id, slug, title, description, starts_at, ends_at, timezone, venue, is_online, village_id"
+      )
       .eq("visibility", "public")
       .eq("status", "published")
       .gte("starts_at", new Date().toISOString())
@@ -76,11 +87,9 @@ export default async function DiscoverPage({
       .order("title")
       .limit(12),
     supabase
-      .from("articles")
-      .select("id, slug, kind, title, standfirst, cover_url")
-      .eq("status", "published")
-      .eq("member_only", false)
-      .order("published_at", { ascending: false })
+      .from("businesses")
+      .select("id, slug, name, category, summary, image_url")
+      .eq("public", true)
       .limit(8),
     supabase
       .from("media_items")
@@ -101,316 +110,214 @@ export default async function DiscoverPage({
   const tabHref = (key: string) =>
     `/discover?show=${key}${q ? `&q=${encodeURIComponent(q)}` : ""}`;
 
+  const vills = (villages ?? []).filter((v) =>
+    match(v.name, v.city, v.country, v.summary)
+  );
+  const circs = (circles ?? []).filter((c) => match(c.name));
+  const pers = (people ?? []).filter((p) =>
+    match(p.full_name, p.headline, p.business_name, p.industry)
+  );
+  const grps = (groups ?? []).filter((g) => match(g.name, g.description));
+  const evs = (events ?? []).filter((e) => match(e.title, e.description, e.venue));
+  const crs = (courses ?? []).filter((c) => match(c.title, c.summary));
+  const bizs = (businesses ?? []).filter((b) => match(b.name, b.category, b.summary));
+  const meds = (media ?? []).filter((m) => match(m.title, m.summary));
+
+  const found =
+    vills.length + circs.length + pers.length + grps.length +
+    evs.length + crs.length + bizs.length + meds.length;
+
   return (
-    <>
-      <SiteHeader />
-      <main className="wrap">
-        <section className="hero center">
-          <h1>Wherever you have landed, there is a Village for you</h1>
-          <p className="lead">
-            The Villages, Circles, people and events of a network of people
-            building a business away from home.
+    <PublicPage active="/discover">
+      <section className="pubsec dhero">
+        <h1>Wherever you have landed, there is a Village for you</h1>
+        <p className="intro">
+          Find the Villages, Circles and people building a business away from
+          home.
+        </p>
+
+        <form className="input dsearch" action="/discover">
+          <Ic name="search" />
+          <input type="hidden" name="show" value={show} />
+          <input
+            name="q"
+            defaultValue={q}
+            placeholder="Search Villages, Circles, members, events and businesses"
+            aria-label="Search the network"
+            autoComplete="off"
+          />
+        </form>
+
+        {q ? (
+          <p className="dcount">
+            {found
+              ? `${found} ${found === 1 ? "result" : "results"} for "${q}"`
+              : `Nothing matches "${q}" yet. Try a city, an industry or a name.`}
           </p>
-
-          <form className="searchrow" action="/discover" style={{ marginTop: 18 }}>
-            <input type="hidden" name="show" value={show} />
-            <input
-              name="q"
-              defaultValue={q}
-              placeholder="Search Villages, Circles, people and events"
-              aria-label="Search"
-            />
-            <button className="btn" type="submit">
-              Search
-            </button>
-          </form>
-
-          <div className="tabs">
-            {tabs.map(([key, label]) => (
-              <Link
-                className={`chip ${show === key ? "mint" : ""}`}
-                href={tabHref(key)}
-                key={key}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {shown("villages") ? (
-          <section className="band">
-            <h2>Villages</h2>
-            <p className="muted small">
-              A Village opens where there are enough people, a shared language
-              and somebody local to run it.
-            </p>
-            <div className="grid" style={{ marginTop: 16 }}>
-              {(villages ?? [])
-                .filter((v) => match(v.name, v.city, v.country, v.summary))
-                .map((village, i) => (
-                  <Link className="card" href={`/villages/${village.slug}`} key={village.id}>
-                    <div className={`cover ${covers[i % covers.length]}`}>
-                      {village.city}
-                    </div>
-                    <div className="kind">{village.country}</div>
-                    <p>{village.summary}</p>
-                    <div className="meta">
-                      <span className="chip">
-                        {village.status === "open"
-                          ? "Open, by invitation"
-                          : village.status === "launching"
-                            ? "Launching"
-                            : village.status === "exploring"
-                              ? "Being explored"
-                              : village.status}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-            </div>
-            <p style={{ marginTop: 18 }}>
-              <Link className="btn" href="/villages/suggest">
-                Your city is not here?
-              </Link>
-            </p>
-          </section>
         ) : null}
 
-        {shown("people") ? (
-          <section className="band">
-            <h2>Members you would meet</h2>
-            <p className="muted small">
-              Members choose whether to appear here. An email address or a
-              phone number is never public.
-            </p>
-            <div className="grid" style={{ marginTop: 16 }}>
-              {(people ?? [])
-                .filter((p) =>
-                  match(p.full_name, p.headline, p.business_name, p.industry)
-                )
-                .map((person, i) => (
-                  <Link className="card" href={`/members/${person.id}`} key={person.id}>
-                    <div className={`cover ${covers[(i + 2) % covers.length]}`}>
-                      {person.full_name
-                        .split(" ")
-                        .map((part: string) => part[0])
-                        .slice(0, 2)
-                        .join("")}
-                    </div>
-                    <div className="kind">
-                      {person.industry ?? person.business_name ?? ""}
-                    </div>
-                    <p>
-                      <b>{person.full_name}</b>
-                      {person.headline ? `. ${person.headline}` : ""}
-                    </p>
-                    <div className="meta">
-                      <span className="chip">{villageName(person.village_id)}</span>
-                    </div>
-                  </Link>
-                ))}
-            </div>
-            <p style={{ marginTop: 18 }}>
-              <Link className="btn" href="/members">
-                See every public member
-              </Link>
-            </p>
-          </section>
-        ) : null}
-
-        {shown("circles") ? (
-          <section className="band">
-            <h2>Circles</h2>
-            <p className="muted small">
-              A Village is made of Circles of up to fifty people, each with a
-              host who knows everybody in it.
-            </p>
-            <div className="grid" style={{ marginTop: 16 }}>
-              {(circles ?? [])
-                .filter((c) => match(c.name))
-                .slice(0, 12)
-                .map((circle, i) => (
-                  <article className="card" key={circle.id}>
-                    <div className={`cover ${covers[(i + 1) % covers.length]}`}>
-                      {circle.name}
-                    </div>
-                    <div className="kind">{villageName(circle.village_id)}</div>
-                    <p>
-                      Up to {circle.capacity} people who are meant to know each
-                      other.
-                    </p>
-                    <div className="meta">
-                      <span className="chip">
-                        {circle.status === "full"
-                          ? "Full"
-                          : circle.status === "welcoming"
-                            ? "Taking members"
-                            : circle.status === "closed"
-                              ? "Closed"
-                              : "Forming"}
-                      </span>
-                    </div>
-                  </article>
-                ))}
-            </div>
-          </section>
-        ) : null}
-
-        {shown("groups") ? (
-          <section className="band">
-            <h2>Industry Groups</h2>
-            <p className="muted small">
-              Groups run across every Village, so a hotelier in Dubai and one
-              in Lisbon are in the same room.
-            </p>
-            <div className="grid" style={{ marginTop: 16 }}>
-              {(groups ?? [])
-                .filter((g) => match(g.name, g.description))
-                .map((group, i) => (
-                  <article className="card" key={group.id}>
-                    <div className={`cover ${covers[(i + 3) % covers.length]}`}>
-                      {group.name}
-                    </div>
-                    <div className="kind">Across all Villages</div>
-                    <p>{group.description}</p>
-                    <div className="meta">
-                      <span className="chip">Members only</span>
-                    </div>
-                  </article>
-                ))}
-            </div>
-          </section>
-        ) : null}
-
-        {shown("events") ? (
-          <section className="band">
-            <h2>Events anyone can come to</h2>
-            {(events ?? []).length === 0 ? (
-              <p className="muted small">
-                Nothing open to the public at the moment. Most of what happens
-                here is for members.
-              </p>
-            ) : (
-              <div className="grid" style={{ marginTop: 16 }}>
-                {(events ?? [])
-                  .filter((e) => match(e.title, e.description, e.venue))
-                  .map((event, i) => (
-                    <Link className="card" href={`/e/${event.slug}`} key={event.id}>
-                      <div className={`cover ${covers[(i + 4) % covers.length]}`}>
-                        {event.title}
-                      </div>
-                      <div className="kind">
-                        {villageName(event.village_id) || "Online"}
-                      </div>
-                      <p>{whenText(event)}</p>
-                      <div className="meta">
-                        <span className="chip">
-                          {event.is_online ? "Online" : event.venue ?? "In person"}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-              </div>
-            )}
-          </section>
-        ) : null}
-
-        {shown("learning") ? (
-          <section className="band">
-            <h2>Learning</h2>
-            <p className="muted small">
-              Short courses written by members who have done the thing they are
-              teaching. Taking one comes with membership.
-            </p>
-            <p>
-              <Link className="btn" href="/learning">
-                See the catalogue
-              </Link>
-            </p>
-            <div className="grid" style={{ marginTop: 16 }}>
-              {(courses ?? [])
-                .filter((c) => match(c.title, c.summary))
-                .map((course, i) => (
-                  <article className="card" key={course.id}>
-                    <div className={`cover ${covers[(i + 5) % covers.length]}`}>
-                      {course.title}
-                    </div>
-                    <div className="kind">{course.duration ?? course.level}</div>
-                    <p>{course.summary}</p>
-                  </article>
-                ))}
-            </div>
-          </section>
-        ) : null}
-
-        {shown("watch") ? (
-          <section className="band">
-            <h2>Watch and listen</h2>
-            <div className="grid" style={{ marginTop: 16 }}>
-              {(media ?? [])
-                .filter((m) => match(m.title, m.summary))
-                .map((item, i) => (
-                  <Link className="card" href={`/watch/${item.slug}`} key={item.id}>
-                    <div className={`cover ${covers[(i + 2) % covers.length]}`}>
-                      {item.title}
-                    </div>
-                    <div className="kind">
-                      {item.kind === "audio" ? "Podcast" : "Video"}
-                      {item.duration ? `, ${item.duration}` : ""}
-                    </div>
-                    <p>{item.summary}</p>
-                  </Link>
-                ))}
-            </div>
-          </section>
-        ) : null}
-
-        {shown("media") ? (
-          <section className="band">
-            <h2>Media</h2>
-            <p className="muted small">
-              Stories about members building a business away from home.
-            </p>
-            <div className="grid" style={{ marginTop: 16 }}>
-              {(articles ?? [])
-                .filter((a) => match(a.title, a.standfirst))
-                .map((article, i) => (
-                  <Link className="card" href={`/media/${article.slug}`} key={article.id}>
-                    <div className={`cover ${covers[(i + 1) % covers.length]}`}>
-                      {article.title}
-                    </div>
-                    <div className="kind">
-                      {article.kind === "guide"
-                        ? "Guide"
-                        : article.kind === "note"
-                          ? "Note"
-                          : "Member story"}
-                    </div>
-                    <p>{article.standfirst}</p>
-                  </Link>
-                ))}
-            </div>
-          </section>
-        ) : null}
-
-        <section className="band cta">
-          <h2>ExpatPreneurs grows through introductions</h2>
-          <p className="lead">
-            Membership is by invitation and costs nothing. Somebody reads every
-            request.
-          </p>
-          <p>
-            <Link className="btn primary" href="/apply">
-              Request an invitation
-            </Link>{" "}
-            <Link className="btn" href="/membership">
-              What membership costs
+        <div className="dpills">
+          {TABS.map(([key, label]) => (
+            <Link
+              className={`dpill ${show === key ? "on" : ""}`}
+              href={tabHref(key)}
+              key={key}
+            >
+              {label}
             </Link>
-          </p>
-        </section>
-      </main>
-      <SiteFooter />
-    </>
+          ))}
+        </div>
+      </section>
+
+      <section className="pubsec" style={{ paddingTop: 0 }}>
+        {shown("villages") && vills.length ? (
+          <DSec title="Villages" href="/villages">
+            {vills.map((v, i) => (
+              <DCard
+                key={v.id}
+                i={i}
+                href={`/villages/${v.slug}`}
+                kicker={v.country}
+                title={v.name}
+                sub={v.summary}
+                meta={statusLine[v.status] ?? v.status}
+              />
+            ))}
+          </DSec>
+        ) : null}
+
+        {shown("people") && pers.length ? (
+          <DSec title="Members you will meet" href="/members" people>
+            {pers.slice(0, 10).map((p, i) => (
+              <DPerson
+                key={p.id}
+                i={i}
+                href={`/members/${p.id}`}
+                name={p.full_name}
+                line={[p.industry, villageName(p.village_id)]
+                  .filter(Boolean)
+                  .join(", ")}
+              />
+            ))}
+          </DSec>
+        ) : null}
+
+        {shown("circles") && circs.length ? (
+          <DSec title="Circles">
+            {circs.map((c, i) => (
+              <DCard
+                key={c.id}
+                i={i + 1}
+                href="/how-it-works"
+                kicker={`${villageName(c.village_id)} Village`}
+                title={c.name}
+                sub={
+                  c.status === "open"
+                    ? "Welcoming new members this month"
+                    : "Opens when a Circle reaches 45 members"
+                }
+                meta={`Up to ${c.capacity} members`}
+              />
+            ))}
+          </DSec>
+        ) : null}
+
+        {show === "featured" ? (
+          <DBand
+            title="ExpatPreneurs grows through introductions."
+            line="Know someone who belongs here?"
+            cta="Request your invitation"
+            href="/apply"
+          />
+        ) : null}
+
+        {shown("groups") && grps.length ? (
+          <DSec title="Industry Groups and Pods">
+            {grps.map((g, i) => (
+              <DCard
+                key={g.id}
+                i={i + 2}
+                href="/groups"
+                kicker="Industry Group"
+                title={g.name}
+                sub={g.description}
+              />
+            ))}
+          </DSec>
+        ) : null}
+
+        {shown("events") && evs.length ? (
+          <DSec title="Events" href="/events">
+            {evs.map((e, i) => (
+              <DCard
+                key={e.id}
+                i={i}
+                href={`/events/${e.slug}`}
+                kicker={whenText(e)}
+                title={e.title}
+                sub={e.description}
+                meta={e.is_online ? "Online" : e.venue}
+              />
+            ))}
+          </DSec>
+        ) : null}
+
+        {shown("learning") && crs.length ? (
+          <DSec title="Learning" href="/learning">
+            {crs.map((c, i) => (
+              <DCard
+                key={c.id}
+                i={i + 1}
+                href={`/learning/${c.slug}`}
+                kicker={c.duration ?? c.level}
+                title={c.title}
+                sub={c.summary}
+              />
+            ))}
+          </DSec>
+        ) : null}
+
+        {shown("learning") && bizs.length ? (
+          <DSec title="Businesses in the network" href="/businesses">
+            {bizs.map((b, i) => (
+              <DCard
+                key={b.id}
+                i={i + 3}
+                href={`/businesses/${b.slug}`}
+                kicker={b.category}
+                title={b.name}
+                sub={b.summary}
+                image={b.image_url}
+              />
+            ))}
+          </DSec>
+        ) : null}
+
+        {shown("media") && meds.length ? (
+          <DSec title="Watch and listen" href="/watch">
+            {meds.map((m, i) => (
+              <DCard
+                key={m.id}
+                i={i + 2}
+                href={`/watch/${m.slug}`}
+                kicker={[m.kind, m.duration].filter(Boolean).join(", ")}
+                title={m.title}
+                sub={m.summary}
+              />
+            ))}
+          </DSec>
+        ) : null}
+      </section>
+
+      <section className="pubsec" style={{ paddingTop: 0 }}>
+        <DBand
+          end
+          title="Find the Village nearest you."
+          line="If there is not one yet, tell us where you are."
+          cta="Request your invitation"
+          href="/apply"
+        />
+      </section>
+    </PublicPage>
   );
 }

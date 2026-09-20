@@ -2,8 +2,9 @@ import Link from "next/link";
 import { livePage } from "@/lib/pages";
 import { Blocks } from "@/components/blocks";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
+import { Plans, type Plan } from "@/components/plans";
+import { Ic } from "@/components/icon";
 
 export const metadata = {
   title: "Membership, ExpatPreneurs Global",
@@ -11,19 +12,25 @@ export const metadata = {
     "Membership is by invitation and costs nothing. The paid plan opens the rest of the network.",
 };
 
-function priceLine(plan: {
-  price_cents: number;
-  currency: string;
-  interval: string;
-}) {
-  if (plan.interval === "none" || plan.price_cents === 0) return "Free";
-  const amount = (plan.price_cents / 100).toLocaleString("en-GB", {
-    style: "currency",
-    currency: plan.currency,
-    maximumFractionDigits: 0,
-  });
-  return `${amount} a ${plan.interval}`;
-}
+const QUESTIONS: [string, string][] = [
+  ["Why is membership by invitation?", "So every Village stays trusted and useful. Every request is read personally."],
+  ["Does membership cost anything?", "Membership in your own Village comes with your invitation and costs nothing. One paid plan, Paid member, adds every Village."],
+  ["I am already in the Dubai WhatsApp group. Do I pay?", "No. Re-enrol on the platform and your place stays, with a founding member badge. The paid plan is optional, for reaching every Village."],
+  ["Who can request an invitation?", "Anyone building a business in a country that is not their country of origin, from the idea stage to expansion."],
+  ["Why do you ask about my nationalities and the countries I have lived in?", "They make up your expat journey on your profile, so members can find people who know a market or speak a language."],
+  ["Is ExpatPreneurs a place to sell?", "Members share their work in the right places, but relationships come first. Mass pitching is not allowed."],
+  ["What if I move to another city?", "Your profile and history stay with you. You can ask to transfer to the Village in your new city."],
+  ["Is this a dating space?", "No. It is a professional community built on warm, respectful connection."],
+  ["Can I change membership later?", "Yes. You can upgrade or cancel from your settings at any time."],
+];
+
+const EXPECTED = [
+  "Human before transaction",
+  "Collaboration over competition",
+  "Contribute as well as receive",
+  "Respect professional boundaries",
+  "Help keep the Village international",
+];
 
 export default async function MembershipPage() {
   const supabase = await createClient();
@@ -38,119 +45,58 @@ export default async function MembershipPage() {
 
   if (page) {
     return (
-      <>
-        <SiteHeader />
-        <main className="wrap">
-          <Blocks blocks={page.blocks} />
-        </main>
-        <SiteFooter />
-      </>
+      <PublicPage active="/membership">
+        <Blocks blocks={page.blocks} />
+      </PublicPage>
     );
   }
 
   return (
-    <>
-      <SiteHeader />
-      <main className="wrap">
-        <section className="hero center">
-          <h1>Membership</h1>
-          <p className="lead">
-            Membership is by invitation and costs nothing. One paid plan opens
-            the rest of the network to you.
-          </p>
-        </section>
+    <PublicPage active="/membership">
+      <section className="pubsec memsec">
+        <h2>Membership</h2>
+        <p className="intro">
+          ExpatPreneurs is for anyone building a business in a country that is
+          not their country of origin, at any stage: an idea, a growing
+          business or an expansion. Membership is by invitation, for people who
+          want to contribute as well as receive.
+        </p>
+        <Plans plans={(plans ?? []) as Plan[]} />
+        <p className="muted small plans-note">
+          Membership is by invitation. Once your request is accepted you can
+          upgrade to the paid plan at any time.
+        </p>
+      </section>
 
-        <section className="band">
-          <div className="two">
-            {(plans ?? []).map((plan, i) => (
-              <div className={`panel ${i === 0 ? "" : "wash"}`} key={plan.id}>
-                <h3>{plan.name}</h3>
-                <p className="lead" style={{ marginTop: 6 }}>
-                  {priceLine(plan)}
-                </p>
-                <p className="muted small">{plan.blurb}</p>
-                <ul>
-                  {(plan.features ?? []).map((feature: string) => (
-                    <li key={feature}>{feature}</li>
-                  ))}
-                </ul>
-                {plan.slug === "member" ? (
-                  <p style={{ marginTop: 14 }}>
-                    <Link className="btn primary" href="/apply">
-                      Request an invitation
-                    </Link>
-                  </p>
-                ) : (
-                  <p className="muted small" style={{ marginTop: 14 }}>
-                    Members take this when their business starts needing the
-                    other cities. You can change or cancel it yourself at any
-                    time.
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="band">
-          <h2>How people get in</h2>
-          <div className="two">
-            <div className="panel">
-              <h3>Somebody reads every request</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                A request goes to the Local Admins of the city you named. They
-                read it, and the Global team makes the final decision. It takes
-                days rather than minutes, and you hear either way.
-              </p>
-            </div>
-            <div className="panel">
-              <h3>Why it is not open</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                A Circle is fifty people who are meant to know each other. That
-                only works if somebody is deciding who joins, and if the mix of
-                nationalities in a Village stays wide.
-              </p>
+      <section className="pubsec" style={{ paddingTop: 0 }}>
+        <div className="gside">
+          <div className="faqcol">
+            <h2 style={{ fontSize: 22 }}>Questions</h2>
+            <div className="faq" style={{ marginTop: 10 }}>
+              {QUESTIONS.map(([q, a]) => (
+                <details key={q}>
+                  <summary>{q}</summary>
+                  <p>{a}</p>
+                </details>
+              ))}
             </div>
           </div>
-        </section>
-
-        <section className="band">
-          <h2>What it is not</h2>
-          <div className="two">
-            <div className="panel">
-              <h3>Not a lead list</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                Members do not pitch each other. What happens instead is
-                introductions, which is slower and works better.
-              </p>
-            </div>
-            <div className="panel">
-              <h3>Not a feed</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                There is nothing here to scroll. People ask for what they need,
-                somebody answers, and most of it ends up happening in person.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="band cta">
-          <h2>If that sounds like you</h2>
-          <p className="lead">
-            Tell us where you are and what you are building. It takes ten
-            minutes.
-          </p>
-          <p>
-            <Link className="btn primary" href="/apply">
-              Request an invitation
-            </Link>{" "}
-            <Link className="btn" href="/discover">
-              Look around first
+          <aside className="panel panel-wash">
+            <h3 style={{ fontSize: 15 }}>What we expect from members</h3>
+            <ul className="ticks" style={{ marginTop: 10 }}>
+              {EXPECTED.map((x) => (
+                <li key={x}>
+                  <Ic name="check" />
+                  {x}
+                </li>
+              ))}
+            </ul>
+            <Link className="btn btn-ghost btn-sm" href="/legal/terms">
+              Read our terms
             </Link>
-          </p>
-        </section>
-      </main>
-      <SiteFooter />
-    </>
+          </aside>
+        </div>
+      </section>
+    </PublicPage>
   );
 }
