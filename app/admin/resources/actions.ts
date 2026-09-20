@@ -64,6 +64,11 @@ export async function saveMedia(
     duration: String(formData.get("duration") ?? "").trim() || null,
     member_only: Boolean(formData.get("member_only")),
     published_at: publish ? new Date().toISOString() : null,
+    show_slug: String(formData.get("show_slug") ?? "").trim() || null,
+    episode_number:
+      String(formData.get("episode_number") ?? "").trim() === ""
+        ? null
+        : Number(formData.get("episode_number")),
   };
 
   const { error } = id

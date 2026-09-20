@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SubscribeForm } from "./subscribe-form";
 
 export const metadata = {
   title: "Media, ExpatPreneurs Global",
@@ -104,6 +105,18 @@ export default async function MediaPage({
               ))}
             </div>
           )}
+        </section>
+
+        <section className="band">
+          <div className="panel wash" style={{ maxWidth: 520 }}>
+            <h3>The newsletter</h3>
+            <p className="muted small" style={{ marginTop: 6 }}>
+              Member stories and what is opening where, once a month. Members
+              can switch it off in their settings, and anybody can
+              unsubscribe from the email itself.
+            </p>
+            <SubscribeForm source="media" />
+          </div>
         </section>
 
         {me ? (

@@ -18,7 +18,7 @@ export default async function MediaPage({
 
   const { data: item } = await supabase
     .from("media_items")
-    .select("*")
+    .select("show_slug, *")
     .eq("slug", slug)
     .maybeSingle();
 
@@ -73,7 +73,20 @@ export default async function MediaPage({
                 Request an invitation
               </Link>
             </div>
-          </section>
+          <section className="band">
+          <div className="row">
+            <Link className="btn" href={`/watch/share?item=${slug}`}>
+              Share this
+            </Link>
+            {item.show_slug ? (
+              <Link className="btn" href={`/watch/show/${item.show_slug}`}>
+                The whole show
+              </Link>
+            ) : null}
+          </div>
+        </section>
+
+        </section>
         )}
       </main>
       {user ? null : <SiteFooter />}

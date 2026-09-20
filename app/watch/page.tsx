@@ -63,7 +63,12 @@ export default async function WatchPage({
               </Link>
             ))}
           </div>
-        </section>
+                  <p>
+            <Link className="btn" href="/watch/show/expatpreneurs">
+              The ExpatPreneurs Podcast
+            </Link>
+          </p>
+</section>
 
         <section className="band">
           {(items ?? []).length === 0 ? (

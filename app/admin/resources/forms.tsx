@@ -90,6 +90,8 @@ export function MediaForm({
     external_url: string | null;
     duration: string | null;
     member_only: boolean;
+    show_slug?: string | null;
+    episode_number?: number | null;
     published_at: string | null;
   };
 }) {
@@ -164,6 +166,25 @@ export function MediaForm({
           <b>Published</b>
           <small>Turn it off to keep it as a draft.</small>
         </span>
+      </label>
+
+      <label className="field">
+        <span>Part of which show</span>
+        <input
+          name="show_slug"
+          defaultValue={item?.show_slug ?? ""}
+          placeholder="expatpreneurs, or leave empty for a video"
+        />
+      </label>
+
+      <label className="field">
+        <span>Episode number</span>
+        <input
+          name="episode_number"
+          type="number"
+          min={1}
+          defaultValue={item?.episode_number ?? ""}
+        />
       </label>
 
       <button className="btn primary" type="submit" disabled={pending}>
