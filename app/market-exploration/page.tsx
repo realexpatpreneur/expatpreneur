@@ -127,6 +127,13 @@ export default async function MarketExplorationPage({
                 <Link className="btn" href="/village">
                   Go to Ask &amp; Offer
                 </Link>
+                <p className="muted small" style={{ marginTop: 12 }}>
+                  When a country comes up often enough, it gets a pathway: the
+                  whole route, in order.
+                </p>
+                <Link className="btn" href="/markets">
+                  Market pathways
+                </Link>
               </div>
               <div className="panel wash">
                 <h3>
