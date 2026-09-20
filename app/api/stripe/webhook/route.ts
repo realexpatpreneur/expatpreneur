@@ -66,6 +66,58 @@ export async function POST(request: Request) {
       );
     }
 
+    // A course. The buyer may be a member or a stranger, so the purchase
+    // carries whichever of the two we have.
+    if (kind === "course") {
+      const courseId = session.metadata?.course_id;
+
+      if (courseId) {
+        await service.from("course_purchases").insert({
+          course_id: courseId,
+          profile_id: profileId ?? null,
+          guest_email: profileId ? null : session.customer_details?.email ?? null,
+          guest_name: profileId ? null : session.customer_details?.name ?? null,
+          amount_cents: session.amount_total ?? 0,
+          currency: (session.currency ?? "eur").toUpperCase(),
+          status: "paid",
+          provider_ref: session.id,
+        });
+
+        if (profileId) {
+          // Paying is what opens the lessons, so the enrolment follows it.
+          await service
+            .from("enrolments")
+            .upsert({ course_id: courseId, profile_id: profileId }, {
+              onConflict: "course_id,profile_id",
+            });
+
+          const { data: course } = await service
+            .from("courses")
+            .select("title, slug, educator_id")
+            .eq("id", courseId)
+            .maybeSingle();
+
+          await notify(
+            profileId,
+            "learning",
+            `You bought ${course?.title ?? "a course"}`,
+            "It is in your learning now.",
+            `/learning/${course?.slug ?? ""}`
+          );
+
+          if (course?.educator_id) {
+            await notify(
+              course.educator_id,
+              "learning",
+              `Somebody bought ${course.title}`,
+              "It is on your sales.",
+              "/educator/sales"
+            );
+          }
+        }
+      }
+    }
+
     if (profileId && kind === "event_ticket") {
       const eventId = session.metadata?.event_id;
       const needsApproval = session.metadata?.requires_approval === "1";
@@ -131,6 +183,51 @@ export async function POST(request: Request) {
           }
         } catch {
           // Nothing to do; the next one may match.
+        }
+      }
+    }
+  }
+
+  // A refunded course closes again, which is the whole point of recording
+  // the purchase rather than the enrolment.
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object as Stripe.Charge;
+    const intent =
+      typeof charge.payment_intent === "string"
+        ? charge.payment_intent
+        : charge.payment_intent?.id;
+
+    if (intent) {
+      const { data: purchases } = await service
+        .from("course_purchases")
+        .select("id, course_id, profile_id, provider_ref")
+        .eq("status", "paid");
+
+      for (const purchase of purchases ?? []) {
+        if (!purchase.provider_ref) continue;
+        try {
+          const found = await getStripe().checkout.sessions.retrieve(purchase.provider_ref);
+          const its =
+            typeof found.payment_intent === "string"
+              ? found.payment_intent
+              : found.payment_intent?.id;
+          if (its !== intent) continue;
+
+          await service
+            .from("course_purchases")
+            .update({ status: "refunded", refunded_at: new Date().toISOString() })
+            .eq("id", purchase.id);
+
+          if (purchase.profile_id) {
+            await service
+              .from("enrolments")
+              .delete()
+              .eq("course_id", purchase.course_id)
+              .eq("profile_id", purchase.profile_id);
+          }
+          break;
+        } catch {
+          // Try the next one.
         }
       }
     }

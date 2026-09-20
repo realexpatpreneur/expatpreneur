@@ -22,6 +22,10 @@ export function CourseForm({
     tier: string;
     status: string;
     cover_url?: string | null;
+    price_cents?: number;
+    member_price_cents?: number | null;
+    currency?: string;
+    public_listing?: boolean;
   };
 }) {
   const [state, action, pending] = useActionState<EducatorState, FormData>(
@@ -78,6 +82,47 @@ export function CourseForm({
 
       <div className="two">
         <label className="field">
+          <span>Price for everybody</span>
+          <input
+            name="price"
+            type="number"
+            min={0}
+            step="1"
+            defaultValue={(course?.price_cents ?? 0) / 100}
+          />
+          <span className="hint">Zero is free.</span>
+        </label>
+        <label className="field">
+          <span>Price for members</span>
+          <input
+            name="member_price"
+            type="number"
+            min={0}
+            step="1"
+            defaultValue={
+              course?.member_price_cents === null ||
+              course?.member_price_cents === undefined
+                ? ""
+                : course.member_price_cents / 100
+            }
+            placeholder="Same as above"
+          />
+          <span className="hint">
+            Leave it empty to charge members the same.
+          </span>
+        </label>
+      </div>
+
+      <div className="two">
+        <label className="field">
+          <span>Currency</span>
+          <select name="currency" defaultValue={course?.currency ?? "EUR"}>
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="AED">AED</option>
+          </select>
+        </label>
+        <label className="field">
           <span>Who can take it</span>
           <select name="tier" defaultValue={course?.tier ?? "all"}>
             <option value="all">Every member</option>
@@ -93,6 +138,21 @@ export function CourseForm({
           </select>
         </label>
       </div>
+
+      <label className="check">
+        <input
+          type="checkbox"
+          name="public_listing"
+          defaultChecked={course?.public_listing ?? true}
+        />
+        <span>
+          <b>Sell it to people who are not members</b>
+          <small>
+            Off keeps it inside the network. On means it appears on the public
+            learning page, which is how somebody finds their way in.
+          </small>
+        </span>
+      </label>
 
       <button className="btn primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}

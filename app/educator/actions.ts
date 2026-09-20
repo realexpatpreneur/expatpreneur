@@ -31,6 +31,13 @@ export async function saveCourse(
     level: String(formData.get("level") ?? "anyone"),
     duration: String(formData.get("duration") ?? "").trim() || null,
     tier: String(formData.get("tier") ?? "all"),
+    price_cents: Math.round(Number(formData.get("price") ?? 0) * 100),
+    member_price_cents:
+      String(formData.get("member_price") ?? "").trim() === ""
+        ? null
+        : Math.round(Number(formData.get("member_price")) * 100),
+    currency: String(formData.get("currency") ?? "EUR"),
+    public_listing: Boolean(formData.get("public_listing")),
     status: String(formData.get("status") ?? "draft"),
   };
 

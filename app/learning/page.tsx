@@ -1,26 +1,31 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember, isPaid } from "@/lib/member";
+import { whoIsHere, isPaid } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Learning, ExpatPreneurs Global" };
 
 const covers = ["blue", "mint", "pink", "navy", "sun", "paper"] as const;
 
 export default async function LearningPage() {
-  const member = await requireMember("/learning");
+  // Anybody can look at the catalogue. What it costs, and whether you can
+  // start it, depends on who is reading.
+  const member = await whoIsHere();
   const supabase = await createClient();
 
   const [{ data: courses }, { data: mine }] = await Promise.all([
     supabase
       .from("courses")
-      .select("id, slug, title, summary, level, duration, tier, educator_id, cover_url")
+      .select("id, slug, title, summary, level, duration, tier, educator_id, cover_url, price_cents, member_price_cents, currency, public_listing")
       .eq("status", "published")
       .order("created_at", { ascending: false }),
-    supabase
-      .from("course_progress")
-      .select("course_id, lessons, done")
-      .eq("profile_id", member.id),
+    member
+      ? supabase
+          .from("course_progress")
+          .select("course_id, lessons, done")
+          .eq("profile_id", member.id)
+      : Promise.resolve({ data: [] }),
   ]);
 
   const educatorIds = [
@@ -32,9 +37,30 @@ export default async function LearningPage() {
 
   const progressOf = (id: string) => mine?.find((m) => m.course_id === id);
 
+  const money = (cents: number, currency: string) =>
+    (cents / 100).toLocaleString("en-GB", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    });
+
+  const priceOf = (course: {
+    price_cents: number;
+    member_price_cents: number | null;
+    currency: string;
+  }) => {
+    const cents = member
+      ? course.member_price_cents ?? course.price_cents
+      : course.price_cents;
+    return cents === 0 ? "Free" : money(cents, course.currency);
+  };
+
+  // Somebody who is not signed in sees only what is offered publicly.
+  const shown = (courses ?? []).filter((c) => member || c.public_listing);
+
   return (
     <>
-      <SiteHeader signedIn />
+      <SiteHeader signedIn={Boolean(member)} />
       <main className="wrap">
         <section className="band">
           <h1>Learning</h1>
@@ -45,7 +71,7 @@ export default async function LearningPage() {
         </section>
 
         <section className="band">
-          {(courses ?? []).length === 0 ? (
+          {shown.length === 0 ? (
             <div className="panel wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing published yet.
@@ -53,9 +79,10 @@ export default async function LearningPage() {
             </div>
           ) : (
             <div className="grid three">
-              {(courses ?? []).map((course, i) => {
+              {shown.map((course, i) => {
                 const progress = progressOf(course.id);
-                const locked = course.tier === "paid" && !isPaid(member);
+                const locked =
+                  course.tier === "paid" && (!member || !isPaid(member));
                 return (
                   <article className="card" key={course.id}>
                     <Link href={`/learning/${course.slug}`}>
@@ -82,10 +109,13 @@ export default async function LearningPage() {
                         ) : locked ? (
                           <span className="chip sun">Paid plan</span>
                         ) : (
-                          <span className="chip">
-                            {educators?.find((e) => e.id === course.educator_id)
-                              ?.full_name ?? "A member"}
-                          </span>
+                          <>
+                            <span className="chip">{priceOf(course)}</span>{" "}
+                            <span className="chip">
+                              {educators?.find((e) => e.id === course.educator_id)
+                                ?.full_name ?? "A member"}
+                            </span>
+                          </>
                         )}
                       </div>
                     </Link>
@@ -95,7 +125,26 @@ export default async function LearningPage() {
             </div>
           )}
         </section>
+
+        {member ? null : (
+          <section className="band cta">
+            <h2>Members pay less, and some courses are theirs alone</h2>
+            <p className="lead">
+              Anyone can buy these. Members get the member price, and the
+              courses written for the network.
+            </p>
+            <p>
+              <Link className="btn primary" href="/apply">
+                Request an invitation
+              </Link>{" "}
+              <Link className="btn" href="/membership">
+                What membership costs
+              </Link>
+            </p>
+          </section>
+        )}
       </main>
+      {member ? null : <SiteFooter />}
     </>
   );
 }

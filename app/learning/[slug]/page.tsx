@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember, isPaid } from "@/lib/member";
+import { whoIsHere, isPaid } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { EnrolButton } from "../forms";
+import { BuyButton } from "../buy";
 
 export default async function CoursePage({
   params,
@@ -11,7 +13,7 @@ export default async function CoursePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const member = await requireMember("/learning");
+  const member = await whoIsHere();
   const supabase = await createClient();
 
   const { data: course } = await supabase
@@ -21,8 +23,33 @@ export default async function CoursePage({
     .maybeSingle();
 
   if (!course) notFound();
+  if (!member && !course.public_listing) notFound();
 
-  const locked = course.tier === "paid" && !isPaid(member);
+  const locked = course.tier === "paid" && (!member || !isPaid(member));
+
+  // What this reader would pay, and whether they have already.
+  const priceCents = member
+    ? course.member_price_cents ?? course.price_cents
+    : course.price_cents;
+
+  const money = (cents: number) =>
+    (cents / 100).toLocaleString("en-GB", {
+      style: "currency",
+      currency: course.currency ?? "EUR",
+      maximumFractionDigits: 0,
+    });
+
+  const { data: bought } = member
+    ? await supabase
+        .from("course_purchases")
+        .select("id")
+        .eq("course_id", course.id)
+        .eq("profile_id", member.id)
+        .eq("status", "paid")
+        .maybeSingle()
+    : { data: null };
+
+  const paidFor = priceCents === 0 || Boolean(bought);
 
   const [{ data: lessons }, { data: enrolment }, { data: educator }, { data: progress }] =
     await Promise.all([
@@ -31,12 +58,14 @@ export default async function CoursePage({
         .select("id, position, title, duration")
         .eq("course_id", course.id)
         .order("position"),
-      supabase
-        .from("enrolments")
-        .select("started_at, completed_at")
-        .eq("course_id", course.id)
-        .eq("profile_id", member.id)
-        .maybeSingle(),
+      member
+        ? supabase
+            .from("enrolments")
+            .select("started_at, completed_at")
+            .eq("course_id", course.id)
+            .eq("profile_id", member.id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
       course.educator_id
         ? supabase
             .from("profiles")
@@ -44,17 +73,19 @@ export default async function CoursePage({
             .eq("id", course.educator_id)
             .maybeSingle()
         : Promise.resolve({ data: null }),
-      supabase
-        .from("lesson_progress")
-        .select("lesson_id")
-        .eq("profile_id", member.id),
+      member
+        ? supabase
+            .from("lesson_progress")
+            .select("lesson_id")
+            .eq("profile_id", member.id)
+        : Promise.resolve({ data: [] }),
     ]);
 
   const doneIds = new Set((progress ?? []).map((p) => p.lesson_id));
 
   return (
     <>
-      <SiteHeader signedIn />
+      <SiteHeader signedIn={Boolean(member)} />
       <main className="wrap">
         <section className="band">
           <p className="muted small">
@@ -93,7 +124,7 @@ export default async function CoursePage({
                         className="rowlink"
                         key={lesson.id}
                         href={
-                          enrolment && !locked
+                          enrolment && !locked && paidFor
                             ? `/learning/${slug}/${lesson.position}`
                             : `/learning/${slug}`
                         }
@@ -120,7 +151,42 @@ export default async function CoursePage({
 
             <div className="stack">
               <div className="panel">
-                {locked ? (
+                {!member ? (
+                  <>
+                    <h3>
+                      {priceCents === 0 ? "Free" : money(priceCents)}
+                    </h3>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      {priceCents === 0
+                        ? "Free, but you need an account to take it."
+                        : "Anyone can buy this. Members pay the member price."}
+                    </p>
+                    {priceCents === 0 ? (
+                      <Link className="btn primary" href="/apply">
+                        Request an invitation
+                      </Link>
+                    ) : (
+                      <>
+                        <BuyButton slug={slug} label={`Buy it, ${money(priceCents)}`} />
+                        <p className="muted small" style={{ marginTop: 10 }}>
+                          You will get it by email. Members take it inside the
+                          platform, with everything else.
+                        </p>
+                      </>
+                    )}
+                  </>
+                ) : !paidFor ? (
+                  <>
+                    <h3>{money(priceCents)}</h3>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      {course.member_price_cents !== null &&
+                      course.member_price_cents < course.price_cents
+                        ? `The member price. Others pay ${money(course.price_cents)}.`
+                        : "Yours once you buy it, for good."}
+                    </p>
+                    <BuyButton slug={slug} label="Buy this course" />
+                  </>
+                ) : locked ? (
                   <>
                     <h3>Part of the paid plan</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
@@ -173,6 +239,7 @@ export default async function CoursePage({
           </div>
         </section>
       </main>
+      {member ? null : <SiteFooter />}
     </>
   );
 }

@@ -323,6 +323,11 @@ export default async function DiscoverPage({
               Short courses written by members who have done the thing they are
               teaching. Taking one comes with membership.
             </p>
+            <p>
+              <Link className="btn" href="/learning">
+                See the catalogue
+              </Link>
+            </p>
             <div className="grid" style={{ marginTop: 16 }}>
               {(courses ?? [])
                 .filter((c) => match(c.title, c.summary))
