@@ -528,3 +528,15 @@ ul.plain {
   height: 100%;
   object-fit: cover;
 }
+
+/* the live room */
+
+.roomwrap {
+  margin-top: 8px;
+}
+
+.roomwrap [data-lk-theme] {
+  --lk-bg: #0f1419;
+  --lk-accent-bg: #4074ae;
+  --lk-border-radius: 10px;
+}
