@@ -148,7 +148,9 @@ In the member browser:
 
 ## 6. The things that should be refused
 
-Before doing any of this by hand, run `supabase/tests/access_rules.sql` in
+Before doing any of this by hand, run `supabase/tests/schema_checks.sql`,
+which confirms the database is what the migrations say, then
+`supabase/tests/access_rules.sql` in
 the Supabase SQL editor. It checks thirty seven of these rules in a few seconds,
 returns a table and rolls itself back. Failures come first, so if the top
 row says ok, all of it passed. Then do the ones

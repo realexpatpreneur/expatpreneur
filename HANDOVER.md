@@ -354,6 +354,12 @@ Two things to keep:
   rolls everything back, so nothing
   it makes survives and nothing real is touched. Failures are listed
   first: if the top row says ok, all of it passed.
+- `supabase/tests/schema_checks.sql` answers a different question: is the
+  database what the migrations say it is? Read-only, nine checks,
+  including that the mix counts people, that the Circle mix exists, that
+  the newest tables are granted, that nobody was re-granted every column
+  of profiles, and that every table still has row level security. Run it
+  after applying migrations on any database, including a fresh one.
 - Nothing else is tested automatically. The pages, the payments and the
   live rooms were tested by hand.
 - English only.
