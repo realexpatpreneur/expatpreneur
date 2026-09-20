@@ -1,4 +1,8 @@
 import Link from "next/link";
+import { PageHead } from "@/components/workspace-shell";
+import { Table } from "@/components/admin-bits";
+import { Av } from "@/components/bits";
+import { Ic } from "@/components/icon";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 
@@ -42,63 +46,82 @@ export default async function AdminMembersPage({
     circles?.find((c) => c.id === id)?.name ?? "Not placed";
 
   return (
-    <main className="wrap">
-      <section className="band">
-        <h1>Members</h1>
-        <p className="lead">Who is here, where they sit, and how they are doing.</p>
-        <form className="searchrow">
+    <>
+      <PageHead
+        title="Members"
+        sub="Who is here, where they sit, and how they are doing."
+        actions={
+          <Link className="btn btn-ghost btn-sm" href="/admin/care">
+            Member care
+          </Link>
+        }
+      />
+
+      <form>
+        <label className="input" style={{ maxWidth: 520 }}>
+          <Ic name="search" />
           <input name="q" defaultValue={q} placeholder="Name or email" />
-          <button className="btn" type="submit">
-            Search
-          </button>
-        </form>
-        <div className="tabs">
-          {[
+        </label>
+      </form>
+
+      <div className="filters">
+        {(
+          [
             ["all", "All"],
             ["onboarding", "Still onboarding"],
             ["unplaced", "Not in a Circle"],
             ["paid", "Paid"],
-          ].map(([key, label]) => (
-            <Link
-              key={key}
-              className={`chip ${show === key ? "mint" : ""}`}
-              href={`/admin/members?show=${key}`}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      </section>
+          ] as [string, string][]
+        ).map(([key, label]) => (
+          <Link
+            key={key}
+            className={`fchip ${show === key ? "on" : ""}`}
+            href={`/admin/members?show=${key}`}
+          >
+            {label}
+          </Link>
+        ))}
+      </div>
 
-      <section className="band">
-        {(members ?? []).length === 0 ? (
-          <div className="panel wash">
-            <p className="muted" style={{ margin: 0 }}>
-              Nobody matches that.
-            </p>
-          </div>
-        ) : (
-          <div className="rows">
-            {(members ?? []).map((member) => (
-              <Link className="rowlink" key={member.id} href={`/admin/members/${member.id}`}>
-                <div>
-                  <b>{member.full_name}</b>
-                  <div className="muted small">
-                    {member.email}. {villageName(member.village_id)}.{" "}
-                    {circleName(member.circle_id)}.
+      {(members ?? []).length === 0 ? (
+        <div className="panel panel-wash">
+          <p className="muted" style={{ margin: 0 }}>
+            Nobody matches that.
+          </p>
+        </div>
+      ) : (
+        <Table head={["Member", "Circle", "Village", "Plan", "Status"]}>
+          {(members ?? []).map((member) => (
+            <tr key={member.id}>
+              <td>
+                <Link className="row" href={`/admin/members/${member.id}`}>
+                  <Av name={member.full_name} className="av-sm" />
+                  <div>
+                    <b>{member.full_name}</b>
+                    <div className="muted small">{member.email}</div>
                   </div>
-                </div>
-                <div className="rowmeta">
-                  {member.plan === "paid" ? (
-                    <span className="chip mint">Paid</span>
-                  ) : null}
-                  <span className="chip">{member.status}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
-    </main>
+                </Link>
+              </td>
+              <td>
+                {member.circle_id ? (
+                  circleName(member.circle_id)
+                ) : (
+                  <span className="chip chip-sun">Not placed</span>
+                )}
+              </td>
+              <td className="hide-m">{villageName(member.village_id)}</td>
+              <td>
+                <span className={`tiertag ${member.plan === "paid" ? "" : "free"}`}>
+                  {member.plan === "paid" ? "Paid" : "Member"}
+                </span>
+              </td>
+              <td>
+                <span className="chip">{member.status}</span>
+              </td>
+            </tr>
+          ))}
+        </Table>
+      )}
+    </>
   );
 }

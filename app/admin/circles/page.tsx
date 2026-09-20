@@ -1,3 +1,5 @@
+import { PageHead } from "@/components/workspace-shell";
+import { Cap, Flag } from "@/components/admin-bits";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { CircleForm } from "../members/forms";
@@ -29,60 +31,78 @@ export default async function AdminCirclesPage({
   const countFor = (id: string) =>
     capacity?.find((c) => c.circle_id === id) ?? { members: 0, places_left: 50 };
 
+  const TONES = ["blue", "mint", "navy", "sun"];
+
   return (
-    <main className="wrap">
-      <section className="band">
-        <h1>Circles</h1>
-        <p className="lead">
-          Fifty members each. When one fills, the next one opens.
-        </p>
-        {done ? <div className="notice good">Saved.</div> : null}
-      </section>
+    <>
+      <PageHead
+        title="Circles"
+        sub="Fifty members each. When one fills, the next one opens."
+      />
+      {done ? <Flag ok>Saved.</Flag> : null}
 
-      <section className="band">
-        <div className="cols">
-          <div className="stack">
-            {mine.length === 0 ? (
-              <div className="panel wash">
-                <p className="muted" style={{ margin: 0 }}>
-                  No Circles yet. Create the first one.
-                </p>
-              </div>
-            ) : (
-              mine.map((circle) => {
-                const counts = countFor(circle.id);
-                return (
-                  <div className="panel" key={circle.id}>
-                    <div className="row" style={{ justifyContent: "space-between" }}>
-                      <h3>{circle.name}</h3>
-                      <span className="chip">{circle.status}</span>
-                    </div>
-                    <p className="muted small" style={{ marginTop: 6 }}>
-                      {counts.members} members, {counts.places_left} places left.{" "}
-                      {circle.whatsapp_url
-                        ? "WhatsApp group linked."
-                        : "No WhatsApp link yet."}
-                    </p>
-                    <CircleForm villages={myVillages} circle={circle} />
-                  </div>
-                );
-              })
-            )}
-          </div>
-
-          <div className="stack">
-            <CircleForm villages={myVillages} />
-            <div className="panel wash">
-              <h3>Why fifty</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                Past fifty people stop knowing each other. A full Circle is a
-                good sign, not a problem: open the next one and keep the first
-                intact.
+      <div className="gside" style={{ marginTop: 16 }}>
+        <div className="stack">
+          {mine.length === 0 ? (
+            <div className="panel panel-wash">
+              <p className="muted" style={{ margin: 0 }}>
+                No Circles yet. Create the first one.
               </p>
             </div>
+          ) : (
+            mine.map((circle, i) => {
+              const counts = countFor(circle.id);
+              const full = counts.places_left <= 5;
+              return (
+                <div
+                  className={`circlecard has-cover ${full ? "full" : ""}`}
+                  key={circle.id}
+                >
+                  <span className={`ctile ct-${TONES[i % TONES.length]}`}>
+                    <b>{circle.name}</b>
+                    <span>{counts.members} members</span>
+                  </span>
+                  <div className="row" style={{ justifyContent: "space-between" }}>
+                    <span className={`chip ${full ? "chip-sun" : "chip-mint"}`}>
+                      {circle.status}
+                    </span>
+                    <span className="chip">
+                      {counts.places_left} places left
+                    </span>
+                  </div>
+                  <Cap
+                    name="Members"
+                    value={counts.members ?? 0}
+                    max={(counts.members ?? 0) + (counts.places_left ?? 0)}
+                  />
+                  <div className="ready">
+                    <span className={`chip ${circle.whatsapp_url ? "chip-mint" : ""}`}>
+                      {circle.whatsapp_url
+                        ? "WhatsApp group linked"
+                        : "WhatsApp group not linked"}
+                    </span>
+                  </div>
+                  <CircleForm villages={myVillages} circle={circle} />
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div className="stack">
+          <div className="panel">
+            <h3 style={{ fontSize: 14 }}>Open a new Circle</h3>
+            <CircleForm villages={myVillages} />
+          </div>
+          <div className="panel panel-wash">
+            <h3 style={{ fontSize: 14 }}>Why fifty</h3>
+            <p className="muted small" style={{ marginTop: 6 }}>
+              Past fifty people stop knowing each other. A full Circle is a good
+              sign, not a problem: open the next one and keep the first intact.
+            </p>
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </>
   );
 }

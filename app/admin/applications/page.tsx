@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { PageHead } from "@/components/workspace-shell";
+import { Table } from "@/components/admin-bits";
+import { Av } from "@/components/bits";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 
@@ -31,61 +34,81 @@ export default async function ApplicationsPage({
     (a) => admin.isGlobal || !a.village_id || admin.villageIds.includes(a.village_id)
   );
 
+  const chipFor = (status: string) =>
+    status === "approved" || status === "recommended"
+      ? "chip-mint"
+      : status === "waitlisted"
+        ? "chip-sun"
+        : status === "declined"
+          ? ""
+          : "chip-blue";
+
   return (
-    <main className="wrap">
-      <section className="band">
-        <h1>Invitation requests</h1>
-        <p className="lead">
-          Every request is read by a person. Nothing here is automatic.
-        </p>
-        <div className="tabs">
-          {[
+    <>
+      <PageHead
+        title="Invitation requests"
+        sub="Every request is read by a person. Nothing here is automatic."
+      />
+
+      <div className="tabs">
+        {(
+          [
             ["review", "To review"],
             ["waitlist", "Waitlist"],
             ["decided", "Decided"],
-          ].map(([key, label]) => (
-            <Link
-              key={key}
-              className={`chip ${stage === key ? "mint" : ""}`}
-              href={`/admin/applications?stage=${key}`}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      </section>
+          ] as [string, string][]
+        ).map(([key, label]) => (
+          <Link
+            key={key}
+            href={`/admin/applications?stage=${key}`}
+            aria-current={stage === key ? "page" : undefined}
+          >
+            {label}
+          </Link>
+        ))}
+      </div>
 
-      <section className="band">
+      <div style={{ marginTop: 14 }}>
         {rows.length === 0 ? (
-          <div className="panel wash">
+          <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
               Nothing here at the moment.
             </p>
           </div>
         ) : (
-          <div className="rows">
+          <Table head={["Applicant", "Where", "Applied", "Status"]}>
             {rows.map((a) => (
-              <Link
-                className="rowlink"
-                key={a.id}
-                href={`/admin/applications/${a.id}`}
-              >
-                <div>
-                  <b>{a.full_name}</b>
-                  <div className="muted small">
-                    {a.email}. {a.city}
-                    {a.country ? `, ${a.country}` : ""}.
-                  </div>
-                </div>
-                <div className="rowmeta">
-                  <span className="chip">{villageName(a.village_id)}</span>
-                  <span className="chip">{a.status.replace("_", " ")}</span>
-                </div>
-              </Link>
+              <tr key={a.id} data-go="">
+                <td>
+                  <Link className="row" href={`/admin/applications/${a.id}`}>
+                    <Av name={a.full_name} className="av-sm" />
+                    <div>
+                      <b>{a.full_name}</b>
+                      <div className="muted small">{a.email}</div>
+                    </div>
+                  </Link>
+                </td>
+                <td>
+                  {a.city}
+                  {a.country ? `, ${a.country}` : ""}
+                  <div className="muted small">{villageName(a.village_id)}</div>
+                </td>
+                <td>
+                  {new Date(a.created_at).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </td>
+                <td>
+                  <span className={`chip ${chipFor(a.status)}`}>
+                    {a.status.replace("_", " ")}
+                  </span>
+                </td>
+              </tr>
             ))}
-          </div>
+          </Table>
         )}
-      </section>
-    </main>
+      </div>
+    </>
   );
 }
