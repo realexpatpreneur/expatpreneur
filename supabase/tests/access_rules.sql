@@ -61,6 +61,18 @@ insert into newsletter_signups (email, source) values ('someone@test.invalid', '
 insert into payouts (person_id, kind, period_start, period_end, gross_cents, share, net_cents, currency)
 values ('bbbbbbbb-0000-0000-0000-000000000002', 'recognition', '2026-09-01', '2026-09-30', 5000, 100, 5000, 'EUR');
 
+-- A photograph on a public page, a leadership suggestion, and an educator
+-- profile, for the newest rules.
+insert into photo_uses (profile_id, who, appears_on, consent)
+values ('bbbbbbbb-0000-0000-0000-000000000001', 'Free Alpha', 'Home page', 'signed');
+
+insert into leadership_suggestions (profile_id, village_id, suggested_by, role, why)
+values ('bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001',
+        'bbbbbbbb-0000-0000-0000-000000000003', 'circle_host', 'Turns up, and people follow.');
+
+insert into educator_profiles (profile_id, headline, about)
+values ('bbbbbbbb-0000-0000-0000-000000000002', 'Market entry in the Gulf', 'Did it twice.');
+
 -- ------------------------------------------------------------ the checks
 
 create or replace function pg_temp.as_person(who uuid) returns void
@@ -232,6 +244,33 @@ begin
     false);
   reset role;
 
+  return query select ''::text, '--- photographs and who could lead ---'::text, null::text;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a member can see where their own photograph is used',
+    pg_temp.can_read('select count(*) from photo_uses'),
+    true);
+  return query select * from pg_temp.verdict(
+    'a member cannot read who has been put forward for a role',
+    pg_temp.can_read('select count(*) from leadership_suggestions'),
+    false);
+  reset role;
+
+  perform pg_temp.as_person(paid);
+  return query select * from pg_temp.verdict(
+    'a member cannot see somebody else''s photograph record',
+    pg_temp.can_read('select count(*) from photo_uses'),
+    false);
+  reset role;
+
+  perform pg_temp.as_person(admin);
+  return query select * from pg_temp.verdict(
+    'a Local Admin sees who was put forward in their own Village',
+    pg_temp.can_read('select count(*) from leadership_suggestions'),
+    true);
+  reset role;
+
   return query select ''::text, '--- a stranger ---'::text, null::text;
 
   perform pg_temp.as_stranger();
@@ -290,6 +329,18 @@ begin
     'a stranger reads the podcast show',
     pg_temp.can_read('select count(*) from shows'),
     true);
+  return query select * from pg_temp.verdict(
+    'a stranger reads an educator profile, since course pages show it',
+    pg_temp.can_read('select count(*) from educator_profiles'),
+    true);
+  return query select * from pg_temp.verdict(
+    'a stranger cannot read the photograph register',
+    pg_temp.can_read('select count(*) from photo_uses'),
+    false);
+  return query select * from pg_temp.verdict(
+    'a stranger cannot read who was put forward for a role',
+    pg_temp.can_read('select count(*) from leadership_suggestions'),
+    false);
   reset role;
   return;
 end $fn$;

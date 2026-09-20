@@ -149,7 +149,7 @@ In the member browser:
 ## 6. The things that should be refused
 
 Before doing any of this by hand, run `supabase/tests/access_rules.sql` in
-the Supabase SQL editor. It checks thirty of these rules in a few seconds,
+the Supabase SQL editor. It checks thirty seven of these rules in a few seconds,
 returns a table and rolls itself back. Failures come first, so if the top
 row says ok, all of it passed. Then do the ones
 below, which are about the pages rather than the database.
@@ -202,6 +202,24 @@ In the admin browser:
       /global/partners with conditions. The proposer is told.
 
 ## 7. The admin work
+
+Start at /admin, which is now the workspace's front door.
+
+- [ ] The four figures across the top each open the page that handles
+      them, and the To do list shows the WhatsApp tasks, the requests, the
+      quiet members and any open report.
+- [ ] /admin/mix shows the nationality shares and the largest nationality
+      inside each Circle. Nothing about this rule appears anywhere a
+      member can see.
+- [ ] /admin/reports handles one privately, and sending one up notifies
+      the Global team.
+- [ ] /admin/leadership puts somebody forward. They are not told.
+- [ ] /global/photos records a photograph with a permission and a review
+      date. Set a member to left on their member page, and their
+      photograph is marked to come down.
+- [ ] /educator/learners shows who bought a course, with no email
+      addresses. /educator/profile writes what a learner reads, and it
+      appears on the course page.
 
 In the admin browser:
 

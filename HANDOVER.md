@@ -157,6 +157,10 @@ table or deletes a row.
 | 0027_recognition_and_partners | Monthly recognition, and partnered events |
 | 0028_public_businesses | The public marketplace and its enquiries |
 | 0029_shows_and_newsletter | Podcast shows, and the newsletter list |
+| 0030_local_admin_workspace | The mix counted by people, the Circle mix, leadership suggestions |
+| 0031_photos_consent | The photograph and consent register |
+| 0032_educator_profile | The profile shown on course pages |
+| 0033_explicit_grants | The table grants, written down rather than inherited |
 
 **The helper functions to know**, defined in 0002 and used all over the
 policies: `me()`, `is_member()`, `is_paid()`, `my_village()`,
@@ -182,13 +186,18 @@ Everything else needs a member.
    sending email uses the service role.
 2. `member_records` is a `security_invoker = off` view. Its guard is
    inside the view, not a policy.
-3. Three rules live in triggers rather than policies, because they are
+3. Grants are now written in migration 0033 rather than inherited from
+   Supabase's defaults. A new table needs its grant line there, or the
+   app roles cannot read it however open its policy is. Profiles,
+   circles, businesses and courses are deliberately absent: they carry
+   column grants from earlier migrations.
+4. Three rules live in triggers rather than policies, because they are
    about what a row may become rather than who may read it: an educator
    cannot approve their own course, editing an approved course sends it
    back to be read again, and an application gets its reference on insert.
    If a value keeps reverting, look for a trigger before you look at the
    page.
-4. A course with a price opens its lessons only to somebody who paid.
+5. A course with a price opens its lessons only to somebody who paid.
    That is `has_paid_for()` inside the `lessons` policy, so a refund
    closes the course again with nothing else to remember.
 
@@ -267,7 +276,14 @@ supabase/migrations/ the numbered SQL files
 
 **Global team**, at `/global`
 
-Villages, the internal nationality balance, cities people are asking for,
+Overview, Village mix (the nationality rule, per Village and per Circle),
+Reports, Leadership, plus requests, members, Circles, care, WhatsApp,
+moves, events, live rooms, announcements, partnered events, resources,
+Watch and Listen, the suggestion box, Insight and Village settings.
+
+**Global team**, at `/global`
+
+Villages, network events, the internal nationality balance, cities people are asking for,
 Groups and Pods, market pathways, roles, moderation, suggestions across
 every Village, money and reporting. Also: Requests (Pods members want to
 start, and members asking about their own data), Learning (reading a
@@ -333,8 +349,9 @@ Two things to keep:
   the retention periods. A lawyer signs them off before launch.
 - The access rules have a test file, `supabase/tests/access_rules.sql`.
   Run it in the SQL editor after any migration that touches a policy, a
-  grant or a role. It makes its own Villages, people, pages and listings,
-  checks thirty rules, returns a table of results and rolls everything back, so nothing
+  grant or a role. It makes its own Villages, people, pages, listings and
+  photographs, checks thirty seven rules, returns a table of results and
+  rolls everything back, so nothing
   it makes survives and nothing real is touched. Failures are listed
   first: if the top row says ok, all of it passed.
 - Nothing else is tested automatically. The pages, the payments and the
