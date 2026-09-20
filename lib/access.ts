@@ -66,3 +66,10 @@ export function nationalityMix(rows: { nationalities: string[] | null }[]) {
   }
   return counts;
 }
+
+// Pages in /global are for the Global team only.
+export async function requireGlobal(): Promise<AdminContext> {
+  const admin = await requireAdmin();
+  if (!admin.isGlobal) redirect("/admin/applications");
+  return admin;
+}

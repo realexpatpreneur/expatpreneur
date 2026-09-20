@@ -26,6 +26,7 @@ export default async function AdminLayout({
           <Link href="/admin/resources">Resources</Link>
           <Link href="/admin/media">Watch</Link>
           <Link href="/admin/suggestions">Suggestion box</Link>
+          {admin.isGlobal ? <Link href="/global">Global team</Link> : null}
           <Link className="btn" href="/home">
             Member view
           </Link>
