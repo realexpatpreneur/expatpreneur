@@ -19,12 +19,15 @@ export default async function GlobalLayout({
         <nav>
           <Link href="/global">Overview</Link>
           <Link href="/global/villages">Villages</Link>
+          <Link href="/global/events">Events</Link>
           <Link href="/global/mix">Balance</Link>
           <Link href="/global/cities">Cities</Link>
           <Link href="/global/groups">Groups</Link>
           <Link href="/global/markets">Markets</Link>
           <Link href="/global/businesses">Businesses</Link>
           <Link href="/global/media">Media</Link>
+          <Link href="/global/photos">Photos and consent</Link>
+          <Link href="/global/library">Resources library</Link>
           <Link href="/global/content">Pages</Link>
           <Link href="/global/emails">Emails</Link>
           <Link href="/global/roles">Roles</Link>
@@ -32,6 +35,7 @@ export default async function GlobalLayout({
           <Link href="/global/suggestions">Suggestions</Link>
           <Link href="/global/requests">Requests</Link>
           <Link href="/global/reporting">Reporting</Link>
+          <Link href="/global/network">Network intelligence</Link>
           <Link href="/global/learning">Learning</Link>
           <Link href="/global/plans">Plans</Link>
           <Link href="/global/recognition">Recognition</Link>
