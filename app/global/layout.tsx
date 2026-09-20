@@ -26,6 +26,7 @@ export default async function GlobalLayout({
           <Link href="/global/roles">Roles</Link>
           <Link href="/global/moderation">Moderation</Link>
           <Link href="/global/suggestions">Suggestions</Link>
+          <Link href="/global/reporting">Reporting</Link>
           <Link href="/global/money">Money</Link>
           <Link className="btn" href="/admin/applications">
             Village view

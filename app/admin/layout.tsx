@@ -21,6 +21,7 @@ export default async function AdminLayout({
           <Link href="/admin/members">Members</Link>
           <Link href="/admin/circles">Circles</Link>
           <Link href="/admin/care">Care</Link>
+          <Link href="/admin/insight">Insight</Link>
           <Link href="/admin/whatsapp">WhatsApp</Link>
           <Link href="/admin/announcements">Announcements</Link>
           <Link href="/admin/events">Events</Link>
