@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { JoinPodButton } from "../../groups/forms";
 
 export default async function PodPage({
@@ -49,9 +49,7 @@ export default async function PodPage({
   const joined = ids.includes(member.id);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/pods">
         <section className="band">
           <p className="muted small">
             <Link href="/pods">Pods</Link>
@@ -142,7 +140,6 @@ export default async function PodPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

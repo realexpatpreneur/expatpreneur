@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { sessionWhen } from "@/lib/live";
-import { SiteHeader } from "@/components/site-header";
 import { OpenRoomForm, GroupForm, PodForm } from "./forms";
 
 export const metadata = { title: "What you run, ExpatPreneurs Global" };
@@ -42,9 +42,7 @@ export default async function LeadPage({
 
   if (!(leadership ?? []).length && !isEducator) {
     return (
-      <>
-        <SiteHeader signedIn />
-        <main className="wrap">
+      <WorkspaceShell kind="lead" nav="/lead">
           <section className="band">
             <h1>Nothing to run yet</h1>
             <p className="lead">
@@ -56,8 +54,7 @@ export default async function LeadPage({
               Back to home
             </Link>
           </section>
-        </main>
-      </>
+        </WorkspaceShell>
     );
   }
 
@@ -107,9 +104,7 @@ export default async function LeadPage({
   }));
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="lead" nav="/lead">
         <section className="band">
           <h1>What you run</h1>
           <p className="lead">
@@ -229,7 +224,6 @@ export default async function LeadPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

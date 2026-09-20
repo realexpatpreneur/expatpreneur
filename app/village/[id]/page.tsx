@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { ReplyForm, CloseForm } from "../forms";
 
 export default async function PostPage({
@@ -49,9 +49,7 @@ export default async function PostPage({
   const mine = post.author_id === member.id;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/village">
         <section className="band">
           <p className="muted small">
             <Link href="/village">Ask &amp; Offer</Link>
@@ -157,7 +155,6 @@ export default async function PostPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

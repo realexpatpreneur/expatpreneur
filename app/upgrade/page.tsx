@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
 import { stripeReady, membershipPriceId } from "@/lib/stripe";
-import { SiteHeader } from "@/components/site-header";
 import {
   UpgradeButton,
   CancelMembershipButton,
@@ -31,9 +31,7 @@ export default async function UpgradePage({
   const live = stripeReady && Boolean(membershipPriceId);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/upgrade">
         <section className="band">
           <h1>The paid plan</h1>
           <p className="lead">
@@ -124,7 +122,6 @@ export default async function UpgradePage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

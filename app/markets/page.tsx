@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Market pathways, ExpatPreneurs Global" };
 
@@ -27,9 +27,7 @@ export default async function MarketsPage() {
     following?.find((f) => f.pathway_id === id);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/markets">
         <section className="band">
           <h1>Market pathways</h1>
           <p className="lead">
@@ -84,7 +82,6 @@ export default async function MarketsPage() {
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

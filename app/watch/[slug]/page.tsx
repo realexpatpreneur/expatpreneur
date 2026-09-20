@@ -1,8 +1,7 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export default async function MediaPage({
   params,
@@ -25,9 +24,7 @@ export default async function MediaPage({
   if (!item) notFound();
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(user)} />
-      <main className="wrap">
+    <DualPage member={Boolean(user)} nav="/watch" active="/watch">
         <section className="band">
           <p className="muted small">
             <Link href="/watch">Watch and Listen</Link>
@@ -88,8 +85,6 @@ export default async function MediaPage({
 
         </section>
         )}
-      </main>
-      {user ? null : <SiteFooter />}
-    </>
-  );
+      </DualPage>
+        );
 }

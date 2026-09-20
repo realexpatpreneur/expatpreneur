@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { whenText } from "@/lib/events";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Search, ExpatPreneurs Global" };
 
@@ -184,9 +184,7 @@ export default async function SearchPage({
   }
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/search">
         <section className="band">
           <h1>Search</h1>
           <p className="lead">
@@ -244,7 +242,6 @@ export default async function SearchPage({
             </>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

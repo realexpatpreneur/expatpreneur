@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import {
   AccountForm,
   ProfileSettingsForm,
@@ -107,9 +107,7 @@ export default async function SettingsPage({
   }.`;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/settings">
         <section className="band">
           <h1>Settings</h1>
           <div className="tabs">
@@ -317,7 +315,6 @@ export default async function SettingsPage({
             ) : null}
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

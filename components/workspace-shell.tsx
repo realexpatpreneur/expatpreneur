@@ -1,76 +1,108 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { Ic } from "@/components/icon";
+import { WorkspaceNav } from "@/components/workspace-nav";
+import { Av } from "@/components/bits";
+import { SPACES, WORKSPACE_START } from "@/components/spaces";
 
-export type NavGroup = { heading?: string; links: [string, string][] };
-
-// The prototype's signed-in chrome: an icon rail for switching workspace,
-// a side navigation for the one you are in, and the page beside them.
-// Both are fixed, so a page needs no wrapper of its own.
-export function WorkspaceShell({
-  rail,
-  groups,
-  title,
-  subtitle,
+// appShell, as the prototype builds it: a rail of spaces, the sidebar
+// for the space you are in, a command bar, the page, and the tabs that
+// appear in place of all of it on a phone.
+export async function WorkspaceShell({
+  kind = "member",
+  nav,
+  name,
+  searchHref,
+  searchText,
+  switchTo,
+  children,
 }: {
-  rail: [string, string, string][]; // href, short mark, name
-  groups: NavGroup[];
-  title: string;
-  subtitle?: string;
+  kind?: "member" | "admin" | "global" | "lead" | "edu";
+  nav?: string;
+  name?: string;
+  searchHref?: string;
+  searchText?: string;
+  switchTo?: [string, string];
+  children: React.ReactNode;
 }) {
-  const path = usePathname();
+  // The shell knows who is signed in, so no page has to pass it along.
+  let who: string = name ?? "";
+  if (!who) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from("member_records")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
+      who = profile?.full_name ?? user.email ?? "You";
+    } else {
+      who = "You";
+    }
+  }
 
-  const active = (href: string) =>
-    href === path || (href !== "/" && path.startsWith(href + "/"));
-
-  // The longest matching link wins, so /admin does not light up on
-  // /admin/members.
-  const current = groups
-    .flatMap((g) => g.links)
-    .map(([href]) => href)
-    .filter((href) => href === path || path.startsWith(href + "/"))
-    .sort((a, b) => b.length - a.length)[0];
+  const spaces = SPACES[kind] ?? SPACES.member;
+  const dark = kind === "admin" || kind === "global";
+  const home = WORKSPACE_START[kind] ?? "/home";
 
   return (
-    <>
-      <aside className="rail" aria-label="Workspaces">
-        {rail.map(([href, mark, name]) => (
-          <Link
-            className={`rail-tile ${active(href) ? "on" : ""}`}
-            href={href}
-            key={href + name}
-            title={name}
-            aria-label={name}
-          >
-            {mark}
+    <div className={`mapp v2 ${spaces.length > 1 ? "" : "no-rail"} ${dark ? "admin" : ""} shell-${kind}`}>
+      <WorkspaceNav kind={kind} name={who} dark={dark} />
+
+      <div className="mmain">
+        <header className="mtop">
+          <Link className="logo mlogo" href={home}>
+            <span className={`mark${dark ? " alt" : ""}`} aria-hidden="true">
+              EP
+            </span>
+            ExpatPreneurs
           </Link>
-        ))}
-      </aside>
+          <Link className="cmd" href={searchHref ?? "/search"}>
+            <Ic name="search" />
+            <span>{searchText ?? "Search people, businesses, events"}</span>
+            <em>Search</em>
+          </Link>
+          <span className="spacer" />
+          {switchTo ? (
+            <Link className="btn btn-ghost btn-sm hide-m" href={switchTo[1]}>
+              {switchTo[0]}
+            </Link>
+          ) : null}
+          <Link className="iconbtn" aria-label="Notifications" href="/notifications">
+            <Ic name="bell" />
+            <span className="dot" />
+          </Link>
+          <Link className="show-m" href="/more">
+            <Av name={who} className="av-sm" />
+          </Link>
+        </header>
 
-      <nav className="mside" aria-label={title}>
-        <div className="side-head">
-          <b>{title}</b>
-          {subtitle ? <span className="muted small">{subtitle}</span> : null}
-        </div>
+        <div className="mbody">{children}</div>
+      </div>
+    </div>
+  );
+}
 
-        {groups.map((group, i) => (
-          <div key={group.heading ?? i}>
-            {group.heading ? (
-              <div className="navlabel">{group.heading}</div>
-            ) : null}
-            {group.links.map(([href, label]) => (
-              <Link
-                className={`nav ${href === current ? "on" : ""}`}
-                href={href}
-                key={href + label}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        ))}
-      </nav>
-    </>
+// pagehead
+export function PageHead({
+  title,
+  sub,
+  actions,
+}: {
+  title: string;
+  sub?: React.ReactNode;
+  actions?: React.ReactNode;
+}) {
+  return (
+    <div className="pagehead">
+      <div>
+        <h1>{title}</h1>
+        {sub ? <p>{sub}</p> : null}
+      </div>
+      {actions ? <div className="row" style={{ flexWrap: "wrap" }}>{actions}</div> : null}
+    </div>
   );
 }

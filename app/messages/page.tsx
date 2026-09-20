@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { ConnectionDecision } from "./forms";
 
 export const metadata = { title: "Messages, ExpatPreneurs Global" };
@@ -54,9 +54,7 @@ export default async function MessagesPage() {
     people?.find((p) => p.id === id)?.full_name ?? "A member";
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/messages">
         <section className="band">
           <h1>Messages</h1>
           <p className="lead">
@@ -111,7 +109,6 @@ export default async function MessagesPage() {
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

@@ -1,9 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 const kindLabel: Record<string, string> = {
   story: "Member story",
@@ -49,9 +48,7 @@ export default async function ArticlePage({
   ]);
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(me)} />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/media">
         <section className="band">
           <p className="muted small">
             <Link href="/media">Media</Link>
@@ -120,8 +117,6 @@ export default async function ArticlePage({
             </div>
           </div>
         </section>
-      </main>
-      <SiteFooter />
-    </>
+      </WorkspaceShell>
   );
 }

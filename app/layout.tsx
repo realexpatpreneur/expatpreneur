@@ -20,11 +20,13 @@ export default function RootLayout({
           crossOrigin=""
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <div className="app">{children}</div>
+      </body>
     </html>
   );
 }

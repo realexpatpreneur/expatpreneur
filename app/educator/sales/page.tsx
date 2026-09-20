@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { MessageLearnersForm } from "./forms";
 
 export const metadata = { title: "Sales, your courses" };
@@ -50,9 +50,7 @@ export default async function SalesPage() {
     paid.filter((s) => s.course_id === courseId).length;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="edu" nav="/educator/sales">
         <section className="band">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
@@ -156,7 +154,6 @@ export default async function SalesPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

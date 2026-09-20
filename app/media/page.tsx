@@ -1,8 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { SubscribeForm } from "./subscribe-form";
 
 export const metadata = {
@@ -40,9 +39,7 @@ export default async function MediaPage({
   const { data: articles } = await query;
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(me)} />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/media">
         <section className={me ? "band" : "hero center"}>
           <h1>Media</h1>
           <p className="lead">
@@ -145,8 +142,6 @@ export default async function MediaPage({
             </p>
           </section>
         )}
-      </main>
-      <SiteFooter />
-    </>
+      </WorkspaceShell>
   );
 }

@@ -1,8 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Message sent, ExpatPreneurs Global" };
 
@@ -24,9 +23,7 @@ export default async function ContactedPage({
     : { data: null };
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(member)} />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/businesses/contacted">
         <section className="band">
           <h1>Message sent</h1>
           <p className="lead">
@@ -44,8 +41,6 @@ export default async function ContactedPage({
             ) : null}
           </p>
         </section>
-      </main>
-      <SiteFooter />
-    </>
+      </WorkspaceShell>
   );
 }

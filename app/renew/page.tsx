@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { RenewalForm } from "./form";
 
 export const metadata = { title: "Another year, ExpatPreneurs Global" };
@@ -24,9 +24,7 @@ export default async function RenewPage({
     .maybeSingle();
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/renew">
         <section className="band">
           <h1>Another year?</h1>
           <p className="lead">
@@ -103,7 +101,6 @@ export default async function RenewPage({
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

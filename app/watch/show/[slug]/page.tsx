@@ -1,9 +1,8 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export default async function ShowPage({
   params,
@@ -39,9 +38,7 @@ export default async function ShowPage({
   ].filter(([, url]) => Boolean(url)) as [string, string][];
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(member)} />
-      <main className="wrap">
+    <DualPage member={Boolean(member)} nav="/watch/show" active="/watch/show">
         <section className="band">
           <p className="muted small">
             <Link href="/watch">Watch and Listen</Link>
@@ -140,8 +137,6 @@ export default async function ShowPage({
             </div>
           </div>
         </section>
-      </main>
-      {member ? null : <SiteFooter />}
-    </>
+      </DualPage>
   );
 }

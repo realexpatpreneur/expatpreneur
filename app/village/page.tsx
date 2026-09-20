@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Ask & Offer, ExpatPreneurs Global" };
 
@@ -38,9 +38,7 @@ export default async function VillagePage({
   const authorOf = (id: string) => authors?.find((a) => a.id === id);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/village">
         <section className="band">
           <h1>Ask &amp; Offer</h1>
           <p className="lead">
@@ -109,7 +107,6 @@ export default async function VillagePage({
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

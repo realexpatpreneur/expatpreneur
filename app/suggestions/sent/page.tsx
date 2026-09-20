@@ -1,5 +1,5 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Thank you, ExpatPreneurs Global" };
 
@@ -12,9 +12,7 @@ export default async function SuggestionSentPage({
   const anonymous = how === "anonymous";
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/suggestions/sent">
         <section className="band">
           <h1>Thank you</h1>
           <p className="lead">
@@ -31,7 +29,6 @@ export default async function SuggestionSentPage({
             </Link>
           </p>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

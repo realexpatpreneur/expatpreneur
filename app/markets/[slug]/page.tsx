@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { FollowForm, StepDone } from "../forms";
 
 export default async function PathwayPage({
@@ -69,9 +69,7 @@ export default async function PathwayPage({
   const doneIds = new Set((progress ?? []).map((p) => p.step_id));
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/markets">
         <section className="band">
           <p className="muted small">
             <Link href="/markets">Market pathways</Link>
@@ -258,7 +256,6 @@ export default async function PathwayPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

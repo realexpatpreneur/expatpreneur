@@ -1,9 +1,8 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { ConnectionRequestForm } from "@/app/messages/forms";
 
 export default async function MemberProfilePage({
@@ -74,9 +73,7 @@ export default async function MemberProfilePage({
           .maybeSingle();
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(me)} />
-      <main className="wrap">
+    <DualPage member={Boolean(me)} nav="/members" active="/members">
         <section className="band">
           <p className="muted small">
             <Link href={me ? "/directory" : "/members"}>
@@ -213,8 +210,6 @@ export default async function MemberProfilePage({
             </div>
           </div>
         </section>
-      </main>
-      {me ? null : <SiteFooter />}
-    </>
-  );
+      </DualPage>
+        );
 }

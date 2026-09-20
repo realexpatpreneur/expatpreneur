@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Learners, your courses" };
 
@@ -52,9 +52,7 @@ export default async function LearnersPage({
     id ? progress?.find((p) => p.profile_id === id) : undefined;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="edu" nav="/educator/learners">
         <section className="band">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
@@ -145,7 +143,6 @@ export default async function LearnersPage({
             </p>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

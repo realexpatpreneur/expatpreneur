@@ -1,8 +1,7 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Learning, ExpatPreneurs Global" };
 
@@ -59,9 +58,7 @@ export default async function LearningPage() {
   const shown = (courses ?? []).filter((c) => member || c.public_listing);
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(member)} />
-      <main className="wrap">
+    <DualPage member={Boolean(member)} nav="/learning" active="/learning">
         <section className={member ? "band" : "hero center"}>
           <h1>Learning</h1>
           <p className="lead">
@@ -143,8 +140,6 @@ export default async function LearningPage() {
             </p>
           </section>
         )}
-      </main>
-      {member ? null : <SiteFooter />}
-    </>
+      </DualPage>
   );
 }

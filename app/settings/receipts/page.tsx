@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Receipts, ExpatPreneurs Global" };
 
@@ -63,9 +63,7 @@ export default async function ReceiptsPage() {
   ].sort((a, b) => (a.date < b.date ? 1 : -1));
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/settings/receipts">
         <section className="band">
           <p className="muted small">
             <Link href="/settings?show=membership">Settings</Link>
@@ -110,7 +108,6 @@ export default async function ReceiptsPage() {
             </p>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

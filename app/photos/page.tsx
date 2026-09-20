@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Photographs, ExpatPreneurs Global" };
 
@@ -27,9 +27,7 @@ export default async function PhotosPage({
   const { data: photos } = await query;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/photos">
         <section className="band">
           <h1>Photographs</h1>
           <p className="lead">
@@ -77,7 +75,6 @@ export default async function PhotosPage({
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

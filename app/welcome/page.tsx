@@ -1,6 +1,6 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
 import { WelcomeForm } from "./form";
 
 export const metadata = { title: "Welcome, ExpatPreneurs Global" };
@@ -22,9 +22,7 @@ export default async function WelcomePage() {
 
   if (!profile) {
     return (
-      <>
-        <SiteHeader signedIn />
-        <main className="wrap">
+      <WorkspaceShell kind="member" nav="/welcome">
           <section className="band">
             <h1>Almost there</h1>
             <p className="lead">
@@ -32,8 +30,7 @@ export default async function WelcomePage() {
               on this account yet.
             </p>
           </section>
-        </main>
-      </>
+        </WorkspaceShell>
     );
   }
 
@@ -46,9 +43,7 @@ export default async function WelcomePage() {
     : { data: null };
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/welcome">
         <section className="band">
           <h1>Welcome to ExpatPreneurs.</h1>
           <p className="lead">
@@ -60,7 +55,6 @@ export default async function WelcomePage() {
         <section className="band">
           <WelcomeForm profile={profile} />
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

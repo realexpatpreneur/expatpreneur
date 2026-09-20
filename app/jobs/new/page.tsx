@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { JobForm } from "../../businesses/forms";
 
 export const metadata = { title: "Post a job" };
@@ -17,9 +17,7 @@ export default async function NewJobPage() {
     .order("name");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/jobs/new">
         <section className="band">
           <p className="muted small">
             <Link href="/jobs">Jobs and freelance</Link>
@@ -32,7 +30,6 @@ export default async function NewJobPage() {
         <section className="band">
           <JobForm businesses={businesses ?? []} villageName={member.villageName} />
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

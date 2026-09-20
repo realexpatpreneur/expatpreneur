@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { CloseJobForm } from "../../businesses/forms";
 
 const kindLabel: Record<string, string> = {
@@ -48,9 +48,7 @@ export default async function JobPage({
   const canReach = mine || sameVillage || isPaid(member);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/jobs">
         <section className="band">
           <p className="muted small">
             <Link href="/jobs">Jobs and freelance</Link>
@@ -134,7 +132,6 @@ export default async function JobPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

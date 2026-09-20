@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { whenText } from "@/lib/events";
 
 export const metadata = { title: "For you, ExpatPreneurs Global" };
@@ -147,9 +147,7 @@ export default async function ForYouPage({
   ] as const;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/for-you">
         <section className="band">
           <h1>For you</h1>
           <p className="lead">
@@ -405,7 +403,6 @@ export default async function ForYouPage({
             </div>
           </section>
         ) : null}
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

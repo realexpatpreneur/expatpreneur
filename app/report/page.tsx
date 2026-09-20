@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { ReportForm } from "./form";
 
 export const metadata = { title: "Report something, ExpatPreneurs Global" };
@@ -24,9 +24,7 @@ export default async function ReportPage({
     .limit(200);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/report">
         <section className="band">
           <h1>Report something</h1>
           <p className="lead">
@@ -74,7 +72,6 @@ export default async function ReportPage({
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

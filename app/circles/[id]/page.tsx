@@ -1,9 +1,9 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { whenText } from "@/lib/events";
-import { SiteHeader } from "@/components/site-header";
 
 // A Circle's own page. A member can see any Circle in their Village, but
 // the WhatsApp link appears only on their own, and so do its members.
@@ -62,9 +62,7 @@ export default async function CirclePage({
   const size = (members ?? []).length;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/circles">
         <section className="band">
           <p className="muted small">
             <Link href="/my-village">{village?.name ?? "Your"} Village</Link>
@@ -194,7 +192,6 @@ export default async function CirclePage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

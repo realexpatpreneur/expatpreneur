@@ -1,9 +1,9 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
 import { whenText } from "@/lib/events";
 import { sessionWhen } from "@/lib/live";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Your Village, ExpatPreneurs Global" };
 
@@ -13,9 +13,7 @@ export default async function MyVillagePage() {
 
   if (!member.village_id) {
     return (
-      <>
-        <SiteHeader signedIn />
-        <main className="wrap">
+      <WorkspaceShell kind="member" nav="/my-village">
           <section className="band">
             <h1>No Village yet</h1>
             <p className="lead">
@@ -26,8 +24,7 @@ export default async function MyVillagePage() {
               Back to home
             </Link>
           </section>
-        </main>
-      </>
+        </WorkspaceShell>
     );
   }
 
@@ -120,9 +117,7 @@ export default async function MyVillagePage() {
   };
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/my-village">
         <section className="band">
           <p>
             <span className={`chip ${village?.status === "open" ? "mint" : ""}`}>
@@ -393,7 +388,6 @@ export default async function MyVillagePage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

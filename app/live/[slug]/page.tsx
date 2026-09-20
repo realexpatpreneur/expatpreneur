@@ -1,3 +1,4 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -10,7 +11,6 @@ import {
   stateLabel,
   type LiveSession,
 } from "@/lib/live";
-import { SiteHeader } from "@/components/site-header";
 import {
   KnockButton,
   LeaveButton,
@@ -136,9 +136,7 @@ export default async function LiveSessionPage({
   const open = doorsOpen(session);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/live">
         <section className="band">
           <p className="muted small">
             <Link href="/live">Live rooms</Link>
@@ -437,7 +435,6 @@ export default async function LiveSessionPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

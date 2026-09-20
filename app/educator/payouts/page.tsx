@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Payouts, your courses" };
 
@@ -39,9 +39,7 @@ export default async function PayoutsPage() {
   const waiting = earned - paidOut;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="edu" nav="/educator/payouts">
         <section className="band">
           <p className="muted small">
             <Link href="/educator/sales">Sales</Link>
@@ -107,7 +105,6 @@ export default async function PayoutsPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

@@ -1,5 +1,5 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { MenuList } from "@/components/menu-list";
 
 export const metadata = { title: "More, what you run" };
@@ -8,9 +8,7 @@ export default async function LeadMorePage() {
   await requireMember("/lead/more");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="lead" nav="/lead/more">
         <section className="band">
           <h1>More</h1>
         </section>
@@ -26,7 +24,6 @@ export default async function LeadMorePage() {
             ]}
           />
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

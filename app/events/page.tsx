@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { whenText, priceText, registrationBlock, type EventRow } from "@/lib/events";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Events, ExpatPreneurs Global" };
 
@@ -43,9 +43,7 @@ export default async function EventsPage({
   });
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/events">
         <section className={member ? "band" : "hero center"}>
           <h1>Events</h1>
           <p className="lead">
@@ -110,7 +108,6 @@ export default async function EventsPage({
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

@@ -1,63 +1,41 @@
 import Link from "next/link";
-import { MemberNav } from "@/components/member-nav";
+import { Ic } from "@/components/icon";
+import { Logo } from "@/components/brand";
 
-// The public header, as the prototype draws it: the mark, the wordmark
-// with Global in blue, the navigation to the left, then search, sign in
-// and the navy invitation pill.
-export async function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
+const PUBNAV: [string, string][] = [
+  ["/discover", "Discover"],
+  ["/how-it-works", "How it works"],
+  ["/membership", "Membership"],
+  ["/events", "Events"],
+  ["/watch", "Watch & Listen"],
+];
+
+// pubHead, as the prototype writes it.
+export function SiteHeader({ active }: { active?: string }) {
   return (
-    <>
-      <header className="top">
-        <Link className="brand" href={signedIn ? "/home" : "/"}>
-          <span className="mark">EP</span>
-          <span>
-            ExpatPreneurs <small>Global</small>
-          </span>
-        </Link>
-
-        {signedIn ? null : (
-          <nav className="pubnav">
-            <Link href="/discover">Discover</Link>
-            <Link href="/how-it-works">How it works</Link>
-            <Link href="/membership">Membership</Link>
-            <Link href="/events">Events</Link>
-            <Link href="/watch">Watch and Listen</Link>
-          </nav>
-        )}
-
-        <nav>
-          <Link className="btn only-small" href={signedIn ? "/more" : "/menu"}>
-            Menu
-          </Link>
-          {signedIn ? (
-            <>
-              <Link className="iconbtn hide-small" href="/search" aria-label="Search">
-                Search
-              </Link>
-              <Link className="hide-small" href="/notifications">
-                Notifications
-              </Link>
-              <Link className="btn" href="/settings">
-                You
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link className="iconbtn hide-small" href="/discover" aria-label="Search">
-                Search
-              </Link>
-              <Link className="hide-small" href="/login">
-                Log in
-              </Link>
-              <Link className="btn dark" href="/apply">
-                Request your invitation
-              </Link>
-            </>
-          )}
+    <header className="pubhead">
+      <div className="in">
+        <Logo href="/" />
+        <nav className="pubnav">
+          {PUBNAV.map(([href, label]) => (
+            <Link key={href} href={href} aria-current={active === href ? "page" : undefined}>
+              {label}
+            </Link>
+          ))}
         </nav>
-      </header>
-
-      {signedIn ? <MemberNav /> : null}
-    </>
+        <Link className="iconbtn" aria-label="Search" href="/discover">
+          <Ic name="search" />
+        </Link>
+        <Link className="loginlink" href="/login" style={{ fontWeight: 600, color: "var(--navy)" }}>
+          Log in
+        </Link>
+        <Link className="btn btn-primary btn-sm hide-m" href="/apply">
+          Request your invitation
+        </Link>
+        <Link className="iconbtn menubtn" aria-label="Menu" href="/menu">
+          <Ic name="menu" />
+        </Link>
+      </div>
+    </header>
   );
 }

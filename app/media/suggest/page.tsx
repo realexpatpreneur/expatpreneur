@@ -1,6 +1,6 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { StoryForm } from "./form";
 
 export const metadata = { title: "Suggest a story, ExpatPreneurs Global" };
@@ -14,9 +14,7 @@ export default async function SuggestStoryPage({
   await requireMember("/media/suggest");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/media/suggest">
         <section className="band">
           <p className="muted small">
             <Link href="/media">Media</Link>
@@ -44,7 +42,6 @@ export default async function SuggestStoryPage({
             <StoryForm />
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

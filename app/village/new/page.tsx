@@ -1,6 +1,6 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { PostForm } from "../forms";
 
 export const metadata = { title: "Post to Ask & Offer" };
@@ -9,9 +9,7 @@ export default async function NewPostPage() {
   const member = await requireMember("/village/new");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/village/new">
         <section className="band">
           <p className="muted small">
             <Link href="/village">Ask &amp; Offer</Link>
@@ -24,7 +22,6 @@ export default async function NewPostPage() {
         <section className="band">
           <PostForm villageName={member.villageName} />
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

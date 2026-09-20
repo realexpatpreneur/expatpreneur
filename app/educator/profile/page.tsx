@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { EducatorProfileForm } from "./forms";
 
 export const metadata = { title: "Educator profile, ExpatPreneurs Global" };
@@ -27,9 +27,7 @@ export default async function EducatorProfilePage() {
   const live = (courses ?? [])[0];
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="edu" nav="/educator/profile">
         <section className="band">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
@@ -62,7 +60,6 @@ export default async function EducatorProfilePage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

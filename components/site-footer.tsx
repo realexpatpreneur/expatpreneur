@@ -1,90 +1,115 @@
 import Link from "next/link";
+import { Ic } from "@/components/icon";
+import { LogoPlain } from "@/components/brand";
 import { SubscribeForm } from "@/app/media/subscribe-form";
 
-// The prototype's footer: the brand and the newsletter across the top,
-// five columns of links, then the small print.
+// pubFoot, as the prototype writes it: brand and newsletter across the
+// top, five columns of links, then the small print.
+function Col({ title, items }: { title: string; items: React.ReactNode[] }) {
+  return (
+    <div>
+      <h4>{title}</h4>
+      <nav>{items}</nav>
+    </div>
+  );
+}
+
+const SOCIAL: [string, string, string][] = [
+  ["youtube", "YouTube", "https://www.youtube.com/"],
+  ["instagram", "Instagram", "https://www.instagram.com/"],
+  ["linkedin", "LinkedIn", "https://www.linkedin.com/"],
+  ["mic", "Podcast", "https://open.spotify.com/"],
+];
+
 export function SiteFooter() {
   return (
-    <footer className="site">
+    <footer className="pubfoot">
       <div className="ft-top">
         <div className="ft-brand">
-          <span className="brand">
-            <span className="mark">EP</span>
-            <span>
-              ExpatPreneurs <small>Global</small>
-            </span>
-          </span>
+          <LogoPlain alt smallStyle={{ color: "#A8DCD1" }} />
           <p>
             A curated network of expat entrepreneurs. Local enough to belong,
             global enough to grow, and human enough to matter.
           </p>
+          <div className="social">
+            {SOCIAL.map(([icon, name, url]) => (
+              <a
+                key={name}
+                href={url}
+                target="_blank"
+                rel="noopener"
+                aria-label={`ExpatPreneurs on ${name}`}
+              >
+                <Ic name={icon} />
+              </a>
+            ))}
+          </div>
         </div>
 
         <div className="ft-news">
           <b>The monthly newsletter</b>
-          <p>New stories, events and what is opening where, once a month.</p>
+          <p>New stories, videos, podcast episodes and events from every Village.</p>
           <SubscribeForm source="footer" />
         </div>
       </div>
 
       <div className="ft-cols">
-        <div>
-          <h4>Explore</h4>
-          <nav>
-            <Link href="/how-it-works">How it works</Link>
-            <Link href="/membership">Membership</Link>
-            <Link href="/members">Members</Link>
-            <Link href="/events">Events</Link>
-            <Link href="/apply">Request your invitation</Link>
-            <Link href="/apply/status">Your invitation request</Link>
-          </nav>
-        </div>
-
-        <div>
-          <h4>Villages</h4>
-          <nav>
-            <Link href="/villages">All Villages</Link>
-            <Link href="/villages/suggest">Suggest a city</Link>
-            <Link href="/discover">Discover</Link>
-          </nav>
-        </div>
-
-        <div>
-          <h4>Marketplace</h4>
-          <nav>
-            <Link href="/businesses">Businesses</Link>
-            <Link href="/jobs">Jobs and freelance</Link>
-            <Link href="/learning">Learning</Link>
-          </nav>
-        </div>
-
-        <div>
-          <h4>Stories</h4>
-          <nav>
-            <Link href="/media">Media</Link>
-            <Link href="/watch">Watch and Listen</Link>
-            <Link href="/watch/show/expatpreneurs">Podcast</Link>
-          </nav>
-        </div>
-
-        <div>
-          <h4>Company</h4>
-          <nav>
-            <Link href="/contact">Contact</Link>
-            <Link href="/login">Log in</Link>
-            <Link href="/legal/terms">Terms of service</Link>
-            <Link href="/legal/privacy">Privacy policy</Link>
-          </nav>
-        </div>
+        <Col
+          title="Explore"
+          items={[
+            <Link key="h" href="/how-it-works">How it works</Link>,
+            <Link key="m" href="/membership">Membership</Link>,
+            <Link key="d" href="/members">Members</Link>,
+            <Link key="e" href="/events">Events</Link>,
+            <Link key="a" href="/apply">Request your invitation</Link>,
+            <Link key="s" href="/apply/status">Your invitation request</Link>,
+          ]}
+        />
+        <Col
+          title="Villages"
+          items={[
+            <Link key="d" href="/villages/dubai"><span className="vdot" />Dubai</Link>,
+            <Link key="l" href="/villages/lisbon"><span className="vdot soon" />Lisbon <small>Launching soon</small></Link>,
+            <Link key="p" href="/villages/paris"><span className="vdot soon" />Paris <small>Launching soon</small></Link>,
+            <Link key="a" href="/villages">All Villages</Link>,
+            <Link key="s" href="/villages/suggest">Suggest a city</Link>,
+          ]}
+        />
+        <Col
+          title="Marketplace"
+          items={[
+            <Link key="b" href="/businesses">Businesses</Link>,
+            <Link key="l" href="/learning">Learning</Link>,
+            <Link key="t" href="/membership">Teach in the network</Link>,
+          ]}
+        />
+        <Col
+          title="Stories"
+          items={[
+            <Link key="m" href="/media">Media</Link>,
+            <Link key="v" href="/watch/videos">Videos</Link>,
+            <Link key="p" href="/watch/podcasts">Podcasts</Link>,
+            <Link key="f" href="/media/founder-story">Founder story</Link>,
+          ]}
+        />
+        <Col
+          title="Company"
+          items={[
+            <Link key="c" href="/contact">Contact</Link>,
+            <Link key="p" href="/partnerships">Partnerships</Link>,
+            <Link key="r" href="/press">Press</Link>,
+            <Link key="l" href="/login">Log in</Link>,
+          ]}
+        />
       </div>
 
       <div className="ft-bottom">
-        <span>© {new Date().getFullYear()} ExpatPreneurs Global.</span>
-        <span>
+        <span>© {new Date().getFullYear()} ExpatPreneurs Global. All rights reserved.</span>
+        <nav>
           <Link href="/legal/privacy">Privacy</Link>
-          {" · "}
           <Link href="/legal/terms">Terms</Link>
-        </span>
+          <Link href="/legal/cookies">Cookies</Link>
+        </nav>
       </div>
     </footer>
   );

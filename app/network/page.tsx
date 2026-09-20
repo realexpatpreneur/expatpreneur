@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { NotifyButton } from "./forms";
 
 export const metadata = { title: "The Global network, ExpatPreneurs Global" };
@@ -42,9 +42,7 @@ export default async function NetworkPage() {
   const paid = isPaid(member);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/network">
         <section className="band">
           <p className="muted small">
             <Link href="/home">Home</Link>
@@ -157,7 +155,6 @@ export default async function NetworkPage() {
             </Link>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Home, ExpatPreneurs Global" };
 
@@ -21,9 +21,7 @@ export default async function MemberHomePage() {
 
   if (error) {
     return (
-      <>
-        <SiteHeader signedIn />
-        <main className="wrap">
+      <WorkspaceShell kind="member" nav="/home">
           <section className="band">
             <h1>Your profile did not load</h1>
             <div className="notice bad">{error.message}</div>
@@ -32,16 +30,13 @@ export default async function MemberHomePage() {
               above to the build team.
             </p>
           </section>
-        </main>
-      </>
+        </WorkspaceShell>
     );
   }
 
   if (!profile) {
     return (
-      <>
-        <SiteHeader signedIn />
-        <main className="wrap">
+      <WorkspaceShell kind="member" nav="/home">
           <section className="band">
             <h1>Almost there</h1>
             <p className="lead">
@@ -50,8 +45,7 @@ export default async function MemberHomePage() {
               invitation is approved.
             </p>
           </section>
-        </main>
-      </>
+        </WorkspaceShell>
     );
   }
 
@@ -105,9 +99,7 @@ export default async function MemberHomePage() {
   );
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/home">
         <section className="band">
           <h1>{profile.full_name.split(" ")[0]}, welcome back.</h1>
           <p className="lead">
@@ -278,7 +270,6 @@ export default async function MemberHomePage() {
             </Link>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

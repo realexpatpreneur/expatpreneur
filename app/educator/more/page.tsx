@@ -1,5 +1,5 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { MenuList } from "@/components/menu-list";
 
 export const metadata = { title: "More, your teaching" };
@@ -8,9 +8,7 @@ export default async function EducatorMorePage() {
   await requireMember("/educator/more");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="edu" nav="/educator/more">
         <section className="band">
           <h1>More</h1>
         </section>
@@ -27,7 +25,6 @@ export default async function EducatorMorePage() {
             ]}
           />
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

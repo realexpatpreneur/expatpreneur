@@ -1,8 +1,7 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Businesses, ExpatPreneurs Global" };
 
@@ -42,9 +41,7 @@ export default async function BusinessesPage({
     villages?.find((v) => v.id === id)?.name ?? "";
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(member)} />
-      <main className="wrap">
+    <DualPage member={Boolean(member)} nav="/businesses" active="/businesses">
         <section className={member ? "band" : "hero center"}>
           <h1>Businesses</h1>
           <p className="lead">
@@ -124,8 +121,6 @@ export default async function BusinessesPage({
             </p>
           </section>
         )}
-      </main>
-      {member ? null : <SiteFooter />}
-    </>
+      </DualPage>
   );
 }

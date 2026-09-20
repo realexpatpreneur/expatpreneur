@@ -1,3 +1,4 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -9,7 +10,6 @@ import {
   registrationBlock,
   type EventRow,
 } from "@/lib/events";
-import { SiteHeader } from "@/components/site-header";
 import { RegisterForm, CancelForm } from "../forms";
 import { PhotoForm, RemovePhoto } from "@/app/photos/forms";
 import { TicketButton } from "@/app/upgrade/forms";
@@ -94,9 +94,7 @@ export default async function EventPage({
   const taken = (guests ?? []).length;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/events">
         <section className="band">
           <p className="muted small">
             <Link href="/events">Events</Link>
@@ -360,7 +358,6 @@ export default async function EventPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

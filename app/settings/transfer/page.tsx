@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { TransferForm } from "./form";
 
 export const metadata = { title: "Moving city, ExpatPreneurs Global" };
@@ -33,9 +33,7 @@ export default async function TransferPage({
     villages?.find((v) => v.id === id)?.name ?? "another Village";
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/settings/transfer">
         <section className="band">
           <p className="muted small">
             <Link href="/settings">Settings</Link>
@@ -103,7 +101,6 @@ export default async function TransferPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

@@ -1,8 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = {
   title: "Members, ExpatPreneurs Global",
@@ -55,9 +54,7 @@ export default async function PublicMembersPage({
     villages?.find((v) => v.id === id)?.name ?? "";
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(me)} />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/members">
         <section className={me ? "band" : "hero center"}>
           <h1>Members</h1>
           <p className="lead">
@@ -154,8 +151,6 @@ export default async function PublicMembersPage({
             </p>
           </section>
         )}
-      </main>
-      <SiteFooter />
-    </>
+      </WorkspaceShell>
   );
 }

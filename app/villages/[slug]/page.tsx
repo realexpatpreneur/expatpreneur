@@ -1,9 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whenText } from "@/lib/events";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 const statusLine: Record<string, string> = {
   open: "Open, by invitation",
@@ -53,9 +52,7 @@ export default async function VillagePublicPage({
   ]);
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(user)} />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/villages">
         <section className="band">
           <p>
             <span className={`chip ${village.status === "open" ? "mint" : ""}`}>
@@ -148,8 +145,6 @@ export default async function VillagePublicPage({
             </Link>
           </div>
         </section>
-      </main>
-      <SiteFooter />
-    </>
+      </WorkspaceShell>
   );
 }

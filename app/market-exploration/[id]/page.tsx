@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { MarketReplyForm, CloseMarketForm } from "../forms";
 import { stageLabel } from "../page";
 
@@ -49,9 +49,7 @@ export default async function MarketPostPage({
   const canReply = sameVillage || isPaid(member);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/market-exploration">
         <section className="band">
           <p className="muted small">
             <Link href="/market-exploration">Market Exploration</Link>
@@ -167,7 +165,6 @@ export default async function MarketPostPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

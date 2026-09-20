@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { JoinGroupButton } from "../forms";
 
 export default async function GroupPage({
@@ -49,9 +49,7 @@ export default async function GroupPage({
   const joined = ids.includes(member.id);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/groups">
         <section className="band">
           <p className="muted small">
             <Link href="/groups">Industry Groups</Link>
@@ -135,7 +133,6 @@ export default async function GroupPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

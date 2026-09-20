@@ -1,6 +1,6 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { SuggestionForm } from "./form";
 
 export const metadata = { title: "Suggestion box, ExpatPreneurs Global" };
@@ -9,9 +9,7 @@ export default async function SuggestionsPage() {
   const member = await requireMember("/suggestions");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/suggestions">
         <section className="band">
           <h1>Suggestion box</h1>
           <p className="lead">
@@ -45,7 +43,6 @@ export default async function SuggestionsPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

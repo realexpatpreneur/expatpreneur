@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { sessionWhen, joinBlock, type LiveSession } from "@/lib/live";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Live rooms, ExpatPreneurs Global" };
 
@@ -49,9 +49,7 @@ export default async function LivePage() {
   };
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/live">
         <section className="band">
           <h1>Live rooms</h1>
           <p className="lead">
@@ -80,7 +78,6 @@ export default async function LivePage() {
             <div className="rows">{upcoming.map(card)}</div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

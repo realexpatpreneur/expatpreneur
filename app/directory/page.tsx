@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Directory, ExpatPreneurs Global" };
 
@@ -45,9 +45,7 @@ export default async function DirectoryPage({
     villages?.find((v) => v.id === id)?.name ?? "";
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/directory">
         <section className="band">
           <h1>Directory</h1>
           <p className="lead">
@@ -118,7 +116,6 @@ export default async function DirectoryPage({
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

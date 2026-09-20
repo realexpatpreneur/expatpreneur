@@ -1,7 +1,6 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Watch and Listen, ExpatPreneurs Global" };
 
@@ -38,9 +37,7 @@ export default async function WatchPage({
   const { data: items } = await query;
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(user)} />
-      <main className="wrap">
+    <DualPage member={Boolean(user)} nav="/watch" active="/watch">
         <section className={user ? "band" : "hero center"}>
           <h1>Watch and Listen</h1>
           <p className="lead">
@@ -101,8 +98,6 @@ export default async function WatchPage({
             </div>
           )}
         </section>
-      </main>
-      {user ? null : <SiteFooter />}
-    </>
-  );
+      </DualPage>
+        );
 }

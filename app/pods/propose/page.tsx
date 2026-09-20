@@ -1,6 +1,6 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { ProposePodForm } from "./form";
 
 export const metadata = { title: "Propose a Pod, ExpatPreneurs Global" };
@@ -9,9 +9,7 @@ export default async function ProposePodPage() {
   await requireMember("/pods/propose");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/pods/propose">
         <section className="band">
           <p className="muted small">
             <Link href="/pods">Pods</Link>
@@ -45,7 +43,6 @@ export default async function ProposePodPage() {
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

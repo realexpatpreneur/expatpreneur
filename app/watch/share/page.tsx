@@ -1,8 +1,7 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Share, ExpatPreneurs Global" };
 
@@ -31,9 +30,7 @@ export default async function SharePage({
   const title = media?.title ?? "Watch and Listen";
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(member)} />
-      <main className="wrap">
+    <DualPage member={Boolean(member)} nav="/watch/share" active="/watch/share">
         <section className="band">
           <div className="panel" style={{ maxWidth: 520 }}>
             <h2>Share</h2>
@@ -81,8 +78,6 @@ export default async function SharePage({
             </p>
           </div>
         </section>
-      </main>
-      {member ? null : <SiteFooter />}
-    </>
+      </DualPage>
   );
 }

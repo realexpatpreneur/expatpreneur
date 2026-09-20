@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "You are in, ExpatPreneurs Global" };
 
@@ -36,9 +36,7 @@ export default async function WelcomeDonePage() {
   ]);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/welcome/done">
         <section className="band">
           <h1>You are in.</h1>
           <p className="lead">
@@ -98,7 +96,6 @@ export default async function WelcomeDonePage() {
             </Link>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

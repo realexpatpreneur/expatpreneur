@@ -1,10 +1,10 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { liveReady } from "@/lib/livekit";
 import { roleLabel, type LiveSession } from "@/lib/live";
-import { SiteHeader } from "@/components/site-header";
 import { RoomClient } from "./room-client";
 
 export default async function RoomPage({
@@ -29,9 +29,7 @@ export default async function RoomPage({
   const myRole = (role as string) ?? "participant";
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/live/room">
         <section className="band">
           <p className="muted small">
             <Link href="/live">Live rooms</Link>
@@ -59,7 +57,6 @@ export default async function RoomPage({
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

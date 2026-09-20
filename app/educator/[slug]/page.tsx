@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { CourseForm, LessonForm, DeleteLessonButton } from "../forms";
 
 export default async function EducatorCoursePage({
@@ -43,9 +43,7 @@ export default async function EducatorCoursePage({
   ).length;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="edu" nav="/educator">
         <section className="band">
           <p className="muted small">
             <Link href="/educator">Your courses</Link>
@@ -86,7 +84,6 @@ export default async function EducatorCoursePage({
             <CourseForm course={course} />
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

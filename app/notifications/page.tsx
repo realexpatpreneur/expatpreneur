@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Notifications, ExpatPreneurs Global" };
 
@@ -23,9 +23,7 @@ export default async function NotificationsPage() {
     .is("read_at", null);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/notifications">
         <section className="band">
           <h1>Notifications</h1>
           <p className="lead">
@@ -70,7 +68,6 @@ export default async function NotificationsPage() {
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

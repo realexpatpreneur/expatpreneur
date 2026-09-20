@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { LessonDone } from "../../forms";
 
 export default async function LessonPage({
@@ -52,9 +52,7 @@ export default async function LessonPage({
   const previous = (lessons ?? []).find((l) => l.position === current.position - 1);
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/learning">
         <section className="band">
           <p className="muted small">
             <Link href={`/learning/${slug}`}>{course.title}</Link>
@@ -142,7 +140,6 @@ export default async function LessonPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

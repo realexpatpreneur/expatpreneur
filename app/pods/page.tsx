@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Pods, ExpatPreneurs Global" };
 
@@ -28,9 +28,7 @@ export default async function PodsPage() {
     villages?.find((v) => v.id === id)?.name ?? "Every Village";
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/pods">
         <section className="band">
           <h1>Pods</h1>
           <p className="lead">
@@ -72,7 +70,6 @@ export default async function PodsPage() {
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

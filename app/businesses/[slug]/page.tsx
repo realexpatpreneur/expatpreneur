@@ -1,9 +1,8 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { ContactBusinessForm } from "../contact-form";
 
 export default async function BusinessPage({
@@ -48,9 +47,7 @@ export default async function BusinessPage({
   const mine = Boolean(member) && business.owner_id === member?.id;
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(member)} />
-      <main className="wrap">
+    <DualPage member={Boolean(member)} nav="/businesses" active="/businesses">
         <section className="band">
           <p className="muted small">
             <Link href="/businesses">Businesses</Link>
@@ -177,8 +174,6 @@ export default async function BusinessPage({
             </div>
           </div>
         </section>
-      </main>
-      {member ? null : <SiteFooter />}
-    </>
+      </DualPage>
   );
 }

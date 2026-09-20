@@ -1,8 +1,8 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { MessageForm } from "../forms";
 
 export default async function ThreadPage({
@@ -57,9 +57,7 @@ export default async function ThreadPage({
     sameVillage || (isPaid(member) && connection?.status === "accepted");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/messages">
         <section className="band">
           <p className="muted small">
             <Link href="/messages">Messages</Link>
@@ -131,7 +129,6 @@ export default async function ThreadPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

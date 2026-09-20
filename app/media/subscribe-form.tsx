@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { subscribe, type SubscribeState } from "./subscribe";
 
+// The prototype's newsletter row: one input, one mint button.
 export function SubscribeForm({ source }: { source?: string }) {
   const [state, action, pending] = useActionState<SubscribeState, FormData>(
     subscribe,
@@ -19,17 +20,24 @@ export function SubscribeForm({ source }: { source?: string }) {
         </label>
       </div>
 
-      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="source" value={source ?? "media"} />
 
-      <label className="field">
-        <span>Email</span>
-        <input name="email" type="email" required autoComplete="email" />
-      </label>
-
-      <button className="btn" type="submit" disabled={pending}>
-        {pending ? "Sending" : "Send it to me"}
-      </button>
+      <div className="row">
+        <label className="input">
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="Your email address"
+            aria-label="Email address"
+          />
+        </label>
+        <button className="btn btn-mint" type="submit" disabled={pending}>
+          {pending ? "Sending" : "Subscribe"}
+        </button>
+      </div>
     </form>
   );
 }

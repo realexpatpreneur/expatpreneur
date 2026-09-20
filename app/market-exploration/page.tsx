@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Market Exploration, ExpatPreneurs Global" };
 
@@ -42,9 +42,7 @@ export default async function MarketExplorationPage({
     : { data: [] };
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/market-exploration">
         <section className="band">
           <h1>Market Exploration</h1>
           <p className="lead">
@@ -150,7 +148,6 @@ export default async function MarketExplorationPage({
             </div>
           </div>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

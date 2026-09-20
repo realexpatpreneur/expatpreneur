@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { BusinessForm } from "../forms";
 
 export const metadata = { title: "Add your business" };
@@ -20,9 +20,7 @@ export default async function NewBusinessPage() {
     .maybeSingle();
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/businesses/new">
         <section className="band">
           <p className="muted small">
             <Link href="/businesses">Businesses</Link>
@@ -36,7 +34,6 @@ export default async function NewBusinessPage() {
         <section className="band">
           <BusinessForm business={existing ?? undefined} />
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

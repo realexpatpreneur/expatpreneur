@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 import { MenuList } from "@/components/menu-list";
 import { signOut } from "@/app/settings/actions";
 
@@ -25,9 +25,7 @@ export default async function MemberMorePage() {
     has("circle_host") || has("industry_lead") || has("pod_lead");
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/more">
         <section className="band">
           <h1>More</h1>
         </section>
@@ -75,7 +73,6 @@ export default async function MemberMorePage() {
             </button>
           </form>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

@@ -1,7 +1,7 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Industry Groups, ExpatPreneurs Global" };
 
@@ -24,9 +24,7 @@ export default async function GroupsPage() {
     sizes?.find((s) => s.group_id === id)?.members ?? 0;
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/groups">
         <section className="band">
           <h1>Industry Groups</h1>
           <p className="lead">
@@ -60,7 +58,6 @@ export default async function GroupsPage() {
             </div>
           )}
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

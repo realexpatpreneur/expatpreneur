@@ -1,5 +1,5 @@
+import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 
 export const metadata = { title: "Thank you, ExpatPreneurs Global" };
 
@@ -12,9 +12,7 @@ export default async function UpgradeDonePage({
   const cancelled = state === "cancelled";
 
   return (
-    <>
-      <SiteHeader signedIn />
-      <main className="wrap">
+    <WorkspaceShell kind="member" nav="/upgrade/done">
         <section className="band">
           <h1>{cancelled ? "Your plan will end" : "Every Village is open"}</h1>
           <p className="lead">
@@ -33,7 +31,6 @@ export default async function UpgradeDonePage({
             )}
           </p>
         </section>
-      </main>
-    </>
+      </WorkspaceShell>
   );
 }

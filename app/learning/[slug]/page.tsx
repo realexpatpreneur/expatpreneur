@@ -1,9 +1,8 @@
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere, isPaid } from "@/lib/member";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { EnrolButton } from "../forms";
 import { BuyButton, RefundForm } from "../buy";
 
@@ -97,9 +96,7 @@ export default async function CoursePage({
   const doneIds = new Set((progress ?? []).map((p) => p.lesson_id));
 
   return (
-    <>
-      <SiteHeader signedIn={Boolean(member)} />
-      <main className="wrap">
+    <DualPage member={Boolean(member)} nav="/learning" active="/learning">
         <section className="band">
           <p className="muted small">
             <Link href="/learning">Learning</Link>
@@ -285,8 +282,6 @@ export default async function CoursePage({
             </div>
           </div>
         </section>
-      </main>
-      {member ? null : <SiteFooter />}
-    </>
+      </DualPage>
   );
 }
