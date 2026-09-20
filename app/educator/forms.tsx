@@ -1,0 +1,154 @@
+"use client";
+
+import { useActionState } from "react";
+import { saveCourse, saveLesson, type EducatorState } from "./actions";
+
+export function CourseForm({
+  course,
+}: {
+  course?: {
+    id: string;
+    title: string;
+    summary: string | null;
+    description: string | null;
+    level: string;
+    duration: string | null;
+    tier: string;
+    status: string;
+  };
+}) {
+  const [state, action, pending] = useActionState<EducatorState, FormData>(
+    saveCourse,
+    {}
+  );
+
+  return (
+    <form action={action} className="panel">
+      <h3>{course ? course.title : "New course"}</h3>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      {course ? <input type="hidden" name="id" value={course.id} /> : null}
+
+      <label className="field" style={{ marginTop: 10 }}>
+        <span>Title</span>
+        <input name="title" required defaultValue={course?.title ?? ""} />
+      </label>
+
+      <label className="field">
+        <span>One line</span>
+        <input name="summary" defaultValue={course?.summary ?? ""} />
+      </label>
+
+      <label className="field">
+        <span>What it covers</span>
+        <textarea name="description" rows={4} defaultValue={course?.description ?? ""} />
+      </label>
+
+      <div className="two">
+        <label className="field">
+          <span>Who it is for</span>
+          <select name="level" defaultValue={course?.level ?? "anyone"}>
+            <option value="anyone">Anyone</option>
+            <option value="starting out">Starting out</option>
+            <option value="running it">Already running it</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>How long</span>
+          <input
+            name="duration"
+            defaultValue={course?.duration ?? ""}
+            placeholder="4 lessons, about an hour"
+          />
+        </label>
+      </div>
+
+      <div className="two">
+        <label className="field">
+          <span>Who can take it</span>
+          <select name="tier" defaultValue={course?.tier ?? "all"}>
+            <option value="all">Every member</option>
+            <option value="paid">Paid members only</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>Status</span>
+          <select name="status" defaultValue={course?.status ?? "draft"}>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="retired">Retired</option>
+          </select>
+        </label>
+      </div>
+
+      <button className="btn primary" type="submit" disabled={pending}>
+        {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}
+
+export function LessonForm({
+  courseId,
+  nextPosition,
+  lesson,
+}: {
+  courseId: string;
+  nextPosition: number;
+  lesson?: {
+    id: string;
+    position: number;
+    title: string;
+    body: string | null;
+    video_url: string | null;
+    duration: string | null;
+  };
+}) {
+  const [state, action, pending] = useActionState<EducatorState, FormData>(
+    saveLesson,
+    {}
+  );
+
+  return (
+    <form action={action} className="panel">
+      <h3>{lesson ? `${lesson.position}. ${lesson.title}` : "New lesson"}</h3>
+      {state.error ? <div className="notice bad">{state.error}</div> : null}
+      <input type="hidden" name="course_id" value={courseId} />
+      {lesson ? <input type="hidden" name="id" value={lesson.id} /> : null}
+
+      <div className="two" style={{ marginTop: 10 }}>
+        <label className="field">
+          <span>Position</span>
+          <input
+            name="position"
+            type="number"
+            min={1}
+            defaultValue={lesson?.position ?? nextPosition}
+          />
+        </label>
+        <label className="field">
+          <span>How long</span>
+          <input name="duration" defaultValue={lesson?.duration ?? ""} placeholder="12 minutes" />
+        </label>
+      </div>
+
+      <label className="field">
+        <span>Title</span>
+        <input name="title" required defaultValue={lesson?.title ?? ""} />
+      </label>
+
+      <label className="field">
+        <span>Video link</span>
+        <input name="video_url" defaultValue={lesson?.video_url ?? ""} placeholder="https://" />
+      </label>
+
+      <label className="field">
+        <span>The lesson</span>
+        <textarea name="body" rows={6} defaultValue={lesson?.body ?? ""} />
+      </label>
+
+      <button className="btn primary" type="submit" disabled={pending}>
+        {pending ? "Saving" : "Save"}
+      </button>
+    </form>
+  );
+}

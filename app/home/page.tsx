@@ -202,6 +202,12 @@ export default async function MemberHomePage() {
                 Guides, templates and recordings your Village put together.
               </p>
             </Link>
+            <Link className="panel" href="/learning">
+              <h3>Learning</h3>
+              <p className="muted small">
+                Short courses from members who have already done it.
+              </p>
+            </Link>
             <Link className="panel" href="/watch">
               <h3>Watch and Listen</h3>
               <p className="muted small">
