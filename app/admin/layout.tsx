@@ -43,6 +43,7 @@ const groups = [
       ["/admin/suggestions", "Suggestion box"],
       ["/admin/insight", "Insight"],
       ["/admin/settings", "Village settings"],
+      ["/admin/more", "More"],
     ],
   },
 ];

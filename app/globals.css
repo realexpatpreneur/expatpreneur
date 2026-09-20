@@ -318,11 +318,33 @@ section.band {
   h1 { font-size: 34px; }
 }
 
+/* Anything marked only-small belongs to phones. It is the way into the
+   menu pages, which carry the navigation that does not fit. */
+.only-small { display: none; }
+
 @media (max-width: 760px) {
   .grid, .grid.three { grid-template-columns: repeat(2, 1fr); gap: 22px 16px; }
   h1 { font-size: 28px; }
   .top nav a.hide-small { display: none; }
+  .only-small { display: inline-flex; }
   .wrap { padding: 0 20px; }
+  .cols { grid-template-columns: 1fr; }
+  .two { grid-template-columns: 1fr; }
+  .adminnav { overflow-x: auto; flex-wrap: nowrap; }
+  .rowlink { flex-wrap: wrap; gap: 8px; }
+  .rowmeta { width: 100%; justify-content: flex-start; }
+  .searchrow { flex-wrap: wrap; }
+  .searchrow input { min-width: 0; }
+  .tablewrap { overflow-x: auto; }
+}
+
+@media (max-width: 520px) {
+  .grid, .grid.three { grid-template-columns: 1fr; }
+  h1 { font-size: 24px; }
+  .panel { padding: 16px; }
+  .btn { width: 100%; justify-content: center; }
+  .row { flex-wrap: wrap; }
+  .row .btn { width: auto; }
 }
 
 /* admin workspace */

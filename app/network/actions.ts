@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export type NetworkState = { error?: string; done?: string };
@@ -27,5 +28,5 @@ export async function tellMeWhenItOpens(
   if (error) return { error: "That did not save. Try again in a moment." };
 
   revalidatePath("/network");
-  return { done: "asked" };
+  redirect(`/network/notified?village=${String(formData.get("village_id"))}`);
 }

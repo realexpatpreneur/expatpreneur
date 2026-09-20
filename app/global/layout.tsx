@@ -43,6 +43,7 @@ export default async function GlobalLayout({
           <Link href="/global/money">Money</Link>
           <Link href="/global/audit">The record</Link>
           <Link href="/global/settings">System settings</Link>
+          <Link href="/global/more">More</Link>
           <Link className="btn" href="/admin/applications">
             Village view
           </Link>

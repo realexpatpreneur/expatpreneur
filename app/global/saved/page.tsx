@@ -1,0 +1,37 @@
+import Link from "next/link";
+import { requireGlobal } from "@/lib/access";
+import { SiteHeader } from "@/components/site-header";
+
+export const metadata = { title: "Saved, the Global team" };
+
+// Confirmation for Global changes. Each is recorded in the audit log.
+export default async function GlobalSavedPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
+  const { from = "" } = await searchParams;
+  await requireGlobal();
+
+  return (
+    <>
+      <SiteHeader signedIn />
+      <main className="wrap">
+        <section className="band">
+          <h1>Saved</h1>
+          <p className="lead">
+            The change is live and recorded in the audit log.
+          </p>
+          <p>
+            <Link className="btn primary" href={from ? `/global/${from}` : "/global"}>
+              Back
+            </Link>{" "}
+            <Link className="btn" href="/global/audit">
+              Audit log
+            </Link>
+          </p>
+        </section>
+      </main>
+    </>
+  );
+}

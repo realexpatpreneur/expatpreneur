@@ -36,6 +36,11 @@ export default async function EmailTemplatePage({
           <h1>{template.name}</h1>
           <p className="lead">Sent when: {template.sent_when.toLowerCase()}.</p>
           {done ? <div className="notice good">Saved.</div> : null}
+          <p>
+            <Link className="btn" href={`/global/emails/${key}/preview`}>
+              Preview
+            </Link>
+          </p>
         </section>
 
         <section className="band">

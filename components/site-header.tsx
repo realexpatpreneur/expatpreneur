@@ -28,6 +28,9 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
         <Link className="hide-small" href="/watch">
           Watch
         </Link>
+        <Link className="btn only-small" href={signedIn ? "/more" : "/menu"}>
+          Menu
+        </Link>
         {signedIn ? (
           <>
             <Link className="hide-small" href="/search">
