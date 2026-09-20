@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
+import { sendEmail, url } from "@/lib/email";
+import { notify } from "@/lib/notify";
 
 export type MemberAdminState = { error?: string };
 
@@ -127,6 +129,27 @@ export async function sendAnnouncement(
   });
 
   if (error) return { error: error.message };
+
+  // Everyone active in the Village hears it once, on the platform and by
+  // email.
+  const villageId = admin.homeVillageId ?? admin.villageIds[0] ?? null;
+  const { data: members } = villageId
+    ? await supabase
+        .from("profiles")
+        .select("id, email, full_name")
+        .eq("village_id", villageId)
+        .eq("status", "active")
+    : { data: [] };
+
+  for (const member of members ?? []) {
+    await notify(member.id, "announcement", title, body.slice(0, 120), "/home");
+    if (member.email) {
+      await sendEmail(member.email, title, title, [body], {
+        label: "Open the platform",
+        href: url("/home"),
+      });
+    }
+  }
 
   revalidatePath("/admin/announcements");
   redirect("/admin/announcements?done=1");

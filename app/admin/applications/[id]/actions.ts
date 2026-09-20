@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/access";
+import { sendEmail, url } from "@/lib/email";
 
 export type DecisionState = { error?: string };
 
@@ -117,6 +118,18 @@ export async function approveApplication(
     meta: { profile_id: userId, circle_id: circleId },
   });
 
+  await sendEmail(
+    application.email,
+    "You are in",
+    "Welcome to ExpatPreneurs",
+    [
+      `Your request has been approved, ${String(application.full_name).split(" ")[0]}.`,
+      "A separate email carries the link that signs you in. Open it, finish your profile, and your Circle can find you.",
+      "If it has not arrived, look in spam before writing to us.",
+    ],
+    { label: "Go to the platform", href: url("/login") }
+  );
+
   revalidatePath("/admin/applications");
   redirect(`/admin/applications/${id}?done=approved`);
 }
@@ -130,11 +143,26 @@ export async function waitlistApplication(
   const admin = await requireAdmin();
   const supabase = await createClient();
 
-  const { error } = await supabase
+  const { data: application, error } = await supabase
     .from("applications")
     .update({ status: "waitlisted", local_note: note, reviewed_by: admin.userId })
-    .eq("id", id);
+    .eq("id", id)
+    .select("full_name, email")
+    .maybeSingle();
   if (error) return { error: error.message };
+
+  if (application) {
+    await sendEmail(
+      application.email,
+      "Your request, and where it stands",
+      "Not yet, but not no",
+      [
+        `Thank you for asking, ${String(application.full_name).split(" ")[0]}.`,
+        "Your Village is at capacity for now, so your request is on the list rather than declined. When the next Circle opens, we come back to this list first.",
+      ],
+      { label: "See the Villages", href: url("/villages") }
+    );
+  }
 
   revalidatePath("/admin/applications");
   redirect(`/admin/applications/${id}?done=waitlisted`);
@@ -153,7 +181,7 @@ export async function declineApplication(
   const admin = await requireAdmin();
   const supabase = await createClient();
 
-  const { error } = await supabase
+  const { data: application, error } = await supabase
     .from("applications")
     .update({
       status: "declined",
@@ -161,8 +189,25 @@ export async function declineApplication(
       decided_by: admin.userId,
       decided_at: new Date().toISOString(),
     })
-    .eq("id", id);
+    .eq("id", id)
+    .select("full_name, email")
+    .maybeSingle();
   if (error) return { error: error.message };
+
+  // The applicant is told the decision, never the reason.
+  if (application) {
+    await sendEmail(
+      application.email,
+      "About your request",
+      "Not this time",
+      [
+        `Thank you for asking, ${String(application.full_name).split(" ")[0]}.`,
+        "We are not able to offer you a place at the moment. That is a decision about fit and timing, not about your business.",
+        "You are welcome to ask again in future, and the public events are open to you meanwhile.",
+      ],
+      { label: "See what is open to everyone", href: url("/watch") }
+    );
+  }
 
   revalidatePath("/admin/applications");
   redirect(`/admin/applications/${id}?done=declined`);

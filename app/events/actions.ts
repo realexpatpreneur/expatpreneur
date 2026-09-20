@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sendEmail, url } from "@/lib/email";
+import { whenText } from "@/lib/events";
 
 export type RegisterState = { error?: string; done?: string };
 
@@ -37,6 +39,38 @@ export async function registerForEvent(
       error:
         "That registration was refused. Either the event is not open to you, or you are already on the list.",
     };
+  }
+
+  const [{ data: event }, { data: profile }] = await Promise.all([
+    supabase
+      .from("events")
+      .select("title, starts_at, ends_at, timezone, venue, is_online, online_url")
+      .eq("id", eventId)
+      .maybeSingle(),
+    supabase
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", user.id)
+      .maybeSingle(),
+  ]);
+
+  if (event && profile?.email) {
+    await sendEmail(
+      profile.email,
+      requiresApproval ? `Request sent: ${event.title}` : `You are going: ${event.title}`,
+      event.title,
+      [
+        requiresApproval
+          ? "Your request is with the host, who will confirm shortly."
+          : "Your place is confirmed.",
+        whenText(event),
+        event.is_online
+          ? `Online. ${event.online_url ?? "The link is on the event page."}`
+          : event.venue ?? "The venue is on the event page.",
+        "A reminder comes the day before and an hour before it starts.",
+      ],
+      { label: "Open the event", href: url(`/events/${slug}`) }
+    );
   }
 
   revalidatePath(`/events/${slug}`);
@@ -90,5 +124,29 @@ export async function registerAsGuest(
     };
   }
 
-  redirect(`/e/${String(formData.get("slug"))}?registered=1`);
+  const slug = String(formData.get("slug"));
+  const { data: event } = await supabase
+    .from("events")
+    .select("title, starts_at, ends_at, timezone, venue, is_online, online_url")
+    .eq("id", String(formData.get("event_id")))
+    .maybeSingle();
+
+  if (event) {
+    await sendEmail(
+      email,
+      `You are registered: ${event.title}`,
+      event.title,
+      [
+        `Thank you for registering, ${name.split(" ")[0]}.`,
+        whenText(event),
+        event.is_online
+          ? `Online. ${event.online_url ?? "The link follows nearer the time."}`
+          : event.venue ?? "The venue follows nearer the time.",
+        "This event is open to everyone. Most of what ExpatPreneurs does is for members, by invitation.",
+      ],
+      { label: "See the event", href: url(`/e/${slug}`) }
+    );
+  }
+
+  redirect(`/e/${slug}?registered=1`);
 }

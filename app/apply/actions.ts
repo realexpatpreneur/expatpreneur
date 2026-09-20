@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sendEmail, url } from "@/lib/email";
 
 const list = (value: FormDataEntryValue | null) =>
   String(value ?? "")
@@ -63,6 +64,18 @@ export async function submitApplication(
   if (error) {
     return { error: "That did not send. Please try again in a moment." };
   }
+
+  await sendEmail(
+    email,
+    "We have your request",
+    "Thank you for asking",
+    [
+      `Your request to join ExpatPreneurs is with us, ${fullName.split(" ")[0]}.`,
+      "Someone reads every one, so it takes a few days rather than a few minutes. You will hear either way.",
+      "If your city does not have a Village yet, we will tell you when it opens.",
+    ],
+    { label: "See the Villages", href: url("/villages") }
+  );
 
   redirect("/apply/sent");
 }
