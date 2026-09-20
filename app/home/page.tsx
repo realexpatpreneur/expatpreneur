@@ -227,6 +227,12 @@ export default async function MemberHomePage() {
                 Short courses from members who have already done it.
               </p>
             </Link>
+            <Link className="panel" href="/photos">
+              <h3>Photographs</h3>
+              <p className="muted small">
+                What the rooms looked like, from the people who were there.
+              </p>
+            </Link>
             <Link className="panel" href="/watch">
               <h3>Watch and Listen</h3>
               <p className="muted small">

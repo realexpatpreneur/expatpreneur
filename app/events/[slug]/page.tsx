@@ -11,6 +11,7 @@ import {
 } from "@/lib/events";
 import { SiteHeader } from "@/components/site-header";
 import { RegisterForm, CancelForm } from "../forms";
+import { PhotoForm, RemovePhoto } from "@/app/photos/forms";
 import { TicketButton } from "@/app/upgrade/forms";
 import { stripeReady } from "@/lib/stripe";
 
@@ -73,6 +74,14 @@ export default async function EventPage({
         .limit(30)
     : { data: [] };
 
+  const { data: photos } = await supabase
+    .from("event_photos")
+    .select("id, url, caption, uploader_id")
+    .eq("event_id", event.id)
+    .order("created_at", { ascending: false })
+    .limit(24);
+
+  const isOver = new Date(event.starts_at).getTime() < Date.now();
   const blocked = registrationBlock(event, member);
   const registered = mine && mine.status !== "cancelled";
   const visiting =
@@ -155,6 +164,39 @@ export default async function EventPage({
                   </dd>
                 </dl>
               </div>
+
+              {isOver || (photos ?? []).length ? (
+                <div className="panel">
+                  <h3>Photographs</h3>
+                  {(photos ?? []).length === 0 ? (
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      None yet. If you were there, put one up.
+                    </p>
+                  ) : (
+                    <div className="grid three" style={{ marginTop: 12 }}>
+                      {(photos ?? []).map((photo) => (
+                        <div key={photo.id}>
+                          <div className="shot">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={photo.url} alt={photo.caption ?? ""} />
+                          </div>
+                          {photo.caption ? (
+                            <p className="muted small">{photo.caption}</p>
+                          ) : null}
+                          {photo.uploader_id === member.id ? (
+                            <RemovePhoto photoId={photo.id} slug={event.slug} />
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {registered ? (
+                    <div style={{ marginTop: 16 }}>
+                      <PhotoForm eventId={event.id} slug={event.slug} />
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
 
               <div className="panel">
                 <h3>Going</h3>

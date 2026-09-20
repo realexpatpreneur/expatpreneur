@@ -357,6 +357,9 @@ export default async function MyVillagePage() {
                   <Link className="btn" href="/library">
                     Resources
                   </Link>
+                  <Link className="btn" href="/photos">
+                    Photographs
+                  </Link>
                   <Link className="btn" href="/suggestions">
                     Suggestion box
                   </Link>
