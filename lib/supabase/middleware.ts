@@ -36,6 +36,7 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/home") ||
     path.startsWith("/welcome") ||
     path.startsWith("/village") ||
+    path.startsWith("/my-village") ||
     path.startsWith("/directory") ||
     path.startsWith("/members") ||
     path.startsWith("/market-exploration") ||

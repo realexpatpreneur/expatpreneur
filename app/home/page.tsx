@@ -122,7 +122,10 @@ export default async function MemberHomePage() {
               </Link>
             )}
           </p>
-          <p>
+          <p className="row">
+            <Link className="btn primary" href="/my-village">
+              Your Village
+            </Link>
             <Link className="btn" href="/settings">
               Settings
             </Link>
