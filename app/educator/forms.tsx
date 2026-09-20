@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { saveCourse, saveLesson, type EducatorState } from "./actions";
+import { Uploader } from "@/components/uploader";
 
 export function CourseForm({
   course,
@@ -15,6 +16,7 @@ export function CourseForm({
     duration: string | null;
     tier: string;
     status: string;
+    cover_url?: string | null;
   };
 }) {
   const [state, action, pending] = useActionState<EducatorState, FormData>(
@@ -28,7 +30,14 @@ export function CourseForm({
       {state.error ? <div className="notice bad">{state.error}</div> : null}
       {course ? <input type="hidden" name="id" value={course.id} /> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <Uploader
+        name="cover_url"
+        folder="courses"
+        label="Cover image"
+        current={course?.cover_url}
+      />
+
+      <label className="field">
         <span>Title</span>
         <input name="title" required defaultValue={course?.title ?? ""} />
       </label>

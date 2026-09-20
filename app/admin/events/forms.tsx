@@ -7,6 +7,7 @@ import {
   checkInGuest,
   type EventFormState,
 } from "./actions";
+import { Uploader } from "@/components/uploader";
 
 type Option = { value: string; label: string };
 
@@ -32,6 +33,7 @@ export function EventForm({
     requires_approval: boolean;
     show_guest_list: boolean;
     reminders: Record<string, boolean>;
+    cover_url?: string | null;
   };
 }) {
   const [state, action, pending] = useActionState<EventFormState, FormData>(
@@ -94,6 +96,13 @@ export function EventForm({
             Write Online for a call, and the link goes out after registration.
           </span>
         </label>
+        <Uploader
+          name="cover_url"
+          folder="events"
+          label="Cover image"
+          hint="Wide works best. A photograph of the last one beats a graphic."
+          current={event?.cover_url}
+        />
         <label className="field">
           <span>Description</span>
           <textarea name="description" rows={4} defaultValue={event?.description ?? ""} />

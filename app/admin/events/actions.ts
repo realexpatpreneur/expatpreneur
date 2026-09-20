@@ -54,6 +54,7 @@ export async function saveEvent(
   const row = {
     title,
     description: String(formData.get("description") ?? "").trim() || null,
+    cover_url: String(formData.get("cover_url") ?? "").trim() || null,
     starts_at: startsAt,
     ends_at: endsAt,
     timezone: String(formData.get("timezone") ?? "Asia/Dubai"),

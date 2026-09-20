@@ -58,7 +58,13 @@ export default async function BusinessPage({
             {village?.name ? <span className="chip">{village.name}</span> : null}{" "}
             {business.public ? <span className="chip mint">Public</span> : null}
           </p>
-          <h1>{business.name}</h1>
+          <div className="facerow">
+            {business.logo_url ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img className="face big" src={business.logo_url} alt="" />
+            ) : null}
+            <h1 style={{ margin: 0 }}>{business.name}</h1>
+          </div>
           <p className="lead">{business.tagline}</p>
           <p>
             {business.website ? (

@@ -36,6 +36,7 @@ export async function saveBusiness(
   const row = {
     name,
     tagline: String(formData.get("tagline") ?? "").trim() || null,
+    logo_url: String(formData.get("logo_url") ?? "").trim() || null,
     description: String(formData.get("description") ?? "").trim() || null,
     industry: String(formData.get("industry") ?? "").trim() || null,
     website: String(formData.get("website") ?? "").trim() || null,

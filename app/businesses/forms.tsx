@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { saveBusiness, saveJob, closeJob, type BusinessState, type JobState } from "./actions";
+import { Uploader } from "@/components/uploader";
 
 export function BusinessForm({
   business,
@@ -16,6 +17,7 @@ export function BusinessForm({
     founded: string | null;
     serves: string[] | null;
     public: boolean;
+    logo_url?: string | null;
   };
 }) {
   const [state, action, pending] = useActionState<BusinessState, FormData>(
@@ -27,6 +29,13 @@ export function BusinessForm({
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
       {state.error ? <div className="notice bad">{state.error}</div> : null}
       {business ? <input type="hidden" name="id" value={business.id} /> : null}
+
+      <Uploader
+        name="logo_url"
+        folder="businesses"
+        label="Logo or a photograph"
+        current={business?.logo_url}
+      />
 
       <label className="field">
         <span>Name</span>

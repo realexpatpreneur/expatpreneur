@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "full_name, email, headline, business_name, industry, bio, can_help_with, looking_for, phone, languages, markets_known, lived_in, public_profile"
+      "full_name, email, headline, business_name, industry, bio, can_help_with, looking_for, phone, languages, markets_known, lived_in, public_profile, avatar_url"
     )
     .eq("id", member.id)
     .maybeSingle();

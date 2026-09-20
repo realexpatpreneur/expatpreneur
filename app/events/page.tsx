@@ -82,9 +82,16 @@ export default async function EventsPage({
                 return (
                   <article className="card" key={event.id}>
                     <Link href={`/events/${event.slug}`}>
-                      <div className={`cover ${covers[i % covers.length]}`}>
-                        {event.title}
-                      </div>
+                      {event.cover_url ? (
+                        <div className="cover photo">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={event.cover_url} alt="" />
+                        </div>
+                      ) : (
+                        <div className={`cover ${covers[i % covers.length]}`}>
+                          {event.title}
+                        </div>
+                      )}
                       <div className="kind">{whenText(event)}</div>
                       <p>{event.venue ?? (event.is_online ? "Online" : "")}</p>
                       <div className="meta">

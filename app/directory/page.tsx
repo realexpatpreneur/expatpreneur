@@ -26,7 +26,7 @@ export default async function DirectoryPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, full_name, headline, business_name, industry, village_id, circle_id")
+    .select("id, full_name, headline, business_name, industry, village_id, circle_id, avatar_url")
     .eq("status", "active")
     .order("full_name")
     .limit(100);
@@ -99,8 +99,14 @@ export default async function DirectoryPage({
             <div className="grid three">
               {(people ?? []).map((person) => (
                 <Link className="panel" key={person.id} href={`/members/${person.id}`}>
-                  <h3>{person.full_name}</h3>
-                  <p className="muted small">
+                  <div className="facerow">
+                    {person.avatar_url ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img className="face" src={person.avatar_url} alt="" />
+                    ) : null}
+                    <h3 style={{ margin: 0 }}>{person.full_name}</h3>
+                  </div>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {person.headline || person.business_name || "Member"}
                   </p>
                   <p className="muted small" style={{ marginBottom: 0 }}>

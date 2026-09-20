@@ -14,7 +14,7 @@ export default async function LearningPage() {
   const [{ data: courses }, { data: mine }] = await Promise.all([
     supabase
       .from("courses")
-      .select("id, slug, title, summary, level, duration, tier, educator_id")
+      .select("id, slug, title, summary, level, duration, tier, educator_id, cover_url")
       .eq("status", "published")
       .order("created_at", { ascending: false }),
     supabase
@@ -59,9 +59,16 @@ export default async function LearningPage() {
                 return (
                   <article className="card" key={course.id}>
                     <Link href={`/learning/${course.slug}`}>
-                      <div className={`cover ${covers[i % covers.length]}`}>
-                        {course.title}
-                      </div>
+                      {course.cover_url ? (
+                        <div className="cover photo">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={course.cover_url} alt="" />
+                        </div>
+                      ) : (
+                        <div className={`cover ${covers[i % covers.length]}`}>
+                          {course.title}
+                        </div>
+                      )}
                       <div className="kind">
                         {course.level}
                         {course.duration ? `, ${course.duration}` : ""}

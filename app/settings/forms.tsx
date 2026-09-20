@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { saveProfile, leaveCommunity, type SettingsState } from "./actions";
+import { Uploader } from "@/components/uploader";
 
 type Profile = {
   full_name: string;
@@ -16,6 +17,7 @@ type Profile = {
   markets_known: string[] | null;
   lived_in: string[] | null;
   public_profile: boolean;
+  avatar_url: string | null;
 };
 
 export function ProfileSettingsForm({ profile }: { profile: Profile }) {
@@ -30,7 +32,16 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
       {state.error ? <div className="notice bad">{state.error}</div> : null}
       {state.done ? <div className="notice good">Saved.</div> : null}
 
-      <label className="field" style={{ marginTop: 12 }}>
+      <Uploader
+        name="avatar_url"
+        bucket="avatars"
+        label="Your photograph"
+        hint="A face makes the Directory worth opening. Square works best."
+        current={profile.avatar_url}
+        shape="round"
+      />
+
+      <label className="field">
         <span>Your name</span>
         <input name="full_name" required defaultValue={profile.full_name} />
       </label>

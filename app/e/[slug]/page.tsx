@@ -51,6 +51,12 @@ export default async function PublicEventPage({
           </p>
           <h1>{event.title}</h1>
           <p className="lead">{whenText(event)}</p>
+          {event.cover_url ? (
+            <div className="shot" style={{ maxWidth: 720 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={event.cover_url} alt="" />
+            </div>
+          ) : null}
         </section>
 
         <section className="band">

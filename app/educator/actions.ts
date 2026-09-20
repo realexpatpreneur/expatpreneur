@@ -27,6 +27,7 @@ export async function saveCourse(
     title,
     summary: String(formData.get("summary") ?? "").trim() || null,
     description: String(formData.get("description") ?? "").trim() || null,
+    cover_url: String(formData.get("cover_url") ?? "").trim() || null,
     level: String(formData.get("level") ?? "anyone"),
     duration: String(formData.get("duration") ?? "").trim() || null,
     tier: String(formData.get("tier") ?? "all"),

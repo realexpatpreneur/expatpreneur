@@ -17,7 +17,7 @@ export default async function MemberProfilePage({
   const { data: person } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id"
+      "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, avatar_url"
     )
     .eq("id", id)
     .maybeSingle();
@@ -54,7 +54,13 @@ export default async function MemberProfilePage({
           <p className="muted small">
             <Link href="/directory">Directory</Link>
           </p>
-          <h1>{person.full_name}</h1>
+          <div className="facerow">
+            {person.avatar_url ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img className="face big" src={person.avatar_url} alt="" />
+            ) : null}
+            <h1 style={{ margin: 0 }}>{person.full_name}</h1>
+          </div>
           <p className="lead">
             {person.headline || person.business_name || "Member"}
           </p>

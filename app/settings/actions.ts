@@ -29,6 +29,7 @@ export async function saveProfile(
     .from("profiles")
     .update({
       full_name: fullName,
+      avatar_url: String(formData.get("avatar_url") ?? "").trim() || null,
       headline: String(formData.get("headline") ?? "").trim() || null,
       business_name: String(formData.get("business_name") ?? "").trim() || null,
       industry: String(formData.get("industry") ?? "").trim() || null,
