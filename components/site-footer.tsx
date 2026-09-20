@@ -87,17 +87,17 @@ export function SiteFooter() {
           title="Stories"
           items={[
             <Link key="m" href="/media">Media</Link>,
-            <Link key="v" href="/watch/videos">Videos</Link>,
-            <Link key="p" href="/watch/podcasts">Podcasts</Link>,
-            <Link key="f" href="/media/founder-story">Founder story</Link>,
+            <Link key="v" href="/watch">Videos</Link>,
+            <Link key="p" href="/watch?kind=podcast">Podcasts</Link>,
+            <Link key="f" href="/media">Founder story</Link>,
           ]}
         />
         <Col
           title="Company"
           items={[
             <Link key="c" href="/contact">Contact</Link>,
-            <Link key="p" href="/partnerships">Partnerships</Link>,
-            <Link key="r" href="/press">Press</Link>,
+            <Link key="p" href="/contact">Partnerships</Link>,
+            <Link key="r" href="/contact">Press</Link>,
             <Link key="l" href="/login">Log in</Link>,
           ]}
         />
@@ -108,7 +108,7 @@ export function SiteFooter() {
         <nav>
           <Link href="/legal/privacy">Privacy</Link>
           <Link href="/legal/terms">Terms</Link>
-          <Link href="/legal/cookies">Cookies</Link>
+          <Link href="/legal/privacy">Cookies</Link>
         </nav>
       </div>
     </footer>

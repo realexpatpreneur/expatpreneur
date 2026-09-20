@@ -27,7 +27,7 @@ export const MEMBER_SPACES: Space[] = [
       ["/my-village/circles", "rings", "Circles"],
       ["/my-village/announcements", "bell", "Announcements"],
       ["/events", "cal", "Events"],
-      ["/resources", "book", "Resources"],
+      ["/library", "book", "Resources"],
     ],
   },
   {
@@ -35,7 +35,6 @@ export const MEMBER_SPACES: Space[] = [
     label: "Your groups",
     icon: "rings",
     items: [
-      ["/my-circle", "rings", "Your Circle"],
       ["/groups", "users", "Industry Groups"],
       ["/pods", "check", "Pods"],
       ["/network", "globe", "The network"],
@@ -191,9 +190,7 @@ export const LEAD_SPACES: Space[] = [
     icon: "rings",
     items: [
       ["/lead", "rings", "Your Circle"],
-      ["/lead/group", "users", "Your Industry Group"],
-      ["/lead/pod", "check", "Your Pod"],
-    ],
+                ],
   },
 ];
 
@@ -204,8 +201,7 @@ export const EDU_SPACES: Space[] = [
     icon: "star",
     items: [
       ["/educator", "grid", "Overview"],
-      ["/educator/courses", "book", "My courses"],
-      ["/educator/learners", "users", "Learners"],
+            ["/educator/learners", "users", "Learners"],
       ["/educator/sales", "card", "Sales"],
       ["/educator/payouts", "download", "Payouts"],
       ["/educator/profile", "user", "Educator profile"],
@@ -239,20 +235,19 @@ export const TABS: Record<string, NavItem[]> = {
   ],
   global: [
     ["/global", "grid", "Overview"],
-    ["/global/applications", "inbox", "Decisions"],
+    ["/admin/applications", "inbox", "Decisions"],
     ["/global/villages", "pin", "Villages"],
-    ["/global/members", "users", "Members"],
+    ["/admin/members", "users", "Members"],
     ["/global/more", "menu", "More"],
   ],
   lead: [
-    ["/lead", "rings", "Circle"],
-    ["/lead/group", "users", "Group"],
-    ["/lead/pod", "check", "Pod"],
+    ["/lead", "rings", "What you run"],
+    ["/home", "home", "Member view"],
     ["/lead/more", "menu", "More"],
   ],
   edu: [
     ["/educator", "grid", "Overview"],
-    ["/educator/courses", "book", "Courses"],
+    ["/educator/learners", "users", "Learners"],
     ["/educator/sales", "card", "Sales"],
     ["/educator/more", "menu", "More"],
   ],

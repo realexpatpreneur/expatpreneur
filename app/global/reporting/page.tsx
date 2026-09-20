@@ -1,3 +1,5 @@
+import { PageHead } from "@/components/workspace-shell";
+import { Stat } from "@/components/admin-bits";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
@@ -62,36 +64,26 @@ export default async function GlobalReportingPage() {
   const cycles = [...new Set((renewals ?? []).map((r) => r.cycle))].sort().reverse();
 
   return (
-    <main className="wrap">
-      <section className="sec">
-        <h1>Reporting</h1>
-        <p className="lead">
-          Every Village side by side, how the network is growing, and what it
-          takes in.
-        </p>
-      </section>
+    <>
+      <PageHead
+        title="Analytics"
+        sub="Every Village side by side, how the network is growing, and what it takes in."
+      />
 
-      <section className="sec">
-        <div className="g3">
-          <div className="panel">
-            <h3>Active members</h3>
-            <p className="lead" style={{ margin: 0 }}>{totals.members}</p>
-          </div>
-          <div className="panel">
-            <h3>On the paid plan</h3>
-            <p className="lead" style={{ margin: 0 }}>{totals.paid}</p>
-            <p className="muted small">
-              {totals.members
-                ? `${Math.round((totals.paid / totals.members) * 100)} percent`
-                : ""}
-            </p>
-          </div>
-          <div className="panel">
-            <h3>Requests waiting</h3>
-            <p className="lead" style={{ margin: 0 }}>{totals.waiting}</p>
-          </div>
-        </div>
-      </section>
+      <div className="g3 g4">
+        <Stat label="Active members" value={totals.members} note="Across every Village" />
+        <Stat
+          label="On the paid plan"
+          value={totals.paid}
+          note={
+            totals.members
+              ? `${Math.round((totals.paid / totals.members) * 100)} percent of members`
+              : "No members yet"
+          }
+        />
+        <Stat label="Requests waiting" value={totals.waiting} note="With you or a Village" href="/admin/applications" />
+        <Stat label="Villages" value={(villages ?? []).length} note="Open and preparing" href="/global/villages" />
+      </div>
 
       <section className="sec">
         <h2>Villages</h2>
@@ -215,6 +207,6 @@ export default async function GlobalReportingPage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { PageHead } from "@/components/workspace-shell";
+import { Stat, Task, SecHead } from "@/components/admin-bits";
+import { Ic } from "@/components/icon";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function GlobalOverviewPage() {
@@ -44,66 +47,123 @@ export default async function GlobalOverviewPage() {
       (p) => p.village_id === id && p.status === "active"
     ).length;
 
+  const stats: [string, number | string, string, string][] = [
+    ["Members", members ?? 0, "Active across the network", "/admin/members"],
+    ["Villages", (villages ?? []).length, "Open, launching and explored", "/global/villages"],
+    ["Invitation requests", waitingApplications ?? 0, "You decide for now", "/admin/applications"],
+    ["Escalations", openReports ?? 0, "From Local Admins", "/global/moderation"],
+  ];
+
   return (
-    <main className="wrap">
-      <section className="sec">
-        <h1>The network</h1>
-        <p className="lead">
-          Where the Villages are, how they are doing, and what is waiting on
-          you.
-        </p>
-      </section>
+    <>
+      <PageHead
+        title="ExpatPreneurs Global"
+        sub="The whole network this month"
+        actions={
+          <Link className="btn btn-primary" href="/global/villages">
+            <Ic name="plus" />
+            New Village
+          </Link>
+        }
+      />
 
-      <section className="sec">
-        <div className="g3">
-          <div className="panel">
-            <h3>Active members</h3>
-            <p className="lead" style={{ margin: 0 }}>{members ?? 0}</p>
-          </div>
-          <div className="panel">
-            <h3>On the paid plan</h3>
-            <p className="lead" style={{ margin: 0 }}>{paid ?? 0}</p>
-          </div>
-          <div className="panel">
-            <h3>Requests waiting</h3>
-            <p className="lead" style={{ margin: 0 }}>{waitingApplications ?? 0}</p>
-          </div>
-          <div className="panel">
-            <h3>Open reports</h3>
-            <p className="lead" style={{ margin: 0 }}>{openReports ?? 0}</p>
-          </div>
-          <div className="panel">
-            <h3>New suggestions</h3>
-            <p className="lead" style={{ margin: 0 }}>{newSuggestions ?? 0}</p>
-          </div>
-          <div className="panel">
-            <h3>Villages</h3>
-            <p className="lead" style={{ margin: 0 }}>{(villages ?? []).length}</p>
+      <div className="g3 g4">
+        {stats.map(([label, value, note, href]) => (
+          <Stat key={label} label={label} value={value} note={note} href={href} />
+        ))}
+      </div>
+
+      <div className="gside" style={{ marginTop: 22 }}>
+        <div className="panel">
+          <SecHead title="Needs Global" />
+          <div className="divide">
+            {(waitingApplications ?? 0) > 0 ? (
+              <Task
+                href="/admin/applications"
+                tag="Curation"
+                title={`Decide on ${waitingApplications} invitation ${
+                  waitingApplications === 1 ? "request" : "requests"
+                }`}
+                sub="Each one carries the Local Admin's note and the balance check."
+              />
+            ) : null}
+            {(openReports ?? 0) > 0 ? (
+              <Task
+                href="/global/moderation"
+                tag="Reports"
+                title={`Look at ${openReports} escalated ${
+                  openReports === 1 ? "report" : "reports"
+                }`}
+                sub="Raised by a Village that could not settle it locally."
+              />
+            ) : null}
+            {(newSuggestions ?? 0) > 0 ? (
+              <Task
+                href="/global/suggestions"
+                tag="Curation"
+                title={`Read ${newSuggestions} new ${
+                  newSuggestions === 1 ? "suggestion" : "suggestions"
+                }`}
+                sub="What members think could be better."
+              />
+            ) : null}
+            {(villages ?? []).some((v) => v.status !== "open") ? (
+              <Task
+                href="/global/villages"
+                tag="Villages"
+                title="Prepare the Villages that are not open yet"
+                sub="Local Admins, the first Circle Host, and the Village page."
+              />
+            ) : null}
+            {(waitingApplications ?? 0) === 0 &&
+            (openReports ?? 0) === 0 &&
+            (newSuggestions ?? 0) === 0 ? (
+              <Task
+                title="Nothing waiting on you"
+                sub="Which is worth something in itself."
+              />
+            ) : null}
           </div>
         </div>
-      </section>
 
-      <section className="sec">
-        <h2>Villages</h2>
-        <div className="divide">
-          {(villages ?? []).map((village) => (
-            <Link className="li linkrow" key={village.id} href="/global/villages">
-              <div>
-                <b>{village.name}</b>
-                <div className="muted small">
-                  {village.city}, {village.country}. {countIn(village.id)} active
-                  members.
-                </div>
-              </div>
-              <div className="rowmeta">
-                <span className={`chip ${village.status === "open" ? "chip-mint" : ""}`}>
-                  {village.status}
-                </span>
-              </div>
-            </Link>
-          ))}
+        <div className="stack">
+          <div className="panel">
+            <SecHead title="Villages" href="/global/villages" />
+            <div className="divide">
+              {(villages ?? []).map((village) => (
+                <Link className="li linkrow" key={village.id} href="/global/villages">
+                  <div>
+                    <b>{village.name}</b>
+                    <div className="muted small">
+                      {village.city}, {village.country}. {countIn(village.id)}{" "}
+                      active members.
+                    </div>
+                  </div>
+                  <div className="rowmeta">
+                    <span
+                      className={`chip ${
+                        village.status === "open" ? "chip-mint" : "chip-sun"
+                      }`}
+                    >
+                      {village.status}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="panel">
+            <SecHead title="Membership" href="/global/plans" label="Plans" />
+            <dl className="kv" style={{ gridTemplateColumns: "1fr auto", marginTop: 8 }}>
+              <dt>On the paid plan</dt>
+              <dd>{paid ?? 0}</dd>
+              <dt>Everyone else</dt>
+              <dd>{Math.max(0, (members ?? 0) - (paid ?? 0))}</dd>
+            </dl>
+          </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </>
   );
 }

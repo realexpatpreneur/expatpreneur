@@ -1,3 +1,4 @@
+import { PageHead } from "@/components/workspace-shell";
 import { createClient } from "@/lib/supabase/server";
 import { timeAgo } from "@/lib/member";
 import { ReportForm } from "../forms";
@@ -28,14 +29,11 @@ export default async function GlobalModerationPage() {
   const closed = (reports ?? []).filter((r) => r.status === "closed");
 
   return (
-    <main className="wrap">
-      <section className="sec">
-        <h1>Moderation</h1>
-        <p className="lead">
-          What members reported, what was done, and by whom. Handled quietly,
-          and recorded properly.
-        </p>
-      </section>
+    <>
+      <PageHead
+        title="Moderation"
+        sub="What members reported, what was done, and by whom. Handled quietly, and recorded properly."
+      />
 
       <section className="sec">
         <h2>Open</h2>
@@ -86,6 +84,6 @@ export default async function GlobalModerationPage() {
           </div>
         </section>
       ) : null}
-    </main>
+    </>
   );
 }
