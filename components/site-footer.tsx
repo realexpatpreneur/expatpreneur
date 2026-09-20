@@ -9,6 +9,7 @@ export function SiteFooter() {
           <div className="links">
             <Link href="/discover">Discover</Link>
             <Link href="/membership">Membership</Link>
+            <Link href="/members">Members</Link>
             <Link href="/legal/terms">Terms of service</Link>
             <Link href="/legal/privacy">Privacy policy</Link>
             <Link href="/contact">Contact</Link>

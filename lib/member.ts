@@ -40,6 +40,34 @@ export async function requireMember(next: string): Promise<Member> {
   return { ...profile, villageName: village?.name ?? null };
 }
 
+// For the pages the public can also open. Returns null rather than
+// redirecting, so the page can decide what a stranger is shown.
+export async function whoIsHere(): Promise<Member | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, full_name, status, plan, village_id, circle_id")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!profile || profile.status === "onboarding") return null;
+
+  const { data: village } = profile.village_id
+    ? await supabase
+        .from("villages")
+        .select("name")
+        .eq("id", profile.village_id)
+        .maybeSingle()
+    : { data: null };
+
+  return { ...profile, villageName: village?.name ?? null };
+}
+
 export const isPaid = (member: Member) => member.plan === "paid";
 
 export function timeAgo(iso: string) {

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember, isPaid } from "@/lib/member";
+import { whoIsHere, isPaid } from "@/lib/member";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { ConnectionRequestForm } from "@/app/messages/forms";
 
 export default async function MemberProfilePage({
@@ -11,18 +12,43 @@ export default async function MemberProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const me = await requireMember("/directory");
+  // A stranger can open this page too. The database decides whether the row
+  // comes back at all; this decides how much of it is shown.
+  const me = await whoIsHere();
   const supabase = await createClient();
 
-  const { data: person } = await supabase
+  // A signed-in member may read the member-only fields. A stranger is not
+  // granted them at all, so asking for them would fail the whole query.
+  const columns = me
+    ? "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, avatar_url, public_profile"
+    : "id, full_name, headline, bio, business_name, industry, lived_in, village_id, avatar_url, public_profile";
+
+  const { data: profile } = await supabase
     .from("profiles")
-    .select(
-      "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, avatar_url"
-    )
+    .select(columns)
     .eq("id", id)
     .maybeSingle();
 
+  const person = profile as unknown as {
+    id: string;
+    full_name: string;
+    headline: string | null;
+    bio: string | null;
+    business_name: string | null;
+    industry: string | null;
+    languages?: string[] | null;
+    markets_known?: string[] | null;
+    lived_in: string[] | null;
+    can_help_with?: string | null;
+    looking_for?: string | null;
+    village_id: string | null;
+    circle_id?: string | null;
+    avatar_url: string | null;
+    public_profile: boolean;
+  } | null;
+
   if (!person) notFound();
+  if (!me && !person.public_profile) notFound();
 
   const { data: village } = person.village_id
     ? await supabase
@@ -32,27 +58,30 @@ export default async function MemberProfilePage({
         .maybeSingle()
     : { data: null };
 
-  const sameVillage = person.village_id === me.village_id;
-  const canContact = person.id !== me.id && (sameVillage || isPaid(me));
+  const sameVillage = Boolean(me) && person.village_id === me?.village_id;
+  const canContact =
+    Boolean(me) && person.id !== me?.id && (sameVillage || isPaid(me!));
 
   const { data: connection } =
-    person.id === me.id || sameVillage
+    !me || person.id === me.id || sameVillage
       ? { data: null }
       : await supabase
           .from("connection_requests")
           .select("status, requester_id")
           .or(
-            `and(requester_id.eq.${me.id},recipient_id.eq.${person.id}),and(requester_id.eq.${person.id},recipient_id.eq.${me.id})`
+            `and(requester_id.eq.${me!.id},recipient_id.eq.${person.id}),and(requester_id.eq.${person.id},recipient_id.eq.${me!.id})`
           )
           .maybeSingle();
 
   return (
     <>
-      <SiteHeader signedIn />
+      <SiteHeader signedIn={Boolean(me)} />
       <main className="wrap">
         <section className="band">
           <p className="muted small">
-            <Link href="/directory">Directory</Link>
+            <Link href={me ? "/directory" : "/members"}>
+              {me ? "Directory" : "Members"}
+            </Link>
           </p>
           <div className="facerow">
             {person.avatar_url ? (
@@ -80,14 +109,22 @@ export default async function MemberProfilePage({
               <dl className="kv">
                 <dt>Business</dt>
                 <dd>{person.business_name || "Not given"}</dd>
-                <dt>Can help with</dt>
-                <dd>{person.can_help_with || "Not given"}</dd>
-                <dt>Looking for</dt>
-                <dd>{person.looking_for || "Not given"}</dd>
-                <dt>Languages</dt>
-                <dd>{(person.languages ?? []).join(", ") || "Not given"}</dd>
-                <dt>Markets they know</dt>
-                <dd>{(person.markets_known ?? []).join(", ") || "Not given"}</dd>
+                {me ? (
+                  <>
+                    <dt>Can help with</dt>
+                    <dd>{person.can_help_with || "Not given"}</dd>
+                    <dt>Looking for</dt>
+                    <dd>{person.looking_for || "Not given"}</dd>
+                  </>
+                ) : null}
+                {me ? (
+                  <>
+                    <dt>Languages</dt>
+                    <dd>{(person.languages ?? []).join(", ") || "Not given"}</dd>
+                    <dt>Markets they know</dt>
+                    <dd>{(person.markets_known ?? []).join(", ") || "Not given"}</dd>
+                  </>
+                ) : null}
                 <dt>Where they have lived</dt>
                 <dd>{(person.lived_in ?? []).join(", ") || "Not given"}</dd>
               </dl>
@@ -96,7 +133,18 @@ export default async function MemberProfilePage({
             <div className="stack">
               <div className="panel">
                 <h3>Getting in touch</h3>
-                {person.id === me.id ? (
+                {!me ? (
+                  <>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      Members write to each other inside the platform. There is
+                      no way to reach somebody from out here, which is the
+                      point of it.
+                    </p>
+                    <Link className="btn primary" href="/apply">
+                      Request an invitation
+                    </Link>
+                  </>
+                ) : person.id === me.id ? (
                   <>
                     <p className="muted small" style={{ marginTop: 6 }}>
                       This is your own profile.
@@ -143,7 +191,7 @@ export default async function MemberProfilePage({
                   </p>
                 )}
               </div>
-              {person.id === me.id ? null : (
+              {!me || person.id === me.id ? null : (
                 <div className="panel wash">
                   <h3>Something wrong?</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
@@ -166,6 +214,7 @@ export default async function MemberProfilePage({
           </div>
         </section>
       </main>
+      {me ? null : <SiteFooter />}
     </>
   );
 }

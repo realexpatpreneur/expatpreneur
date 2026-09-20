@@ -181,7 +181,7 @@ export default async function DiscoverPage({
                   match(p.full_name, p.headline, p.business_name, p.industry)
                 )
                 .map((person, i) => (
-                  <article className="card" key={person.id}>
+                  <Link className="card" href={`/members/${person.id}`} key={person.id}>
                     <div className={`cover ${covers[(i + 2) % covers.length]}`}>
                       {person.full_name
                         .split(" ")
@@ -199,9 +199,14 @@ export default async function DiscoverPage({
                     <div className="meta">
                       <span className="chip">{villageName(person.village_id)}</span>
                     </div>
-                  </article>
+                  </Link>
                 ))}
             </div>
+            <p style={{ marginTop: 18 }}>
+              <Link className="btn" href="/members">
+                See every public member
+              </Link>
+            </p>
           </section>
         ) : null}
 
