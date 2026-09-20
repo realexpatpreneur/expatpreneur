@@ -10,8 +10,8 @@ export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
         <Link className="hide-small" href="/villages">
           Villages
         </Link>
-        <Link className="hide-small" href="/events">
-          Events
+        <Link className="hide-small" href="/watch">
+          Watch
         </Link>
         {signedIn ? (
           <Link className="btn" href="/home">

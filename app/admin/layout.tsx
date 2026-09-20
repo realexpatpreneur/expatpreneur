@@ -23,6 +23,8 @@ export default async function AdminLayout({
           <Link href="/admin/whatsapp">WhatsApp</Link>
           <Link href="/admin/announcements">Announcements</Link>
           <Link href="/admin/events">Events</Link>
+          <Link href="/admin/resources">Resources</Link>
+          <Link href="/admin/media">Watch</Link>
           <Link href="/admin/suggestions">Suggestion box</Link>
           <Link className="btn" href="/home">
             Member view

@@ -1,0 +1,82 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+
+export default async function MediaPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: item } = await supabase
+    .from("media_items")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (!item) notFound();
+
+  return (
+    <>
+      <SiteHeader signedIn={Boolean(user)} />
+      <main className="wrap">
+        <section className="band">
+          <p className="muted small">
+            <Link href="/watch">Watch and Listen</Link>
+          </p>
+          <h1>{item.title}</h1>
+          <p className="lead">{item.summary}</p>
+          <p>
+            <span className="chip">{item.kind}</span>{" "}
+            {item.duration ? <span className="chip">{item.duration}</span> : null}{" "}
+            {item.member_only ? <span className="chip">Members only</span> : null}
+          </p>
+          {item.external_url ? (
+            <p>
+              <a
+                className="btn primary"
+                href={item.external_url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {item.kind === "episode" ? "Listen" : "Watch"}
+              </a>
+            </p>
+          ) : null}
+        </section>
+
+        {item.body ? (
+          <section className="band">
+            <div className="panel" style={{ maxWidth: 760 }}>
+              <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{item.body}</p>
+            </div>
+          </section>
+        ) : null}
+
+        {user ? null : (
+          <section className="band">
+            <div className="band cta">
+              <h2>This is what the network sounds like</h2>
+              <p style={{ color: "#fff" }}>
+                Most of what happens here is between members, in their own
+                cities.
+              </p>
+              <Link className="btn" href="/apply">
+                Request an invitation
+              </Link>
+            </div>
+          </section>
+        )}
+      </main>
+      {user ? null : <SiteFooter />}
+    </>
+  );
+}

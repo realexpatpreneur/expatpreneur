@@ -42,6 +42,7 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/suggestions") ||
     path.startsWith("/messages") ||
     path.startsWith("/notifications") ||
+    path.startsWith("/library") ||
     path.startsWith("/events") ||
     path.startsWith("/admin") ||
     path.startsWith("/global");

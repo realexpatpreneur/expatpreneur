@@ -162,6 +162,18 @@ export default async function MemberHomePage() {
                 Replies, requests and what is happening around you.
               </p>
             </Link>
+            <Link className="panel" href="/library">
+              <h3>Resources</h3>
+              <p className="muted small">
+                Guides, templates and recordings your Village put together.
+              </p>
+            </Link>
+            <Link className="panel" href="/watch">
+              <h3>Watch and Listen</h3>
+              <p className="muted small">
+                Members on what building away from home actually takes.
+              </p>
+            </Link>
             <Link className="panel" href="/suggestions">
               <h3>Suggestion box</h3>
               <p className="muted small">
