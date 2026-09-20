@@ -52,10 +52,10 @@ export function Compose({ name }: { name: string }) {
   return (
     <div className="fcompose">
       <Av name={name} className="av-sm" />
-      <Link className="fcompose-box" href="/my-village/new">
+      <Link className="fcompose-box" href="/village/new">
         Ask for something, or offer what you can
       </Link>
-      <Link className="btn btn-ghost btn-sm" href="/my-village/new">
+      <Link className="btn btn-ghost btn-sm" href="/village/new">
         Post
       </Link>
     </div>

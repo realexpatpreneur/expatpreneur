@@ -141,8 +141,8 @@ export default async function MemberHomePage() {
       text: a.body.length > 220 ? `${a.body.slice(0, 220)}…` : a.body,
       embedTitle: a.title,
       embedLine: a.village_id === profile.village_id ? "Your Village" : "All Villages",
-      href: `/my-village/${a.id}`,
-      actions: [["Reply", `/my-village/${a.id}`], ["See all Asks", "/my-village"]],
+      href: `/village/${a.id}`,
+      actions: [["Reply", `/village/${a.id}`], ["See all Asks", "/my-village"]],
     });
   }
 
@@ -186,7 +186,7 @@ export default async function MemberHomePage() {
             : "What is happening across the network this week."
         }
         actions={
-          <Link className="btn btn-primary" href="/my-village/new">
+          <Link className="btn btn-primary" href="/village/new">
             <Ic name="plus" />
             Post an Ask or Offer
           </Link>
