@@ -7,7 +7,7 @@ import { notify } from "@/lib/notify";
 import { record } from "@/lib/audit";
 import { slugify } from "@/lib/events";
 
-export type RequestState = { error?: string };
+export type RequestState = { error?: string; done?: string };
 
 // Approving a Pod makes it real and puts the member who asked in charge
 // of it, which is the only arrangement that works.
@@ -132,4 +132,33 @@ export async function handleDataRequest(
 
   revalidatePath("/global/requests");
   return {};
+}
+
+// Marking an enquiry answered, so the Global team can see what is still
+// waiting rather than re-reading the whole list.
+export async function answerEnquiry(
+  _prev: RequestState,
+  formData: FormData
+): Promise<RequestState> {
+  await requireGlobal();
+  const id = String(formData.get("id") ?? "");
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase
+    .from("enquiries")
+    .update({
+      status: "answered",
+      answered_by: user?.id ?? null,
+      answered_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) return { error: "That did not save." };
+
+  revalidatePath("/global/requests");
+  return { done: "answered" };
 }

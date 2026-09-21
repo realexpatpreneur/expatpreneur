@@ -1,64 +1,89 @@
 import Link from "next/link";
-import { SiteFooter } from "@/components/site-footer";
+import { createClient } from "@/lib/supabase/server";
+import { PublicPage } from "@/components/public-page";
+import { ContactForm } from "./form";
 
 export const metadata = { title: "Contact, ExpatPreneurs Global" };
 
-export default function ContactPage() {
+const TABS: [string, string][] = [
+  ["general", "General"],
+  ["partnership", "Partnerships"],
+  ["press", "Press"],
+];
+
+const HEADINGS: Record<string, [string, string]> = {
+  general: [
+    "Contact us",
+    "Questions about membership or a Village? We usually reply within two working days.",
+  ],
+  partnership: [
+    "Partner with ExpatPreneurs",
+    "Sponsors, venues and organisations who want to support expat founders. Partnerships are agreed with the Global team.",
+  ],
+  press: ["Press and media", "Interviews, stories and speaking requests."],
+};
+
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ kind?: string }>;
+}) {
+  const { kind = "general" } = await searchParams;
+  const here = HEADINGS[kind] ? kind : "general";
+  const [title, intro] = HEADINGS[here];
+
+  const supabase = await createClient();
+  const { data: villages } = await supabase
+    .from("villages")
+    .select("slug, name")
+    .order("name");
+
   return (
-    <>
-      <main className="wrap">
-        <section className="sec">
-          <h1>Contact</h1>
-          <p className="lead">
-            Most questions have a better door than this one.
-          </p>
-        </section>
+    <PublicPage active="/contact">
+      <section className="pubsec">
+        <div className="article" style={{ maxWidth: 680 }}>
+          <h2>{title}</h2>
+          <p className="intro">{intro}</p>
 
-        <section className="sec">
-          <div className="g3">
-            <div className="panel">
-              <h3>You want to join</h3>
-              <p className="muted small">
-                Requesting an invitation is the way in. It is read by a person,
-                not a filter.
-              </p>
-              <Link className="btn btn-ghost" href="/apply">
-                Request an invitation
+          <div className="tabs" style={{ marginTop: 18 }}>
+            {TABS.map(([key, label]) => (
+              <Link
+                key={key}
+                href={`/contact?kind=${key}`}
+                aria-current={here === key ? "page" : undefined}
+              >
+                {label}
               </Link>
-            </div>
-            <div className="panel">
-              <h3>Your city is not here</h3>
-              <p className="muted small">
-                Tell us where you are. Villages open where enough people ask.
-              </p>
-              <Link className="btn btn-ghost" href="/villages/suggest">
-                Suggest a city
-              </Link>
-            </div>
-            <div className="panel">
-              <h3>You are already a member</h3>
-              <p className="muted small">
-                Your Local Admin is the fastest answer, and they are in your
-                Village's WhatsApp group.
-              </p>
-              <Link className="btn btn-ghost" href="/home">
-                Member space
-              </Link>
-            </div>
+            ))}
           </div>
-        </section>
 
-        <section className="sec">
-          <div className="panel" style={{ maxWidth: 680 }}>
-            <h3>Anything else</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
-              Write to hello@expatpreneurs.com and someone will answer.
-              Partnerships, press and speaking go to the same address.
-            </p>
+          <div style={{ marginTop: 14 }}>
+            <ContactForm kind={here} villages={villages ?? []} />
           </div>
-        </section>
-      </main>
-      <SiteFooter />
-    </>
+
+          <div className="g3" style={{ marginTop: 22 }}>
+            <Link className="panel" href="/apply">
+              <h3 style={{ fontSize: 14 }}>You want to join</h3>
+              <p className="muted small" style={{ marginTop: 4 }}>
+                Requesting an invitation is the way in, and it is read by a
+                person.
+              </p>
+            </Link>
+            <Link className="panel" href="/villages/suggest">
+              <h3 style={{ fontSize: 14 }}>Your city is not here</h3>
+              <p className="muted small" style={{ marginTop: 4 }}>
+                Villages open where enough people ask.
+              </p>
+            </Link>
+            <Link className="panel" href="/apply/status">
+              <h3 style={{ fontSize: 14 }}>You already applied</h3>
+              <p className="muted small" style={{ marginTop: 4 }}>
+                Your reference and email show you where it stands.
+              </p>
+            </Link>
+          </div>
+        </div>
+      </section>
+    </PublicPage>
   );
 }

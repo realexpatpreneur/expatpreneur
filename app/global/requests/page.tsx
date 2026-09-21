@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { PodDecision, DataDecision } from "./forms";
+import { PodDecision, DataDecision, EnquiryDone } from "./forms";
 
 export const metadata = { title: "Requests, the Global team" };
 
@@ -24,6 +24,14 @@ export default async function GlobalRequestsPage() {
         .limit(40),
       supabase.from("villages").select("id, name"),
     ]);
+
+  // What the public sent through the contact page: questions,
+  // partnership offers and press requests.
+  const { data: enquiries } = await supabase
+    .from("enquiries")
+    .select("id, kind, full_name, email, organisation, message, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(40);
 
   const ids = [
     ...new Set([
@@ -55,9 +63,53 @@ export default async function GlobalRequestsPage() {
           </p>
           <h1>Requests</h1>
           <p className="lead">
-            Pods members want to start, and members asking about their own
-            data. Both have somebody waiting at the other end.
+            Messages from the contact page, Pods members want to start, and
+            members asking about their own data. All three have somebody
+            waiting at the other end.
           </p>
+        </section>
+
+        <section className="sec">
+          <h2>From the contact page</h2>
+          {(enquiries ?? []).filter((e) => e.status === "new").length === 0 ? (
+            <p className="muted small">Nothing waiting.</p>
+          ) : (
+            <div className="stack" style={{ marginTop: 16 }}>
+              {(enquiries ?? [])
+                .filter((e) => e.status === "new")
+                .map((enquiry) => (
+                  <div className="panel" key={enquiry.id}>
+                    <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+                      <h3>{enquiry.full_name}</h3>
+                      <span
+                        className={`chip ${
+                          enquiry.kind === "partnership"
+                            ? "chip-mint"
+                            : enquiry.kind === "press"
+                              ? "chip-blue"
+                              : ""
+                        }`}
+                      >
+                        {enquiry.kind === "partnership"
+                          ? "Partnership"
+                          : enquiry.kind === "press"
+                            ? "Press"
+                            : "Question"}
+                      </span>
+                    </div>
+                    <p className="muted small" style={{ marginTop: 6 }}>
+                      <a href={`mailto:${enquiry.email}`}>{enquiry.email}</a>
+                      {enquiry.organisation ? `, ${enquiry.organisation}` : ""}.{" "}
+                      {timeAgo(enquiry.created_at)}.
+                    </p>
+                    <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>
+                      {enquiry.message}
+                    </p>
+                    <EnquiryDone id={enquiry.id} />
+                  </div>
+                ))}
+            </div>
+          )}
         </section>
 
         <section className="sec">

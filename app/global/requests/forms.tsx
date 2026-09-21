@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { decideOnPod, handleDataRequest, type RequestState } from "./actions";
+import { decideOnPod, handleDataRequest, type RequestState, answerEnquiry } from "./actions";
 
 export function PodDecision({ id }: { id: string }) {
   const [state, action, pending] = useActionState<RequestState, FormData>(
@@ -57,6 +57,22 @@ export function DataDecision({ id }: { id: string }) {
           Refused
         </button>
       </div>
+    </form>
+  );
+}
+
+export function EnquiryDone({ id }: { id: string }) {
+  const [, action, pending] = useActionState<RequestState, FormData>(
+    answerEnquiry,
+    {}
+  );
+
+  return (
+    <form action={action}>
+      <input type="hidden" name="id" value={id} />
+      <button className="btn btn-ghost btn-sm" type="submit" disabled={pending}>
+        {pending ? "Saving" : "Mark answered"}
+      </button>
     </form>
   );
 }
