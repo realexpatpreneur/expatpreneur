@@ -2,6 +2,7 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@/lib/member";
 import { whenText } from "@/lib/events";
 
 const statusLine: Record<string, string> = {
@@ -20,9 +21,7 @@ export default async function VillagePublicPage({
   const { slug } = await params;
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
 
   const { data: village } = await supabase
     .from("villages")

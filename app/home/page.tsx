@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@/lib/member";
 import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
 import { FeedPost, Compose, WaRow, EventRow, type FeedItem } from "@/components/feed";
 import { Av } from "@/components/bits";
@@ -21,9 +22,7 @@ function ago(iso: string) {
 
 export default async function MemberHomePage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
 
   if (!user) redirect("/login?next=/home");
 

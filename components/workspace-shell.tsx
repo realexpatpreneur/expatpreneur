@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { currentMember } from "@/lib/member";
 import { Ic } from "@/components/icon";
 import { WorkspaceNav } from "@/components/workspace-nav";
 import { Av } from "@/components/bits";
@@ -26,23 +26,10 @@ export async function WorkspaceShell({
   children: React.ReactNode;
 }) {
   // The shell knows who is signed in, so no page has to pass it along.
-  let who: string = name ?? "";
-  if (!who) {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase
-        .from("member_records")
-        .select("full_name")
-        .eq("id", user.id)
-        .maybeSingle();
-      who = profile?.full_name ?? user.email ?? "You";
-    } else {
-      who = "You";
-    }
-  }
+  // The same lookup the header and the page use, so the shell costs
+  // nothing extra.
+  const member = name ? null : await currentMember();
+  const who: string = name ?? member?.full_name ?? "You";
 
   const spaces = SPACES[kind] ?? SPACES.member;
   const dark = kind === "admin" || kind === "global";

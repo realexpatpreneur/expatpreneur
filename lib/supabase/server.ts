@@ -1,8 +1,13 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 // For server components, route handlers and server actions.
-export async function createClient() {
+//
+// Wrapped in cache, so the dozen places that ask for a client during one
+// page render share a single one rather than each building their own and
+// re-reading the cookies.
+export const createClient = cache(async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -26,4 +31,4 @@ export async function createClient() {
       },
     }
   );
-}
+});

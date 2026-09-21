@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@/lib/member";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { ProfileView, SideCard } from "@/components/profile-view";
 import { Ic } from "@/components/icon";
@@ -18,9 +19,7 @@ export default async function MyProfilePage({
   const publicView = view === "public";
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
   if (!user) redirect("/login?next=/me");
 
   const { data: person } = await supabase

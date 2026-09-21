@@ -2,14 +2,13 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@/lib/member";
 
 export const metadata = { title: "You are in, ExpatPreneurs Global" };
 
 export default async function WelcomeDonePage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
   if (!user) redirect("/login?next=/home");
 
   const { data: profile } = await supabase

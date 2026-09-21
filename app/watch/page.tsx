@@ -1,6 +1,7 @@
 import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@/lib/member";
 
 export const metadata = { title: "Watch and Listen, ExpatPreneurs Global" };
 
@@ -21,9 +22,7 @@ export default async function WatchPage({
   const { show = "all" } = await searchParams;
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
 
   let query = supabase
     .from("media_items")

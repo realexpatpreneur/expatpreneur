@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { currentMember } from "@/lib/member";
 import { Ic } from "@/components/icon";
 import { Logo } from "@/components/brand";
 import { Av } from "@/components/bits";
@@ -16,20 +16,9 @@ const PUBNAV: [string, string][] = [
 // in; signed in it offers the way to your own pages. The links across
 // the middle never change, so the site is always navigable from the top.
 export async function SiteHeader() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: profile } = user
-    ? await supabase
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .maybeSingle()
-    : { data: null };
-
-  const name = profile?.full_name ?? user?.email ?? null;
+  const member = await currentMember();
+  const user = member;
+  const name = member?.full_name ?? null;
 
   return (
     <header className="pubhead">

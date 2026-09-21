@@ -2,6 +2,7 @@ import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@/lib/member";
 
 export default async function MediaPage({
   params,
@@ -11,9 +12,7 @@ export default async function MediaPage({
   const { slug } = await params;
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
 
   const { data: item } = await supabase
     .from("media_items")
