@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { LoginForm } from "./form";
 
@@ -14,7 +13,6 @@ export default async function LoginPage({
 
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <h1>Log in</h1>

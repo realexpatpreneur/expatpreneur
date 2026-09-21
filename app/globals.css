@@ -3001,3 +3001,29 @@ a.card:hover {
 @media (max-width: 700px) {
   .pub .sec { padding: 0 18px; }
 }
+
+/* ---------------------------------------------------------------------
+   The header is on every page now, so it sits at the very top and
+   everything else that sticks measures from underneath it. --barh is
+   the prototype's own variable for exactly this, so the rail, the
+   sidebar, the workspace bar and the profile column all follow.
+   --------------------------------------------------------------------- */
+
+.app { --barh: 61px; }
+
+.pubhead {
+  top: 0;
+  z-index: 7;
+}
+
+/* the prototype's own --gx already centres the header on the page, so
+   this only fixes its height, which is what --barh has to match */
+.pubhead .in { min-height: 61px; }
+
+@container app (max-width: 620px) {
+  .app { --barh: 57px; }
+  .pubhead .in { min-height: 57px; }
+}
+
+/* a signed-in member's avatar in the header */
+.pubhead .av { flex: none; }

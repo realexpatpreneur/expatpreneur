@@ -1,4 +1,3 @@
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { livePage } from "@/lib/pages";
 import { Blocks } from "@/components/blocks";
@@ -14,7 +13,6 @@ export default async function TermsPage() {
   if (page) {
     return (
       <>
-        <SiteHeader />
         <main className="wrap">
           <Blocks blocks={page.blocks} />
         </main>
@@ -25,7 +23,6 @@ export default async function TermsPage() {
 
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <h1>Terms of service</h1>

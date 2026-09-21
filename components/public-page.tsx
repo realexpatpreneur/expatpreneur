@@ -1,7 +1,7 @@
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-// pubPage in the prototype: the header, the page, the footer, inside .pub.
+// A public page: the page itself and the footer. The header is in the
+// root layout, on every page of the site.
 export function PublicPage({
   active,
   children,
@@ -10,8 +10,7 @@ export function PublicPage({
   children: React.ReactNode;
 }) {
   return (
-    <div className="pub">
-      <SiteHeader active={active} />
+    <div className="pub" data-active={active}>
       {children}
       <SiteFooter />
     </div>

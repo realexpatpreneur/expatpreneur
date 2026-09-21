@@ -1,4 +1,3 @@
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { MenuList } from "@/components/menu-list";
 
@@ -8,7 +7,6 @@ export const metadata = { title: "Menu, ExpatPreneurs Global" };
 export default function PublicMenuPage() {
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <h1>Menu</h1>

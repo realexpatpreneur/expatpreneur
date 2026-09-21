@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ApplyForm } from "./form";
 
@@ -16,7 +15,6 @@ export default async function ApplyPage() {
 
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <h1>Request an invitation</h1>

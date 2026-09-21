@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CitySuggestionForm } from "./form";
 
@@ -14,7 +13,6 @@ export default async function SuggestCityPage({
 
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <h1>Your city is not here yet</h1>

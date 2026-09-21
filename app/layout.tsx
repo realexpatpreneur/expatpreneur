@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
   title: "ExpatPreneurs Global",
@@ -25,7 +26,10 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <div className="app">{children}</div>
+        <div className="app">
+          <SiteHeader />
+          {children}
+        </div>
       </body>
     </html>
   );

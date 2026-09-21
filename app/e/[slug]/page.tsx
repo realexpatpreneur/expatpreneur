@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whenText, priceText, type EventRow } from "@/lib/events";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { GuestRegisterForm } from "@/app/events/forms";
 
@@ -40,7 +39,6 @@ export default async function PublicEventPage({
 
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <p>

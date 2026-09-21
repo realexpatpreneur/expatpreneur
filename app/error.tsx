@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 // When something goes wrong the navigation stays, so nobody is stranded.
@@ -14,7 +13,6 @@ export default function ErrorPage({
 }) {
   return (
     <div className="pub">
-      <SiteHeader />
       <section className="pubsec hero-center">
         <h1>Something went wrong here</h1>
         <p className="intro">

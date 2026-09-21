@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata = { title: "Check your inbox, ExpatPreneurs Global" };
@@ -7,7 +6,6 @@ export const metadata = { title: "Check your inbox, ExpatPreneurs Global" };
 export default function ResetSentPage() {
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <h1>Check your inbox</h1>

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ResetForm } from "./form";
 
@@ -8,7 +7,6 @@ export const metadata = { title: "Reset your password, ExpatPreneurs Global" };
 export default function ResetPasswordPage() {
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <p className="muted small">

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { StatusForm } from "./form";
 
@@ -10,7 +9,6 @@ export const metadata = {
 export default function ApplicationStatusPage() {
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="sec">
           <p className="muted small">

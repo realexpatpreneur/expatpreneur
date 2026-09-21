@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 const covers = ["blue", "mint", "pink", "paper", "navy", "sun"] as const;
@@ -14,7 +13,6 @@ export default async function VillagesPage() {
 
   return (
     <>
-      <SiteHeader />
       <main className="wrap">
         <section className="pubsec hero-center">
           <h1>Villages</h1>
