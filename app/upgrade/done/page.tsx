@@ -1,4 +1,4 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { PublicPage } from "@/components/public-page";
 import Link from "next/link";
 
 export const metadata = { title: "Thank you, ExpatPreneurs Global" };
@@ -12,7 +12,7 @@ export default async function UpgradeDonePage({
   const cancelled = state === "cancelled";
 
   return (
-    <WorkspaceShell kind="member" nav="/upgrade/done">
+    <PublicPage>
         <section className="sec">
           <h1>{cancelled ? "Your plan will end" : "Every Village is open"}</h1>
           <p className="lead">
@@ -31,6 +31,6 @@ export default async function UpgradeDonePage({
             )}
           </p>
         </section>
-      </WorkspaceShell>
+      </PublicPage>
   );
 }

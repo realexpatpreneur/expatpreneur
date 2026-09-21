@@ -1,4 +1,4 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -51,7 +51,7 @@ export default async function VillagePublicPage({
   ]);
 
   return (
-    <WorkspaceShell kind="member" nav="/villages">
+    <DualPage member={Boolean(user)} nav="/network" active="/villages">
         <section className="sec">
           <p>
             <span className={`chip ${village.status === "open" ? "chip-mint" : ""}`}>
@@ -144,6 +144,6 @@ export default async function VillagePublicPage({
             </Link>
           </div>
         </section>
-      </WorkspaceShell>
+      </DualPage>
   );
 }

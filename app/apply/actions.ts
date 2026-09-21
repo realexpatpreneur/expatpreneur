@@ -73,10 +73,19 @@ export async function submitApplication(
     nationalities,
     languages: list(formData.get("languages")),
     answers: {
+      role: String(formData.get("role") ?? ""),
+      stage: String(formData.get("stage") ?? ""),
+      lived_in: list(formData.get("lived_in")),
       about_business: String(formData.get("about_business") ?? ""),
+      challenge: String(formData.get("challenge") ?? ""),
+      link: String(formData.get("link") ?? ""),
       why_join: String(formData.get("why_join") ?? ""),
       contribute: String(formData.get("contribute") ?? ""),
       heard_about: String(formData.get("heard_about") ?? ""),
+      referrer: String(formData.get("referrer") ?? ""),
+      resonate: formData.getAll("resonate").map(String),
+      attend: String(formData.get("attend") ?? ""),
+      conduct: formData.get("conduct") ? "Agreed" : "Not agreed",
     },
   })
     .select("reference")

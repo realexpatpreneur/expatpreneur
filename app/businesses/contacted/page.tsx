@@ -1,4 +1,4 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
@@ -23,7 +23,7 @@ export default async function ContactedPage({
     : { data: null };
 
   return (
-    <WorkspaceShell kind="member" nav="/businesses/contacted">
+    <DualPage member={Boolean(member)} nav="/businesses" active="/businesses">
         <section className="sec">
           <h1>Message sent</h1>
           <p className="lead">
@@ -41,6 +41,6 @@ export default async function ContactedPage({
             ) : null}
           </p>
         </section>
-      </WorkspaceShell>
+      </DualPage>
   );
 }

@@ -1,4 +1,4 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { PublicPage } from "@/components/public-page";
 import Link from "next/link";
 
 export const metadata = { title: "Thank you, ExpatPreneurs Global" };
@@ -12,7 +12,7 @@ export default async function SuggestionSentPage({
   const anonymous = how === "anonymous";
 
   return (
-    <WorkspaceShell kind="member" nav="/suggestions/sent">
+    <PublicPage>
         <section className="sec">
           <h1>Thank you</h1>
           <p className="lead">
@@ -29,6 +29,6 @@ export default async function SuggestionSentPage({
             </Link>
           </p>
         </section>
-      </WorkspaceShell>
+      </PublicPage>
   );
 }

@@ -1,4 +1,4 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
@@ -54,7 +54,7 @@ export default async function PublicMembersPage({
     villages?.find((v) => v.id === id)?.name ?? "";
 
   return (
-    <WorkspaceShell kind="member" nav="/members">
+    <DualPage member={Boolean(me)} nav="/directory" active="/members">
         <section className={me ? "sec" : "pubsec hero-center"}>
           <h1>Members</h1>
           <p className="lead">
@@ -151,6 +151,6 @@ export default async function PublicMembersPage({
             </p>
           </section>
         )}
-      </WorkspaceShell>
+      </DualPage>
   );
 }

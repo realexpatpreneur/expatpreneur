@@ -1,49 +1,93 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
+import { VillageCard, type VillageRow } from "@/components/cards";
 
-const covers = ["blue", "mint", "pink", "paper", "navy", "sun"] as const;
+export const metadata = {
+  title: "Villages, ExpatPreneurs Global",
+  description:
+    "Each Village is a local community of expat entrepreneurs in one city, connected to every other Village in the network.",
+};
 
-export default async function VillagesPage() {
+const FILTERS: [string, string][] = [
+  ["all", "All"],
+  ["open", "Open"],
+  ["soon", "Launching soon"],
+];
+
+export default async function VillagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ show?: string }>;
+}) {
+  const { show = "all" } = await searchParams;
   const supabase = await createClient();
+
   const { data: villages } = await supabase
     .from("villages")
     .select("id, slug, name, city, country, status, summary")
     .order("name");
 
+  const rank: Record<string, number> = { open: 0, launching: 1, exploring: 2 };
+  const rows = [...(villages ?? [])]
+    .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9))
+    .filter((v) =>
+      show === "open"
+        ? v.status === "open"
+        : show === "soon"
+          ? ["launching", "exploring"].includes(v.status)
+          : true
+    );
+
   return (
-    <>
-      <main className="wrap">
-        <section className="pubsec hero-center">
-          <h1>Villages</h1>
-          <p className="lead">
-            A Village opens where there are enough expat entrepreneurs, a shared
-            language and a trusted Local Admin.
-          </p>
-        </section>
-        <section className="sec">
-          <div className="g3 g4">
-            {(villages ?? []).map((village, i) => (
-              <article className="card" key={village.id}>
-                <div className={`cover ${covers[i % covers.length]}`}>
-                  {village.name}
-                </div>
-                <div className="kind">{village.country}</div>
-                <p>{village.summary}</p>
-                <div className="meta">
-                  <span className="chip">{village.status}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-          <p style={{ marginTop: 24 }}>
-            <Link className="btn btn-ghost" href="/villages/suggest">
-              Suggest a city
+    <PublicPage active="/villages">
+      <section className="pubsec">
+        <h2>Find your Village</h2>
+        <p className="intro">
+          Each Village is a local community of expat entrepreneurs in one city,
+          connected to every other Village in the network.
+        </p>
+
+        <div className="filters">
+          {FILTERS.map(([key, label]) => (
+            <Link
+              key={key}
+              className={`fchip ${show === key ? "on" : ""}`}
+              href={`/villages?show=${key}`}
+            >
+              {label}
             </Link>
-          </p>
-        </section>
-      </main>
-      <SiteFooter />
-    </>
+          ))}
+        </div>
+
+        <div className="g3">
+          {rows.map((village) => (
+            <VillageCard key={village.id} village={village as VillageRow} />
+          ))}
+        </div>
+
+        <div
+          className="panel panel-wash"
+          style={{
+            marginTop: 22,
+            display: "flex",
+            gap: 16,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 220 }}>
+            <h3 style={{ fontSize: 15 }}>No Village in your city yet?</h3>
+            <p className="muted" style={{ marginTop: 4 }}>
+              Tell us where you are. New Villages open when there are enough
+              members and trusted people ready to host them.
+            </p>
+          </div>
+          <Link className="btn btn-dark" href="/villages/suggest">
+            Suggest your city
+          </Link>
+        </div>
+      </section>
+    </PublicPage>
   );
 }

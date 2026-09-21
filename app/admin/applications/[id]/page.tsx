@@ -71,7 +71,12 @@ export default async function ApplicationPage({
           .join(" and ")} of this Village. You can still approve.`
       : null;
 
-  const answers = (application.answers ?? {}) as Record<string, string>;
+  const answers = (application.answers ?? {}) as Record<string, string | string[]>;
+  const text = (key: string) => {
+    const value = answers[key];
+    if (Array.isArray(value)) return value.join("; ") || "Not given";
+    return value || "Not given";
+  };
 
   const openCircles = (circles ?? [])
     .filter((c) => (c.places_left ?? 0) > 0)
@@ -119,14 +124,32 @@ export default async function ApplicationPage({
               <dd>{applicantNats.join(", ") || "Not given"}</dd>
               <dt>Languages</dt>
               <dd>{(application.languages ?? []).join(", ") || "Not given"}</dd>
+              <dt>Role</dt>
+              <dd>{text("role")}</dd>
+              <dt>Stage</dt>
+              <dd>{text("stage")}</dd>
+              <dt>Lived in</dt>
+              <dd>{text("lived_in")}</dd>
+              <dt>Website or LinkedIn</dt>
+              <dd>{text("link")}</dd>
               <dt>About the business</dt>
-              <dd>{answers.about_business || "Not given"}</dd>
+              <dd>{text("about_business")}</dd>
+              <dt>Biggest challenge</dt>
+              <dd>{text("challenge")}</dd>
               <dt>Why they want to join</dt>
-              <dd>{answers.why_join || "Not given"}</dd>
+              <dd>{text("why_join")}</dd>
               <dt>What they could give</dt>
-              <dd>{answers.contribute || "Not given"}</dd>
+              <dd>{text("contribute")}</dd>
+              <dt>What resonates</dt>
+              <dd>{text("resonate")}</dd>
+              <dt>In person gatherings</dt>
+              <dd>{text("attend")}</dd>
+              <dt>Code of conduct</dt>
+              <dd>{text("conduct")}</dd>
               <dt>How they heard about us</dt>
-              <dd>{answers.heard_about || "Not given"}</dd>
+              <dd>{text("heard_about")}</dd>
+              <dt>Referred by</dt>
+              <dd>{text("referrer")}</dd>
             </dl>
           </div>
 

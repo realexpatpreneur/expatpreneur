@@ -1,4 +1,4 @@
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -48,7 +48,7 @@ export default async function ArticlePage({
   ]);
 
   return (
-    <WorkspaceShell kind="member" nav="/media">
+    <DualPage member={Boolean(me)} nav="/media" active="/media">
         <section className="sec">
           <p className="muted small">
             <Link href="/media">Media</Link>
@@ -117,6 +117,6 @@ export default async function ArticlePage({
             </div>
           </div>
         </section>
-      </WorkspaceShell>
+      </DualPage>
   );
 }
