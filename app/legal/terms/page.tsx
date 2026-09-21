@@ -1,4 +1,5 @@
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
+import { LegalTabs } from "@/components/legal-tabs";
 import { livePage } from "@/lib/pages";
 import { Blocks } from "@/components/blocks";
 
@@ -12,20 +13,20 @@ export default async function TermsPage() {
 
   if (page) {
     return (
-      <>
+      <PublicPage>
         <main className="wrap">
           <Blocks blocks={page.blocks} />
         </main>
-        <SiteFooter />
-      </>
+    </PublicPage>
     );
   }
 
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
-          <h1>Terms of service</h1>
+          <LegalTabs here="/legal/terms" />
+          <h1 style={{ marginTop: 18 }}>Terms of service</h1>
           <p className="lead">
             The agreement between ExpatPreneurs Global and its members.
           </p>
@@ -97,7 +98,6 @@ export default async function TermsPage() {
           </div>
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

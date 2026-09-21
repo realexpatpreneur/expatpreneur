@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
 import { StatusForm } from "./form";
 
 export const metadata = {
@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function ApplicationStatusPage() {
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
           <p className="muted small">
@@ -48,7 +48,6 @@ export default function ApplicationStatusPage() {
           </div>
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

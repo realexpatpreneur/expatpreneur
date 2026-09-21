@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
 
 export const metadata = { title: "Check your inbox, ExpatPreneurs Global" };
 
 export default function ResetSentPage() {
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
           <h1>Check your inbox</h1>
@@ -20,7 +20,6 @@ export default function ResetSentPage() {
           </p>
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

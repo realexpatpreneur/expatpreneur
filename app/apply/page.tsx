@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
 import { ApplyForm } from "./form";
 
 export const metadata = { title: "Request an invitation, ExpatPreneurs Global" };
@@ -14,7 +14,7 @@ export default async function ApplyPage() {
     .order("name");
 
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
           <h1>Request an invitation</h1>
@@ -30,7 +30,6 @@ export default async function ApplyPage() {
           <ApplyForm villages={villages ?? []} />
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

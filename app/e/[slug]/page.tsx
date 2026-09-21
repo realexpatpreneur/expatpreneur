@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whenText, priceText, type EventRow } from "@/lib/events";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
 import { GuestRegisterForm } from "@/app/events/forms";
 
 // The public face of an event. Anyone can open this, whether they have an
@@ -38,7 +38,7 @@ export default async function PublicEventPage({
     : { data: null };
 
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
           <p>
@@ -114,7 +114,6 @@ export default async function PublicEventPage({
           </div>
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

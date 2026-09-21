@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
 import { CitySuggestionForm } from "./form";
 
 export const metadata = { title: "Suggest a city, ExpatPreneurs Global" };
@@ -12,7 +12,7 @@ export default async function SuggestCityPage({
   const { done } = await searchParams;
 
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
           <h1>Your city is not here yet</h1>
@@ -48,7 +48,6 @@ export default async function SuggestCityPage({
           )}
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

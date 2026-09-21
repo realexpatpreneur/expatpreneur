@@ -1,4 +1,4 @@
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
 import { MenuList } from "@/components/menu-list";
 
 export const metadata = { title: "Menu, ExpatPreneurs Global" };
@@ -6,7 +6,7 @@ export const metadata = { title: "Menu, ExpatPreneurs Global" };
 // The menu that opens from the menu button on small screens.
 export default function PublicMenuPage() {
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
           <h1>Menu</h1>
@@ -33,7 +33,6 @@ export default function PublicMenuPage() {
           />
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

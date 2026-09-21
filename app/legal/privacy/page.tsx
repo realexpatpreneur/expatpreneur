@@ -1,4 +1,5 @@
-import { SiteFooter } from "@/components/site-footer";
+import { PublicPage } from "@/components/public-page";
+import { LegalTabs } from "@/components/legal-tabs";
 import { livePage } from "@/lib/pages";
 import { Blocks } from "@/components/blocks";
 
@@ -12,20 +13,20 @@ export default async function PrivacyPage() {
 
   if (page) {
     return (
-      <>
+      <PublicPage>
         <main className="wrap">
           <Blocks blocks={page.blocks} />
         </main>
-        <SiteFooter />
-      </>
+    </PublicPage>
     );
   }
 
   return (
-    <>
+    <PublicPage>
       <main className="wrap">
         <section className="sec">
-          <h1>Privacy policy</h1>
+          <LegalTabs here="/legal/privacy" />
+          <h1 style={{ marginTop: 18 }}>Privacy policy</h1>
           <p className="lead">
             What we hold, why we hold it, and who can see it.
           </p>
@@ -95,7 +96,6 @@ export default async function PrivacyPage() {
           </div>
         </section>
       </main>
-      <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

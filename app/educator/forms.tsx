@@ -19,6 +19,8 @@ export function CourseForm({
     description: string | null;
     level: string;
     duration: string | null;
+    format?: string | null;
+    starts_at?: string | null;
     tier: string;
     status: string;
     cover_url?: string | null;
@@ -60,6 +62,25 @@ export function CourseForm({
         <span>What it covers</span>
         <textarea name="description" rows={4} defaultValue={course?.description ?? ""} />
       </label>
+
+      <div className="g2">
+        <label className="field">
+          <span>Live or recorded</span>
+          <select name="format" defaultValue={course?.format ?? "recorded"}>
+            <option value="recorded">Recorded, taken any time</option>
+            <option value="live">Live workshop, on a date</option>
+          </select>
+        </label>
+        <label className="field">
+          <span>When, if it is live</span>
+          <input
+            name="starts_at"
+            type="datetime-local"
+            defaultValue={course?.starts_at ? course.starts_at.slice(0, 16) : ""}
+          />
+          <span className="hint">Leave it empty for anything recorded.</span>
+        </label>
+      </div>
 
       <div className="g2">
         <label className="field">

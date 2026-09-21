@@ -8,9 +8,9 @@ export const metadata = { title: "Businesses, ExpatPreneurs Global" };
 export default async function BusinessesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; show?: string; done?: string }>;
+  searchParams: Promise<{ q?: string; show?: string; category?: string; done?: string }>;
 }) {
-  const { q = "", show = "all", done } = await searchParams;
+  const { q = "", show = "all", category = "", done } = await searchParams;
   // The marketplace is open to anybody. What comes back is decided by the
   // database: a stranger sees the listings whose owners allow it.
   const member = await whoIsHere();
@@ -32,10 +32,24 @@ export default async function BusinessesPage({
     );
   }
 
-  const [{ data: businesses }, { data: villages }] = await Promise.all([
-    query,
-    supabase.from("villages").select("id, name"),
-  ]);
+  const [{ data: businesses }, { data: villages }, { data: allCategories }] =
+    await Promise.all([
+      query,
+      supabase.from("villages").select("id, name"),
+      supabase.from("businesses").select("category").not("category", "is", null),
+    ]);
+
+  const categories = [
+    ...new Set(
+      (allCategories ?? [])
+        .map((c) => c.category as string)
+        .filter(Boolean)
+    ),
+  ].sort();
+
+  const rows = (businesses ?? []).filter((b) =>
+    category ? b.category === category : true
+  );
 
   const villageName = (id: string | null) =>
     villages?.find((v) => v.id === id)?.name ?? "";
@@ -59,25 +73,48 @@ export default async function BusinessesPage({
               Search
             </button>
           </form>
-          <div className="tabs">
-            {[
-              ["all", "Everywhere"],
-              ["village", "My Village"],
-              ["mine", "Mine"],
-            ].map(([key, label]) => (
+          <div className="filters">
+            {(member
+              ? ([
+                  ["all", "Everywhere"],
+                  ["village", "My Village"],
+                  ["mine", "Mine"],
+                ] as [string, string][])
+              : ([["all", "All"]] as [string, string][])
+            ).map(([key, label]) => (
               <Link
                 key={key}
-                className={`chip ${show === key ? "chip-mint" : ""}`}
+                className={`fchip ${show === key ? "on" : ""}`}
                 href={`/businesses?show=${key}`}
               >
                 {label}
               </Link>
             ))}
           </div>
+
+          {categories.length ? (
+            <div className="filters">
+              <Link
+                className={`fchip ${category ? "" : "on"}`}
+                href={`/businesses?show=${show}`}
+              >
+                Every category
+              </Link>
+              {categories.map((name) => (
+                <Link
+                  key={name}
+                  className={`fchip ${category === name ? "on" : ""}`}
+                  href={`/businesses?show=${show}&category=${encodeURIComponent(name)}`}
+                >
+                  {name}
+                </Link>
+              ))}
+            </div>
+          ) : null}
         </section>
 
         <section className="sec">
-          {(businesses ?? []).length === 0 ? (
+          {rows.length === 0 ? (
             <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nothing here yet. Yours could be the first.
@@ -85,7 +122,7 @@ export default async function BusinessesPage({
             </div>
           ) : (
             <div className="g3">
-              {(businesses ?? []).map((business) => (
+              {rows.map((business) => (
                 <Link
                   className="panel"
                   key={business.id}
@@ -109,16 +146,18 @@ export default async function BusinessesPage({
         </section>
 
         {member ? null : (
-          <section className="sec">
-            <h2>Run a business abroad?</h2>
-            <p className="lead">
-              Members can list their business here once they are in.
-            </p>
-            <p>
-              <Link className="btn btn-primary" href="/apply">
+          <section className="pubsec" style={{ paddingTop: 0 }}>
+            <div className="band">
+              <div style={{ flex: 1, minWidth: 240 }}>
+                <h2 style={{ fontSize: 18 }}>Run a business abroad?</h2>
+                <p style={{ marginTop: 4 }}>
+                  Members can list their business here once they are in.
+                </p>
+              </div>
+              <Link className="btn btn-mint" href="/apply">
                 Request your invitation
               </Link>
-            </p>
+            </div>
           </section>
         )}
       </DualPage>
