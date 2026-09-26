@@ -23,7 +23,10 @@ export async function SiteHeader() {
   return (
     <header className="pubhead">
       <div className="in">
-        <Logo href={user ? "/home" : "/"} />
+        {/* The wordmark is the site, so it always goes to the front door.
+            Getting into the member area is a deliberate move, which is
+            what Your home beside it is for. */}
+        <Logo href="/" />
 
         <nav className="pubnav">
           {PUBNAV.map(([href, label]) => (

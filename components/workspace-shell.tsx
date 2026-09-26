@@ -5,6 +5,16 @@ import { WorkspaceNav } from "@/components/workspace-nav";
 import { Av } from "@/components/bits";
 import { SPACES, WORKSPACE_START } from "@/components/spaces";
 
+// What the workspace calls itself on a phone, where the bar sits under
+// the site header and repeating the wordmark would say nothing.
+const WORKSPACE_NAME: Record<string, string> = {
+  member: "Your space",
+  admin: "Local Admin",
+  global: "Global team",
+  lead: "Leader tools",
+  edu: "Educator",
+};
+
 // appShell, as the prototype builds it: a rail of spaces, the sidebar
 // for the space you are in, a command bar, the page, and the tabs that
 // appear in place of all of it on a phone.
@@ -45,7 +55,7 @@ export async function WorkspaceShell({
             <span className={`mark${dark ? " alt" : ""}`} aria-hidden="true">
               EP
             </span>
-            ExpatPreneurs
+            {WORKSPACE_NAME[kind] ?? "Your space"}
           </Link>
           <Link className="cmd" href={searchHref ?? "/search"}>
             <Ic name="search" />
