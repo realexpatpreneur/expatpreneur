@@ -121,7 +121,7 @@ const PUBLIC = [
   { path: "/legal/privacy", name: "Privacy", parts: [".tabs"], says: ["Privacy", "Terms", "Cookies"], does: [] },
   { path: "/legal/cookies", name: "Cookies", parts: [".tabs"], says: ["Cookies"], does: [] },
   { path: "/menu", name: "Menu", parts: [".divide, .menu"], says: ["Membership"], does: [] },
-  { path: "/nothing-is-here", name: "The 404", parts: [".pubhead", ".pubfoot"], says: ["not here"], does: [] },
+  { path: "/nothing-is-here", name: "The 404", parts: [".pubhead", ".pubfoot"], says: ["not here"], does: [], expect: 404 },
 ];
 
 // Signed in. These are only checked if auth.json exists.
@@ -222,7 +222,7 @@ async function checkOne(context, spec, signedIn) {
     name: spec.name, path: spec.path, signedIn,
     status: 0, landedOn: "", missingParts: [], missingWords: [],
     deadControls: [], layout: [], console: [], network: [],
-    redirects: [], matched: "", cache: "",
+    redirects: [], matched: "", cache: "", expect: spec.expect || 200,
   };
 
   let response;
@@ -334,8 +334,9 @@ async function checkNavigation(context) {
 // A line you can read without opening the report.
 function verdict(row) {
   const said = [];
+  const wanted = row.expect || 200;
   if (row.status === -1) said.push("did not load");
-  else if (row.status !== 200) said.push(`${row.status} to ${row.landedOn}`);
+  else if (row.status !== wanted) said.push(`${row.status} to ${row.landedOn}`);
   else if (!row.landedOn.startsWith(row.path)) said.push(`sent to ${row.landedOn}`);
   if (row.missingParts.length) said.push(`${row.missingParts.length} parts missing`);
   if (row.missingWords.length) said.push(`${row.missingWords.length} words missing`);
@@ -382,7 +383,7 @@ function write(rows, nav, version) {
   }
   out.push("");
 
-  const broke = rows.filter((r) => r.status !== 200 || r.landedOn !== r.path);
+  const broke = rows.filter((r) => r.status !== (r.expect || 200) || !r.landedOn.startsWith(r.path));
   out.push("## Pages that did not open where they should");
   out.push("");
   if (broke.length) {
@@ -520,7 +521,7 @@ async function main() {
   await browser.close();
   write(rows, nav, version);
 
-  const bad = rows.filter((r) => r.status !== 200 || r.landedOn !== r.path).length;
+  const bad = rows.filter((r) => r.status !== (r.expect || 200) || !r.landedOn.startsWith(r.path)).length;
   console.log(`\nWritten: audit-report.md, and screenshots in ${SHOTS}`);
   console.log(`Pages checked: ${rows.length}. Did not open properly: ${bad}.`);
 }
