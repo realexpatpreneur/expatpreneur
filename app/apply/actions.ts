@@ -16,7 +16,12 @@ export async function submitApplication(
   _prev: ApplyState,
   formData: FormData
 ): Promise<ApplyState> {
-  const fullName = String(formData.get("full_name") ?? "").trim();
+  const fullName = [
+    String(formData.get("first_name") ?? "").trim(),
+    String(formData.get("last_name") ?? "").trim(),
+  ]
+    .filter(Boolean)
+    .join(" ");
   const email = String(formData.get("email") ?? "").trim();
   const city = String(formData.get("city") ?? "").trim();
 
@@ -86,6 +91,12 @@ export async function submitApplication(
       resonate: formData.getAll("resonate").map(String),
       attend: String(formData.get("attend") ?? ""),
       conduct: formData.get("conduct") ? "Agreed" : "Not agreed",
+      values: [
+        formData.get("people") ? "People before transactions" : "",
+        formData.get("contribute_value") ? "Contribute as well as receive" : "",
+        formData.get("not_dating") ? "Professional, not a dating space" : "",
+      ].filter(Boolean),
+      offers_admin: formData.get("offers_admin") ? "Yes" : "No",
     },
   })
     .select("reference")
