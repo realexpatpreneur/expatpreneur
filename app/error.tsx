@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { SiteFooter } from "@/components/site-footer";
 
 // When something goes wrong the navigation stays, so nobody is stranded.
 export default function ErrorPage({
@@ -33,7 +32,6 @@ export default function ErrorPage({
           </p>
         ) : null}
       </section>
-      <SiteFooter />
     </div>
   );
 }

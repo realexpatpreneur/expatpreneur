@@ -23,14 +23,21 @@ export default async function VillagesPage({
   const { show = "all" } = await searchParams;
   const supabase = await createClient();
 
-  const { data: villages } = await supabase
-    .from("villages")
-    .select("id, slug, name, city, country, status, summary")
-    .order("name");
+  const [{ data: villages }, { data: counts }] = await Promise.all([
+    supabase
+      .from("villages")
+      .select("id, slug, name, city, country, status, summary")
+      .order("name"),
+    supabase.from("village_public_counts").select("village_id, members, circles"),
+  ]);
+
+  const countFor = (id: string) =>
+    (counts ?? []).find((c) => c.village_id === id) ?? { members: 0, circles: 0 };
 
   const rank: Record<string, number> = { open: 0, launching: 1, exploring: 2 };
   const rows = [...(villages ?? [])]
     .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9))
+    .map((v) => ({ ...v, ...countFor(v.id) }))
     .filter((v) =>
       show === "open"
         ? v.status === "open"

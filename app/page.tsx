@@ -11,12 +11,13 @@ import { Ic } from "@/components/icon";
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const [{ data: villages }, { data: businesses }] = await Promise.all([
+  const [{ data: villages }, { data: counts }, { data: businesses }] = await Promise.all([
     supabase
       .from("villages")
       .select("id, slug, name, city, country, status, summary")
       .in("status", ["open", "launching", "exploring"])
       .limit(8),
+    supabase.from("village_public_counts").select("village_id, members, circles"),
     supabase
       .from("businesses")
       .select("id, slug, name, category, summary, offer, image_url")
@@ -26,9 +27,12 @@ export default async function HomePage() {
 
   // Open Villages first, then the ones launching, then the ones being explored.
   const rank: Record<string, number> = { open: 0, launching: 1, exploring: 2 };
-  const ordered = [...(villages ?? [])].sort(
-    (a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9)
-  );
+  const countFor = (id: string) =>
+    (counts ?? []).find((c) => c.village_id === id) ?? { members: 0, circles: 0 };
+
+  const ordered = [...(villages ?? [])]
+    .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9))
+    .map((v) => ({ ...v, ...countFor(v.id) }));
 
   // A published page replaces what is written below. A draft leaves it be.
   const page = await livePage("home");
