@@ -42,6 +42,10 @@ next-env.d.ts
 .env*.local
 .env
 
-.vercel
-.env*
-*.ps1
+# the audit and the recon
+# auth.json holds a live sign in. It must never be committed.
+auth.json
+audit-shots/
+audit-report.md
+recon-report.md
+recon-links.csv
