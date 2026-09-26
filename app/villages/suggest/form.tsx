@@ -3,7 +3,13 @@
 import { useActionState } from "react";
 import { suggestCity, type CityState } from "./actions";
 
-export function CitySuggestionForm() {
+export function CitySuggestionForm({
+  city = "",
+  country = "",
+}: {
+  city?: string;
+  country?: string;
+}) {
   const [state, action, pending] = useActionState<CityState, FormData>(
     suggestCity,
     {}
@@ -25,11 +31,11 @@ export function CitySuggestionForm() {
       <div className="g2">
         <label className="field">
           <span>City</span>
-          <input name="city" required />
+          <input name="city" required defaultValue={city} />
         </label>
         <label className="field">
           <span>Country</span>
-          <input name="country" required />
+          <input name="country" required defaultValue={country} />
         </label>
       </div>
 

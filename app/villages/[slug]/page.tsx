@@ -33,7 +33,7 @@ export default async function VillagePublicPage({
 
   // Only what a stranger is allowed to see: members who chose to be public,
   // and events open to everyone.
-  const [{ count: memberCount }, { data: events }] = await Promise.all([
+  const [{ count: memberCount }, { data: events }, { data: admins }] = await Promise.all([
     supabase
       .from("profiles")
       .select("id", { count: "exact", head: true })
@@ -48,7 +48,26 @@ export default async function VillagePublicPage({
       .gte("starts_at", new Date().toISOString())
       .order("starts_at")
       .limit(6),
+    // Who runs this Village. Only the ones who chose to be listed
+    // publicly are named.
+    supabase
+      .from("member_roles")
+      .select("profile_id, profiles!inner(id, full_name, headline, public_profile)")
+      .eq("role", "local_admin")
+      .eq("scope_id", village.id)
+      .is("ended_at", null),
   ]);
+
+  const hosts = ((admins ?? []) as unknown as {
+    profiles: { id: string; full_name: string; headline: string | null; public_profile: boolean };
+  }[])
+    .map((row) => row.profiles)
+    .filter((p) => p && p.public_profile);
+
+  const waitlist = `/villages/suggest?city=${encodeURIComponent(
+    village.city ?? ""
+  )}&country=${encodeURIComponent(village.country ?? "")}`;
+  const opening = village.status !== "open";
 
   return (
     <DualPage member={Boolean(user)} nav="/network" active="/villages">
@@ -63,9 +82,9 @@ export default async function VillagePublicPage({
             {village.city}, {village.country}. {village.summary}
           </p>
           <p>
-            {village.status === "exploring" ? (
-              <Link className="btn btn-primary" href="/villages/suggest">
-                Tell us you are there
+            {opening ? (
+              <Link className="btn btn-primary" href={waitlist}>
+                Join the waitlist
               </Link>
             ) : (
               <Link className="btn btn-primary" href="/apply">
@@ -100,6 +119,47 @@ export default async function VillagePublicPage({
                 By invitation. Every request is read by a person, and the Local
                 Admin decides.
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="sec">
+          <div className="gside">
+            <div className="panel">
+              <h3>Who runs it</h3>
+              {hosts.length === 0 ? (
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  {opening
+                    ? "We are looking for the people who will run this one. If that could be you, say so when you join the waitlist."
+                    : "The Local Admins here keep their profiles private."}
+                </p>
+              ) : (
+                <div className="divide" style={{ marginTop: 12 }}>
+                  {hosts.map((host) => (
+                    <Link className="li linkrow" key={host.id} href={`/members/${host.id}`}>
+                      <div>
+                        <b>{host.full_name}</b>
+                        <div className="muted small">{host.headline}</div>
+                      </div>
+                      <div className="rowmeta">
+                        <span className="chip chip-mint">Local Admin</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="panel panel-wash">
+              <h3>{opening ? "What happens before it opens" : "What a month looks like"}</h3>
+              <p className="muted small" style={{ marginTop: 6 }}>
+                {opening
+                  ? "A Village opens when there are enough members in the city, two Local Admins and a first Circle Host. Joining the waitlist counts you towards the first, and you can offer to be one of the others."
+                  : "One gathering for the whole Village, and smaller Circle meetings. Members ask and offer in between, and the WhatsApp groups carry the daily talk."}
+              </p>
+              <Link className="btn btn-ghost" href={opening ? waitlist : "/apply"}>
+                {opening ? "Join the waitlist" : "Request an invitation"}
+              </Link>
             </div>
           </div>
         </section>

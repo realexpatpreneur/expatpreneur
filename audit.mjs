@@ -113,7 +113,7 @@ const PUBLIC = [
   {
     path: "/apply", name: "Request an invitation",
     parts: ["form", "input[name=full_name], input[name=first_name]", "input[name=email]", "select[name=industry]", "select[name=stage]", "textarea[name=why_join]", "input[name=conduct]"],
-    says: ["Countries you have lived in", "biggest challenge", "resonate", "give back", "code of conduct"],
+    says: ["Countries you have lived in", "biggest challenge", "resonate", "give back", "privacy policy", "About you", "Our values"],
     does: [],
   },
   { path: "/apply/status", name: "Invitation status", parts: ["form, .panel"], says: ["invitation"], does: [] },
@@ -215,7 +215,13 @@ async function checkOne(context, spec, signedIn) {
   const consoleErrors = [];
   const failed = [];
   page.on("console", (m) => { if (m.type() === "error") consoleErrors.push(m.text().slice(0, 160)); });
-  page.on("requestfailed", (r) => failed.push(`${r.method()} ${r.url().slice(0, 120)}`));
+  page.on("requestfailed", (r) => {
+    // Next fetches the next page in the background and drops it when the
+    // browser moves on. That is not a fault, and reporting it buried the
+    // real ones.
+    if (r.url().includes("_rsc=")) return;
+    failed.push(`${r.method()} ${r.url().slice(0, 120)}`);
+  });
   page.on("response", (r) => { if (r.status() >= 500) failed.push(`${r.status()} ${r.url().slice(0, 120)}`); });
 
   const row = {

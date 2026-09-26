@@ -7,18 +7,19 @@ export const metadata = { title: "Suggest a city, ExpatPreneurs Global" };
 export default async function SuggestCityPage({
   searchParams,
 }: {
-  searchParams: Promise<{ done?: string }>;
+  searchParams: Promise<{ done?: string; city?: string; country?: string }>;
 }) {
-  const { done } = await searchParams;
+  const { done, city = "", country = "" } = await searchParams;
 
   return (
     <PublicPage>
       <main className="wrap">
         <section className="sec">
-          <h1>Your city is not here yet</h1>
+          <h1>{city ? `The ${city} Village is not open yet` : "Your city is not here yet"}</h1>
           <p className="lead">
-            Villages open where enough people ask. Tell us where you are and we
-            will count you in.
+            {city
+              ? "Join the waitlist and you will hear the day it opens. If you could help run it, tell us that too."
+              : "Villages open where enough people ask. Tell us where you are and we will count you in."}
           </p>
         </section>
         <section className="sec">
@@ -35,7 +36,7 @@ export default async function SuggestCityPage({
             </div>
           ) : (
             <div className="gside">
-              <CitySuggestionForm />
+              <CitySuggestionForm city={city} country={country} />
               <div className="panel panel-wash">
                 <h3>What makes a Village work</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
