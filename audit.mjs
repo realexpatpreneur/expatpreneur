@@ -152,6 +152,44 @@ const MEMBER = [
   { path: "/lead", name: "Leader tools", parts: [".mapp"], says: ["run"], does: [] },
 ];
 
+// Every route in the build that the named lists above do not already
+// cover. The spec for these is general: it must open, it must sit
+// inside its workspace, and nothing may be broken underneath.
+function discoverRoutes(named) {
+  const out = [];
+  const known = new Set(named.map((s) => s.path));
+
+  function walk(dir, parts) {
+    let entries;
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    if (entries.some((e) => e.isFile() && e.name === "page.tsx")) {
+      const path = "/" + parts.join("/");
+      const route = path === "/" ? "/" : path;
+      if (!known.has(route) && !route.includes("[")) out.push(route);
+    }
+    for (const e of entries) {
+      if (!e.isDirectory()) continue;
+      if (e.name.startsWith("[")) continue;         // needs an id we do not have
+      if (e.name.startsWith("(")) { walk(`${dir}/${e.name}`, parts); continue; }
+      if (e.name === "api") continue;
+      walk(`${dir}/${e.name}`, [...parts, e.name]);
+    }
+  }
+  walk("app", []);
+  return out.sort();
+}
+
+function generalSpec(route) {
+  const workspace = /^\/(admin|global|educator|lead)\b/.test(route);
+  return {
+    path: route,
+    name: route,
+    parts: workspace ? [".mapp", ".rail"] : [],
+    says: [],
+    does: [],
+  };
+}
+
 // ------------------------------------------------------------- the checks
 
 async function layoutFaults(page) {
@@ -301,7 +339,9 @@ async function checkOne(context, spec, signedIn) {
   row.console = consoleErrors.slice(0, 5);
   row.network = failed.slice(0, 5);
 
-  const shot = path.join(SHOTS, (signedIn ? "in" : "out") + spec.path.replace(/\//g, "_") + ".png");
+  const size = page.viewportSize();
+  const tag = size && size.width < 500 ? "phone" : signedIn ? "in" : "out";
+  const shot = path.join(SHOTS, tag + spec.path.replace(/\//g, "_") + ".png");
   await page.screenshot({ path: shot, fullPage: true });
   await page.close();
   return row;
@@ -518,11 +558,39 @@ async function main() {
       rows.push(row);
       console.log(`  ${row.name.padEnd(26)} ${verdict(row)}`);
     }
+
+    // The rest of the build, which nothing has ever opened.
+    const rest = discoverRoutes([...PUBLIC, ...MEMBER]);
+    console.log(`\nThe other ${rest.length} pages\n`);
+    for (const route of rest) {
+      const row = await checkOne(inC, generalSpec(route), true);
+      rows.push(row);
+      const v = verdict(row);
+      if (v !== "ok") console.log(`  ${route.padEnd(34)} ${v}`);
+    }
+
     await inC.close();
   } else {
     console.log("\nNo auth.json, so the member side was skipped.");
     console.log("Run: node audit.mjs --login\n");
   }
+
+  const phone = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 2,
+    isMobile: true,
+    hasTouch: true,
+    ...(fs.existsSync("auth.json") ? { storageState: "auth.json" } : {}),
+  });
+  console.log("\nOn a phone\n");
+  for (const spec of [...PUBLIC.slice(0, 12), ...MEMBER.slice(0, 8)]) {
+    const row = await checkOne(phone, { ...spec, parts: [], says: [] }, true);
+    row.name = spec.name + " (phone)";
+    rows.push(row);
+    const v = verdict(row);
+    if (v !== "ok") console.log(`  ${spec.name.padEnd(26)} ${v}`);
+  }
+  await phone.close();
 
   await browser.close();
   write(rows, nav, version);
