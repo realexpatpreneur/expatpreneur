@@ -53,7 +53,7 @@ export function AccountForm({
       <div className="g2">
         <label className="field">
           <span>Password</span>
-          <input name="password" type="password" placeholder="••••••••" />
+          <input name="password" type="password" placeholder={"\u2022".repeat(8)} />
           <span className="hint">
             Leave it empty to keep signing in by emailed link.
           </span>

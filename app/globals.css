@@ -3068,3 +3068,14 @@ a.card:hover {
 @container app (max-width: 900px) {
   .skel-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------------------------------------------------------------------
+   The paragraph inside the navy and blue bands was rendering almost the
+   colour of the band itself, so nobody could read it. The band sets a
+   colour for its contents, but something in the cascade was beating the
+   inherited value on a plain paragraph and I could not find which rule.
+   Setting it on the paragraph directly settles it.
+   --------------------------------------------------------------------- */
+
+.band p { color: #DCE6EF; }
+.band .muted { color: #C2D3E6; }

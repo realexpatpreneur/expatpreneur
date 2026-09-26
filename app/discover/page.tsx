@@ -146,6 +146,9 @@ export default async function DiscoverPage({
             aria-label="Search the network"
             autoComplete="off"
           />
+          <button className="btn btn-primary btn-sm" type="submit">
+            Search
+          </button>
         </form>
 
         {q ? (

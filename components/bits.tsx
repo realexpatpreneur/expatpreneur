@@ -62,7 +62,7 @@ export function HeroPreview() {
             <i>TR</i>
           </span>
           <div>
-            <b style={{ display: "block" }}>Tomás Ribeiro</b>
+            <b style={{ display: "block" }}>Tom&aacute;s Ribeiro</b>
             <span className="muted small">Brand designer, Norte Studio</span>
           </div>
         </div>

@@ -128,7 +128,7 @@ export async function SiteFooter() {
       </div>
 
       <div className="ft-bottom">
-        <span>Â© {new Date().getFullYear()} ExpatPreneurs Global. All rights reserved.</span>
+        <span>&copy; {new Date().getFullYear()} ExpatPreneurs Global. All rights reserved.</span>
         <nav>
           <Link href="/legal/privacy">Privacy</Link>
           <Link href="/legal/terms">Terms</Link>

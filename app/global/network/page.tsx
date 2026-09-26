@@ -42,7 +42,7 @@ export default async function NetworkIntelligencePage() {
   // answered.
   const interest = new Map<string, { members: Set<string>; answers: number }>();
   for (const post of posts ?? []) {
-    const key = `${villageOf(post.author_id)} → ${post.country}`;
+    const key = `${villageOf(post.author_id)} \u2192 ${post.country}`;
     const row = interest.get(key) ?? { members: new Set<string>(), answers: 0 };
     row.members.add(post.author_id);
     row.answers += (replies ?? []).filter((r) => r.post_id === post.id).length;

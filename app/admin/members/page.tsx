@@ -57,11 +57,14 @@ export default async function AdminMembersPage({
         }
       />
 
-      <form>
+      <form className="searchrow">
         <label className="input" style={{ maxWidth: 520 }}>
           <Ic name="search" />
           <input name="q" defaultValue={q} placeholder="Name or email" />
         </label>
+        <button className="btn btn-ghost" type="submit">
+          Search
+        </button>
       </form>
 
       <div className="filters">
