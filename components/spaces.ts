@@ -84,6 +84,7 @@ export const ADMIN_SPACES: Space[] = [
       ["/admin/members", "users", "Members"],
       ["/admin/circles", "rings", "Circles"],
       ["/admin/care", "heart", "Member care"],
+      ["/admin/re-enrolment", "star", "Re-enrolment"],
       ["/admin/whatsapp", "chat", "WhatsApp sync"],
       ["/admin/transfers", "move", "Moves"],
       ["/admin/mix", "globe", "Village mix"],
