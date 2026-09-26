@@ -222,11 +222,14 @@ async function checkOne(context, spec, signedIn) {
     name: spec.name, path: spec.path, signedIn,
     status: 0, landedOn: "", missingParts: [], missingWords: [],
     deadControls: [], layout: [], console: [], network: [],
+    redirects: [], matched: "", cache: "",
   };
 
   let response;
   try {
-    response = await page.goto(BASE + spec.path, { waitUntil: "networkidle", timeout: 45000 });
+    response = await page.goto(BASE + spec.path, { waitUntil: "domcontentloaded", timeout: 30000 });
+    // Give it a moment to settle, but carry on if it never goes quiet.
+    try { await page.waitForLoadState("networkidle", { timeout: 6000 }); } catch { }
   } catch (e) {
     row.status = -1;
     row.layout.push("the page did not finish loading: " + String(e).slice(0, 120));
@@ -235,7 +238,24 @@ async function checkOne(context, spec, signedIn) {
   }
 
   row.status = response ? response.status() : 0;
-  row.landedOn = new URL(page.url()).pathname;
+  row.landedOn = new URL(page.url()).pathname + new URL(page.url()).search;
+
+  // Where it was sent, and by what. A redirect chain names the culprit.
+  if (response) {
+    const chain = [];
+    let req = response.request().redirectedFrom();
+    while (req) {
+      const r = await req.response();
+      chain.unshift(`${r ? r.status() : "?"} ${new URL(req.url()).pathname}`);
+      req = req.redirectedFrom();
+    }
+    row.redirects = chain;
+    try {
+      const h = response.headers();
+      row.matched = h["x-matched-path"] || "";
+      row.cache = h["x-vercel-cache"] || "";
+    } catch { }
+  }
 
   const html = await page.content();
   const text = (await page.evaluate(() => document.body.innerText)) || "";
@@ -284,7 +304,12 @@ async function checkOne(context, spec, signedIn) {
 // Every link in the header and footer, clicked.
 async function checkNavigation(context) {
   const page = await context.newPage();
-  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  try {
+    await page.goto(BASE + "/", { waitUntil: "domcontentloaded", timeout: 30000 });
+  } catch {
+    await page.close();
+    return [];
+  }
   const links = await page.evaluate(() =>
     [...document.querySelectorAll(".pubhead a[href^='/'], .pubfoot a[href^='/']")]
       .map((a) => ({ href: a.getAttribute("href"), label: (a.innerText || a.getAttribute("aria-label") || "").trim().slice(0, 40) }))
@@ -296,7 +321,7 @@ async function checkNavigation(context) {
     seen.add(link.href);
     let status = 0, landed = "";
     try {
-      const r = await page.goto(BASE + link.href, { waitUntil: "domcontentloaded", timeout: 30000 });
+      const r = await page.goto(BASE + link.href, { waitUntil: "domcontentloaded", timeout: 25000 });
       status = r ? r.status() : 0;
       landed = new URL(page.url()).pathname;
     } catch { status = -1; }
@@ -304,6 +329,20 @@ async function checkNavigation(context) {
   }
   await page.close();
   return rows;
+}
+
+// A line you can read without opening the report.
+function verdict(row) {
+  const said = [];
+  if (row.status === -1) said.push("did not load");
+  else if (row.status !== 200) said.push(`${row.status} to ${row.landedOn}`);
+  else if (!row.landedOn.startsWith(row.path)) said.push(`sent to ${row.landedOn}`);
+  if (row.missingParts.length) said.push(`${row.missingParts.length} parts missing`);
+  if (row.missingWords.length) said.push(`${row.missingWords.length} words missing`);
+  if (row.deadControls.length) said.push(`${row.deadControls.length} controls`);
+  if (row.layout.length) said.push(row.layout[0]);
+  if (row.console.length) said.push(`${row.console.length} console errors`);
+  return said.length ? said.join(", ") : "ok";
 }
 
 // ------------------------------------------------------------------- run
@@ -350,6 +389,21 @@ function write(rows, nav, version) {
     out.push("| Page | Asked for | Came back | Landed on |", "| --- | --- | --- | --- |");
     for (const r of broke) out.push(`| ${r.name}${r.signedIn ? " (signed in)" : ""} | \`${r.path}\` | ${r.status} | \`${r.landedOn}\` |`);
   } else out.push("None.");
+  out.push("");
+
+  out.push("## Where the redirects went");
+  out.push("");
+  const sent = rows.filter((r) => (r.redirects && r.redirects.length) || (r.status === 200 && !r.landedOn.startsWith(r.path)));
+  if (sent.length) {
+    out.push("| Asked for | Chain | Ended on | Next matched | Cache |", "| --- | --- | --- | --- | --- |");
+    for (const r of sent) {
+      out.push(`| \`${r.path}\` | ${(r.redirects || []).join(" -> ") || "none"} | \`${r.landedOn}\` | \`${r.matched}\` | ${r.cache} |`);
+    }
+    out.push("");
+    out.push("The matched path is what Next decided the address was. If it is");
+    out.push("not the address that was asked for, the routing is the problem");
+    out.push("rather than the page.");
+  } else out.push("Nothing redirected.");
   out.push("");
 
   out.push("## Parts of the design that are not on the page");
@@ -420,6 +474,9 @@ function write(rows, nav, version) {
 
 async function main() {
   if (args.includes("--login")) return signIn();
+  process.on("unhandledRejection", (e) => {
+    console.log("\nSomething threw: " + String(e).slice(0, 160));
+  });
 
   fs.mkdirSync(SHOTS, { recursive: true });
   const browser = await chromium.launch();
@@ -439,10 +496,11 @@ async function main() {
   for (const spec of PUBLIC) {
     const row = await checkOne(out, spec, false);
     rows.push(row);
-    const trouble = row.status !== 200 || row.missingParts.length || row.missingWords.length || row.layout.length;
-    console.log(`  ${row.name.padEnd(26)} ${trouble ? "look at this" : "ok"}`);
+    console.log(`  ${row.name.padEnd(26)} ${verdict(row)}`);
   }
-  const nav = await checkNavigation(out);
+  let nav = [];
+  try { nav = await checkNavigation(out); }
+  catch (e) { console.log("  navigation check stopped: " + String(e).slice(0, 80)); }
   await out.close();
 
   if (fs.existsSync("auth.json")) {
@@ -451,8 +509,7 @@ async function main() {
     for (const spec of MEMBER) {
       const row = await checkOne(inC, spec, true);
       rows.push(row);
-      const trouble = row.status !== 200 || row.landedOn !== row.path || row.missingParts.length || row.layout.length;
-      console.log(`  ${row.name.padEnd(26)} ${trouble ? "look at this" : "ok"}`);
+      console.log(`  ${row.name.padEnd(26)} ${verdict(row)}`);
     }
     await inC.close();
   } else {
