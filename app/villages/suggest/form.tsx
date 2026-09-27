@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Captcha } from "@/components/captcha";
 import { suggestCity, type CityState } from "./actions";
 
 export function CitySuggestionForm({
@@ -71,6 +72,8 @@ export function CitySuggestionForm({
         <span>Who do you already know in that city?</span>
         <textarea name="network" rows={3} />
       </label>
+
+      <Captcha />
 
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send"}

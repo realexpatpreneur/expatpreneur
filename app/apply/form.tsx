@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { Captcha } from "@/components/captcha";
 import { Ic } from "@/components/icon";
 import { submitApplication, type ApplyState } from "./actions";
 
@@ -302,6 +303,8 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
           </label>
         ))}
       </div>
+
+      <Captcha />
 
       <button
         className="btn btn-primary"

@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { tooManyTries, TOO_MANY } from "@/lib/guard";
 
 export type LoginState = { error?: string; sent?: boolean };
 
@@ -9,6 +10,8 @@ export async function sendSignInLink(
   _prev: LoginState,
   formData: FormData
 ): Promise<LoginState> {
+  if (await tooManyTries("sign-in-link", 8)) return { error: TOO_MANY };
+
   const email = String(formData.get("email") ?? "").trim();
   if (!email) return { error: "Your email is needed." };
 

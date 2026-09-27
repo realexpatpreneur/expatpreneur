@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { tooManyTries, captchaPassed, TOO_MANY } from "@/lib/guard";
 import { sendTemplate, url } from "@/lib/email";
 
 const list = (value: FormDataEntryValue | null) =>
@@ -37,6 +38,13 @@ export async function submitApplication(
   // A field nobody can see. Anything that fills it in is not a person.
   if (String(formData.get("website") ?? "").trim()) {
     redirect("/apply/sent");
+  }
+
+  // A person does not send this 4 times in an hour.
+  if (await tooManyTries("invitation", 3)) return { error: TOO_MANY };
+
+  if (!(await captchaPassed(String(formData.get("cf-turnstile-response") ?? "") || null))) {
+    return { error: "The check did not pass. Please try again." };
   }
 
   const supabase = await createClient();

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Captcha } from "@/components/captcha";
 import { sendEnquiry, type ContactState } from "./actions";
 
 type Village = { slug: string; name: string };
@@ -67,6 +68,8 @@ export function ContactForm({
           <textarea name="message" rows={5} required />
         </label>
       </div>
+
+      <Captcha />
 
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Send"}

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { tooManyTries, captchaPassed, TOO_MANY } from "@/lib/guard";
 
 export type ContactState = { error?: string };
 
@@ -14,6 +15,13 @@ export async function sendEnquiry(
   // A field nobody can see. Anything that fills it in is not a person.
   if (String(formData.get("website") ?? "").trim()) {
     redirect("/contact/sent");
+  }
+
+  // A person does not send this 6 times in an hour.
+  if (await tooManyTries("contact", 5)) return { error: TOO_MANY };
+
+  if (!(await captchaPassed(String(formData.get("cf-turnstile-response") ?? "") || null))) {
+    return { error: "The check did not pass. Please try again." };
   }
 
   const kind = String(formData.get("kind") ?? "general");

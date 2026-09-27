@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { tooManyTries, captchaPassed, TOO_MANY } from "@/lib/guard";
 
 export type CityState = { error?: string };
 
@@ -16,6 +17,13 @@ export async function suggestCity(
 
   if (String(formData.get("website") ?? "").trim()) {
     redirect("/villages/suggest?done=1");
+  }
+
+  // A person does not send this 6 times in an hour.
+  if (await tooManyTries("suggest-city", 5)) return { error: TOO_MANY };
+
+  if (!(await captchaPassed(String(formData.get("cf-turnstile-response") ?? "") || null))) {
+    return { error: "The check did not pass. Please try again." };
   }
 
   const supabase = await createClient();

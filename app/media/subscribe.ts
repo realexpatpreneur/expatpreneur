@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { tooManyTries, TOO_MANY } from "@/lib/guard";
 
 export type SubscribeState = { error?: string };
 
@@ -11,6 +12,8 @@ export async function subscribe(
   _prev: SubscribeState,
   formData: FormData
 ): Promise<SubscribeState> {
+  if (await tooManyTries("newsletter", 5)) return { error: TOO_MANY };
+
   if (String(formData.get("website") ?? "").trim()) {
     redirect("/media/subscribed");
   }
