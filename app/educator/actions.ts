@@ -31,6 +31,10 @@ export async function saveCourse(
     level: String(formData.get("level") ?? "anyone"),
     duration: String(formData.get("duration") ?? "").trim() || null,
     format: String(formData.get("format") ?? "recorded") === "live" ? "live" : "recorded",
+    outcomes: String(formData.get("outcomes") ?? "")
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean),
     starts_at: String(formData.get("starts_at") ?? "").trim() || null,
     tier: String(formData.get("tier") ?? "all"),
     price_cents: Math.round(Number(formData.get("price") ?? 0) * 100),
@@ -78,6 +82,10 @@ export async function saveLesson(
     video_url: String(formData.get("video_url") ?? "").trim() || null,
     duration: String(formData.get("duration") ?? "").trim() || null,
     format: String(formData.get("format") ?? "recorded") === "live" ? "live" : "recorded",
+    outcomes: String(formData.get("outcomes") ?? "")
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean),
     starts_at: String(formData.get("starts_at") ?? "").trim() || null,
     position: Number(formData.get("position") ?? 1),
   };

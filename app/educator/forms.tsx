@@ -21,6 +21,7 @@ export function CourseForm({
     duration: string | null;
     format?: string | null;
     starts_at?: string | null;
+    outcomes?: string[] | null;
     tier: string;
     status: string;
     cover_url?: string | null;
@@ -61,6 +62,20 @@ export function CourseForm({
       <label className="field">
         <span>What it covers</span>
         <textarea name="description" rows={4} defaultValue={course?.description ?? ""} />
+      </label>
+
+      <label className="field">
+        <span>What will they be able to do afterwards?</span>
+        <textarea
+          name="outcomes"
+          rows={4}
+          defaultValue={(course?.outcomes ?? []).join("\n")}
+          placeholder={"One per line\nPrice work without apologising for it\nSay no to the wrong client"}
+        />
+        <span className="hint">
+          One per line. These are the first thing somebody reads on the
+          course page, above everything else.
+        </span>
       </label>
 
       <div className="g2">

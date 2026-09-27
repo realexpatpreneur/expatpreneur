@@ -33,7 +33,23 @@ export default async function WatchPage({
 
   if (show !== "all") query = query.eq("kind", show);
 
-  const { data: items } = await query;
+  const [{ data: items }, { data: shows }] = await Promise.all([
+    query,
+    supabase
+      .from("shows")
+      .select("slug, name, about, cover_url")
+      .order("name"),
+  ]);
+
+  // How many episodes each show has, so the row can say.
+  const { data: episodeCounts } = await supabase
+    .from("media_items")
+    .select("show_slug")
+    .eq("kind", "episode")
+    .not("published_at", "is", null);
+
+  const episodesIn = (slug: string) =>
+    (episodeCounts ?? []).filter((e) => e.show_slug === slug).length;
 
   return (
     <DualPage member={Boolean(user)} nav="/watch" active="/watch">
@@ -59,14 +75,46 @@ export default async function WatchPage({
               </Link>
             ))}
           </div>
-                  <p>
-            <Link className="btn btn-ghost" href="/watch/show/expatpreneurs">
-              The ExpatPreneurs Podcast
-            </Link>
-          </p>
 </section>
 
+        {(shows ?? []).length && show !== "video" && show !== "article" ? (
+          <section className="sec">
+            <div className="sechead">
+              <h2 style={{ fontSize: 20 }}>The shows</h2>
+            </div>
+            <div className="pshows">
+              {(shows ?? []).map((item) => (
+                <Link
+                  className="pshow linkrow"
+                  key={item.slug}
+                  href={`/watch/show/${item.slug}`}
+                >
+                  {item.cover_url ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={item.cover_url} alt="" />
+                  ) : (
+                    <span className="cover navy">{item.name}</span>
+                  )}
+                  <div>
+                    <b>{item.name}</b>
+                    <div className="muted small">{item.about}</div>
+                    <div className="muted small">
+                      {episodesIn(item.slug)}{" "}
+                      {episodesIn(item.slug) === 1 ? "episode" : "episodes"}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         <section className="sec">
+          <div className="sechead">
+            <h2 style={{ fontSize: 20 }}>
+              {show === "episode" ? "Latest episodes" : "Latest"}
+            </h2>
+          </div>
           {(items ?? []).length === 0 ? (
             <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>

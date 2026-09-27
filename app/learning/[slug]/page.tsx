@@ -1,5 +1,6 @@
 import { DualPage } from "@/components/dual-page";
 import Link from "next/link";
+import { Ic } from "@/components/icon";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere, isPaid } from "@/lib/member";
@@ -115,9 +116,50 @@ export default async function CoursePage({
         <section className="sec">
           <div className="gside">
             <div className="stack">
+              {(course.outcomes ?? []).length ? (
+                <div className="panel">
+                  <h3>You will learn to</h3>
+                  <ul className="ticks" style={{ marginTop: 10 }}>
+                    {(course.outcomes as string[]).map((outcome) => (
+                      <li key={outcome}>
+                        <Ic name="check" />
+                        <span>{outcome}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
               <div className="panel">
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
                   {course.description}
+                </p>
+              </div>
+
+              <div className="panel">
+                <h3>The detail</h3>
+                <dl className="kv">
+                  <dt>When</dt>
+                  <dd>
+                    {course.format === "live"
+                      ? course.starts_at
+                        ? new Date(course.starts_at).toLocaleString("en-GB", {
+                            weekday: "long",
+                            day: "numeric",
+                            month: "long",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "A live workshop, date to be set"
+                      : "Recorded, taken whenever you like"}
+                  </dd>
+                  <dt>For</dt>
+                  <dd>{course.level}</dd>
+                  <dt>How long</dt>
+                  <dd>{course.duration ?? "Not said"}</dd>
+                </dl>
+                <p className="muted small" style={{ marginTop: 10 }}>
+                  Refunds up to 48 hours before a live session.
                 </p>
               </div>
 
