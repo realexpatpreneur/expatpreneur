@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
-import { sendEmailToMember, url } from "@/lib/email";
+import { sendEmailToMember, sendTemplate, url } from "@/lib/email";
 import { record } from "@/lib/audit";
 import { notify } from "@/lib/notify";
 
@@ -57,6 +57,47 @@ export async function updateMember(
       kind: before?.circle_id ? "move" : "add",
       group_name: circle?.name ?? "Village group",
     });
+
+    // And the member is told, which until now they were not. This is
+    // the moment somebody actually joins: before a Circle they are a
+    // name in a list.
+    const { data: person } = await supabase
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", id)
+      .maybeSingle();
+
+    await notify(
+      id,
+      "announcement",
+      before?.circle_id ? "You have moved Circle" : "You are in a Circle",
+      `${circle?.name ?? "Your Circle"} is your home base.`,
+      "/my-circle"
+    );
+
+    await sendTemplate(
+      "circle",
+      person?.email ?? null,
+      {
+        name: (person?.full_name ?? "there").split(" ")[0],
+        circle: circle?.name ?? "your Circle",
+        link: url("/my-circle"),
+      },
+      {
+        subject: before?.circle_id
+          ? `You have moved to ${circle?.name ?? "a new Circle"}`
+          : `You are in ${circle?.name ?? "a Circle"}`,
+        title: circle?.name ?? "Your Circle",
+        lines: [
+          before?.circle_id
+            ? "Your Local Admin has moved you, and the WhatsApp groups will follow within a day or so."
+            : "This is your home base: up to fifty members who meet, ask and answer each other.",
+          "Your Local Admin adds you to the WhatsApp group by hand, so give it a day.",
+        ],
+        action: { label: "Open your Circle", href: url("/my-circle") },
+      },
+      { profileId: id, kind: "announcements" }
+    );
   }
 
   revalidatePath("/admin/members");

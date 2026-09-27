@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notify";
-import { sendEmail, url } from "@/lib/email";
+import { sendTemplate, sendEmail, url } from "@/lib/email";
 import { whenText } from "@/lib/events";
 
 export type RegisterState = { error?: string; done?: string };
@@ -64,21 +64,40 @@ export async function registerForEvent(
   }
 
   if (event && profile?.email) {
-    await sendEmail(
+    // Through the template, so the Global team's wording is the wording
+    // that goes out. The text below is only used if the template has
+    // been deleted.
+    await sendTemplate(
+      "event_registration",
       profile.email,
-      requiresApproval ? `Request sent: ${event.title}` : `You are going: ${event.title}`,
-      event.title,
-      [
-        requiresApproval
-          ? "Your request is with the host, who will confirm shortly."
-          : "Your place is confirmed.",
-        whenText(event),
-        event.is_online
+      {
+        title: event.title,
+        when: whenText(event),
+        where: event.is_online
           ? `Online. ${event.online_url ?? "The link is on the event page."}`
           : event.venue ?? "The venue is on the event page.",
-        "A reminder comes the day before and an hour before it starts.",
-      ],
-      { label: "Open the event", href: url(`/events/${slug}`) }
+        status: requiresApproval
+          ? "Your request is with the host, who will confirm shortly."
+          : "Your place is confirmed.",
+        link: url(`/events/${slug}`),
+      },
+      {
+        subject: requiresApproval
+          ? `Request sent: ${event.title}`
+          : `You are going: ${event.title}`,
+        title: event.title,
+        lines: [
+          requiresApproval
+            ? "Your request is with the host, who will confirm shortly."
+            : "Your place is confirmed.",
+          whenText(event),
+          event.is_online
+            ? `Online. ${event.online_url ?? "The link is on the event page."}`
+            : event.venue ?? "The venue is on the event page.",
+          "A reminder comes the day before and an hour before it starts.",
+        ],
+        action: { label: "Open the event", href: url(`/events/${slug}`) },
+      }
     );
   }
 
