@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { siteUrl } from "@/lib/site";
 
 // Payments stay switched off until the keys are set, so the pages can say
 // so plainly instead of failing.
@@ -12,5 +13,5 @@ export function getStripe() {
   return new Stripe(key);
 }
 
-export const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://expatpreneur.vercel.app";
+// Kept exported here because the checkout pages import it from this file.
+export { siteUrl };

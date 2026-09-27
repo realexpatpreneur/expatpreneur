@@ -1,4 +1,5 @@
 import { PageHead } from "@/components/workspace-shell";
+import { siteUrl } from "@/lib/site";
 import { Stat, Table, SecHead } from "@/components/admin-bits";
 import { Av } from "@/components/bits";
 import { createClient } from "@/lib/supabase/server";
@@ -41,8 +42,7 @@ export default async function ReEnrolmentPage() {
 
   const rows = people ?? [];
   const count = (s: string) => rows.filter((r) => r.status === s).length;
-  const site =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://expatpreneur.vercel.app";
+  const site = siteUrl;
 
   return (
     <>

@@ -1,11 +1,30 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { siteUrl, siteName, siteDescription } from "@/lib/site";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
-  title: "ExpatPreneurs Global",
-  description:
-    "A curated network of expat entrepreneurs. Belong to a small, trusted community in your city, and reach people you can trust in other markets.",
+  // Every page's own title and description hang off this one.
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteName,
+    template: `%s`,
+  },
+  description: siteDescription,
+  // What a link looks like when somebody drops it into WhatsApp or
+  // LinkedIn, which is how most people will first see this.
+  openGraph: {
+    type: "website",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+  },
 };
 
 export default function RootLayout({

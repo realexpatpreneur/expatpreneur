@@ -1,4 +1,5 @@
 import { DualPage } from "@/components/dual-page";
+import { siteUrl } from "@/lib/site";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
@@ -24,8 +25,7 @@ export default async function SharePage({
         .maybeSingle()
     : { data: null };
 
-  const site =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://expatpreneur.vercel.app";
+  const site = siteUrl;
   const link = media ? `${site}/watch/${media.slug}` : `${site}/watch`;
   const title = media?.title ?? "Watch and Listen";
 

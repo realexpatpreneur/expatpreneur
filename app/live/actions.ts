@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { siteLink } from "@/lib/site";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -401,7 +402,7 @@ export async function publishRecording(
       slug: `${slug}-recording-${Date.now().toString(36)}`,
       title: session.title,
       summary: session.purpose,
-      external_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://expatpreneur.vercel.app"}/api/live/recording/${recording.id}`,
+      external_url: siteLink(`/api/live/recording/${recording.id}`),
       duration: recording.duration,
       member_only: true,
       published_at: new Date().toISOString(),

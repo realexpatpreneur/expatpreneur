@@ -1,12 +1,10 @@
+import { siteUrl } from "@/lib/site";
 // Email goes out through Resend, called over plain HTTP so there is no extra
 // dependency. Until the key is set, nothing is sent and nothing breaks.
 
 export const emailReady = Boolean(process.env.RESEND_API_KEY);
 
 const from = process.env.EMAIL_FROM ?? "ExpatPreneurs <hello@expatpreneurs.com>";
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://expatpreneur.vercel.app";
-
 function wrap(
   title: string,
   lines: string[],

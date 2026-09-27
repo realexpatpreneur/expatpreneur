@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { siteUrl } from "@/lib/site";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -45,7 +46,7 @@ export async function approveApplication(
   }
 
   const service = createAdminClient();
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://expatpreneur.vercel.app";
+  const site = siteUrl;
 
   const { data: invited, error: inviteError } =
     await service.auth.admin.inviteUserByEmail(application.email, {
