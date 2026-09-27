@@ -274,10 +274,17 @@ async function checkOne(context, spec, signedIn) {
   page.on("response", (r) => {
     // A 404 on a resource is the useful one: it names the image, font or
     // file that is missing. Saying "one console error" never did.
-    if (r.status() === 404 || r.status() >= 500) {
-      if (r.url().includes("_rsc=")) return;
-      failed.push(`${r.status()} ${r.url().slice(0, 140)}`);
+    if (r.status() !== 404 && r.status() < 500) return;
+    const u = new URL(r.url());
+    // The page's own 404, where a 404 is what we asked for.
+    if (r.url().split("?")[0] === BASE + spec.path && spec.expect === 404) return;
+    if (u.searchParams.has("_rsc")) {
+      // Next was fetching a page this one links to, and it does not
+      // exist. A dead link, named.
+      failed.push(`dead link to ${u.pathname}`);
+      return;
     }
+    failed.push(`${r.status()} ${r.url().slice(0, 140)}`);
   });
 
   const row = {
