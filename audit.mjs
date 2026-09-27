@@ -179,14 +179,25 @@ function discoverRoutes(named) {
   return out.sort();
 }
 
+// Pages that send you somewhere else on purpose.
+const ON_PURPOSE = {
+  "/me/edit": "/settings",
+  "/village": "/my-village",
+  "/my-circle": "/circles",
+};
+
 function generalSpec(route) {
-  const workspace = /^\/(admin|global|educator|lead)\b/.test(route);
+  const railed = /^\/(admin|global)\b/.test(route);
+  const shelled = /^\/(admin|global|educator|lead)\b/.test(route);
   return {
     path: route,
     name: route,
-    parts: workspace ? [".mapp", ".rail"] : [],
+    // Educator and Leader tools hold one space each, so the prototype
+    // drops the rail for them. Only the two big workspaces have one.
+    parts: railed ? [".mapp", ".rail"] : shelled ? [".mapp"] : [],
     says: [],
     does: [],
+    lands: ON_PURPOSE[route],
   };
 }
 
@@ -267,6 +278,7 @@ async function checkOne(context, spec, signedIn) {
     status: 0, landedOn: "", missingParts: [], missingWords: [],
     deadControls: [], layout: [], console: [], network: [],
     redirects: [], matched: "", cache: "", expect: spec.expect || 200,
+    lands: spec.lands || null,
   };
 
   let response;
@@ -388,7 +400,7 @@ function verdict(row) {
   if (row.missingWords.length) said.push(`${row.missingWords.length} words missing`);
   if (row.deadControls.length) said.push(`${row.deadControls.length} controls`);
   if (row.layout.length) said.push(row.layout[0]);
-  if (row.console.length) said.push(`${row.console.length} console errors`);
+  if (row.console.length) said.push(`console: ${row.console[0].slice(0, 70)}`);
   return said.length ? said.join(", ") : "ok";
 }
 
@@ -429,7 +441,11 @@ function write(rows, nav, version) {
   }
   out.push("");
 
-  const broke = rows.filter((r) => r.status !== (r.expect || 200) || !r.landedOn.startsWith(r.path));
+  const broke = rows.filter(
+    (r) =>
+      r.status !== (r.expect || 200) ||
+      !r.landedOn.startsWith(r.lands || r.path)
+  );
   out.push("## Pages that did not open where they should");
   out.push("");
   if (broke.length) {
@@ -595,7 +611,11 @@ async function main() {
   await browser.close();
   write(rows, nav, version);
 
-  const bad = rows.filter((r) => r.status !== (r.expect || 200) || !r.landedOn.startsWith(r.path)).length;
+  const bad = rows.filter(
+    (r) =>
+      r.status !== (r.expect || 200) ||
+      !r.landedOn.startsWith(r.lands || r.path)
+  ).length;
   console.log(`\nWritten: audit-report.md, and screenshots in ${SHOTS}`);
   console.log(`Pages checked: ${rows.length}. Did not open properly: ${bad}.`);
 }
