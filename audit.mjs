@@ -271,24 +271,52 @@ async function checkOne(context, spec, signedIn) {
     if (r.url().includes("_rsc=")) return;
     failed.push(`${r.method()} ${r.url().slice(0, 120)}`);
   });
-  page.on("response", (r) => { if (r.status() >= 500) failed.push(`${r.status()} ${r.url().slice(0, 120)}`); });
+  page.on("response", (r) => {
+    // A 404 on a resource is the useful one: it names the image, font or
+    // file that is missing. Saying "one console error" never did.
+    if (r.status() === 404 || r.status() >= 500) {
+      if (r.url().includes("_rsc=")) return;
+      failed.push(`${r.status()} ${r.url().slice(0, 140)}`);
+    }
+  });
 
   const row = {
     name: spec.name, path: spec.path, signedIn,
     status: 0, landedOn: "", missingParts: [], missingWords: [],
     deadControls: [], layout: [], console: [], network: [],
     redirects: [], matched: "", cache: "", expect: spec.expect || 200,
-    lands: spec.lands || null,
+    lands: spec.lands || null, offline: false,
   };
+
+  const NETWORK = [
+    "ERR_INTERNET_DISCONNECTED",
+    "ERR_NETWORK_IO_SUSPENDED",
+    "ERR_NAME_NOT_RESOLVED",
+    "ERR_CONNECTION",
+  ];
 
   let response;
   try {
-    response = await page.goto(BASE + spec.path, { waitUntil: "domcontentloaded", timeout: 30000 });
+    try {
+      response = await page.goto(BASE + spec.path, { waitUntil: "domcontentloaded", timeout: 30000 });
+    } catch (first) {
+      const message = String(first);
+      if (!NETWORK.some((n) => message.includes(n))) throw first;
+      // The connection went, not the page. Wait, then try once more.
+      await new Promise((r) => setTimeout(r, 8000));
+      response = await page.goto(BASE + spec.path, { waitUntil: "domcontentloaded", timeout: 30000 });
+    }
     // Give it a moment to settle, but carry on if it never goes quiet.
     try { await page.waitForLoadState("networkidle", { timeout: 6000 }); } catch { }
   } catch (e) {
+    const message = String(e);
     row.status = -1;
-    row.layout.push("the page did not finish loading: " + String(e).slice(0, 120));
+    row.offline = NETWORK.some((n) => message.includes(n));
+    row.layout.push(
+      row.offline
+        ? "not reached: the connection dropped"
+        : "the page did not finish loading: " + message.slice(0, 120)
+    );
     await page.close();
     return row;
   }
@@ -393,14 +421,16 @@ async function checkNavigation(context) {
 function verdict(row) {
   const said = [];
   const wanted = row.expect || 200;
-  if (row.status === -1) said.push("did not load");
+  if (row.status === -1) said.push(row.offline ? "not reached, connection dropped" : "did not load");
   else if (row.status !== wanted) said.push(`${row.status} to ${row.landedOn}`);
-  else if (!row.landedOn.startsWith(row.path)) said.push(`sent to ${row.landedOn}`);
+  else if (!row.landedOn.startsWith(row.lands || row.path))
+    said.push(`sent to ${row.landedOn}`);
   if (row.missingParts.length) said.push(`${row.missingParts.length} parts missing`);
   if (row.missingWords.length) said.push(`${row.missingWords.length} words missing`);
   if (row.deadControls.length) said.push(`${row.deadControls.length} controls`);
   if (row.layout.length) said.push(row.layout[0]);
-  if (row.console.length) said.push(`console: ${row.console[0].slice(0, 70)}`);
+  if (row.network.length) said.push(row.network[0].slice(0, 90));
+  else if (row.console.length) said.push(`console: ${row.console[0].slice(0, 70)}`);
   return said.length ? said.join(", ") : "ok";
 }
 
@@ -443,9 +473,22 @@ function write(rows, nav, version) {
 
   const broke = rows.filter(
     (r) =>
-      r.status !== (r.expect || 200) ||
-      !r.landedOn.startsWith(r.lands || r.path)
+      !r.offline &&
+      (r.status !== (r.expect || 200) ||
+        !r.landedOn.startsWith(r.lands || r.path))
   );
+  const missed = rows.filter((r) => r.offline);
+  if (missed.length) {
+    out.push("## Pages that were never reached");
+    out.push("");
+    out.push(`The connection dropped during the run, so ${missed.length} pages`);
+    out.push("were never opened. They are not faults. Run it again on a steady");
+    out.push("connection to see them.");
+    out.push("");
+    out.push(missed.map((r) => "`" + r.path + "`").join(", ") + ".");
+    out.push("");
+  }
+
   out.push("## Pages that did not open where they should");
   out.push("");
   if (broke.length) {
@@ -456,7 +499,11 @@ function write(rows, nav, version) {
 
   out.push("## Where the redirects went");
   out.push("");
-  const sent = rows.filter((r) => (r.redirects && r.redirects.length) || (r.status === 200 && !r.landedOn.startsWith(r.path)));
+  const sent = rows.filter(
+    (r) =>
+      (r.redirects && r.redirects.length) ||
+      (r.status === 200 && !r.landedOn.startsWith(r.lands || r.path))
+  );
   if (sent.length) {
     out.push("| Asked for | Chain | Ended on | Next matched | Cache |", "| --- | --- | --- | --- | --- |");
     for (const r of sent) {
@@ -613,9 +660,12 @@ async function main() {
 
   const bad = rows.filter(
     (r) =>
-      r.status !== (r.expect || 200) ||
-      !r.landedOn.startsWith(r.lands || r.path)
+      !r.offline &&
+      (r.status !== (r.expect || 200) ||
+        !r.landedOn.startsWith(r.lands || r.path))
   ).length;
+  const dropped = rows.filter((r) => r.offline).length;
+  if (dropped) console.log(`Never reached, connection dropped: ${dropped}.`);
   console.log(`\nWritten: audit-report.md, and screenshots in ${SHOTS}`);
   console.log(`Pages checked: ${rows.length}. Did not open properly: ${bad}.`);
 }
