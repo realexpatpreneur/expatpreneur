@@ -6,6 +6,14 @@ import { RefundDecision, PayoutForm } from "../plans/money-forms";
 export default async function GlobalMoneyPage() {
   const supabase = await createClient();
 
+  // What the educator keeps, as the Global team set it.
+  const { data: shareSetting } = await supabase
+    .from("settings")
+    .select("value")
+    .eq("key", "educator_share")
+    .maybeSingle();
+  const shareNow = Number(shareSetting?.value ?? 70);
+
   const [{ data: payments }, { data: subscriptions }, { count: paidMembers }] =
     await Promise.all([
       supabase
@@ -197,6 +205,7 @@ export default async function GlobalMoneyPage() {
           <div className="stack">
             {owedBy.size ? (
               <PayoutForm
+                share={shareNow}
                 educators={[...owedBy.entries()].map(([id, row]) => ({
                   id,
                   name: people?.find((p) => p.id === id)?.full_name ?? "An educator",

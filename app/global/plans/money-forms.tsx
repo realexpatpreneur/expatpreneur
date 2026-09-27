@@ -36,8 +36,10 @@ export function RefundDecision({ id }: { id: string }) {
 
 export function PayoutForm({
   educators,
+  share = 70,
 }: {
   educators: { id: string; name: string; owed: number; currency: string }[];
+  share?: number;
 }) {
   const [state, action, pending] = useActionState<PlanState, FormData>(
     recordPayout,
@@ -82,7 +84,11 @@ export function PayoutForm({
         </label>
         <label className="field">
           <span>Their share, percent</span>
-          <input name="share" type="number" min={0} max={100} defaultValue={70} />
+          <input name="share" type="number" min={0} max={100} defaultValue={share} />
+          <span className="hint">
+            From the educator share setting. Change it there, not here, if
+            it is changing for everybody.
+          </span>
         </label>
       </div>
 

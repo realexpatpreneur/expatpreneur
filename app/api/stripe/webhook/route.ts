@@ -29,6 +29,13 @@ export async function POST(request: Request) {
   const service = createAdminClient();
 
   if (event.type === "checkout.session.completed") {
+    // Kept so a refund can find this row directly later.
+    const sessionIntent = (() => {
+      const o = event.data.object as Stripe.Checkout.Session;
+      return typeof o.payment_intent === "string"
+        ? o.payment_intent
+        : o.payment_intent?.id ?? null;
+    })();
     const session = event.data.object as Stripe.Checkout.Session;
     const profileId = session.metadata?.profile_id ?? session.client_reference_id;
     const kind = session.metadata?.kind ?? "membership";
@@ -41,6 +48,7 @@ export async function POST(request: Request) {
         currency: (session.currency ?? "eur").toUpperCase(),
         status: "paid",
         provider_ref: session.id,
+        provider_intent: sessionIntent,
       });
 
       await service.from("subscriptions").upsert(
@@ -81,6 +89,7 @@ export async function POST(request: Request) {
           currency: (session.currency ?? "eur").toUpperCase(),
           status: "paid",
           provider_ref: session.id,
+          provider_intent: sessionIntent,
         });
 
         if (profileId) {
@@ -130,6 +139,7 @@ export async function POST(request: Request) {
         currency: (session.currency ?? "aed").toUpperCase(),
         status: "paid",
         provider_ref: session.id,
+        provider_intent: sessionIntent,
       });
 
       if (eventId) {
@@ -159,30 +169,44 @@ export async function POST(request: Request) {
         : charge.payment_intent?.id;
 
     if (intent) {
-      const { data: sessions } = await service
+      // One query, because the intent is on the row.
+      const { data: row } = await service
         .from("payments")
-        .select("id, provider_ref")
-        .eq("status", "paid");
+        .select("id")
+        .eq("provider_intent", intent)
+        .maybeSingle();
 
-      // The reference we keep is the checkout session, so match on the
-      // intent recorded against it.
-      for (const row of sessions ?? []) {
-        if (!row.provider_ref) continue;
-        try {
-          const found = await getStripe().checkout.sessions.retrieve(row.provider_ref);
-          const its =
-            typeof found.payment_intent === "string"
-              ? found.payment_intent
-              : found.payment_intent?.id;
-          if (its === intent) {
-            await service
-              .from("payments")
-              .update({ status: "refunded" })
-              .eq("id", row.id);
-            break;
+      if (row) {
+        await service.from("payments").update({ status: "refunded" }).eq("id", row.id);
+      } else {
+        // Anything paid for before the intent was recorded. Ask Stripe
+        // about those few, newest first, and stop at the match.
+        const { data: older } = await service
+          .from("payments")
+          .select("id, provider_ref")
+          .eq("status", "paid")
+          .is("provider_intent", null)
+          .order("created_at", { ascending: false })
+          .limit(50);
+
+        for (const old of older ?? []) {
+          if (!old.provider_ref) continue;
+          try {
+            const found = await getStripe().checkout.sessions.retrieve(old.provider_ref);
+            const its =
+              typeof found.payment_intent === "string"
+                ? found.payment_intent
+                : found.payment_intent?.id;
+            if (its === intent) {
+              await service
+                .from("payments")
+                .update({ status: "refunded", provider_intent: intent })
+                .eq("id", old.id);
+              break;
+            }
+          } catch {
+            // Nothing to do; the next one may match.
           }
-        } catch {
-          // Nothing to do; the next one may match.
         }
       }
     }
@@ -198,36 +222,60 @@ export async function POST(request: Request) {
         : charge.payment_intent?.id;
 
     if (intent) {
-      const { data: purchases } = await service
+      // Written down at the time of the sale, so this is one query.
+      let { data: purchase } = await service
         .from("course_purchases")
-        .select("id, course_id, profile_id, provider_ref")
-        .eq("status", "paid");
+        .select("id, course_id, profile_id")
+        .eq("provider_intent", intent)
+        .maybeSingle();
 
-      for (const purchase of purchases ?? []) {
-        if (!purchase.provider_ref) continue;
-        try {
-          const found = await getStripe().checkout.sessions.retrieve(purchase.provider_ref);
-          const its =
-            typeof found.payment_intent === "string"
-              ? found.payment_intent
-              : found.payment_intent?.id;
-          if (its !== intent) continue;
+      if (!purchase) {
+        // Bought before the intent was recorded. A short hunt, newest
+        // first, rather than the whole table.
+        const { data: older } = await service
+          .from("course_purchases")
+          .select("id, course_id, profile_id, provider_ref")
+          .eq("status", "paid")
+          .is("provider_intent", null)
+          .order("created_at", { ascending: false })
+          .limit(50);
 
-          await service
-            .from("course_purchases")
-            .update({ status: "refunded", refunded_at: new Date().toISOString() })
-            .eq("id", purchase.id);
-
-          if (purchase.profile_id) {
-            await service
-              .from("enrolments")
-              .delete()
-              .eq("course_id", purchase.course_id)
-              .eq("profile_id", purchase.profile_id);
+        for (const old of older ?? []) {
+          if (!old.provider_ref) continue;
+          try {
+            const found = await getStripe().checkout.sessions.retrieve(old.provider_ref);
+            const its =
+              typeof found.payment_intent === "string"
+                ? found.payment_intent
+                : found.payment_intent?.id;
+            if (its === intent) {
+              purchase = old;
+              break;
+            }
+          } catch {
+            // Try the next one.
           }
-          break;
-        } catch {
-          // Try the next one.
+        }
+      }
+
+      if (purchase) {
+        await service
+          .from("course_purchases")
+          .update({
+            status: "refunded",
+            refunded_at: new Date().toISOString(),
+            provider_intent: intent,
+          })
+          .eq("id", purchase.id);
+
+        // The course closes again, which is the point of recording the
+        // purchase rather than the enrolment.
+        if (purchase.profile_id) {
+          await service
+            .from("enrolments")
+            .delete()
+            .eq("course_id", purchase.course_id)
+            .eq("profile_id", purchase.profile_id);
         }
       }
     }
