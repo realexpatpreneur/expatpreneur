@@ -472,6 +472,13 @@ function write(rows, nav, version) {
   if (version && version.commit) {
     out.push(`Commit \`${version.commit.slice(0, 8)}\` on \`${version.ref}\`, built ${version.builtAt}.`);
     if (version.message) out.push("", `Its message: ${version.message}`);
+    if (version.behind) {
+      out.push("");
+      out.push(`**The site is ${version.behind} commits behind the repository.**`);
+      out.push("The newest commit here is `" + version.localCommit + "`, and the");
+      out.push("site is serving something older. A deployment has failed, so");
+      out.push("everything else in this report describes an old build.");
+    }
   } else {
     out.push("The site could not say. Either /api/version is not deployed yet,");
     out.push("which means this build predates it, or it failed.");
@@ -604,6 +611,23 @@ async function main() {
     const r = await page.goto(BASE + "/api/version", { timeout: 20000 });
     if (r && r.status() === 200) version = await r.json();
     await page.close();
+
+    // Compare it with the repository, because a failed deployment is
+    // invisible otherwise: the site keeps serving the last build that
+    // worked and looks perfectly healthy.
+    if (version) {
+      try {
+        const { execSync } = await import("node:child_process");
+        const local = execSync("git rev-parse HEAD").toString().trim();
+        version.localCommit = local.slice(0, 8);
+        if (local !== version.commit) {
+          const count = execSync(`git rev-list --count ${version.commit}..HEAD`)
+            .toString()
+            .trim();
+          version.behind = Number(count) || 0;
+        }
+      } catch { }
+    }
   } catch { }
 
   const rows = [];
@@ -673,6 +697,13 @@ async function main() {
   ).length;
   const dropped = rows.filter((r) => r.offline).length;
   if (dropped) console.log(`Never reached, connection dropped: ${dropped}.`);
+  if (version && version.behind) {
+    console.log(
+      `\n  THE SITE IS ${version.behind} COMMITS BEHIND. A deployment has failed,`
+    );
+    console.log("  so everything above describes an older build.\n");
+  }
+
   console.log(`\nWritten: audit-report.md, and screenshots in ${SHOTS}`);
   console.log(`Pages checked: ${rows.length}. Did not open properly: ${bad}.`);
 }
