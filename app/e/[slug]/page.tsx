@@ -97,6 +97,7 @@ export default async function PublicEventPage({
                   eventId={event.id}
                   slug={event.slug}
                   requiresApproval={event.requires_approval}
+                  priced={Boolean(event.price_cents)}
                 />
               )}
 

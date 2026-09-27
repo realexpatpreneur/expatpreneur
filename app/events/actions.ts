@@ -52,7 +52,7 @@ export async function registerForEvent(
       .eq("id", eventId)
       .maybeSingle(),
     supabase
-      .from("profiles")
+      .from("member_records")
       .select("email, full_name")
       .eq("id", user.id)
       .maybeSingle(),
@@ -197,6 +197,9 @@ export async function registerAsGuest(
     event_id: String(formData.get("event_id")),
     guest_name: name,
     guest_email: email,
+    guest_company: String(formData.get("guest_company") ?? "").trim() || null,
+    guest_city: String(formData.get("guest_city") ?? "").trim() || null,
+    guest_hopes: String(formData.get("guest_hopes") ?? "").trim() || null,
     status: formData.get("requires_approval") === "1" ? "pending" : "confirmed",
   });
 

@@ -24,7 +24,7 @@ export default async function AdminEventPage({
   const [{ data: registrations }, { data: village }] = await Promise.all([
     supabase
       .from("event_registrations")
-      .select("id, profile_id, guest_name, guest_email, status, is_visitor, note, checked_in_at")
+      .select("id, profile_id, guest_name, guest_email, guest_company, guest_city, guest_hopes, status, is_visitor, note, checked_in_at")
       .eq("event_id", id)
       .order("created_at"),
     event.village_id
