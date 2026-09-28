@@ -364,68 +364,94 @@ select 'what-i-wish-i-knew-before-registering-a-company-in-dubai', 'guide', 'Wha
 where not exists (select 1 from articles where slug = 'what-i-wish-i-knew-before-registering-a-company-in-dubai');
 
 -- ------------------------------------------------------- businesses
+--
+-- A business belongs to a member, and the people who own these have not
+-- joined yet. They are attached to the founder's account so the
+-- marketplace is not empty, and every one carries a line saying so.
+-- Reassign or delete each as its real owner arrives:
+--
+--   delete from businesses where description like '%[demo listing]%';
 
-insert into businesses (slug, village_id, name, tagline, description, industry, public)
-select 'norte', (select id from villages where slug = 'dubai'),
+
+insert into businesses (slug, owner_id, village_id, name, tagline, description, industry, public)
+select 'norte',
+  (select id from profiles where email = 'realexpatpreneur@gmail.com'),
+  (select id from villages where slug = 'dubai'),
   'Norte Studio', 'Brand identities for early stage founders.',
-  'Brand identities for early stage founders. Brand identity, Naming, Pitch deck design. Brand sprint for new members, 10 percent off',
+  'Brand identities for early stage founders. Brand identity, Naming, Pitch deck design. Brand sprint for new members, 10 percent off [demo listing]',
   'Design & branding', true
-where not exists (select 1 from businesses where slug = 'norte');
+where exists (select 1 from profiles where email = 'realexpatpreneur@gmail.com')
+  and not exists (select 1 from businesses where slug = 'norte');
 
 update businesses set name = 'Norte Studio', tagline = 'Brand identities for early stage founders.',
   industry = 'Design & branding', public = true
 where slug = 'norte';
 
-insert into businesses (slug, village_id, name, tagline, description, industry, public)
-select 'casatinta', (select id from villages where slug = 'lisbon'),
+insert into businesses (slug, owner_id, village_id, name, tagline, description, industry, public)
+select 'casatinta',
+  (select id from profiles where email = 'realexpatpreneur@gmail.com'),
+  (select id from villages where slug = 'lisbon'),
   'Casa Tinta', 'Two guesthouses and a small events space in Lisbon.',
-  'Two guesthouses and a small events space in Lisbon. Guest rooms, Events space, Long stays. 15 percent off for members visiting Lisbon',
+  'Two guesthouses and a small events space in Lisbon. Guest rooms, Events space, Long stays. 15 percent off for members visiting Lisbon [demo listing]',
   'Hospitality', true
-where not exists (select 1 from businesses where slug = 'casatinta');
+where exists (select 1 from profiles where email = 'realexpatpreneur@gmail.com')
+  and not exists (select 1 from businesses where slug = 'casatinta');
 
 update businesses set name = 'Casa Tinta', tagline = 'Two guesthouses and a small events space in Lisbon.',
   industry = 'Hospitality', public = true
 where slug = 'casatinta';
 
-insert into businesses (slug, village_id, name, tagline, description, industry, public)
-select 'haddad', (select id from villages where slug = 'dubai'),
+insert into businesses (slug, owner_id, village_id, name, tagline, description, industry, public)
+select 'haddad',
+  (select id from profiles where email = 'realexpatpreneur@gmail.com'),
+  (select id from villages where slug = 'dubai'),
   'Haddad Advisory', 'Company setup and market entry in the Gulf.',
-  'Company setup and market entry in the Gulf. Company setup, Licensing, Market entry plans. Free 30 minute intro call',
+  'Company setup and market entry in the Gulf. Company setup, Licensing, Market entry plans. Free 30 minute intro call [demo listing]',
   'Consulting', true
-where not exists (select 1 from businesses where slug = 'haddad');
+where exists (select 1 from profiles where email = 'realexpatpreneur@gmail.com')
+  and not exists (select 1 from businesses where slug = 'haddad');
 
 update businesses set name = 'Haddad Advisory', tagline = 'Company setup and market entry in the Gulf.',
   industry = 'Consulting', public = true
 where slug = 'haddad';
 
-insert into businesses (slug, village_id, name, tagline, description, industry, public)
-select 'still', (select id from villages where slug = 'dubai'),
+insert into businesses (slug, owner_id, village_id, name, tagline, description, industry, public)
+select 'still',
+  (select id from profiles where email = 'realexpatpreneur@gmail.com'),
+  (select id from villages where slug = 'dubai'),
   'Still Studio', 'Workplace wellness programmes and a skincare line.',
-  'Workplace wellness programmes and a skincare line. Team wellness days, Studio classes, Skincare. ',
+  'Workplace wellness programmes and a skincare line. Team wellness days, Studio classes, Skincare.  [demo listing]',
   'Wellness', true
-where not exists (select 1 from businesses where slug = 'still');
+where exists (select 1 from profiles where email = 'realexpatpreneur@gmail.com')
+  and not exists (select 1 from businesses where slug = 'still');
 
 update businesses set name = 'Still Studio', tagline = 'Workplace wellness programmes and a skincare line.',
   industry = 'Wellness', public = true
 where slug = 'still';
 
-insert into businesses (slug, village_id, name, tagline, description, industry, public)
-select 'keystone', (select id from villages where slug = 'lisbon'),
+insert into businesses (slug, owner_id, village_id, name, tagline, description, industry, public)
+select 'keystone',
+  (select id from profiles where email = 'realexpatpreneur@gmail.com'),
+  (select id from villages where slug = 'lisbon'),
   'Keystone Homes', 'Homes and offices for founders relocating to Lisbon.',
-  'Homes and offices for founders relocating to Lisbon. Residential search, Office search, Relocation support. No search fee for members',
+  'Homes and offices for founders relocating to Lisbon. Residential search, Office search, Relocation support. No search fee for members [demo listing]',
   'Real estate', true
-where not exists (select 1 from businesses where slug = 'keystone');
+where exists (select 1 from profiles where email = 'realexpatpreneur@gmail.com')
+  and not exists (select 1 from businesses where slug = 'keystone');
 
 update businesses set name = 'Keystone Homes', tagline = 'Homes and offices for founders relocating to Lisbon.',
   industry = 'Real estate', public = true
 where slug = 'keystone';
 
-insert into businesses (slug, village_id, name, tagline, description, industry, public)
-select 'stackleaf', (select id from villages where slug = 'dubai'),
+insert into businesses (slug, owner_id, village_id, name, tagline, description, industry, public)
+select 'stackleaf',
+  (select id from profiles where email = 'realexpatpreneur@gmail.com'),
+  (select id from villages where slug = 'dubai'),
   'Stackleaf', 'Inventory software for small retailers.',
-  'Inventory software for small retailers. Inventory software, Onboarding. ',
+  'Inventory software for small retailers. Inventory software, Onboarding.  [demo listing]',
   'Technology', true
-where not exists (select 1 from businesses where slug = 'stackleaf');
+where exists (select 1 from profiles where email = 'realexpatpreneur@gmail.com')
+  and not exists (select 1 from businesses where slug = 'stackleaf');
 
 update businesses set name = 'Stackleaf', tagline = 'Inventory software for small retailers.',
   industry = 'Technology', public = true
