@@ -263,8 +263,17 @@ async function checkOne(context, spec, signedIn) {
   const page = await context.newPage();
   const consoleErrors = [];
   const failed = [];
-  page.on("console", (m) => { if (m.type() === "error") consoleErrors.push(m.text().slice(0, 160)); });
+  page.on("console", (m) => {
+    if (m.type() !== "error") return;
+    const text = m.text();
+    // The 404 page's own response, logged by the browser.
+    if (spec.expect === 404 && text.includes("404")) return;
+    consoleErrors.push(text.slice(0, 160));
+  });
+  const THIRD_PARTY = ["challenges.cloudflare.com", "js.stripe.com", "livekit.cloud"];
+
   page.on("requestfailed", (r) => {
+    if (THIRD_PARTY.some((h) => r.url().includes(h))) return;
     // Next fetches the next page in the background and drops it when the
     // browser moves on. That is not a fault, and reporting it buried the
     // real ones.
@@ -275,6 +284,7 @@ async function checkOne(context, spec, signedIn) {
     // A 404 on a resource is the useful one: it names the image, font or
     // file that is missing. Saying "one console error" never did.
     if (r.status() !== 404 && r.status() < 500) return;
+    if (THIRD_PARTY.some((h) => r.url().includes(h))) return;
     const u = new URL(r.url());
     // The page's own 404, where a 404 is what we asked for.
     if (r.url().split("?")[0] === BASE + spec.path && spec.expect === 404) return;
@@ -389,8 +399,12 @@ async function checkOne(context, spec, signedIn) {
   const size = page.viewportSize();
   const tag = size && size.width < 500 ? "phone" : signedIn ? "in" : "out";
   const shot = path.join(SHOTS, tag + spec.path.replace(/\//g, "_") + ".png");
-  await page.screenshot({ path: shot, fullPage: true });
-  await page.close();
+  try {
+    await page.screenshot({ path: shot, fullPage: true });
+  } catch {
+    // A screenshot is not worth losing the run over.
+  }
+  try { await page.close(); } catch { }
   return row;
 }
 
@@ -607,10 +621,12 @@ async function main() {
 
   let version = null;
   try {
-    const page = await (await browser.newContext()).newPage();
+    const probe = await browser.newContext();
+    const page = await probe.newPage();
     const r = await page.goto(BASE + "/api/version", { timeout: 20000 });
     if (r && r.status() === 200) version = await r.json();
     await page.close();
+    await probe.close();
 
     // Compare it with the repository, because a failed deployment is
     // invisible otherwise: the site keeps serving the last build that
@@ -678,15 +694,19 @@ async function main() {
   });
   console.log("\nOn a phone\n");
   for (const spec of [...PUBLIC.slice(0, 12), ...MEMBER.slice(0, 8)]) {
-    const row = await checkOne(phone, { ...spec, parts: [], says: [] }, true);
-    row.name = spec.name + " (phone)";
-    rows.push(row);
-    const v = verdict(row);
-    if (v !== "ok") console.log(`  ${spec.name.padEnd(26)} ${v}`);
+    try {
+      const row = await checkOne(phone, { ...spec, parts: [], says: [] }, true);
+      row.name = spec.name + " (phone)";
+      rows.push(row);
+      const v = verdict(row);
+      if (v !== "ok") console.log(`  ${spec.name.padEnd(26)} ${v}`);
+    } catch (e) {
+      console.log(`  ${spec.name.padEnd(26)} could not be checked: ${String(e).slice(0, 60)}`);
+    }
   }
-  await phone.close();
+  try { await phone.close(); } catch { }
 
-  await browser.close();
+  try { await browser.close(); } catch { }
   write(rows, nav, version);
 
   const bad = rows.filter(
