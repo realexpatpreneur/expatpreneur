@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Av, Flag } from "@/components/bits";
+import { Av, Flag, NationalityFlag } from "@/components/bits";
 import { Ic } from "@/components/icon";
 import { ProfileTabs } from "@/components/profile";
 
@@ -10,6 +10,7 @@ export type ProfilePerson = {
   bio: string | null;
   business_name: string | null;
   industry: string | null;
+  nationalities?: string[] | null;
   languages?: string[] | null;
   markets_known?: string[] | null;
   lived_in: string[] | null;
@@ -59,6 +60,18 @@ export function ProfileView({
 
   const about = (
     <div className="sp-about">
+      {person.nationalities?.length ? (
+        <div>
+          <span className="sp-label">Nationalities</span>
+          <div className="tags">
+            {person.nationalities.map((n) => (
+              <span className="chip" key={n}>
+                <NationalityFlag nationality={n} /> {n}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
       {person.languages?.length ? (
         <div>
           <span className="sp-label">Languages</span>

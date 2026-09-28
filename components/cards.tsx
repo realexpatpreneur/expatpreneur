@@ -10,6 +10,12 @@ const VPHOTO: Record<string, string> = {
   paris: "ph-paris",
 };
 
+// The class carrying a Village's photograph, so the card and the Village
+// page itself use the same one.
+export function villagePhoto(slug: string) {
+  return VPHOTO[slug] ?? "ph-future";
+}
+
 export const villageStatus: Record<string, [string, string]> = {
   open: ["Open for invitation requests", "chip-mint"],
   launching: ["Launching soon", "chip-sun"],
@@ -27,6 +33,7 @@ export type VillageRow = {
   summary?: string | null;
   members?: number | null;
   circles?: number | null;
+  cover_url?: string | null;
 };
 
 // vcard
@@ -36,9 +43,16 @@ export function VillageCard({ village }: { village: VillageRow }) {
   return (
     <Link className="vcard" href={`/villages/${village.slug}`}>
       <div
-        className={`vphoto ${VPHOTO[village.slug] ?? "ph-future"}`}
+        className={`vphoto ${villagePhoto(village.slug)}`}
         role="img"
         aria-label={village.name}
+        style={
+          village.cover_url
+            ? {
+                background: `linear-gradient(to top,rgba(20,32,44,.72) 0%,rgba(20,32,44,.1) 60%),url('${village.cover_url}') center/cover`,
+              }
+            : undefined
+        }
       >
         <h3>{village.name}</h3>
       </div>
@@ -74,7 +88,7 @@ export type BusinessRow = {
   category: string | null;
   summary: string | null;
   offer?: string | null;
-  image_url?: string | null;
+  logo_url?: string | null;
   owner_name?: string | null;
   village_name?: string | null;
 };
@@ -84,12 +98,12 @@ export type BusinessRow = {
 export function BusinessCard({ biz, i = 0, href }: { biz: BusinessRow; i?: number; href?: string }) {
   return (
     <Link className="bizcard" href={href ?? `/businesses/${biz.slug}`}>
-      {biz.image_url ? (
+      {biz.logo_url ? (
         <div
           className="photo"
           role="img"
           aria-label={biz.name}
-          style={{ height: 120, backgroundImage: `url('${biz.image_url}')` }}
+          style={{ height: 120, backgroundImage: `url('${biz.logo_url}')` }}
         />
       ) : (
         <span className={`ctile ${TONES[i % TONES.length]}`} style={{ margin: 0, height: 120 }}>

@@ -53,7 +53,7 @@ export default async function DiscoverPage({
   ] = await Promise.all([
     supabase
       .from("villages")
-      .select("id, slug, name, city, country, status, summary")
+      .select("id, slug, name, city, country, status, summary, cover_url")
       .order("name"),
     supabase
       .from("circles")

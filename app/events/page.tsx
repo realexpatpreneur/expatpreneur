@@ -122,6 +122,7 @@ export default async function EventsPage({
               return (
                 <EventRow
                   key={event.id}
+                  cover={event.cover_url}
                   href={member ? `/events/${event.slug}` : `/e/${event.slug}`}
                   day={String(d.getDate())}
                   month={d.toLocaleDateString("en-GB", { month: "short" })}

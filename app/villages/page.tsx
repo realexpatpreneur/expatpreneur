@@ -26,7 +26,7 @@ export default async function VillagesPage({
   const [{ data: villages }, { data: counts }] = await Promise.all([
     supabase
       .from("villages")
-      .select("id, slug, name, city, country, status, summary")
+      .select("id, slug, name, city, country, status, summary, cover_url")
       .order("name"),
     supabase.from("village_public_counts").select("village_id, members, circles"),
   ]);

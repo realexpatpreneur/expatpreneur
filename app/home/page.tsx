@@ -91,7 +91,7 @@ export default async function MemberHomePage() {
         .limit(3),
       supabase
         .from("events")
-        .select("id, slug, title, starts_at, venue, is_online, village_id")
+        .select("id, slug, title, starts_at, venue, is_online, village_id, cover_url")
         .eq("status", "published")
         .gte("starts_at", new Date().toISOString())
         .order("starts_at")
@@ -264,6 +264,7 @@ export default async function MemberHomePage() {
                   return (
                     <EventRow
                       key={e.id}
+                      cover={e.cover_url}
                       href={`/events/${e.slug}`}
                       day={String(d.getDate())}
                       month={d.toLocaleDateString("en-GB", { month: "short" })}

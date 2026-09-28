@@ -1,4 +1,5 @@
 import { DualPage } from "@/components/dual-page";
+import { villagePhoto } from "@/components/cards";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -25,7 +26,7 @@ export default async function VillagePublicPage({
 
   const { data: village } = await supabase
     .from("villages")
-    .select("id, slug, name, city, country, status, summary")
+    .select("id, slug, name, city, country, status, summary, cover_url")
     .eq("slug", slug)
     .maybeSingle();
 
@@ -41,7 +42,7 @@ export default async function VillagePublicPage({
       .eq("status", "active"),
     supabase
       .from("events")
-      .select("id, slug, title, starts_at, ends_at, timezone, venue")
+      .select("id, slug, title, starts_at, ends_at, timezone, venue, cover_url")
       .eq("village_id", village.id)
       .eq("visibility", "public")
       .eq("status", "published")
@@ -71,16 +72,38 @@ export default async function VillagePublicPage({
 
   return (
     <DualPage member={Boolean(user)} nav="/network" active="/villages">
-        <section className="sec">
-          <p>
-            <span className={`chip ${village.status === "open" ? "chip-mint" : ""}`}>
+        {/* The photographic hero the prototype leads with. A Village with
+            no photograph of its own falls back to the hatched block. */}
+        <div
+          className={`vphoto ${villagePhoto(village.slug)}`}
+          role="img"
+          aria-label={village.name}
+          style={{
+            height: 230,
+            padding: 28,
+            marginBottom: 24,
+            ...(village.cover_url
+              ? {
+                  background: `linear-gradient(to top,rgba(20,32,44,.72) 0%,rgba(20,32,44,.1) 60%),url('${village.cover_url}') center/cover`,
+                }
+              : {}),
+          }}
+        >
+          <div>
+            <span className="chip" style={{ background: "rgba(255,255,255,.9)" }}>
               {statusLine[village.status] ?? village.status}
             </span>
-          </p>
-          <h1>{village.name}</h1>
-          <p className="lead">
-            {village.city}, {village.country}. {village.summary}
-          </p>
+            <h1 style={{ color: "#fff", fontSize: 32, marginTop: 10 }}>
+              {village.name} Village
+            </h1>
+          </div>
+        </div>
+
+        <section className="sec">
+          <h2 style={{ fontSize: 20 }}>
+            Build in {village.city} without starting from zero.
+          </h2>
+          <p className="lead">{village.summary}</p>
           <p>
             {opening ? (
               <Link className="btn btn-primary" href={waitlist}>

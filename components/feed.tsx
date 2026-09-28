@@ -105,6 +105,7 @@ export function EventRow({
   line,
   visiting = false,
   right,
+  cover,
 }: {
   href: string;
   day: string;
@@ -113,13 +114,23 @@ export function EventRow({
   line: string;
   visiting?: boolean;
   right?: React.ReactNode;
+  cover?: string | null;
 }) {
   return (
-    <Link className="evt linkrow" href={href}>
+    <Link className={`evt linkrow ${cover ? "has-thumb" : ""}`} href={href}>
       <div className={`date ${visiting ? "visit" : ""}`}>
         <b>{day}</b>
         <span>{month}</span>
       </div>
+      {/* The thumbnail the prototype puts on every event row. */}
+      {cover ? (
+        <span
+          className="evt-thumb"
+          role="img"
+          aria-label={title}
+          style={{ backgroundImage: `url('${cover}')` }}
+        />
+      ) : null}
       <div style={{ minWidth: 0 }}>
         <b style={{ fontWeight: 600 }}>{title}</b>
         <div className="muted small">{line}</div>

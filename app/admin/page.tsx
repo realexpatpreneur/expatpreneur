@@ -60,7 +60,7 @@ export default async function AdminOverviewPage() {
       .limit(10),
     supabase
       .from("events")
-      .select("id, slug, title, starts_at, ends_at, timezone, venue, is_online")
+      .select("id, slug, title, starts_at, ends_at, timezone, venue, is_online, cover_url")
       .in("village_id", villageIds)
       .eq("status", "published")
       .gte("starts_at", new Date().toISOString())
@@ -246,6 +246,7 @@ export default async function AdminOverviewPage() {
                   return (
                     <EventRow
                       key={event.id}
+                      cover={event.cover_url}
                       href={`/admin/events/${event.id}`}
                       day={String(d.getDate())}
                       month={d.toLocaleDateString("en-GB", { month: "short" })}
