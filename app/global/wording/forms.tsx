@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { saveWording, type WordingState } from "./actions";
 import type { TextKey } from "@/lib/text-keys";
+import { RichText } from "@/components/rich-text";
 
 export function WordingForm({
   page,
@@ -42,11 +43,11 @@ export function WordingForm({
             <label className="field">
               <span>{k.label}</span>
               {k.long ? (
-                <textarea
+                <RichText
                   name={`v.${k.key}`}
-                  rows={3}
                   defaultValue={current[k.key] ?? ""}
                   placeholder={k.fallback}
+                  rows={4}
                 />
               ) : (
                 <input

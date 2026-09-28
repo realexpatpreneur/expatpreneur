@@ -1,0 +1,66 @@
+/* ===== Fields, as this build writes them =====
+   The prototype wraps a caption and an .input box in a div, and the
+   rules above were written for that. This build writes one label with
+   a span caption and a plain control, 349 of them, so the same styling
+   has to reach that shape too. Without this the caption sits on the
+   control, the control has no box, and a button touches the field
+   above it. */
+.app .field > span{display:block;font-weight:600;font-size:12.5px;margin-bottom:6px;color:var(--navy)}
+.app .field > span.hint{font-weight:400;font-size:12px;color:var(--muted);margin:6px 0 0}
+.app .field > input,
+.app .field > select,
+.app .field > textarea{
+  display:block;width:100%;font:inherit;color:var(--navy);background:#fff;
+  border:1px solid #C7CDD4;border-radius:14px;padding:10px 12px;
+  box-shadow:inset 0 2px 4px rgba(15,20,25,.07),0 1px 3px rgba(15,20,25,.07)}
+.app .field > textarea{min-height:88px;line-height:1.5;resize:vertical}
+.app .field > select{appearance:auto;padding-right:8px}
+.app .field > input:hover,.app .field > select:hover,.app .field > textarea:hover{border-color:#B6BDC6}
+.app .field > input:focus,.app .field > select:focus,.app .field > textarea:focus{
+  outline:0;border-color:var(--blue);
+  box-shadow:0 0 0 4px rgba(64,116,174,.18),inset 0 2px 4px rgba(15,20,25,.06)}
+.app .field > input::placeholder,.app .field > textarea::placeholder{color:#98A2AD}
+
+/* Room between stacked fields, and between a field and whatever comes
+   after it. Grids keep their own gap, so they are left alone. */
+.app *:not(.formgrid):not(.g2):not(.g3):not(.g4):not(.choicegrid):not(.stackform) > .field + .field,
+.app .field + .btn,
+.app .field + button,
+.app .field + .row,
+.app .field + .stack,
+.app .field + .flag,
+.app .field + .check,
+.app .field + .radio,
+.app .field + p{margin-top:14px}
+.app form > .btn,
+.app form > button{margin-top:14px}
+.app .formgrid + .btn,
+.app .formgrid + .row,
+.app .stackform + .btn,
+.app .stackform + .row{margin-top:16px}
+
+/* A plain list inside a panel had no styling at all, so it ran into
+   whatever followed it. */
+.app .panel ul:not([class]){margin:10px 0 0;padding-left:20px;display:grid;gap:6px}
+.app .panel ul:not([class]) + p{margin-top:12px}
+.app .panel > h3 + p,
+.app .panel > h3 + .muted{margin-top:6px}
+.app .panel > * + .divide{margin-top:10px}
+
+/* ===== The small prose editor ===== */
+.rt{border:1px solid #C7CDD4;border-radius:14px;overflow:hidden;background:#fff;
+  box-shadow:inset 0 2px 4px rgba(15,20,25,.05)}
+.rt-bar{display:flex;align-items:center;gap:4px;padding:6px 8px;border-bottom:1px solid var(--line);background:var(--wash)}
+.rt-bar button{border:1px solid transparent;background:transparent;border-radius:8px;padding:4px 10px;
+  font:600 12.5px var(--body);color:#3B4650;cursor:pointer}
+.rt-bar button:hover{background:#fff;border-color:var(--line)}
+.rt-bar button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.rt-spacer{flex:1}
+.app .rt textarea{border:0;border-radius:0;box-shadow:none;min-height:150px;padding:12px 14px}
+.app .rt textarea:focus{box-shadow:none;border:0}
+.rt-preview{padding:14px;min-height:150px}
+.rt-preview h2{font-size:18px;margin:14px 0 6px}
+.rt-preview h3{font-size:15px;margin:14px 0 6px}
+.rt-preview p{margin:0 0 10px!important}
+.rt-preview ul{margin:0 0 10px;padding-left:20px;display:grid;gap:6px}
+.rt-preview a{color:var(--blue)}
