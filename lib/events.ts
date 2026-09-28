@@ -30,24 +30,38 @@ export type EventRow = {
   host_id: string | null;
 };
 
+// A timezone the formatter does not recognise throws, and one bad row
+// should never take a page down. Anything unknown falls back to the
+// reader's own zone.
+function safeZone(zone: string | null | undefined) {
+  if (!zone) return undefined;
+  try {
+    new Intl.DateTimeFormat("en-GB", { timeZone: zone });
+    return zone;
+  } catch {
+    return undefined;
+  }
+}
+
 export function whenText(event: { starts_at: string; ends_at: string | null; timezone: string }) {
+  const zone = safeZone(event.timezone);
   const start = new Date(event.starts_at);
   const date = start.toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
-    timeZone: event.timezone,
+    timeZone: zone,
   });
   const from = start.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: event.timezone,
+    timeZone: zone,
   });
   if (!event.ends_at) return `${date}, ${from}`;
   const to = new Date(event.ends_at).toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: event.timezone,
+    timeZone: zone,
   });
   return `${date}, ${from} to ${to}`;
 }

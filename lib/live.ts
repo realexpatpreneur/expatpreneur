@@ -69,6 +69,16 @@ export function joinBlock(
   return null;
 }
 
+function safeZone(zone: string | null | undefined) {
+  if (!zone) return undefined;
+  try {
+    new Intl.DateTimeFormat("en-GB", { timeZone: zone });
+    return zone;
+  } catch {
+    return undefined;
+  }
+}
+
 export function sessionWhen(session: {
   scheduled_start: string;
   scheduled_end: string | null;
@@ -79,18 +89,18 @@ export function sessionWhen(session: {
     weekday: "long",
     day: "numeric",
     month: "long",
-    timeZone: session.timezone,
+    timeZone: safeZone(session.timezone),
   });
   const from = start.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: session.timezone,
+    timeZone: safeZone(session.timezone),
   });
   if (!session.scheduled_end) return `${date}, ${from}`;
   const to = new Date(session.scheduled_end).toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: session.timezone,
+    timeZone: safeZone(session.timezone),
   });
   return `${date}, ${from} to ${to}`;
 }
