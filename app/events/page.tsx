@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { pageText } from "@/lib/text";
 import { whoIsHere } from "@/lib/member";
 import { DualPage } from "@/components/dual-page";
 import { PageHead } from "@/components/workspace-shell";
@@ -23,6 +24,7 @@ export default async function EventsPage({
   const { show = "all" } = await searchParams;
   const member = await whoIsHere();
   const supabase = await createClient();
+  const t = await pageText("events");
 
   let query = supabase
     .from("events")
@@ -82,10 +84,9 @@ export default async function EventsPage({
         />
       ) : (
         <section className="pubsec hero-center">
-          <h1>Events</h1>
+          <h1>{t("title", "Events")}</h1>
           <p className="intro">
-            Gatherings in every Village and online. Some are open to everyone;
-            most are for members.
+            {t("intro", "Gatherings in every Village and online. Some are open to everyone; most are for members.")}
           </p>
         </section>
       )}

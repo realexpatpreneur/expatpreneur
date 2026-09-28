@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { pageText } from "@/lib/text";
 import { PublicPage } from "@/components/public-page";
 import { VillageCard, type VillageRow } from "@/components/cards";
 
@@ -22,6 +23,7 @@ export default async function VillagesPage({
 }) {
   const { show = "all" } = await searchParams;
   const supabase = await createClient();
+  const t = await pageText("villages");
 
   const [{ data: villages }, { data: counts }] = await Promise.all([
     supabase
@@ -49,10 +51,9 @@ export default async function VillagesPage({
   return (
     <PublicPage active="/villages">
       <section className="pubsec">
-        <h2>Find your Village</h2>
+        <h2>{t("title", "Find your Village")}</h2>
         <p className="intro">
-          Each Village is a local community of expat entrepreneurs in one city,
-          connected to every other Village in the network.
+          {t("intro", "Each Village is a local community of expat entrepreneurs in one city, connected to every other Village in the network.")}
         </p>
 
         <div className="filters">
