@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NATIONALITY_LIMIT } from "@/lib/access";
+import { PageHead } from "@/components/workspace-shell";
 
 // Internal only. This number never appears on a public page, in the member
 // space, or in anything written to an applicant.
@@ -19,14 +20,13 @@ export default async function GlobalMixPage() {
   }
 
   return (
-    <main className="wrap">
-      <section className="sec">
-        <h1>Village balance</h1>
-        <p className="lead">
-          No Village above {Math.round(NATIONALITY_LIMIT * 100)} percent of one
-          nationality. Internal only, and never mentioned to members.
-        </p>
-      </section>
+    <>
+      <PageHead
+        title="Village balance"
+        sub={`No Village above ${Math.round(
+          NATIONALITY_LIMIT * 100
+        )} percent of one nationality. Internal only, and never mentioned to members.`}
+      />
 
       <section className="sec">
         {byVillage.size === 0 ? (
@@ -65,6 +65,6 @@ export default async function GlobalMixPage() {
           </div>
         )}
       </section>
-    </main>
+    </>
   );
 }

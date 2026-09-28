@@ -268,6 +268,10 @@ async function checkOne(context, spec, signedIn) {
     const text = m.text();
     // The 404 page's own response, logged by the browser.
     if (spec.expect === 404 && text.includes("404")) return;
+    // Anything logged from inside a third party's widget.
+    const where = m.location()?.url ?? "";
+    if (THIRD_PARTY.some((h) => where.includes(h))) return;
+    if (text.startsWith("%c%d")) return;
     consoleErrors.push(text.slice(0, 160));
   });
   const THIRD_PARTY = ["challenges.cloudflare.com", "js.stripe.com", "livekit.cloud"];
@@ -302,7 +306,7 @@ async function checkOne(context, spec, signedIn) {
     status: 0, landedOn: "", missingParts: [], missingWords: [],
     deadControls: [], layout: [], console: [], network: [],
     redirects: [], matched: "", cache: "", expect: spec.expect || 200,
-    lands: spec.lands || null, offline: false,
+    lands: spec.lands || null, offline: false, slow: false,
   };
 
   const NETWORK = [
@@ -318,10 +322,16 @@ async function checkOne(context, spec, signedIn) {
       response = await page.goto(BASE + spec.path, { waitUntil: "domcontentloaded", timeout: 30000 });
     } catch (first) {
       const message = String(first);
-      if (!NETWORK.some((n) => message.includes(n))) throw first;
-      // The connection went, not the page. Wait, then try once more.
-      await new Promise((r) => setTimeout(r, 8000));
-      response = await page.goto(BASE + spec.path, { waitUntil: "domcontentloaded", timeout: 30000 });
+      const timedOut = message.includes("Timeout");
+      if (!timedOut && !NETWORK.some((n) => message.includes(n))) throw first;
+      // Either the connection went or the page was built on the spot
+      // for the first time. Wait, then try once more with longer.
+      await new Promise((r) => setTimeout(r, timedOut ? 3000 : 8000));
+      response = await page.goto(BASE + spec.path, {
+        waitUntil: "domcontentloaded",
+        timeout: 60000,
+      });
+      row.slow = true;
     }
     // Give it a moment to settle, but carry on if it never goes quiet.
     try { await page.waitForLoadState("networkidle", { timeout: 6000 }); } catch { }
@@ -450,6 +460,7 @@ function verdict(row) {
   if (row.missingWords.length) said.push(`${row.missingWords.length} words missing`);
   if (row.deadControls.length) said.push(`${row.deadControls.length} controls`);
   if (row.layout.length) said.push(row.layout[0]);
+  if (row.slow) said.push("slow on its first visit, fine on the second");
   if (row.network.length) said.push(row.network[0].slice(0, 90));
   else if (row.console.length) said.push(`console: ${row.console[0].slice(0, 70)}`);
   return said.length ? said.join(", ") : "ok";
