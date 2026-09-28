@@ -40,7 +40,7 @@ export default async function HomePage() {
   if (page) {
     return (
       <PublicPage>
-        <Blocks blocks={page.blocks} villages={villages ?? []} />
+        <Blocks blocks={page.blocks} data={{ villages: villages ?? [] }} />
       </PublicPage>
     );
   }

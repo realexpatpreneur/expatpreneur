@@ -134,3 +134,84 @@ export function BusinessCard({ biz, i = 0, href }: { biz: BusinessRow; i?: numbe
     </Link>
   );
 }
+
+export type CourseRow = {
+  id: string;
+  slug: string;
+  title: string;
+  level?: string | null;
+  format?: string | null;
+  price_cents?: number | null;
+  currency?: string | null;
+  cover_url?: string | null;
+};
+
+// The prototype's course card: a photograph, the format, the title and
+// the price.
+export function CourseCard({ course, i = 0, href }: { course: CourseRow; i?: number; href?: string }) {
+  const price = course.price_cents
+    ? `${(course.price_cents / 100).toFixed(0)} ${course.currency ?? "EUR"}`
+    : "Free";
+  return (
+    <Link className="coursecard" href={href ?? `/learning/${course.slug}`}>
+      {course.cover_url ? (
+        <div
+          className="photo"
+          role="img"
+          aria-label={course.title}
+          style={{ height: 130, backgroundImage: `url('${course.cover_url}')` }}
+        />
+      ) : (
+        <span className={`ctile ${TONES[i % TONES.length]}`} style={{ margin: 0, height: 130 }}>
+          <b>{course.title}</b>
+        </span>
+      )}
+      <div className="b">
+        <span className="chip" style={{ alignSelf: "flex-start" }}>
+          {course.format === "live" ? "Live workshop" : "Recorded"}
+        </span>
+        <b>{course.title}</b>
+        <div className="row" style={{ justifyContent: "space-between", marginTop: "auto" }}>
+          <b>{price}</b>
+          {course.level ? <span className="small muted">{course.level}</span> : null}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+export type ArticleRow = {
+  id: string;
+  slug: string;
+  title: string;
+  standfirst: string | null;
+  kind?: string;
+  cover_url?: string | null;
+};
+
+// The prototype's article card.
+export function ArticleCard({ article, i = 0, href }: { article: ArticleRow; i?: number; href?: string }) {
+  return (
+    <Link className="artcard" href={href ?? `/media/${article.slug}`}>
+      {article.cover_url ? (
+        <div
+          className="photo"
+          role="img"
+          aria-label={article.title}
+          style={{ height: 170, backgroundImage: `url('${article.cover_url}')` }}
+        />
+      ) : (
+        <span className={`ctile ${TONES[i % TONES.length]}`} style={{ margin: 0, height: 170 }}>
+          <b>{article.title}</b>
+        </span>
+      )}
+      {article.kind ? (
+        <span className="chip chip-pink" style={{ alignSelf: "flex-start" }}>
+          {article.kind}
+        </span>
+      ) : null}
+      <b style={{ fontSize: 15 }}>{article.title}</b>
+      {article.standfirst ? <p className="muted small">{article.standfirst}</p> : null}
+    </Link>
+  );
+}

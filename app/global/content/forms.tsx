@@ -2,7 +2,14 @@
 
 import { useActionState } from "react";
 import { savePage, addBlock, setPageStatus, type PageState } from "./actions";
-import { blockLabel, type Block } from "@/lib/blocks";
+import {
+  BLOCKS,
+  blockLabel,
+  blockSpec,
+  type Block,
+  type BlockField as BlockFieldSpec,
+} from "@/lib/blocks";
+import { RichText } from "@/components/rich-text";
 import { Uploader } from "@/components/uploader";
 
 export function PageEditor({
@@ -31,123 +38,54 @@ export function PageEditor({
 
       <div className="gside">
         <div className="stack">
-          {page.blocks.map((block, i) => (
-            <div className="panel" key={i}>
-              <div className="row" style={{ justifyContent: "space-between" }}>
-                <h3>{blockLabel[block.type] ?? block.type}</h3>
-                <label className="check" style={{ margin: 0 }}>
-                  <input type="checkbox" name={`block_${i}_remove`} />
-                  <span>
-                    <small>Remove this block</small>
-                  </span>
-                </label>
+          {page.blocks.map((block, i) => {
+            const spec = blockSpec(block.type);
+            return (
+              <div className="panel" key={i}>
+                <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+                  <div>
+                    <h3>{blockLabel[block.type] ?? block.type}</h3>
+                    {spec ? (
+                      <p className="muted small" style={{ marginTop: 2 }}>
+                        {spec.about}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="row" style={{ gap: 6 }}>
+                    {/* The order is a number on each block, so moving one
+                        is arithmetic rather than dragging. */}
+                    <input
+                      className="blockpos"
+                      name={`block_${i}_pos`}
+                      type="number"
+                      min={1}
+                      defaultValue={i + 1}
+                      aria-label="Position on the page"
+                      title="Position on the page"
+                    />
+                    <label className="check" style={{ margin: 0 }}>
+                      <input type="checkbox" name={`block_${i}_remove`} />
+                      <span>
+                        <small>Remove</small>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <input type="hidden" name={`block_${i}_type`} value={block.type} />
+
+                <div className="stack" style={{ marginTop: 12 }}>
+                  {(spec?.fields ?? []).map((f) => (
+                    <BlockField
+                      key={f.name}
+                      field={f}
+                      name={`block_${i}_${f.name}`}
+                      value={block[f.name] ?? ""}
+                    />
+                  ))}
+                </div>
               </div>
-              <input type="hidden" name={`block_${i}_type`} value={block.type} />
-
-              {block.type === "hero" ? (
-                <>
-                  <label className="field">
-                    <span>Heading</span>
-                    <input name={`block_${i}_heading`} defaultValue={block.heading ?? ""} />
-                  </label>
-                  <label className="field">
-                    <span>Text</span>
-                    <textarea
-                      name={`block_${i}_text`}
-                      rows={2}
-                      defaultValue={block.text ?? ""}
-                    />
-                  </label>
-                  <div className="g2">
-                    <label className="field">
-                      <span>Button</span>
-                      <input
-                        name={`block_${i}_button_label`}
-                        defaultValue={block.button_label ?? ""}
-                      />
-                    </label>
-                    <label className="field">
-                      <span>Button goes to</span>
-                      <input
-                        name={`block_${i}_button_href`}
-                        defaultValue={block.button_href ?? ""}
-                      />
-                    </label>
-                  </div>
-                  <div className="g2">
-                    <label className="field">
-                      <span>Second button</span>
-                      <input
-                        name={`block_${i}_second_label`}
-                        defaultValue={block.second_label ?? ""}
-                      />
-                    </label>
-                    <label className="field">
-                      <span>Second button goes to</span>
-                      <input
-                        name={`block_${i}_second_href`}
-                        defaultValue={block.second_href ?? ""}
-                      />
-                    </label>
-                  </div>
-                  <Uploader
-                    name={`block_${i}_image_url`}
-                    folder="pages"
-                    label="Image"
-                    current={block.image_url}
-                  />
-                </>
-              ) : null}
-
-              {block.type === "heading" ? (
-                <label className="field">
-                  <span>Heading</span>
-                  <input name={`block_${i}_heading`} defaultValue={block.heading ?? ""} />
-                </label>
-              ) : null}
-
-              {block.type === "text" ? (
-                <label className="field">
-                  <span>Text</span>
-                  <textarea
-                    name={`block_${i}_body`}
-                    rows={4}
-                    defaultValue={block.body ?? ""}
-                  />
-                </label>
-              ) : null}
-
-              {block.type === "villages" ? (
-                <label className="field">
-                  <span>Show</span>
-                  <select
-                    name={`block_${i}_show`}
-                    defaultValue={block.show ?? "Open and launching Villages"}
-                  >
-                    <option>Open and launching Villages</option>
-                    <option>Open only</option>
-                  </select>
-                </label>
-              ) : null}
-
-              {block.type === "story" ? (
-                <>
-                  <label className="field">
-                    <span>Heading</span>
-                    <input name={`block_${i}_heading`} defaultValue={block.heading ?? ""} />
-                  </label>
-                  <label className="field">
-                    <span>The story</span>
-                    <textarea
-                      name={`block_${i}_body`}
-                      rows={4}
-                      defaultValue={block.body ?? ""}
-                    />
-                  </label>
-                </>
-              ) : null}
-            </div>
-          ))}
+            );
+          })}
 
           {page.blocks.length === 0 ? (
             <div className="panel panel-wash">
@@ -219,6 +157,62 @@ export function PageEditor({
   );
 }
 
+function BlockField({
+  field,
+  name,
+  value,
+}: {
+  field: BlockFieldSpec;
+  name: string;
+  value: string;
+}) {
+  if (field.kind === "image")
+    return (
+      <Uploader
+        name={name}
+        label={field.label}
+        hint={field.hint}
+        current={value}
+      />
+    );
+
+  if (field.kind === "long")
+    return (
+      <div className="field">
+        <span>{field.label}</span>
+        <RichText name={name} defaultValue={value} rows={4} />
+        {field.hint ? <span className="hint">{field.hint}</span> : null}
+      </div>
+    );
+
+  if (field.kind === "select")
+    return (
+      <label className="field">
+        <span>{field.label}</span>
+        <select name={name} defaultValue={value}>
+          {(field.options ?? []).map(([v, t]) => (
+            <option key={v} value={v}>
+              {t}
+            </option>
+          ))}
+        </select>
+        {field.hint ? <span className="hint">{field.hint}</span> : null}
+      </label>
+    );
+
+  return (
+    <label className="field">
+      <span>{field.label}</span>
+      <input
+        name={name}
+        type={field.kind === "number" ? "number" : "text"}
+        defaultValue={value}
+      />
+      {field.hint ? <span className="hint">{field.hint}</span> : null}
+    </label>
+  );
+}
+
 export function AddBlockForm({ slug }: { slug: string }) {
   const [state, action, pending] = useActionState<PageState, FormData>(
     addBlock,
@@ -230,11 +224,11 @@ export function AddBlockForm({ slug }: { slug: string }) {
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="slug" value={slug} />
       <select name="type" defaultValue="text">
-        <option value="hero">Hero</option>
-        <option value="heading">Heading</option>
-        <option value="text">Text</option>
-        <option value="villages">Villages</option>
-        <option value="story">Founder story</option>
+        {BLOCKS.map((b) => (
+          <option key={b.type} value={b.type}>
+            {b.label}
+          </option>
+        ))}
       </select>
       <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Adding" : "Add a block"}

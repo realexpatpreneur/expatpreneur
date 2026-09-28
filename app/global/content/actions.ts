@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { record } from "@/lib/audit";
-import type { Block } from "@/lib/blocks";
+import { blockSpec, type Block } from "@/lib/blocks";
 
 export type PageState = { error?: string; done?: string };
 
@@ -13,36 +13,33 @@ export type PageState = { error?: string; done?: string };
 // so on, so saving is one action rather than one per block.
 function blocksFrom(formData: FormData): Block[] {
   const count = Number(formData.get("block_count") ?? 0);
-  const blocks: Block[] = [];
+  const rows: { pos: number; block: Block }[] = [];
 
+  // Every block keeps whatever fields its type declares, so adding a
+  // block type to the catalogue needs no change here.
   for (let i = 0; i < count; i += 1) {
     const type = String(formData.get(`block_${i}_type`) ?? "");
     if (!type || formData.get(`block_${i}_remove`)) continue;
 
-    const field = (name: string) =>
-      String(formData.get(`block_${i}_${name}`) ?? "").trim();
+    const spec = blockSpec(type);
+    if (!spec) continue;
 
-    if (type === "hero") {
-      blocks.push({
-        type,
-        heading: field("heading"),
-        text: field("text"),
-        button_label: field("button_label"),
-        button_href: field("button_href"),
-        second_label: field("second_label"),
-        second_href: field("second_href"),
-        image_url: field("image_url"),
-      });
-    } else if (type === "heading") {
-      blocks.push({ type, heading: field("heading") });
-    } else if (type === "text") {
-      blocks.push({ type, body: field("body") });
-    } else if (type === "villages") {
-      blocks.push({ type, show: field("show") || "Open and launching Villages" });
-    } else if (type === "story") {
-      blocks.push({ type, heading: field("heading"), body: field("body") });
+    const block: Block = { type };
+    for (const f of spec.fields) {
+      const v = String(formData.get(`block_${i}_${f.name}`) ?? "").trim();
+      if (v) block[f.name] = v;
     }
+
+    const pos = Number(formData.get(`block_${i}_pos`) ?? i + 1);
+    rows.push({ pos: Number.isFinite(pos) ? pos : i + 1, block });
   }
+
+  // The position boxes decide the order. Equal numbers keep the order
+  // they were already in.
+  const blocks = rows
+    .map((r, i) => ({ ...r, i }))
+    .sort((a, b) => a.pos - b.pos || a.i - b.i)
+    .map((r) => r.block);
 
   return blocks;
 }
