@@ -58,6 +58,7 @@ export const BLOCKS: BlockSpec[] = [
       T("second_label", "Second button"),
       U("second_href", "Second button goes to"),
       I("image_url", "Photograph", "Leave empty for the built-in preview panel."),
+      L("quote", "Line in the margin", "The bordered line under the buttons."),
       S("align", "Layout", [["", "Text left, picture right"], ["center", "Centred"]]),
     ],
   },
@@ -146,6 +147,16 @@ export const BLOCKS: BlockSpec[] = [
     label: "Quotes",
     about: "What members say. One per line: the quote, then who said it, separated by a bar.",
     fields: [T("heading", "Heading"), L("items", "Quotes")],
+  },
+  {
+    type: "layers",
+    label: "The three layers",
+    about: "Global, Village and Circle, joined as one strip.",
+    fields: [
+      T("heading", "Heading"),
+      L("text", "Line underneath"),
+      L("items", "The layers", "One per line: name | what it is"),
+    ],
   },
   {
     type: "villages",

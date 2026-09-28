@@ -11,18 +11,46 @@ import { Ic } from "@/components/icon";
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const [{ data: villages }, { data: counts }, { data: businesses }] = await Promise.all([
+  const [
+    { data: villages },
+    { data: counts },
+    { data: businesses },
+    { data: events },
+    { data: articles },
+    { data: plans },
+  ] = await Promise.all([
     supabase
       .from("villages")
-      .select("id, slug, name, city, country, status, summary")
+      .select("id, slug, name, city, country, status, summary, cover_url")
       .in("status", ["open", "launching", "exploring"])
       .limit(8),
     supabase.from("village_public_counts").select("village_id, members, circles"),
     supabase
       .from("businesses")
-      .select("id, slug, name, category, summary, offer, image_url")
+      .select("id, slug, name, category, summary, offer, logo_url")
       .eq("public", true)
       .limit(3),
+    // A published home page can hold any block, so the rows every block
+    // might want are loaded once here.
+    supabase
+      .from("events")
+      .select("id, slug, title, starts_at, ends_at, timezone, venue, cover_url, visibility")
+      .eq("status", "published")
+      .gte("starts_at", new Date().toISOString())
+      .order("starts_at")
+      .limit(6),
+    supabase
+      .from("articles")
+      .select("id, slug, title, standfirst, kind, cover_url")
+      .eq("status", "published")
+      .eq("member_only", false)
+      .order("published_at", { ascending: false })
+      .limit(3),
+    supabase
+      .from("plans")
+      .select("slug, name, blurb, price_cents, currency, interval, features")
+      .eq("active", true)
+      .order("position"),
   ]);
 
   // Open Villages first, then the ones launching, then the ones being explored.
@@ -40,7 +68,16 @@ export default async function HomePage() {
   if (page) {
     return (
       <PublicPage>
-        <Blocks blocks={page.blocks} data={{ villages: villages ?? [] }} />
+        <Blocks
+          blocks={page.blocks}
+          data={{
+            villages: ordered,
+            businesses: businesses ?? [],
+            events: events ?? [],
+            articles: articles ?? [],
+            plans: plans ?? [],
+          }}
+        />
       </PublicPage>
     );
   }
