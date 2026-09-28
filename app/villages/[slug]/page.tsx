@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { currentUser } from "@/lib/member";
 import { whenText } from "@/lib/events";
+import { EventRow } from "@/components/feed";
+import { Av } from "@/components/bits";
+import { Ic } from "@/components/icon";
 
 const statusLine: Record<string, string> = {
   open: "Open, by invitation",
@@ -34,12 +37,13 @@ export default async function VillagePublicPage({
 
   // Only what a stranger is allowed to see: members who chose to be public,
   // and events open to everyone.
-  const [{ count: memberCount }, { data: events }, { data: admins }] = await Promise.all([
+  const [{ data: counts }, { data: events }, { data: admins }] = await Promise.all([
+    // Counted by the database, because a visitor cannot read profiles.
     supabase
-      .from("profiles")
-      .select("id", { count: "exact", head: true })
+      .from("village_public_counts")
+      .select("members, circles, nationalities")
       .eq("village_id", village.id)
-      .eq("status", "active"),
+      .maybeSingle(),
     supabase
       .from("events")
       .select("id, slug, title, starts_at, ends_at, timezone, venue, cover_url")
@@ -99,134 +103,146 @@ export default async function VillagePublicPage({
           </div>
         </div>
 
-        <section className="sec">
-          <h2 style={{ fontSize: 20 }}>
-            Build in {village.city} without starting from zero.
-          </h2>
-          <p className="lead">{village.summary}</p>
-          <p>
-            {opening ? (
-              <Link className="btn btn-primary" href={waitlist}>
-                Join the waitlist
-              </Link>
-            ) : (
-              <Link className="btn btn-primary" href="/apply">
-                Request an invitation
-              </Link>
-            )}{" "}
-            <Link className="btn btn-ghost" href="/villages">
-              All Villages
-            </Link>
-          </p>
-        </section>
-
-        <section className="sec">
-          <div className="g3">
-            <div className="panel">
-              <h3>Circles</h3>
-              <p className="muted small">
-                Up to fifty members each. Small enough that people actually know
-                each other, and meet often enough to prove it.
-              </p>
-            </div>
-            <div className="panel">
-              <h3>Members</h3>
-              <p className="muted small">
-                {memberCount ?? 0} people building businesses here, from
-                somewhere else.
-              </p>
-            </div>
-            <div className="panel">
-              <h3>How you get in</h3>
-              <p className="muted small">
-                By invitation. Every request is read by a person, and the Local
-                Admin decides.
-              </p>
-            </div>
+        <section className="sec" style={{ paddingTop: 0 }}>
+          <div className="crumbs">
+            <Link href="/villages">Villages</Link>
+            <Ic name="chev" />
+            <span>{village.name}</span>
           </div>
-        </section>
 
-        <section className="sec">
           <div className="gside">
-            <div className="panel">
-              <h3>Who runs it</h3>
-              {hosts.length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
-                  {opening
-                    ? "We are looking for the people who will run this one. If that could be you, say so when you join the waitlist."
-                    : "The Local Admins here keep their profiles private."}
-                </p>
-              ) : (
-                <div className="divide" style={{ marginTop: 12 }}>
-                  {hosts.map((host) => (
+            <div>
+              <h2 style={{ fontSize: 20 }}>
+                Build in {village.city} without starting from zero.
+              </h2>
+              <p className="intro">{village.summary}</p>
+
+              {/* The prototype's three numbers, in its own order. */}
+              <div className="g3 stats3" style={{ marginTop: 22 }}>
+                {opening ? (
+                  <>
+                    <div className="stat">
+                      <span>Status</span>
+                      <b style={{ fontSize: 18 }}>Opening soon</b>
+                    </div>
+                    <div className="stat">
+                      <span>Founding members</span>
+                      <b>{counts?.members ?? 0}</b>
+                    </div>
+                    <div className="stat">
+                      <span>Nationalities</span>
+                      <b>{counts?.nationalities ?? 0}</b>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="stat">
+                      <span>Members</span>
+                      <b>{counts?.members ?? 0}</b>
+                    </div>
+                    <div className="stat">
+                      <span>Circles</span>
+                      <b>{counts?.circles ?? 0}</b>
+                    </div>
+                    <div className="stat">
+                      <span>Nationalities</span>
+                      <b>{counts?.nationalities ?? 0}</b>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="sechead" style={{ marginTop: 28 }}>
+                <h3>Upcoming events</h3>
+                <Link className="small" style={{ fontWeight: 600 }} href="/events">
+                  All {village.name} events
+                </Link>
+              </div>
+              <div className="divide">
+                {(events ?? []).length === 0 ? (
+                  <p className="muted">No events published yet.</p>
+                ) : (
+                  (events ?? []).map((event) => {
+                    const d = new Date(event.starts_at);
+                    return (
+                      <EventRow
+                        key={event.id}
+                        cover={event.cover_url}
+                        href={`/e/${event.slug}`}
+                        day={String(d.getDate())}
+                        month={d.toLocaleDateString("en-GB", { month: "short" })}
+                        title={event.title}
+                        line={`${whenText(event)}${
+                          event.venue ? `, ${event.venue}` : ""
+                        }`}
+                        right={
+                          <Link
+                            className="btn btn-ghost btn-sm evtact"
+                            href={`/e/${event.slug}`}
+                          >
+                            Register
+                          </Link>
+                        }
+                      />
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            <aside className="stack">
+              <div className="panel">
+                <h3 style={{ fontSize: 14 }}>Your Local Admins</h3>
+                {hosts.length === 0 ? (
+                  <p className="muted small" style={{ marginTop: 6 }}>
+                    {opening
+                      ? "We are looking for the people who will run this one. If that could be you, say so when you join the waitlist."
+                      : "The Local Admins here keep their profiles private."}
+                  </p>
+                ) : (
+                  hosts.map((host) => (
                     <Link className="li linkrow" key={host.id} href={`/members/${host.id}`}>
-                      <div>
+                      <Av name={host.full_name} />
+                      <div className="grow">
                         <b>{host.full_name}</b>
-                        <div className="muted small">{host.headline}</div>
-                      </div>
-                      <div className="rowmeta">
-                        <span className="chip chip-mint">Local Admin</span>
+                        <span className="muted small">{host.headline}</span>
                       </div>
                     </Link>
-                  ))}
+                  ))
+                )}
+                <div className="row" style={{ flexWrap: "wrap" }}>
+                  <Link className="btn btn-ghost btn-sm" href="/members">
+                    Meet members
+                  </Link>
+                  <Link className="btn btn-ghost btn-sm" href="/contact">
+                    Contact the Village
+                  </Link>
                 </div>
-              )}
-            </div>
+              </div>
 
-            <div className="panel panel-wash">
-              <h3>{opening ? "What happens before it opens" : "What a month looks like"}</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
-                {opening
-                  ? "A Village opens when there are enough members in the city, two Local Admins and a first Circle Host. Joining the waitlist counts you towards the first, and you can offer to be one of the others."
-                  : "One gathering for the whole Village, and smaller Circle meetings. Members ask and offer in between, and the WhatsApp groups carry the daily talk."}
-              </p>
-              <Link className="btn btn-ghost" href={opening ? waitlist : "/apply"}>
-                {opening ? "Join the waitlist" : "Request an invitation"}
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {(events ?? []).length ? (
-          <section className="sec">
-            <h2>Open to everyone</h2>
-            <div className="divide">
-              {(events ?? []).map((event) => (
-                <Link className="li linkrow" key={event.id} href={`/e/${event.slug}`}>
-                  <div>
-                    <b>{event.title}</b>
-                    <div className="muted small">
-                      {whenText(event)}. {event.venue ?? "Online"}.
-                    </div>
-                  </div>
+              <div className="panel panel-wash">
+                <h3 style={{ fontSize: 14 }}>
+                  {opening ? `Joining ${village.name}` : `Joining ${village.name}`}
+                </h3>
+                <p className="muted small" style={{ marginTop: 6 }}>
+                  {opening
+                    ? "A Village opens when there are enough members in the city, two Local Admins and a first Circle Host. Joining the waitlist counts you towards the first, and you can offer to be one of the others."
+                    : "ExpatPreneurs is by invitation. Every request is read personally, and accepted members are welcomed into a Circle."}
+                </p>
+                <Link
+                  className="btn btn-primary"
+                  href={opening ? waitlist : "/apply"}
+                  style={{ marginTop: 14, width: "100%" }}
+                >
+                  {opening
+                    ? "Join the waitlist"
+                    : `Request an invitation to ${village.name}`}
                 </Link>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        <section className="sec">
-          <div className="sec">
-            <h2>
-              {village.status === "exploring"
-                ? `Want a Village in ${village.city}?`
-                : `Building something in ${village.city}?`}
-            </h2>
-            <p style={{ color: "#fff" }}>
-              {village.status === "exploring"
-                ? "It opens when enough people ask and someone local will run it."
-                : "Membership is free. The paid plan adds every other Village."}
-            </p>
-            <Link
-              className="btn btn-ghost"
-              href={village.status === "exploring" ? "/villages/suggest" : "/apply"}
-            >
-              {village.status === "exploring"
-                ? "Register interest"
-                : "Request an invitation"}
-            </Link>
+              </div>
+            </aside>
           </div>
         </section>
+
       </DualPage>
   );
 }
