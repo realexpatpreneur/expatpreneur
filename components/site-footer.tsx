@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { menu, type MenuItem } from "@/lib/menus";
 import { createClient } from "@/lib/supabase/server";
 import { Ic } from "@/components/icon";
 import { LogoPlain } from "@/components/brand";
@@ -23,6 +24,31 @@ const SOCIAL: [string, string, string][] = [
 ];
 
 export async function SiteFooter() {
+  // Each column shows the menu the Global team keeps, or the links
+  // written below if they have not made one.
+  const saved: Record<string, MenuItem[]> = Object.fromEntries(
+    await Promise.all(
+      [
+        "footer_explore",
+        "footer_villages",
+        "footer_marketplace",
+        "footer_stories",
+        "footer_company",
+        "legal",
+      ].map(async (name) => [name, await menu(name)] as const)
+    )
+  );
+
+  const links = (name: string, fallback: [string, string][]) =>
+    (saved[name]?.length
+      ? saved[name].map((i) => [i.href, i.label] as [string, string])
+      : fallback
+    ).map(([href, label]) => (
+      <Link key={`${href}${label}`} href={href}>
+        {label}
+      </Link>
+    ));
+
   // The Villages come from the database, so a new one appears here the
   // day it is created rather than the day somebody remembers to edit
   // this file.
@@ -72,14 +98,14 @@ export async function SiteFooter() {
       <div className="ft-cols">
         <Col
           title="Explore"
-          items={[
-            <Link key="h" href="/how-it-works">How it works</Link>,
-            <Link key="m" href="/membership">Membership</Link>,
-            <Link key="d" href="/members">Members</Link>,
-            <Link key="e" href="/events">Events</Link>,
-            <Link key="a" href="/apply">Request your invitation</Link>,
-            <Link key="s" href="/apply/status">Your invitation request</Link>,
-          ]}
+          items={links("footer_explore", [
+            ["/how-it-works", "How it works"],
+            ["/membership", "Membership"],
+            ["/members", "Members"],
+            ["/events", "Events"],
+            ["/apply", "Request your invitation"],
+            ["/apply/status", "Your invitation request"],
+          ])}
         />
         <Col
           title="Villages"
@@ -95,44 +121,48 @@ export async function SiteFooter() {
                 )}
               </Link>
             )),
-            <Link key="a" href="/villages">All Villages</Link>,
-            <Link key="s" href="/villages/suggest">Suggest a city</Link>,
+            ...links("footer_villages", [
+              ["/villages", "All Villages"],
+              ["/villages/suggest", "Suggest a city"],
+            ]),
           ]}
         />
         <Col
           title="Marketplace"
-          items={[
-            <Link key="b" href="/businesses">Businesses</Link>,
-            <Link key="l" href="/learning">Learning</Link>,
-            <Link key="t" href="/membership">Teach in the network</Link>,
-          ]}
+          items={links("footer_marketplace", [
+            ["/businesses", "Businesses"],
+            ["/learning", "Learning"],
+            ["/membership", "Teach in the network"],
+          ])}
         />
         <Col
           title="Stories"
-          items={[
-            <Link key="m" href="/media">Media</Link>,
-            <Link key="v" href="/watch">Videos</Link>,
-            <Link key="p" href="/watch?kind=podcast">Podcasts</Link>,
-            <Link key="f" href="/media">Founder story</Link>,
-          ]}
+          items={links("footer_stories", [
+            ["/media", "Media"],
+            ["/watch", "Videos"],
+            ["/watch?kind=podcast", "Podcasts"],
+            ["/media", "Founder story"],
+          ])}
         />
         <Col
           title="Company"
-          items={[
-            <Link key="c" href="/contact">Contact</Link>,
-            <Link key="p" href="/contact">Partnerships</Link>,
-            <Link key="r" href="/contact">Press</Link>,
-            <Link key="l" href="/login">Log in</Link>,
-          ]}
+          items={links("footer_company", [
+            ["/contact", "Contact"],
+            ["/contact", "Partnerships"],
+            ["/contact", "Press"],
+            ["/login", "Log in"],
+          ])}
         />
       </div>
 
       <div className="ft-bottom">
         <span>&copy; {new Date().getFullYear()} ExpatPreneurs Global. All rights reserved.</span>
         <nav>
-          <Link href="/legal/privacy">Privacy</Link>
-          <Link href="/legal/terms">Terms</Link>
-          <Link href="/legal/cookies">Cookies</Link>
+          {links("legal", [
+            ["/legal/privacy", "Privacy"],
+            ["/legal/terms", "Terms"],
+            ["/legal/cookies", "Cookies"],
+          ])}
         </nav>
       </div>
     </footer>
