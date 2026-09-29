@@ -7,7 +7,7 @@ import { requireGlobal } from "@/lib/access";
 import { record } from "@/lib/audit";
 import { blockSpec, type Block } from "@/lib/blocks";
 
-export type PageState = { error?: string; done?: string };
+export type PageState = { error?: string; done?: string | boolean };
 
 // The editor posts every block's fields at once, named block_0_heading and
 // so on, so saving is one action rather than one per block.
@@ -130,4 +130,48 @@ export async function setPageStatus(
   revalidatePath("/global/content");
   revalidatePath("/");
   return { done: "saved" };
+}
+
+
+// The builder holds the blocks in the browser and sends the finished
+// list, so there is no field naming to keep in step.
+export async function saveBlocks({
+  slug,
+  blocks,
+  status,
+}: {
+  slug: string;
+  blocks: Block[];
+  status: string;
+}): Promise<PageState> {
+  await requireGlobal();
+  const supabase = await createClient();
+
+  const clean = blocks
+    .filter((b) => b && b.type && blockSpec(b.type))
+    .map((b) => {
+      const spec = blockSpec(b.type)!;
+      const out: Block = { type: b.type };
+      for (const f of spec.fields) {
+        const v = String(b[f.name] ?? "").trim();
+        if (v) out[f.name] = v;
+      }
+      return out;
+    });
+
+  const { error } = await supabase
+    .from("pages")
+    .update({
+      blocks: clean,
+      status: status === "live" ? "live" : "draft",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("slug", slug);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/global/content");
+  revalidatePath(`/global/content/${slug}`);
+  revalidatePath("/", "layout");
+  return { done: true };
 }

@@ -15,6 +15,7 @@ export function Uploader({
   hint,
   current,
   shape = "wide",
+  onChange,
 }: {
   name: string;
   bucket?: "avatars" | "covers";
@@ -23,8 +24,13 @@ export function Uploader({
   hint?: string;
   current?: string | null;
   shape?: "wide" | "round";
+  onChange?: (url: string) => void;
 }) {
-  const [url, setUrl] = useState<string | null>(current ?? null);
+  const [url, setRaw] = useState<string | null>(current ?? null);
+  const setUrl = (v: string | null) => {
+    setRaw(v);
+    onChange?.(v ?? "");
+  };
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

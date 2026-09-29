@@ -1,0 +1,329 @@
+"use client";
+
+import { useState } from "react";
+import { BLOCKS, blockLabel, blockSpec, type Block, type BlockField } from "@/lib/blocks";
+import { Blocks, type BlockData } from "@/components/blocks";
+import { RichText } from "@/components/rich-text";
+import { Uploader } from "@/components/uploader";
+import { Ic } from "@/components/icon";
+import { saveBlocks, type PageState } from "@/app/global/content/actions";
+
+// The page, as a canvas. Blocks are shown as they will look, dragged
+// to reorder, and clicked to edit. Nothing here is a numbered list of
+// fields pretending to be a page.
+export function PageBuilder({
+  slug,
+  title,
+  path,
+  status,
+  initial,
+  data,
+}: {
+  slug: string;
+  title: string;
+  path: string;
+  status: string;
+  initial: Block[];
+  data: BlockData;
+}) {
+  const [blocks, setBlocks] = useState<Block[]>(initial);
+  const [picked, setPicked] = useState<number | null>(initial.length ? 0 : null);
+  const [dragging, setDragging] = useState<number | null>(null);
+  const [over, setOver] = useState<number | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [state, setState] = useState<PageState>({});
+  const [saving, setSaving] = useState(false);
+
+  const change = (next: Block[]) => {
+    setBlocks(next);
+    setState({});
+  };
+
+  function move(from: number, to: number) {
+    if (from === to) return;
+    const next = [...blocks];
+    const [b] = next.splice(from, 1);
+    next.splice(to, 0, b);
+    change(next);
+    setPicked(to);
+  }
+
+  function nudge(i: number, by: number) {
+    const to = Math.max(0, Math.min(blocks.length - 1, i + by));
+    move(i, to);
+  }
+
+  function add(type: string, at?: number) {
+    const b: Block = { type };
+    const next = [...blocks];
+    const where = at ?? blocks.length;
+    next.splice(where, 0, b);
+    change(next);
+    setPicked(where);
+    setAdding(false);
+  }
+
+  function remove(i: number) {
+    const next = blocks.filter((_, n) => n !== i);
+    change(next);
+    setPicked(next.length ? Math.max(0, i - 1) : null);
+  }
+
+  function duplicate(i: number) {
+    const next = [...blocks];
+    next.splice(i + 1, 0, { ...blocks[i] });
+    change(next);
+    setPicked(i + 1);
+  }
+
+  function set(i: number, name: string, value: string) {
+    const next = blocks.map((b, n) => (n === i ? { ...b, [name]: value } : b));
+    setBlocks(next);
+  }
+
+  async function save(publish: boolean) {
+    setSaving(true);
+    const result = await saveBlocks({
+      slug,
+      blocks,
+      status: publish ? "live" : "draft",
+    });
+    setState(result);
+    setSaving(false);
+  }
+
+  const current = picked != null ? blocks[picked] : null;
+  const spec = current ? blockSpec(current.type) : null;
+
+  return (
+    <div className="pb">
+      <div className="pb-top">
+        <div>
+          <b>{title}</b>
+          <span className="muted small">
+            {path} {status === "live" ? "is live" : "is a draft"}
+          </span>
+        </div>
+        <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+          {state.done ? <span className="chip chip-mint">Saved</span> : null}
+          {state.error ? <span className="chip chip-sun">{state.error}</span> : null}
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={() => save(false)}
+            disabled={saving}
+          >
+            Save as draft
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => save(true)}
+            disabled={saving}
+          >
+            {saving ? "Saving" : "Publish"}
+          </button>
+        </div>
+      </div>
+
+      <div className="pb-body">
+        {/* The canvas */}
+        <div className="pb-canvas">
+          <div className="app">
+            <div className="pub">
+              {blocks.length === 0 ? (
+                <div className="pb-empty">
+                  <p className="muted">This page has no blocks yet.</p>
+                  <button className="btn btn-primary btn-sm" type="button" onClick={() => setAdding(true)}>
+                    Add the first block
+                  </button>
+                </div>
+              ) : null}
+
+              {blocks.map((b, i) => (
+                <div
+                  key={i}
+                  className={`pb-block ${picked === i ? "on" : ""} ${over === i ? "over" : ""}`}
+                  onClick={() => setPicked(i)}
+                  draggable
+                  onDragStart={() => setDragging(i)}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setOver(i);
+                  }}
+                  onDragLeave={() => setOver((o) => (o === i ? null : o))}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (dragging != null) move(dragging, i);
+                    setDragging(null);
+                    setOver(null);
+                  }}
+                  onDragEnd={() => {
+                    setDragging(null);
+                    setOver(null);
+                  }}
+                >
+                  <div className="pb-tools">
+                    <span className="pb-grab" title="Drag to move">
+                      <Ic name="move" />
+                    </span>
+                    <span className="pb-name">{blockLabel[b.type] ?? b.type}</span>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); nudge(i, -1); }} title="Move up">
+                      <Ic name="chevd" />
+                    </button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); nudge(i, 1); }} title="Move down">
+                      <Ic name="chevd" />
+                    </button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); duplicate(i); }} title="Duplicate">
+                      <Ic name="plus" />
+                    </button>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); remove(i); }} title="Remove">
+                      <Ic name="trash" />
+                    </button>
+                  </div>
+                  <div className="pb-render">
+                    <Blocks blocks={[b]} data={data} />
+                  </div>
+                  <button
+                    type="button"
+                    className="pb-insert"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setAdding(true);
+                      setPicked(i);
+                    }}
+                    title="Add a block here"
+                  >
+                    <Ic name="plus" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* What is selected */}
+        <aside className="pb-side">
+          {adding ? (
+            <div className="panel">
+              <div className="row" style={{ justifyContent: "space-between" }}>
+                <h3 style={{ fontSize: 14 }}>Add a block</h3>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAdding(false)}>
+                  Close
+                </button>
+              </div>
+              <div className="pb-palette">
+                {BLOCKS.map((s) => (
+                  <button
+                    type="button"
+                    key={s.type}
+                    onClick={() => add(s.type, picked == null ? undefined : picked + 1)}
+                  >
+                    <b>{s.label}</b>
+                    <span>{s.about}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : current && spec ? (
+            <div className="panel">
+              <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+                <div>
+                  <h3 style={{ fontSize: 14 }}>{spec.label}</h3>
+                  <p className="muted small" style={{ marginTop: 2 }}>
+                    {spec.about}
+                  </p>
+                </div>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAdding(true)}>
+                  Add a block
+                </button>
+              </div>
+
+              <div className="stack" style={{ marginTop: 12 }}>
+                {spec.fields.map((f) => (
+                  <Field
+                    key={f.name}
+                    field={f}
+                    value={current[f.name] ?? ""}
+                    onChange={(v) => set(picked as number, f.name, v)}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="panel panel-wash">
+              <p className="muted small" style={{ margin: 0 }}>
+                Click a block on the left to edit it, drag one to move it, or
+                add a new one.
+              </p>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                style={{ marginTop: 12 }}
+                onClick={() => setAdding(true)}
+              >
+                Add a block
+              </button>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function Field({
+  field,
+  value,
+  onChange,
+}: {
+  field: BlockField;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  if (field.kind === "image")
+    return (
+      <Uploader
+        name={`x_${field.name}`}
+        label={field.label}
+        hint={field.hint}
+        current={value}
+        onChange={onChange}
+      />
+    );
+
+  if (field.kind === "long")
+    return (
+      <div className="field">
+        <span>{field.label}</span>
+        <RichText name={`x_${field.name}`} defaultValue={value} rows={4} onChange={onChange} />
+        {field.hint ? <span className="hint">{field.hint}</span> : null}
+      </div>
+    );
+
+  if (field.kind === "select")
+    return (
+      <label className="field">
+        <span>{field.label}</span>
+        <select value={value} onChange={(e) => onChange(e.target.value)}>
+          {(field.options ?? []).map(([v, t]) => (
+            <option key={v} value={v}>
+              {t}
+            </option>
+          ))}
+        </select>
+      </label>
+    );
+
+  return (
+    <label className="field">
+      <span>{field.label}</span>
+      <input
+        type={field.kind === "number" ? "number" : "text"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      {field.hint ? <span className="hint">{field.hint}</span> : null}
+    </label>
+  );
+}

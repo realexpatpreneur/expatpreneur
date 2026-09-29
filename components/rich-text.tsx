@@ -11,14 +11,20 @@ export function RichText({
   defaultValue = "",
   placeholder,
   rows = 8,
+  onChange,
 }: {
   name: string;
   defaultValue?: string;
   placeholder?: string;
   rows?: number;
+  onChange?: (value: string) => void;
 }) {
   const box = useRef<HTMLTextAreaElement>(null);
-  const [value, setValue] = useState(defaultValue);
+  const [value, setRaw] = useState(defaultValue);
+  const setValue = (v: string) => {
+    setRaw(v);
+    onChange?.(v);
+  };
   const [preview, setPreview] = useState(false);
 
   function wrap(before: string, after = before) {

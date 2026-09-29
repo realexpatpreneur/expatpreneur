@@ -75,6 +75,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
               ) : null}
             </div>
           ) : null}
+          {b.quote ? <p className="proverb">{b.quote}</p> : null}
           {b.image_url ? (
             <div
               className="photo"
@@ -247,6 +248,26 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           </div>
         </section>
       );
+
+    case "layers": {
+      const items = pairs(b.items);
+      const swatch = ["var(--mint)", "var(--blue)", "var(--navy)"];
+      return (
+        <section className="sec">
+          {b.heading ? <h2>{b.heading}</h2> : null}
+          {b.text ? <p className="intro">{b.text}</p> : null}
+          <div className="layers layers-tint">
+            {items.map(([name, text], n) => (
+              <div className="layer" key={name}>
+                <span className="swatch" style={{ background: swatch[n % 3] }} />
+                <h3>{name}</h3>
+                <p>{text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
 
     case "villages": {
       const list = (data.villages ?? []).filter((v) =>
