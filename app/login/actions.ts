@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { tooManyTries, TOO_MANY } from "@/lib/guard";
 
@@ -33,7 +34,29 @@ export async function sendSignInLink(
   });
 
   if (error) {
-    return { error: "That did not work. Check the address and try again." };
+    // The reason matters: one of these is the person's mistake, and the
+    // others are ours. Saying "check the address" for all three sends
+    // somebody hunting for a typo that is not there.
+    const said = `${error.message ?? ""}`.toLowerCase();
+
+    if (said.includes("signups not allowed") || said.includes("user not found"))
+      return {
+        error:
+          "There is no member with that address. If you were invited, use the address the invitation went to.",
+      };
+
+    if (said.includes("rate") || said.includes("too many") || error.status === 429)
+      return {
+        error: "Too many attempts for now. Wait a few minutes and try again.",
+      };
+
+    if (said.includes("sending") || said.includes("smtp") || (error.status ?? 0) >= 500)
+      return {
+        error:
+          "Sending is not working yet. Email has not been connected to this site, so sign in with a password instead.",
+      };
+
+    return { error: `That did not work: ${error.message}` };
   }
 
   return { sent: true };
@@ -60,7 +83,8 @@ export async function signInWithPassword(
     };
   }
 
-  return { sent: false };
+  // Signed in, so go where they were headed.
+  redirect(String(formData.get("next") ?? "/home"));
 }
 
 // Asking for a reset. The answer is the same whether or not the address
