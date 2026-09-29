@@ -81,6 +81,15 @@ export const COLOURS: [string, string][] = [
   ["custom", "A colour of my own"],
 ];
 
+// The three widths a page is looked at. A style setting can be given a
+// different value on each, and a device with nothing set inherits the
+// one above it.
+export const DEVICES: [string, string, number][] = [
+  ["", "Desktop", 0],
+  ["md", "Tablet", 834],
+  ["sm", "Phone", 390],
+];
+
 // Settings every block has: how it sits on the page, and its colours.
 export const STYLE_FIELDS: BlockField[] = [
   S("width", "Width", [["", "Normal"], ["narrow", "Narrow"], ["wide", "Full width"]]),
@@ -90,7 +99,25 @@ export const STYLE_FIELDS: BlockField[] = [
   C("ink", "Text colour"),
   S("size", "Heading size", [["", "Normal"], ["large", "Large"], ["small", "Small"]]),
   S("round", "Corners", [["", "Square"], ["soft", "Rounded"]]),
+  S("hide", "On this screen", [["", "Show it"], ["1", "Hide it"]]),
 ];
+
+// Which style settings can differ per screen. Colours stay the same
+// everywhere, because a block that changes colour on a phone is
+// almost always a mistake.
+export const PER_DEVICE = ["width", "align", "space", "size", "hide"];
+
+// The value of a setting on one device, falling back up the sizes.
+export function styleOf(block: Record<string, string | undefined>, name: string, device: string) {
+  if (!device) return block[name];
+  if (device === "md") return block[`${name}_md`] ?? block[name];
+  return block[`${name}_sm`] ?? block[`${name}_md`] ?? block[name];
+}
+
+
+// heading_tablet, space_phone and so on.
+export const forDevice = (name: string, device: string) =>
+  device ? `${name}_${device}` : name;
 const N = (name: string, label: string, hint?: string): BlockField => ({ name, label, kind: "number", hint });
 
 const WIDTH: [string, string][] = [
@@ -126,6 +153,7 @@ export const BLOCKS: BlockSpec[] = [
       ]),
       I("image_url", "Photograph", "Used when you choose a photograph above."),
       L("quote", "Line in the margin", "The bordered line under the buttons."),
+      T("search", "Search box", "Wording inside a search box under the heading. Leave empty for none."),
       S("layout", "Layout", [["", "Text left, picture right"], ["center", "Centred"]]),
     ],
   },
@@ -243,6 +271,7 @@ export const BLOCKS: BlockSpec[] = [
       T("heading", "Heading"),
       S("scope", "Which events", [["", "Every Village"], ["public", "Open to everyone"]]),
       N("limit", "How many"),
+      S("filters", "Filter row", [["", "No filters"], ["village", "By Village"], ["when", "By when"]]),
       K("more_href", "See all goes to"),
     ],
   },
@@ -250,25 +279,45 @@ export const BLOCKS: BlockSpec[] = [
     type: "businesses",
     label: "Businesses",
     about: "Member businesses, from the database.",
-    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
+    fields: [
+      T("heading", "Heading"),
+      N("limit", "How many"),
+      S("filters", "Filter row", [["", "No filters"], ["category", "By category"]]),
+      K("more_href", "See all goes to"),
+    ],
   },
   {
     type: "courses",
     label: "Learning",
     about: "Courses, from the database.",
-    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
+    fields: [
+      T("heading", "Heading"),
+      N("limit", "How many"),
+      S("filters", "Filter row", [["", "No filters"], ["format", "Live or recorded"]]),
+      K("more_href", "See all goes to"),
+    ],
   },
   {
     type: "articles",
     label: "Stories",
     about: "Published articles, from the database.",
-    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
+    fields: [
+      T("heading", "Heading"),
+      N("limit", "How many"),
+      S("filters", "Filter row", [["", "No filters"], ["kind", "By kind"]]),
+      K("more_href", "See all goes to"),
+    ],
   },
   {
     type: "people",
     label: "Members",
     about: "Member cards, from the database. Only members who chose to be listed.",
-    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
+    fields: [
+      T("heading", "Heading"),
+      N("limit", "How many"),
+      S("filters", "Filter row", [["", "No filters"], ["industry", "By industry"]]),
+      K("more_href", "See all goes to"),
+    ],
   },
   {
     type: "videos",
@@ -278,6 +327,7 @@ export const BLOCKS: BlockSpec[] = [
       T("heading", "Heading"),
       S("kind", "Which", [["", "Everything"], ["video", "Videos"], ["episode", "Podcast episodes"]]),
       N("limit", "How many"),
+      S("filters", "Filter row", [["", "No filters"], ["kind", "Videos or episodes"]]),
       K("more_href", "See all goes to"),
     ],
   },

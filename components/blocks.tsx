@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { pairs, type Block } from "@/lib/blocks";
+import { pairs, styleOf, type Block } from "@/lib/blocks";
 import { toHtml } from "@/components/rich-text";
 import { VillageCard, BusinessCard, CourseCard, ArticleCard, type BusinessRow } from "@/components/cards";
 import { EventRow } from "@/components/feed";
 import { Ic } from "@/components/icon";
+import { Filtered, Searchable } from "@/components/filtered";
 import { HeroPreview, Av } from "@/components/bits";
 import { whenText } from "@/lib/events";
 
@@ -19,7 +20,7 @@ export type BlockData = {
   events?: {
     id: string; slug: string; title: string; starts_at: string;
     ends_at?: string | null; timezone?: string; venue: string | null;
-    cover_url?: string | null; visibility?: string;
+    cover_url?: string | null; visibility?: string; village_name?: string | null;
   }[];
   businesses?: BusinessRow[];
   courses?: { id: string; slug: string; title: string; level?: string | null; format?: string | null; price_cents?: number | null; currency?: string | null; cover_url?: string | null }[];
@@ -48,36 +49,109 @@ export function Blocks({ blocks, data = {} }: { blocks: Block[]; data?: BlockDat
 
 const SPACE: Record<string, string> = { tight: "18px 0", roomy: "72px 0", none: "0" };
 const SIZE: Record<string, string> = { large: "1.25em", small: "0.85em" };
+const WIDE: Record<string, string> = { narrow: "720px", wide: "none" };
 
-// The settings every block carries: width, spacing, colours, corners.
-// A block with none of them set renders exactly as it did before.
+// The settings every block carries, written as real CSS with the two
+// breakpoints, so a block can sit differently on a phone than on a
+// desktop. A block with nothing set writes no CSS at all.
+function rules(b: Block, device: string) {
+  const get = (name: string) => styleOf(b, name, device);
+  const out: string[] = [];
+  const inner: string[] = [];
+
+  if (get("space")) out.push(`padding:${SPACE[get("space") as string]}`);
+  if (get("align") === "center") out.push("text-align:center");
+  if (get("size")) out.push(`font-size:${SIZE[get("size") as string]}`);
+  if (get("hide") === "1") out.push("display:none");
+
+  const w = get("width");
+  if (w) inner.push(`max-width:${WIDE[w as string]};margin-left:auto;margin-right:auto`);
+
+  return { out: out.join(";"), inner: inner.join(";") };
+}
+
 function Styled({ block: b, children }: { block: Block; children: React.ReactNode }) {
   const bg = b.bg === "custom" ? b.bg_custom : b.bg;
   const ink = b.ink === "custom" ? b.ink_custom : b.ink;
 
-  const style: React.CSSProperties = {};
-  if (bg) style.background = bg;
-  if (ink) style.color = ink;
-  if (b.space) style.padding = SPACE[b.space];
-  if (b.round === "soft") style.borderRadius = 18;
-  if (b.align === "center") style.textAlign = "center";
-  if (b.size) style.fontSize = SIZE[b.size];
+  const base = rules(b, "");
+  const tablet = rules(b, "md");
+  const phone = rules(b, "sm");
 
-  const inner: React.CSSProperties =
-    b.width === "narrow"
-      ? { maxWidth: 720, marginLeft: "auto", marginRight: "auto" }
-      : b.width === "wide"
-        ? { maxWidth: "none" }
-        : {};
+  const plain =
+    !bg && !ink && !base.out && !base.inner &&
+    !tablet.out && !tablet.inner && !phone.out && !phone.inner &&
+    !b.round;
 
-  const plain = !bg && !ink && !b.space && !b.round && !b.align && !b.size && !b.width;
   if (plain) return <>{children}</>;
 
+  // One class per block, and the media queries beside it.
+  const id = `b${Math.abs(hash(JSON.stringify(b)))}`;
+  const css = [
+    `.${id}{${[
+      bg ? `background:${bg}` : "",
+      ink ? `color:${ink}` : "",
+      b.round === "soft" ? "border-radius:18px" : "",
+      base.out,
+    ].filter(Boolean).join(";")}}`,
+    base.inner ? `.${id}>div{${base.inner}}` : "",
+    tablet.out || tablet.inner
+      ? `@media (max-width:1024px){${tablet.out ? `.${id}{${tablet.out}}` : ""}${
+          tablet.inner ? `.${id}>div{${tablet.inner}}` : ""
+        }}`
+      : "",
+    phone.out || phone.inner
+      ? `@media (max-width:620px){${phone.out ? `.${id}{${phone.out}}` : ""}${
+          phone.inner ? `.${id}>div{${phone.inner}}` : ""
+        }}`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("");
+
   return (
-    <div className={`blk ${ink ? "blk-ink" : ""}`} style={style}>
-      <div style={inner}>{children}</div>
+    <div className={`blk ${id} ${ink ? "blk-ink" : ""}`}>
+      <style>{css}</style>
+      <div>{children}</div>
     </div>
   );
+}
+
+// A short, stable name for a block's own rules.
+function hash(s: string) {
+  let h = 0;
+  for (const c of s) h = (Math.imul(h, 31) + c.charCodeAt(0)) | 0;
+  return h;
+}
+
+function PeopleGrid({
+  filters,
+  people,
+}: {
+  filters?: string;
+  people: { id: string; full_name: string; headline: string | null; industry?: string | null }[];
+}) {
+  const cards = people.map((p) => (
+    <Link className="mcard" key={p.id} href={`/members/${p.id}`}>
+      <div className="row">
+        <Av name={p.full_name} />
+        <div style={{ minWidth: 0 }}>
+          <b style={{ fontWeight: 650, display: "block" }}>{p.full_name}</b>
+          {p.headline ? <span className="where">{p.headline}</span> : null}
+        </div>
+      </div>
+      {p.industry ? (
+        <div className="tags">
+          <span className="chip">{p.industry}</span>
+        </div>
+      ) : null}
+    </Link>
+  ));
+
+  if (filters === "industry")
+    return <Filtered chips={people.map((p) => p.industry ?? "Other")}>{cards}</Filtered>;
+
+  return <div className="g3">{cards}</div>;
 }
 
 function SecHead({ heading, href }: { heading?: string; href?: string }) {
@@ -126,6 +200,11 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
                 </Link>
               ) : null}
             </div>
+          ) : null}
+          {b.search ? (
+            <label className="input dsearch" style={{ marginTop: 18 }}>
+              <input placeholder={b.search} aria-label={b.search} />
+            </label>
           ) : null}
           {b.quote ? <p className="proverb">{b.quote}</p> : null}
         </>
@@ -348,28 +427,39 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       if (b.scope === "public") list = list.filter((e) => e.visibility === "public");
       list = list.slice(0, Number(b.limit) || 4);
       if (!list.length) return null;
+      const rows = list.map((e) => {
+        const d = new Date(e.starts_at);
+        return (
+          <EventRow
+            key={e.id}
+            cover={e.cover_url}
+            href={`/e/${e.slug}`}
+            day={String(d.getDate())}
+            month={d.toLocaleDateString("en-GB", { month: "short" })}
+            title={e.title}
+            line={`${whenText({
+              starts_at: e.starts_at,
+              ends_at: e.ends_at ?? null,
+              timezone: e.timezone ?? "UTC",
+            })}${e.venue ? `, ${e.venue}` : ""}`}
+          />
+        );
+      });
+
+      const chips =
+        b.filters === "village"
+          ? list.map((e) => e.village_name ?? "Online")
+          : b.filters === "when"
+            ? list.map((e) =>
+                new Date(e.starts_at).toLocaleDateString("en-GB", { month: "long" })
+              )
+            : null;
+
       return (
         <section className="sec">
           <SecHead heading={b.heading} href={b.more_href} />
           <div className="divide">
-            {list.map((e) => {
-              const d = new Date(e.starts_at);
-              return (
-                <EventRow
-                  key={e.id}
-                  cover={e.cover_url}
-                  href={`/e/${e.slug}`}
-                  day={String(d.getDate())}
-                  month={d.toLocaleDateString("en-GB", { month: "short" })}
-                  title={e.title}
-                  line={`${whenText({
-                    starts_at: e.starts_at,
-                    ends_at: e.ends_at ?? null,
-                    timezone: e.timezone ?? "UTC",
-                  })}${e.venue ? `, ${e.venue}` : ""}`}
-                />
-              );
-            })}
+            {chips ? <Filtered chips={chips}>{rows}</Filtered> : rows}
           </div>
         </section>
       );
@@ -378,14 +468,16 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "businesses": {
       const list = (data.businesses ?? []).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
+      const cards = list.map((x, n) => <BusinessCard key={x.slug} biz={x} i={n} />);
+      const chips = b.filters === "category" ? list.map((x) => x.category ?? x.industry ?? "Other") : null;
       return (
         <section className="sec">
           <SecHead heading={b.heading} href={b.more_href} />
-          <div className="g3">
-            {list.map((x, n) => (
-              <BusinessCard key={x.slug} biz={x} i={n} />
-            ))}
-          </div>
+          {chips ? (
+            <Filtered chips={chips as string[]}>{cards}</Filtered>
+          ) : (
+            <div className="g3">{cards}</div>
+          )}
         </section>
       );
     }
@@ -393,14 +485,19 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "courses": {
       const list = (data.courses ?? []).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
+      const cards = list.map((c, n) => <CourseCard key={c.slug} course={c} i={n} />);
+      const chips =
+        b.filters === "format"
+          ? list.map((c) => (c.format === "live" ? "Live" : "Recorded"))
+          : null;
       return (
         <section className="sec">
           <SecHead heading={b.heading} href={b.more_href} />
-          <div className="g3">
-            {list.map((c, n) => (
-              <CourseCard key={c.slug} course={c} i={n} />
-            ))}
-          </div>
+          {chips ? (
+            <Filtered chips={chips}>{cards}</Filtered>
+          ) : (
+            <div className="g3">{cards}</div>
+          )}
         </section>
       );
     }
@@ -408,14 +505,16 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "articles": {
       const list = (data.articles ?? []).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
+      const cards = list.map((a, n) => <ArticleCard key={a.slug} article={a} i={n} />);
+      const chips = b.filters === "kind" ? list.map((a) => a.kind ?? "Story") : null;
       return (
         <section className="sec">
           <SecHead heading={b.heading} href={b.more_href} />
-          <div className="g3">
-            {list.map((a, n) => (
-              <ArticleCard key={a.slug} article={a} i={n} />
-            ))}
-          </div>
+          {chips ? (
+            <Filtered chips={chips}>{cards}</Filtered>
+          ) : (
+            <div className="g3">{cards}</div>
+          )}
         </section>
       );
     }
@@ -426,24 +525,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           <SecHead heading={b.heading} href={b.more_href} />
-          <div className="g3">
-            {list.map((p) => (
-              <Link className="mcard" key={p.id} href={`/members/${p.id}`}>
-                <div className="row">
-                  <Av name={p.full_name} />
-                  <div style={{ minWidth: 0 }}>
-                    <b style={{ fontWeight: 650, display: "block" }}>{p.full_name}</b>
-                    {p.headline ? <span className="where">{p.headline}</span> : null}
-                  </div>
-                </div>
-                {p.industry ? (
-                  <div className="tags">
-                    <span className="chip">{p.industry}</span>
-                  </div>
-                ) : null}
-              </Link>
-            ))}
-          </div>
+          <PeopleGrid filters={b.filters} people={list} />
         </section>
       );
     }

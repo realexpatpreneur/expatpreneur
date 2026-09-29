@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { currentMember } from "@/lib/member";
 import { Ic } from "@/components/icon";
+import { SidebarToggle } from "@/components/sidebar-toggle";
 import { WorkspaceNav } from "@/components/workspace-nav";
 import { Av } from "@/components/bits";
 import { SPACES, WORKSPACE_START } from "@/components/spaces";
@@ -51,6 +52,7 @@ export async function WorkspaceShell({
 
       <div className="mmain">
         <header className="mtop">
+        <SidebarToggle />
           <Link className="logo mlogo" href={home}>
             <span className={`mark${dark ? " alt" : ""}`} aria-hidden="true">
               EP

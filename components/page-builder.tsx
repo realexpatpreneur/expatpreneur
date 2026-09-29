@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BLOCKS,
   COLOURS,
   SITE_LINKS,
   STYLE_FIELDS,
+  DEVICES,
+  PER_DEVICE,
   blockLabel,
   blockSpec,
   type Block,
@@ -36,6 +38,9 @@ export function PageBuilder({
   data: BlockData;
 }) {
   const [blocks, setBlocks] = useState<Block[]>(initial);
+  const [past, setPast] = useState<Block[][]>([]);
+  const [future, setFuture] = useState<Block[][]>([]);
+  const [device, setDevice] = useState("");
   const [picked, setPicked] = useState<number | null>(initial.length ? 0 : null);
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
@@ -45,10 +50,43 @@ export function PageBuilder({
   const [state, setState] = useState<PageState>({});
   const [saving, setSaving] = useState(false);
 
+  // Every change remembers what came before it, so it can be undone.
   const change = (next: Block[]) => {
+    setPast((p) => [...p.slice(-49), blocks]);
+    setFuture([]);
     setBlocks(next);
     setState({});
   };
+
+  function undo() {
+    setPast((p) => {
+      if (!p.length) return p;
+      setFuture((f) => [blocks, ...f].slice(0, 50));
+      setBlocks(p[p.length - 1]);
+      return p.slice(0, -1);
+    });
+  }
+
+  function redo() {
+    setFuture((f) => {
+      if (!f.length) return f;
+      setPast((p) => [...p, blocks]);
+      setBlocks(f[0]);
+      return f.slice(1);
+    });
+  }
+
+  useEffect(() => {
+    function keys(e: KeyboardEvent) {
+      const meta = e.metaKey || e.ctrlKey;
+      if (!meta || e.key.toLowerCase() !== "z") return;
+      if ((e.target as HTMLElement)?.closest("input, textarea, select")) return;
+      e.preventDefault();
+      e.shiftKey ? redo() : undo();
+    }
+    window.addEventListener("keydown", keys);
+    return () => window.removeEventListener("keydown", keys);
+  });
 
   function move(from: number, to: number) {
     if (from === to) return;
@@ -87,8 +125,17 @@ export function PageBuilder({
     setPicked(i + 1);
   }
 
+  // A per-screen setting is written under its own name, so the desktop
+  // value stays put when the phone one changes.
+  function fieldName(name: string) {
+    return device && PER_DEVICE.includes(name) ? `${name}_${device}` : name;
+  }
+
   function set(i: number, name: string, value: string) {
-    const next = blocks.map((b, n) => (n === i ? { ...b, [name]: value } : b));
+    const key = fieldName(name);
+    const next = blocks.map((b, n) => (n === i ? { ...b, [key]: value } : b));
+    setPast((p) => [...p.slice(-49), blocks]);
+    setFuture([]);
     setBlocks(next);
   }
 
@@ -115,7 +162,38 @@ export function PageBuilder({
             {path} {status === "live" ? "is live" : "is a draft"}
           </span>
         </div>
+        <div className="pb-devices" role="group" aria-label="Screen">
+          {DEVICES.map(([id, label]) => (
+            <button
+              type="button"
+              key={id || "desktop"}
+              className={device === id ? "on" : ""}
+              onClick={() => setDevice(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
         <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={undo}
+            disabled={!past.length}
+            title="Undo"
+          >
+            Undo
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={redo}
+            disabled={!future.length}
+            title="Redo"
+          >
+            Redo
+          </button>
           {state.done ? <span className="chip chip-mint">Saved</span> : null}
           {state.error ? <span className="chip chip-sun">{state.error}</span> : null}
           <button
@@ -139,7 +217,19 @@ export function PageBuilder({
 
       <div className={`pb-body ${shut ? "wide" : ""}`}>
         {/* The canvas */}
-        <div className="pb-canvas">
+        <div
+          className="pb-canvas"
+          style={
+            device
+              ? {
+                  width: DEVICES.find(([id]) => id === device)?.[2],
+                  maxWidth: "100%",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }
+              : undefined
+          }
+        >
           <div className="app">
             <div className="pub">
               {blocks.length === 0 ? (
@@ -288,8 +378,13 @@ export function PageBuilder({
                     <Field
                       key={f.name}
                       field={f}
-                      value={current[f.name] ?? ""}
+                      value={
+                        (device && PER_DEVICE.includes(f.name)
+                          ? current[`${f.name}_${device}`]
+                          : current[f.name]) ?? ""
+                      }
                       custom={current[`${f.name}_custom`] ?? ""}
+                      device={PER_DEVICE.includes(f.name) ? device : ""}
                       onChange={(v) => set(picked as number, f.name, v)}
                       onCustom={(v) => set(picked as number, `${f.name}_custom`, v)}
                     />
@@ -322,21 +417,27 @@ function Field({
   field,
   value,
   custom = "",
+  device = "",
   onChange,
   onCustom,
 }: {
   field: BlockField;
   value: string;
   custom?: string;
+  device?: string;
   onChange: (v: string) => void;
   onCustom?: (v: string) => void;
 }) {
+  // A setting being written for one screen says so.
+  const label = device
+    ? `${field.label} (${device === "sm" ? "phone" : "tablet"})`
+    : field.label;
   if (field.kind === "image")
     return (
       <div className="field">
         <Uploader
           name={`x_${field.name}`}
-          label={field.label}
+          label={label}
           hint={field.hint}
           current={value}
           onChange={onChange}
@@ -354,7 +455,7 @@ function Field({
     const picked = value === "custom";
     return (
       <div className="field">
-        <span>{field.label}</span>
+        <span>{label}</span>
         <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
           {COLOURS.map(([v, t]) =>
             v === "custom" ? null : (
@@ -394,7 +495,7 @@ function Field({
     const known = SITE_LINKS.some(([v]) => v === value);
     return (
       <div className="field">
-        <span>{field.label}</span>
+        <span>{label}</span>
         <select
           value={known ? value : "custom"}
           onChange={(e) => onChange(e.target.value === "custom" ? "" : e.target.value)}
@@ -421,7 +522,7 @@ function Field({
   if (field.kind === "long")
     return (
       <div className="field">
-        <span>{field.label}</span>
+        <span>{label}</span>
         <RichText name={`x_${field.name}`} defaultValue={value} rows={4} onChange={onChange} />
         {field.hint ? <span className="hint">{field.hint}</span> : null}
       </div>
@@ -430,7 +531,7 @@ function Field({
   if (field.kind === "select")
     return (
       <label className="field">
-        <span>{field.label}</span>
+        <span>{label}</span>
         <select value={value} onChange={(e) => onChange(e.target.value)}>
           {(field.options ?? []).map(([v, t]) => (
             <option key={v} value={v}>
@@ -443,7 +544,7 @@ function Field({
 
   return (
     <label className="field">
-      <span>{field.label}</span>
+      <span>{label}</span>
       <input
         type={field.kind === "number" ? "number" : "text"}
         value={value}
