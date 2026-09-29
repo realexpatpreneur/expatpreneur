@@ -1,4 +1,5 @@
 import { DualPage } from "@/components/dual-page";
+import { PageBlocks } from "@/components/page-blocks";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere, isPaid } from "@/lib/member";
@@ -74,6 +75,7 @@ export default async function LearningPage({
 
   return (
     <DualPage member={Boolean(member)} nav="/learning" active="/learning">
+      <PageBlocks data={{ courses: courses ?? [] }} slug="learning">
         <section className={member ? "sec" : "pubsec hero-center"}>
           <h1>Learning</h1>
           <p className="lead">
@@ -191,6 +193,7 @@ export default async function LearningPage({
             </p>
           </section>
         )}
-      </DualPage>
+            </PageBlocks>
+</DualPage>
   );
 }

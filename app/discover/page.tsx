@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { PublicPage } from "@/components/public-page";
 import { DCard, DPerson, DSec, DBand } from "@/components/discover-cards";
@@ -129,6 +130,7 @@ export default async function DiscoverPage({
 
   return (
     <PublicPage active="/discover">
+      <PageBlocks slug="discover">
       <section className="pubsec dhero">
         <h1>Wherever you have landed, there is a Village for you</h1>
         <p className="intro">
@@ -321,6 +323,7 @@ export default async function DiscoverPage({
           href="/apply"
         />
       </section>
-    </PublicPage>
+          </PageBlocks>
+</PublicPage>
   );
 }

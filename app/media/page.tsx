@@ -1,4 +1,5 @@
 import { DualPage } from "@/components/dual-page";
+import { PageBlocks } from "@/components/page-blocks";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
@@ -40,6 +41,7 @@ export default async function MediaPage({
 
   return (
     <DualPage member={Boolean(me)} nav="/media" active="/media">
+      <PageBlocks data={{ articles: articles ?? [] }} slug="media">
         <section className={me ? "sec" : "pubsec hero-center"}>
           <h1>Media</h1>
           <p className="lead">
@@ -142,6 +144,7 @@ export default async function MediaPage({
             </p>
           </section>
         )}
-      </DualPage>
+            </PageBlocks>
+</DualPage>
   );
 }

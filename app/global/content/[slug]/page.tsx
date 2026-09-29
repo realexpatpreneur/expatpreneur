@@ -17,7 +17,19 @@ export default async function PageEditorPage({
   await requireGlobal();
   const supabase = await createClient();
 
-  const [{ data: page }, { data: villages }, { data: counts }, { data: events }, { data: businesses }, { data: courses }, { data: articles }, { data: plans }] =
+  const [
+    { data: page },
+    { data: villages },
+    { data: counts },
+    { data: events },
+    { data: businesses },
+    { data: courses },
+    { data: articles },
+    { data: plans },
+    { data: people },
+    { data: media },
+    { data: shows },
+  ] =
     await Promise.all([
       supabase
         .from("pages")
@@ -55,6 +67,18 @@ export default async function PageEditorPage({
         .select("slug, name, blurb, price_cents, currency, interval, features")
         .eq("active", true)
         .order("position"),
+      supabase
+        .from("profiles")
+        .select("id, full_name, headline, industry, avatar_url")
+        .eq("public_profile", true)
+        .eq("status", "active")
+        .limit(6),
+      supabase
+        .from("media_items")
+        .select("id, slug, kind, title, summary, duration, cover_url")
+        .not("published_at", "is", null)
+        .limit(8),
+      supabase.from("shows").select("slug, name, about, cover_url").limit(4),
     ]);
 
   if (!page) notFound();
@@ -83,6 +107,9 @@ export default async function PageEditorPage({
           courses: courses ?? [],
           articles: articles ?? [],
           plans: plans ?? [],
+          people: people ?? [],
+          media: media ?? [],
+          shows: shows ?? [],
         }}
       />
     </>

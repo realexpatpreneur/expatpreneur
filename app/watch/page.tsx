@@ -1,4 +1,5 @@
 import { DualPage } from "@/components/dual-page";
+import { PageBlocks } from "@/components/page-blocks";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { currentUser } from "@/lib/member";
@@ -53,6 +54,7 @@ export default async function WatchPage({
 
   return (
     <DualPage member={Boolean(user)} nav="/watch" active="/watch">
+      <PageBlocks slug="watch">
         <section className={user ? "sec" : "pubsec hero-center"}>
           <h1>Watch and Listen</h1>
           <p className="lead">
@@ -145,6 +147,7 @@ export default async function WatchPage({
             </div>
           )}
         </section>
-      </DualPage>
+            </PageBlocks>
+</DualPage>
         );
 }

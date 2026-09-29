@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { PublicPage } from "@/components/public-page";
 import { ContactForm } from "./form";
@@ -40,6 +41,7 @@ export default async function ContactPage({
 
   return (
     <PublicPage active="/contact">
+      <PageBlocks slug="contact">
       <section className="pubsec">
         <div className="article" style={{ maxWidth: 680 }}>
           <h2>{title}</h2>
@@ -84,6 +86,7 @@ export default async function ContactPage({
           </div>
         </div>
       </section>
-    </PublicPage>
+          </PageBlocks>
+</PublicPage>
   );
 }

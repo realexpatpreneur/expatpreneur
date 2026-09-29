@@ -1,4 +1,5 @@
 import { DualPage } from "@/components/dual-page";
+import { PageBlocks } from "@/components/page-blocks";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
@@ -55,6 +56,7 @@ export default async function PublicMembersPage({
 
   return (
     <DualPage member={Boolean(me)} nav="/directory" active="/members">
+      <PageBlocks data={{ people: people ?? [] }} slug="members">
         <section className={me ? "sec" : "pubsec hero-center"}>
           <h1>Members</h1>
           <p className="lead">
@@ -151,6 +153,7 @@ export default async function PublicMembersPage({
             </p>
           </section>
         )}
-      </DualPage>
+            </PageBlocks>
+</DualPage>
   );
 }

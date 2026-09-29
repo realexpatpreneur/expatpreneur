@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { pageText } from "@/lib/text";
 import { PublicPage } from "@/components/public-page";
@@ -50,6 +51,7 @@ export default async function VillagesPage({
 
   return (
     <PublicPage active="/villages">
+      <PageBlocks slug="villages">
       <section className="pubsec">
         <h2>{t("title", "Find your Village")}</h2>
         <p className="intro">
@@ -96,6 +98,7 @@ export default async function VillagesPage({
           </Link>
         </div>
       </section>
-    </PublicPage>
+          </PageBlocks>
+</PublicPage>
   );
 }

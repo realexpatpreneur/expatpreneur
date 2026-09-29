@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { PublicPage } from "@/components/public-page";
 import { ApplyForm } from "./form";
@@ -15,6 +16,7 @@ export default async function ApplyPage() {
 
   return (
     <PublicPage>
+      <PageBlocks slug="apply">
       <main className="wrap">
         <section className="sec">
           <h1>Request an invitation</h1>
@@ -30,6 +32,7 @@ export default async function ApplyPage() {
           <ApplyForm villages={villages ?? []} />
         </section>
       </main>
-    </PublicPage>
+          </PageBlocks>
+</PublicPage>
   );
 }

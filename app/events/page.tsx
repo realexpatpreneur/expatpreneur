@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { pageText } from "@/lib/text";
 import { whoIsHere } from "@/lib/member";
@@ -77,6 +78,7 @@ export default async function EventsPage({
 
   return (
     <DualPage member={Boolean(member)} nav="/events" active="/events">
+      <PageBlocks data={{ events: events ?? [] }} slug="events">
       {member ? (
         <PageHead
           title="Events"
@@ -166,6 +168,7 @@ export default async function EventsPage({
           </div>
         </section>
       )}
-    </DualPage>
+          </PageBlocks>
+</DualPage>
   );
 }

@@ -4,7 +4,7 @@ import { toHtml } from "@/components/rich-text";
 import { VillageCard, BusinessCard, CourseCard, ArticleCard, type BusinessRow } from "@/components/cards";
 import { EventRow } from "@/components/feed";
 import { Ic } from "@/components/icon";
-import { HeroPreview } from "@/components/bits";
+import { HeroPreview, Av } from "@/components/bits";
 import { whenText } from "@/lib/events";
 
 // Everything the block editor can make, drawn. Blocks that show live
@@ -25,6 +25,9 @@ export type BlockData = {
   courses?: { id: string; slug: string; title: string; level?: string | null; format?: string | null; price_cents?: number | null; currency?: string | null; cover_url?: string | null }[];
   articles?: { id: string; slug: string; title: string; standfirst: string | null; kind?: string; cover_url?: string | null }[];
   plans?: { slug: string; name: string; blurb: string | null; price_cents: number; currency: string; interval: string; features: string[] }[];
+  people?: { id: string; full_name: string; headline: string | null; industry?: string | null; avatar_url?: string | null }[];
+  media?: { id: string; slug: string; kind: string; title: string; summary?: string | null; duration?: string | null; cover_url?: string | null }[];
+  shows?: { slug: string; name: string; about: string | null; cover_url?: string | null }[];
 };
 
 const TONES: Record<string, string> = {
@@ -412,6 +415,125 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
             {list.map((a, n) => (
               <ArticleCard key={a.slug} article={a} i={n} />
             ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "people": {
+      const list = (data.people ?? []).slice(0, Number(b.limit) || 6);
+      if (!list.length) return null;
+      return (
+        <section className="sec">
+          <SecHead heading={b.heading} href={b.more_href} />
+          <div className="g3">
+            {list.map((p) => (
+              <Link className="mcard" key={p.id} href={`/members/${p.id}`}>
+                <div className="row">
+                  <Av name={p.full_name} />
+                  <div style={{ minWidth: 0 }}>
+                    <b style={{ fontWeight: 650, display: "block" }}>{p.full_name}</b>
+                    {p.headline ? <span className="where">{p.headline}</span> : null}
+                  </div>
+                </div>
+                {p.industry ? (
+                  <div className="tags">
+                    <span className="chip">{p.industry}</span>
+                  </div>
+                ) : null}
+              </Link>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "videos": {
+      let list = data.media ?? [];
+      if (b.kind) list = list.filter((m) => m.kind === b.kind);
+      list = list.slice(0, Number(b.limit) || 8);
+      if (!list.length) return null;
+      return (
+        <section className="sec">
+          <SecHead heading={b.heading} href={b.more_href} />
+          <div className="vgrid">
+            {list.map((m) => (
+              <Link className="vitem" key={m.id} href={`/watch/${m.slug}`}>
+                <div
+                  className="vthumb"
+                  role="img"
+                  aria-label={m.title}
+                  style={m.cover_url ? { backgroundImage: `url('${m.cover_url}')` } : undefined}
+                >
+                  {m.duration ? <span className="vdur">{m.duration}</span> : null}
+                </div>
+                <div className="vtitle" style={{ marginTop: 10 }}>
+                  {m.title}
+                </div>
+                {m.summary ? <div className="vsub">{m.summary}</div> : null}
+              </Link>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "shows": {
+      const list = data.shows ?? [];
+      if (!list.length) return null;
+      return (
+        <section className="sec">
+          <SecHead heading={b.heading} href={b.more_href} />
+          <div className="pshows">
+            {list.map((sh) => (
+              <Link className="pshow linkrow" key={sh.slug} href={`/watch/show/${sh.slug}`}>
+                {sh.cover_url ? (
+                  <div
+                    className="photo"
+                    role="img"
+                    aria-label={sh.name}
+                    style={{ height: 120, backgroundImage: `url('${sh.cover_url}')` }}
+                  />
+                ) : (
+                  <span className="pcover">
+                    <b>{sh.name}</b>
+                  </span>
+                )}
+                <div>
+                  <b style={{ fontSize: 15 }}>{sh.name}</b>
+                  {sh.about ? (
+                    <p className="muted small" style={{ marginTop: 4 }}>
+                      {sh.about}
+                    </p>
+                  ) : null}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "form": {
+      // The forms belong to their own pages, which hold the action and
+      // the captcha. A block points at one rather than copying it.
+      const where: Record<string, [string, string]> = {
+        contact: ["/contact", "Open the contact form"],
+        apply: ["/apply", "Request your invitation"],
+        suggest: ["/villages/suggest", "Suggest a city"],
+        newsletter: ["/media", "Sign up for the newsletter"],
+      };
+      const [href, label] = where[b.which ?? "contact"] ?? where.contact;
+      return (
+        <section className="sec">
+          <div className="panel">
+            {b.heading ? <h3 style={{ fontSize: 15 }}>{b.heading}</h3> : null}
+            {b.text ? (
+              <div dangerouslySetInnerHTML={{ __html: toHtml(b.text) }} />
+            ) : null}
+            <Link className="btn btn-primary" href={href} style={{ marginTop: 12 }}>
+              {label}
+            </Link>
           </div>
         </section>
       );

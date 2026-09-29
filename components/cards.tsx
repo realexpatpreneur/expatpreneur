@@ -85,8 +85,11 @@ export type BusinessRow = {
   id: string;
   slug: string;
   name: string;
-  category: string | null;
-  summary: string | null;
+  category?: string | null;
+  summary?: string | null;
+  // Some pages select the shorter columns instead.
+  tagline?: string | null;
+  industry?: string | null;
   offer?: string | null;
   logo_url?: string | null;
   owner_name?: string | null;
@@ -114,9 +117,9 @@ export function BusinessCard({ biz, i = 0, href }: { biz: BusinessRow; i?: numbe
       <div className="b">
         <div className="row" style={{ justifyContent: "space-between" }}>
           <b>{biz.name}</b>
-          {biz.category ? <span className="chip">{biz.category}</span> : null}
+          {biz.category ? <span className="chip">{biz.category ?? biz.industry}</span> : null}
         </div>
-        <p className="muted small">{biz.summary}</p>
+        <p className="muted small">{biz.summary ?? biz.tagline}</p>
         {biz.offer ? (
           <span className="chip chip-mint" style={{ alignSelf: "flex-start" }}>
             <Ic name="tag" style={{ width: 13, height: 13 }} />

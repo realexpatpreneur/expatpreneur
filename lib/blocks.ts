@@ -265,6 +265,44 @@ export const BLOCKS: BlockSpec[] = [
     fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
   },
   {
+    type: "people",
+    label: "Members",
+    about: "Member cards, from the database. Only members who chose to be listed.",
+    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
+  },
+  {
+    type: "videos",
+    label: "Videos and episodes",
+    about: "What is in Watch and Listen, from the database.",
+    fields: [
+      T("heading", "Heading"),
+      S("kind", "Which", [["", "Everything"], ["video", "Videos"], ["episode", "Podcast episodes"]]),
+      N("limit", "How many"),
+      K("more_href", "See all goes to"),
+    ],
+  },
+  {
+    type: "shows",
+    label: "Podcast shows",
+    about: "The shows, each with what it is and how many episodes.",
+    fields: [T("heading", "Heading"), K("more_href", "See all goes to")],
+  },
+  {
+    type: "form",
+    label: "A form",
+    about: "One of the forms the platform already has, dropped onto the page.",
+    fields: [
+      S("which", "Which form", [
+        ["contact", "Contact"],
+        ["apply", "Request an invitation"],
+        ["suggest", "Suggest a city"],
+        ["newsletter", "Newsletter sign up"],
+      ]),
+      T("heading", "Heading"),
+      L("text", "Line above the form"),
+    ],
+  },
+  {
     type: "story",
     label: "Featured story",
     about: "One story in the pink panel, as on the home page.",
