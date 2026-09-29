@@ -41,6 +41,7 @@ export function PageBuilder({
   const [over, setOver] = useState<number | null>(null);
   const [adding, setAdding] = useState(false);
   const [tab, setTab] = useState<"content" | "style">("content");
+  const [shut, setShut] = useState(false);
   const [state, setState] = useState<PageState>({});
   const [saving, setSaving] = useState(false);
 
@@ -136,7 +137,7 @@ export function PageBuilder({
         </div>
       </div>
 
-      <div className="pb-body">
+      <div className={`pb-body ${shut ? "wide" : ""}`}>
         {/* The canvas */}
         <div className="pb-canvas">
           <div className="app">
@@ -212,8 +213,18 @@ export function PageBuilder({
           </div>
         </div>
 
-        {/* What is selected */}
-        <aside className="pb-side">
+        {/* What is selected. It folds away so the canvas has the room. */}
+        <button
+          type="button"
+          className="pb-fold"
+          onClick={() => setShut(!shut)}
+          title={shut ? "Show the panel" : "Hide the panel"}
+        >
+          <Ic name="chev" />
+          <span>{shut ? "Edit" : "Hide"}</span>
+        </button>
+
+        <aside className="pb-side" hidden={shut}>
           {adding ? (
             <div className="panel">
               <div className="row" style={{ justifyContent: "space-between" }}>

@@ -46,7 +46,7 @@ export default async function MembershipPage() {
   if (page) {
     return (
       <PublicPage active="/membership">
-        <Blocks blocks={page.blocks} />
+        <Blocks blocks={page.blocks} data={{ plans: plans ?? [] }} />
       </PublicPage>
     );
   }

@@ -102,7 +102,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
             aria-label={b.heading ?? ""}
             style={{ height: 420, backgroundImage: `url('${b.image_url}')` }}
           />
-        ) : b.art === "preview" || b.art === undefined ? (
+        ) : b.art === "preview" ? (
           <HeroPreview />
         ) : null;
 
