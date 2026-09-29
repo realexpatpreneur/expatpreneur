@@ -19,6 +19,7 @@ set blocks = '[
   "button_href": "/apply",
   "second_label": "Find your Village",
   "second_href": "/villages",
+  "art": "preview",
   "quote": "\"It takes a village to raise a child.\" We believe the same is true of the businesses we build far from home."
  },
  {
@@ -83,6 +84,7 @@ select 'home', 'Home', '/', 'draft', '[
   "button_href": "/apply",
   "second_label": "Find your Village",
   "second_href": "/villages",
+  "art": "preview",
   "quote": "\"It takes a village to raise a child.\" We believe the same is true of the businesses we build far from home."
  },
  {

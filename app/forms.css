@@ -119,3 +119,21 @@
 .pb-palette button:hover{border-color:var(--blue);background:var(--wash)}
 .pb-palette b{font-size:13.5px}
 .pb-palette span{font-size:12px;color:var(--muted)}
+
+/* The inspector: it scrolls, and it has two tabs */
+.pb-side{max-height:calc(100vh - var(--barh,0px) - 150px);overflow:auto;padding-right:2px}
+.pb-fields{margin-top:12px}
+.pb-tabs{display:flex;gap:4px;margin-top:12px;padding:4px;border-radius:999px;background:rgba(15,20,25,.05)}
+.pb-tabs button{flex:1;border:0;background:transparent;border-radius:999px;padding:7px 12px;
+  font:600 12.5px var(--body);color:var(--muted);cursor:pointer}
+.pb-tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(15,20,25,.12)}
+
+.pb-swatch{width:28px;height:28px;border-radius:9px;border:1px solid rgba(15,20,25,.15);cursor:pointer;
+  padding:0;display:grid;place-items:center;font:700 13px var(--body);color:#5A6875;background:#fff}
+.pb-swatch.on{box-shadow:0 0 0 2px var(--ink)}
+.pb-swatch.none{background:repeating-linear-gradient(45deg,#fff 0 6px,#EDF0F3 6px 12px)}
+.pb-swatch.own{background:linear-gradient(135deg,#F2A65A,#4074AE,#A8DCD1)}
+
+/* A block that has been given a colour keeps its text readable */
+.blk-ink h1,.blk-ink h2,.blk-ink h3,.blk-ink p,.blk-ink b{color:inherit}
+.blk{padding:0 var(--gx,0)}

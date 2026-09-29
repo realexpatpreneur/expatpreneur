@@ -4,6 +4,7 @@ import { toHtml } from "@/components/rich-text";
 import { VillageCard, BusinessCard, CourseCard, ArticleCard, type BusinessRow } from "@/components/cards";
 import { EventRow } from "@/components/feed";
 import { Ic } from "@/components/icon";
+import { HeroPreview } from "@/components/bits";
 import { whenText } from "@/lib/events";
 
 // Everything the block editor can make, drawn. Blocks that show live
@@ -34,9 +35,45 @@ export function Blocks({ blocks, data = {} }: { blocks: Block[]; data?: BlockDat
   return (
     <>
       {blocks.map((b, i) => (
-        <One key={i} block={b} data={data} />
+        <Styled key={i} block={b}>
+          <One block={b} data={data} />
+        </Styled>
       ))}
     </>
+  );
+}
+
+const SPACE: Record<string, string> = { tight: "18px 0", roomy: "72px 0", none: "0" };
+const SIZE: Record<string, string> = { large: "1.25em", small: "0.85em" };
+
+// The settings every block carries: width, spacing, colours, corners.
+// A block with none of them set renders exactly as it did before.
+function Styled({ block: b, children }: { block: Block; children: React.ReactNode }) {
+  const bg = b.bg === "custom" ? b.bg_custom : b.bg;
+  const ink = b.ink === "custom" ? b.ink_custom : b.ink;
+
+  const style: React.CSSProperties = {};
+  if (bg) style.background = bg;
+  if (ink) style.color = ink;
+  if (b.space) style.padding = SPACE[b.space];
+  if (b.round === "soft") style.borderRadius = 18;
+  if (b.align === "center") style.textAlign = "center";
+  if (b.size) style.fontSize = SIZE[b.size];
+
+  const inner: React.CSSProperties =
+    b.width === "narrow"
+      ? { maxWidth: 720, marginLeft: "auto", marginRight: "auto" }
+      : b.width === "wide"
+        ? { maxWidth: "none" }
+        : {};
+
+  const plain = !bg && !ink && !b.space && !b.round && !b.align && !b.size && !b.width;
+  if (plain) return <>{children}</>;
+
+  return (
+    <div className={`blk ${ink ? "blk-ink" : ""}`} style={style}>
+      <div style={inner}>{children}</div>
+    </div>
   );
 }
 
@@ -56,9 +93,21 @@ function SecHead({ heading, href }: { heading?: string; href?: string }) {
 
 function One({ block: b, data }: { block: Block; data: BlockData }) {
   switch (b.type) {
-    case "hero":
-      return (
-        <section className={`sec ${b.align === "center" ? "hero-center" : ""}`}>
+    case "hero": {
+      const art =
+        b.art === "image" && b.image_url ? (
+          <div
+            className="photo"
+            role="img"
+            aria-label={b.heading ?? ""}
+            style={{ height: 420, backgroundImage: `url('${b.image_url}')` }}
+          />
+        ) : b.art === "preview" || b.art === undefined ? (
+          <HeroPreview />
+        ) : null;
+
+      const words = (
+        <>
           <h1>{b.heading}</h1>
           {b.text ? <p className="lead">{b.text}</p> : null}
           {b.button_label || b.second_label ? (
@@ -76,16 +125,21 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
             </div>
           ) : null}
           {b.quote ? <p className="proverb">{b.quote}</p> : null}
-          {b.image_url ? (
-            <div
-              className="photo"
-              role="img"
-              aria-label={b.heading ?? ""}
-              style={{ height: 320, marginTop: 20, backgroundImage: `url('${b.image_url}')` }}
-            />
-          ) : null}
+        </>
+      );
+
+      // Centred means the words alone; otherwise the words sit beside
+      // whatever was chosen for the right.
+      if (b.layout === "center" || !art)
+        return <section className="sec hero-center">{words}</section>;
+
+      return (
+        <section className="hero" style={{ padding: "48px 0" }}>
+          <div>{words}</div>
+          <div className="art">{art}</div>
         </section>
       );
+    }
 
     case "heading":
       return (

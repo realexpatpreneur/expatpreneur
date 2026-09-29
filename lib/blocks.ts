@@ -6,7 +6,15 @@
 // live things, such as Villages or events, take settings rather than
 // content, and read the database when the page is drawn.
 
-export type FieldKind = "text" | "long" | "url" | "image" | "select" | "number";
+export type FieldKind =
+  | "text"
+  | "long"
+  | "url"
+  | "link"
+  | "image"
+  | "select"
+  | "number"
+  | "colour";
 
 export type BlockField = {
   name: string;
@@ -29,6 +37,60 @@ const U = (name: string, label: string, hint?: string): BlockField => ({ name, l
 const I = (name: string, label: string, hint?: string): BlockField => ({ name, label, kind: "image", hint });
 const S = (name: string, label: string, options: [string, string][], hint?: string): BlockField =>
   ({ name, label, kind: "select", options, hint });
+const K = (name: string, label: string, hint?: string): BlockField => ({ name, label, kind: "link", hint });
+const C = (name: string, label: string, hint?: string): BlockField => ({ name, label, kind: "colour", hint });
+
+// Every address on the public site, so a link is chosen rather than
+// typed. "Somewhere else" lets a full address be written by hand.
+export const SITE_LINKS: [string, string][] = [
+  ["", "Nowhere"],
+  ["/", "Home"],
+  ["/discover", "Discover"],
+  ["/how-it-works", "How it works"],
+  ["/membership", "Membership"],
+  ["/villages", "Villages"],
+  ["/villages/suggest", "Suggest a city"],
+  ["/events", "Events"],
+  ["/businesses", "Businesses"],
+  ["/learning", "Learning"],
+  ["/media", "Media"],
+  ["/watch", "Watch and Listen"],
+  ["/members", "Members"],
+  ["/contact", "Contact"],
+  ["/apply", "Request an invitation"],
+  ["/apply/status", "Invitation status"],
+  ["/login", "Log in"],
+  ["/legal/privacy", "Privacy"],
+  ["/legal/terms", "Terms"],
+  ["/legal/cookies", "Cookies"],
+  ["custom", "Somewhere else"],
+];
+
+// The palette, as colours rather than class names, so a block can be
+// tinted without touching the stylesheet.
+export const COLOURS: [string, string][] = [
+  ["", "None"],
+  ["#FFFFFF", "White"],
+  ["#F4F6F8", "Pale grey"],
+  ["#2C3E50", "Navy"],
+  ["#4074AE", "Blue"],
+  ["#A8DCD1", "Mint"],
+  ["#FEEEEC", "Pink"],
+  ["#F2A65A", "Sun"],
+  ["#0F1419", "Ink"],
+  ["custom", "A colour of my own"],
+];
+
+// Settings every block has: how it sits on the page, and its colours.
+export const STYLE_FIELDS: BlockField[] = [
+  S("width", "Width", [["", "Normal"], ["narrow", "Narrow"], ["wide", "Full width"]]),
+  S("align", "Text", [["", "Left"], ["center", "Centred"]]),
+  S("space", "Space around it", [["", "Normal"], ["tight", "Tight"], ["roomy", "Roomy"], ["none", "None"]]),
+  C("bg", "Background colour"),
+  C("ink", "Text colour"),
+  S("size", "Heading size", [["", "Normal"], ["large", "Large"], ["small", "Small"]]),
+  S("round", "Corners", [["", "Square"], ["soft", "Rounded"]]),
+];
 const N = (name: string, label: string, hint?: string): BlockField => ({ name, label, kind: "number", hint });
 
 const WIDTH: [string, string][] = [
@@ -54,12 +116,17 @@ export const BLOCKS: BlockSpec[] = [
       T("heading", "Heading"),
       L("text", "Paragraph"),
       T("button_label", "Button"),
-      U("button_href", "Button goes to"),
+      K("button_href", "Button goes to"),
       T("second_label", "Second button"),
-      U("second_href", "Second button goes to"),
-      I("image_url", "Photograph", "Leave empty for the built-in preview panel."),
+      K("second_href", "Second button goes to"),
+      S("art", "What sits beside the text", [
+        ["preview", "The preview panel: a profile, an event and the cities"],
+        ["", "Nothing"],
+        ["image", "A photograph"],
+      ]),
+      I("image_url", "Photograph", "Used when you choose a photograph above."),
       L("quote", "Line in the margin", "The bordered line under the buttons."),
-      S("align", "Layout", [["", "Text left, picture right"], ["center", "Centred"]]),
+      S("layout", "Layout", [["", "Text left, picture right"], ["center", "Centred"]]),
     ],
   },
   {
@@ -82,7 +149,7 @@ export const BLOCKS: BlockSpec[] = [
       T("heading", "Heading"),
       L("body", "Text"),
       T("button_label", "Button"),
-      U("button_href", "Button goes to"),
+      K("button_href", "Button goes to"),
       S("tone", "Background", TONE),
     ],
   },
@@ -94,9 +161,9 @@ export const BLOCKS: BlockSpec[] = [
       T("heading", "Heading"),
       L("text", "Line underneath"),
       T("button_label", "Button"),
-      U("button_href", "Button goes to"),
+      K("button_href", "Button goes to"),
       T("second_label", "Second button"),
-      U("second_href", "Second button goes to"),
+      K("second_href", "Second button goes to"),
       S("tone", "Colour", TONE),
     ],
   },
@@ -165,7 +232,7 @@ export const BLOCKS: BlockSpec[] = [
     fields: [
       T("heading", "Heading"),
       S("show", "Which Villages", [["", "All"], ["open", "Open only"], ["soon", "Launching soon"]]),
-      U("more_href", "See all goes to"),
+      K("more_href", "See all goes to"),
     ],
   },
   {
@@ -176,32 +243,32 @@ export const BLOCKS: BlockSpec[] = [
       T("heading", "Heading"),
       S("scope", "Which events", [["", "Every Village"], ["public", "Open to everyone"]]),
       N("limit", "How many"),
-      U("more_href", "See all goes to"),
+      K("more_href", "See all goes to"),
     ],
   },
   {
     type: "businesses",
     label: "Businesses",
     about: "Member businesses, from the database.",
-    fields: [T("heading", "Heading"), N("limit", "How many"), U("more_href", "See all goes to")],
+    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
   },
   {
     type: "courses",
     label: "Learning",
     about: "Courses, from the database.",
-    fields: [T("heading", "Heading"), N("limit", "How many"), U("more_href", "See all goes to")],
+    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
   },
   {
     type: "articles",
     label: "Stories",
     about: "Published articles, from the database.",
-    fields: [T("heading", "Heading"), N("limit", "How many"), U("more_href", "See all goes to")],
+    fields: [T("heading", "Heading"), N("limit", "How many"), K("more_href", "See all goes to")],
   },
   {
     type: "story",
     label: "Featured story",
     about: "One story in the pink panel, as on the home page.",
-    fields: [T("heading", "Heading"), L("body", "Text"), I("image_url", "Photograph"), U("button_href", "Read it goes to")],
+    fields: [T("heading", "Heading"), L("body", "Text"), I("image_url", "Photograph"), K("button_href", "Read it goes to")],
   },
   {
     type: "plans",
@@ -211,7 +278,11 @@ export const BLOCKS: BlockSpec[] = [
   },
 ];
 
-export const blockSpec = (type: string) => BLOCKS.find((b) => b.type === type);
+// Every block carries the style settings as well as its own fields.
+export const blockSpec = (type: string) => {
+  const b = BLOCKS.find((x) => x.type === type);
+  return b ? { ...b, fields: [...b.fields, ...STYLE_FIELDS] } : undefined;
+};
 export const blockLabel: Record<string, string> = Object.fromEntries(
   BLOCKS.map((b) => [b.type, b.label])
 );

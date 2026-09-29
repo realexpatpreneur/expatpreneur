@@ -155,6 +155,9 @@ export async function saveBlocks({
       for (const f of spec.fields) {
         const v = String(b[f.name] ?? "").trim();
         if (v) out[f.name] = v;
+        // A colour of their own is kept alongside the choice.
+        const own = String(b[`${f.name}_custom`] ?? "").trim();
+        if (own) out[`${f.name}_custom`] = own;
       }
       return out;
     });

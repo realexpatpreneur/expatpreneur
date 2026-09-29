@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { BLOCKS, blockLabel, blockSpec, type Block, type BlockField } from "@/lib/blocks";
+import {
+  BLOCKS,
+  COLOURS,
+  SITE_LINKS,
+  STYLE_FIELDS,
+  blockLabel,
+  blockSpec,
+  type Block,
+  type BlockField,
+} from "@/lib/blocks";
 import { Blocks, type BlockData } from "@/components/blocks";
 import { RichText } from "@/components/rich-text";
 import { Uploader } from "@/components/uploader";
@@ -31,6 +40,7 @@ export function PageBuilder({
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
   const [adding, setAdding] = useState(false);
+  const [tab, setTab] = useState<"content" | "style">("content");
   const [state, setState] = useState<PageState>({});
   const [saving, setSaving] = useState(false);
 
@@ -239,15 +249,40 @@ export function PageBuilder({
                 </button>
               </div>
 
-              <div className="stack" style={{ marginTop: 12 }}>
-                {spec.fields.map((f) => (
-                  <Field
-                    key={f.name}
-                    field={f}
-                    value={current[f.name] ?? ""}
-                    onChange={(v) => set(picked as number, f.name, v)}
-                  />
-                ))}
+              <div className="pb-tabs">
+                <button
+                  type="button"
+                  className={tab === "content" ? "on" : ""}
+                  onClick={() => setTab("content")}
+                >
+                  Content
+                </button>
+                <button
+                  type="button"
+                  className={tab === "style" ? "on" : ""}
+                  onClick={() => setTab("style")}
+                >
+                  Style
+                </button>
+              </div>
+
+              <div className="stack pb-fields">
+                {spec.fields
+                  .filter((f) =>
+                    tab === "style"
+                      ? STYLE_FIELDS.some((x) => x.name === f.name)
+                      : !STYLE_FIELDS.some((x) => x.name === f.name)
+                  )
+                  .map((f) => (
+                    <Field
+                      key={f.name}
+                      field={f}
+                      value={current[f.name] ?? ""}
+                      custom={current[`${f.name}_custom`] ?? ""}
+                      onChange={(v) => set(picked as number, f.name, v)}
+                      onCustom={(v) => set(picked as number, `${f.name}_custom`, v)}
+                    />
+                  ))}
               </div>
             </div>
           ) : (
@@ -275,22 +310,102 @@ export function PageBuilder({
 function Field({
   field,
   value,
+  custom = "",
   onChange,
+  onCustom,
 }: {
   field: BlockField;
   value: string;
+  custom?: string;
   onChange: (v: string) => void;
+  onCustom?: (v: string) => void;
 }) {
   if (field.kind === "image")
     return (
-      <Uploader
-        name={`x_${field.name}`}
-        label={field.label}
-        hint={field.hint}
-        current={value}
-        onChange={onChange}
-      />
+      <div className="field">
+        <Uploader
+          name={`x_${field.name}`}
+          label={field.label}
+          hint={field.hint}
+          current={value}
+          onChange={onChange}
+        />
+        <input
+          style={{ marginTop: 8 }}
+          value={value}
+          placeholder="Or paste the address of a picture"
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </div>
     );
+
+  if (field.kind === "colour") {
+    const picked = value === "custom";
+    return (
+      <div className="field">
+        <span>{field.label}</span>
+        <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+          {COLOURS.map(([v, t]) =>
+            v === "custom" ? null : (
+              <button
+                type="button"
+                key={v || "none"}
+                className={`pb-swatch ${value === v ? "on" : ""} ${v ? "" : "none"}`}
+                style={v ? { background: v } : undefined}
+                title={t}
+                onClick={() => onChange(v)}
+              />
+            )
+          )}
+          <button
+            type="button"
+            className={`pb-swatch own ${picked ? "on" : ""}`}
+            title="A colour of my own"
+            style={picked && custom ? { background: custom } : undefined}
+            onClick={() => onChange("custom")}
+          >
+            +
+          </button>
+        </div>
+        {picked ? (
+          <input
+            type="color"
+            style={{ marginTop: 8, height: 40, padding: 4 }}
+            value={custom || "#2C3E50"}
+            onChange={(e) => onCustom?.(e.target.value)}
+          />
+        ) : null}
+      </div>
+    );
+  }
+
+  if (field.kind === "link") {
+    const known = SITE_LINKS.some(([v]) => v === value);
+    return (
+      <div className="field">
+        <span>{field.label}</span>
+        <select
+          value={known ? value : "custom"}
+          onChange={(e) => onChange(e.target.value === "custom" ? "" : e.target.value)}
+        >
+          {SITE_LINKS.map(([v, t]) => (
+            <option key={v || "none"} value={v}>
+              {t}
+            </option>
+          ))}
+        </select>
+        {!known || value === "custom" ? (
+          <input
+            style={{ marginTop: 8 }}
+            value={value === "custom" ? "" : value}
+            placeholder="https:// or /somewhere"
+            onChange={(e) => onChange(e.target.value)}
+          />
+        ) : null}
+        {field.hint ? <span className="hint">{field.hint}</span> : null}
+      </div>
+    );
+  }
 
   if (field.kind === "long")
     return (
