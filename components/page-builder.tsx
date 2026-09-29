@@ -25,6 +25,7 @@ import { RichText } from "@/components/rich-text";
 import { Uploader } from "@/components/uploader";
 import { Ic } from "@/components/icon";
 import { saveBlocks, type PageState } from "@/app/global/content/actions";
+import { PATTERNS, PATTERN_GROUPS } from "@/lib/patterns";
 
 // The page, as a canvas. Blocks are shown as they will look, dragged
 // to reorder, and clicked to edit. Nothing here is a numbered list of
@@ -56,6 +57,7 @@ export function PageBuilder({
   const [over, setOver] = useState<number | null>(null);
   const [adding, setAdding] = useState(false);
   const [addingTo, setAddingTo] = useState<{ block: number; col: number } | null>(null);
+  const [showing, setShowing] = useState<"patterns" | "blocks">("patterns");
   const [tab, setTab] = useState<"content" | "style" | "element">("content");
   const [element, setElement] = useState<string>("");
   const [shut, setShut] = useState(false);
@@ -122,6 +124,17 @@ export function PageBuilder({
     change(next);
     setPicked(where);
     setAdding(false);
+  }
+
+  // A ready made section is only blocks, so it is added like any other.
+  function addPattern(p: { blocks: Block[] }) {
+    const where = picked == null ? blocks.length : picked + 1;
+    const next = [...blocks];
+    next.splice(where, 0, ...p.blocks.map((b) => ({ ...b })));
+    change(next);
+    setPicked(where);
+    setAdding(false);
+    setAddingTo(null);
   }
 
   function remove(i: number) {
@@ -336,9 +349,10 @@ export function PageBuilder({
                   }}
                   draggable
                   onDragStart={(e) => {
-                    // A card inside a list drags on its own, and moving
-                    // one sets the order of that list.
-                    const card = (e.target as HTMLElement)?.closest?.("[data-row]");
+                    // The drag begins on the block, so the card has to be
+                    // found by where the pointer is, not by the target.
+                    const under = document.elementFromPoint(e.clientX, e.clientY);
+                    const card = (under as HTMLElement)?.closest?.("[data-row]");
                     const name = card?.getAttribute("data-row");
                     if (name) {
                       setRow({ block: i, name });
@@ -350,13 +364,21 @@ export function PageBuilder({
                   onDragOver={(e) => {
                     e.preventDefault();
                     setOver(i);
+                    // Show which card the drop will land on.
+                    const under = document.elementFromPoint(e.clientX, e.clientY);
+                    const card = (under as HTMLElement)?.closest?.("[data-row]");
+                    e.currentTarget
+                      .querySelectorAll("[data-row].dropping")
+                      .forEach((n) => n.classList.remove("dropping"));
+                    if (row && card) card.classList.add("dropping");
                   }}
                   onDragLeave={() => setOver((o) => (o === i ? null : o))}
                   onDrop={(e) => {
                     e.preventDefault();
 
                     // Dropped on a card: reorder the list.
-                    const onto = (e.target as HTMLElement)?.closest?.("[data-row]");
+                    const under = document.elementFromPoint(e.clientX, e.clientY);
+                    const onto = (under as HTMLElement)?.closest?.("[data-row]");
                     const name = onto?.getAttribute("data-row");
                     if (row && row.block === i && name && name !== row.name) {
                       const names = [
@@ -460,7 +482,7 @@ export function PageBuilder({
           {adding ? (
             <div className="panel">
               <div className="row" style={{ justifyContent: "space-between" }}>
-                <h3 style={{ fontSize: 14 }}>Add a block</h3>
+                <h3 style={{ fontSize: 14 }}>{showing === "patterns" ? "Add a section" : "Add a block"}</h3>
                 <button
                   type="button"
                   className="btn btn-ghost btn-sm"
@@ -472,6 +494,42 @@ export function PageBuilder({
                   Close
                 </button>
               </div>
+              <div className="pb-tabs" style={{ marginTop: 10 }}>
+                <button
+                  type="button"
+                  className={showing === "patterns" ? "on" : ""}
+                  onClick={() => setShowing("patterns")}
+                >
+                  Ready made
+                </button>
+                <button
+                  type="button"
+                  className={showing === "blocks" ? "on" : ""}
+                  onClick={() => setShowing("blocks")}
+                >
+                  One block
+                </button>
+              </div>
+
+              {showing === "patterns" ? (
+                <div className="pb-palette">
+                  {PATTERN_GROUPS.map((g) => (
+                    <div key={g}>
+                      <p className="pb-group">{g}</p>
+                      {PATTERNS.filter((p) => p.group === g).map((p) => (
+                        <button
+                          type="button"
+                          key={p.name}
+                          onClick={() => addPattern(p)}
+                        >
+                          <b>{p.name}</b>
+                          <span>{p.about}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ) : (
               <div className="pb-palette">
                 {BLOCKS.map((s) => (
                   <button
@@ -488,6 +546,7 @@ export function PageBuilder({
                   </button>
                 ))}
               </div>
+              )}
             </div>
           ) : current && spec ? (
             <div className="panel">

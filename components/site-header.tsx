@@ -3,6 +3,7 @@ import { currentMember } from "@/lib/member";
 import { Ic } from "@/components/icon";
 import { Logo } from "@/components/brand";
 import { Av } from "@/components/bits";
+import { menu, forWho } from "@/lib/menus";
 
 const PUBNAV: [string, string][] = [
   ["/discover", "Discover"],
@@ -17,6 +18,13 @@ const PUBNAV: [string, string][] = [
 // the middle never change, so the site is always navigable from the top.
 export async function SiteHeader() {
   const member = await currentMember();
+
+  // The menu the Global team keeps, or the one written below if they
+  // have not made one.
+  const saved = await menu("header");
+  const links: [string, string][] = forWho(saved, Boolean(member)).length
+    ? forWho(saved, Boolean(member)).map((i) => [i.href, i.label] as [string, string])
+    : PUBNAV;
   const user = member;
   const name = member?.full_name ?? null;
 
@@ -29,7 +37,7 @@ export async function SiteHeader() {
         <Logo href="/" />
 
         <nav className="pubnav">
-          {PUBNAV.map(([href, label]) => (
+          {links.map(([href, label]) => (
             <Link key={href} href={href}>
               {label}
             </Link>

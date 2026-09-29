@@ -348,6 +348,41 @@ export const BLOCKS: BlockSpec[] = [
     fields: [T("heading", "Heading"), K("more_href", "See all goes to")],
   },
   {
+    type: "divider",
+    label: "Space or a line",
+    about: "A gap, or a line across the page.",
+    fields: [
+      N("height", "Height in pixels"),
+      S("line", "A line", [["", "No line"], ["1", "Yes"]]),
+    ],
+  },
+  {
+    type: "buttons",
+    label: "Buttons",
+    about: "One to three buttons in a row.",
+    fields: [
+      T("label_1", "First button"),
+      K("href_1", "It goes to"),
+      T("label_2", "Second button"),
+      K("href_2", "It goes to"),
+      T("label_3", "Third button"),
+      K("href_3", "It goes to"),
+      S("look", "Look", [["", "First one filled"], ["all", "All filled"], ["plain", "All plain"]]),
+    ],
+  },
+  {
+    type: "embed",
+    label: "A video from elsewhere",
+    about: "A YouTube or Vimeo video, by its address.",
+    fields: [U("url", "Address of the video"), T("caption", "Caption")],
+  },
+  {
+    type: "ticks",
+    label: "A list with ticks",
+    about: "The ticked list the prototype uses for what is included.",
+    fields: [T("heading", "Heading"), L("items", "One per line")],
+  },
+  {
     type: "form",
     label: "A form",
     about: "One of the forms the platform already has, dropped onto the page.",
@@ -443,6 +478,10 @@ export type ElementSpec = { name: string; label: string };
 
 export const ELEMENTS: Record<string, ElementSpec[]> = {
   columns: [{ name: "col", label: "Each column" }],
+  divider: [{ name: "line", label: "The line" }],
+  buttons: [{ name: "button", label: "Each button" }],
+  embed: [{ name: "frame", label: "The video" }, { name: "caption", label: "Caption" }],
+  ticks: [{ name: "heading", label: "Heading" }, { name: "item", label: "Each line" }],
   hero: [
     { name: "heading", label: "Heading" },
     { name: "text", label: "Paragraph" },

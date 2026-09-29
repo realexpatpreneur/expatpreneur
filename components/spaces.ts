@@ -152,6 +152,7 @@ export const GLOBAL_SPACES: Space[] = [
     items: [
       ["/global/content", "edit", "Pages"],
       ["/global/wording", "edit", "Wording"],
+      ["/global/menus", "list", "Menus"],
       ["/global/media", "book", "Articles"],
       ["/global/photos", "image", "Photos and consent"],
       ["/global/library", "list", "Resources library"],

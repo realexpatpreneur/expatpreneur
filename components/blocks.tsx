@@ -657,6 +657,94 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       );
     }
 
+    case "divider":
+      return (
+        <div
+          data-el="line"
+          style={{
+            height: Number(b.height) || 40,
+            borderTop: b.line === "1" ? "1px solid var(--line)" : undefined,
+          }}
+        />
+      );
+
+    case "buttons": {
+      const items = [1, 2, 3]
+        .map((n) => [b[`label_${n}`], b[`href_${n}`]] as [string | undefined, string | undefined])
+        .filter(([label]) => label);
+      if (!items.length) return null;
+      return (
+        <section className="sec">
+          <div className="row" style={{ flexWrap: "wrap", gap: 10 }}>
+            {items.map(([label, href], n) => (
+              <Link
+                key={label}
+                data-el="button"
+                className={`btn ${
+                  b.look === "all" || (n === 0 && b.look !== "plain")
+                    ? "btn-primary"
+                    : "btn-ghost"
+                }`}
+                href={href ?? "/"}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "embed": {
+      // YouTube and Vimeo addresses, turned into the address that can
+      // be shown on a page.
+      const raw = b.url ?? "";
+      const yt = raw.match(/(?:youtu\.be\/|v=)([\w-]{6,})/);
+      const vm = raw.match(/vimeo\.com\/(\d+)/);
+      const src = yt
+        ? `https://www.youtube.com/embed/${yt[1]}`
+        : vm
+          ? `https://player.vimeo.com/video/${vm[1]}`
+          : "";
+      if (!src) return null;
+      return (
+        <section className="sec">
+          <div className="embed" data-el="frame">
+            <iframe
+              src={src}
+              title={b.caption ?? "Video"}
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+          {b.caption ? (
+            <p className="muted small" data-el="caption" style={{ marginTop: 8 }}>
+              {b.caption}
+            </p>
+          ) : null}
+        </section>
+      );
+    }
+
+    case "ticks":
+      return (
+        <section className="sec">
+          {b.heading ? <h3 data-el="heading" style={{ fontSize: 15 }}>{b.heading}</h3> : null}
+          <ul className="ticks" style={{ marginTop: 10 }}>
+            {String(b.items ?? "")
+              .split("\n")
+              .map((l) => l.trim())
+              .filter(Boolean)
+              .map((l) => (
+                <li key={l} data-el="item">
+                  <Ic name="check" />
+                  <span>{l}</span>
+                </li>
+              ))}
+          </ul>
+        </section>
+      );
+
     case "form": {
       // The forms belong to their own pages, which hold the action and
       // the captcha. A block points at one rather than copying it.
