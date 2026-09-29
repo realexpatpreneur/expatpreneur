@@ -8,6 +8,10 @@ import {
   STYLE_FIELDS,
   DEVICES,
   PER_DEVICE,
+  ELEMENTS,
+  ELEMENT_FIELDS,
+  elKey,
+  touchedElements,
   blockLabel,
   blockSpec,
   type Block,
@@ -45,7 +49,8 @@ export function PageBuilder({
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
   const [adding, setAdding] = useState(false);
-  const [tab, setTab] = useState<"content" | "style">("content");
+  const [tab, setTab] = useState<"content" | "style" | "element">("content");
+  const [element, setElement] = useState<string>("");
   const [shut, setShut] = useState(false);
   const [state, setState] = useState<PageState>({});
   const [saving, setSaving] = useState(false);
@@ -129,6 +134,24 @@ export function PageBuilder({
   // value stays put when the phone one changes.
   function fieldName(name: string) {
     return device && PER_DEVICE.includes(name) ? `${name}_${device}` : name;
+  }
+
+  // Element settings carry their own key, already worked out.
+  function setRaw(i: number, key: string, value: string) {
+    const next = blocks.map((b, n) => (n === i ? { ...b, [key]: value } : b));
+    setPast((p) => [...p.slice(-49), blocks]);
+    setFuture([]);
+    setBlocks(next);
+  }
+
+  function clearElement(i: number, el: string) {
+    const next = blocks.map((b, n) => {
+      if (n !== i) return b;
+      const copy: Block = { ...b };
+      for (const k of Object.keys(copy)) if (k.startsWith(`el.${el}.`)) delete copy[k];
+      return copy;
+    });
+    change(next);
   }
 
   function set(i: number, name: string, value: string) {
@@ -245,7 +268,14 @@ export function PageBuilder({
                 <div
                   key={i}
                   className={`pb-block ${picked === i ? "on" : ""} ${over === i ? "over" : ""}`}
-                  onClick={() => setPicked(i)}
+                  onClick={(e) => {
+                    setPicked(i);
+                    // The part under the pointer, if it has a name.
+                    const el = (e.target as HTMLElement).closest("[data-el]");
+                    const name = el?.getAttribute("data-el") ?? "";
+                    setElement(name);
+                    if (name) setTab("element");
+                  }}
                   draggable
                   onDragStart={() => setDragging(i)}
                   onDragOver={(e) => {
@@ -282,7 +312,7 @@ export function PageBuilder({
                       <Ic name="trash" />
                     </button>
                   </div>
-                  <div className="pb-render">
+                  <div className="pb-render pb-pick">
                     <Blocks blocks={[b]} data={data} />
                   </div>
                   <button
@@ -363,11 +393,62 @@ export function PageBuilder({
                   className={tab === "style" ? "on" : ""}
                   onClick={() => setTab("style")}
                 >
-                  Style
+                  Block
+                </button>
+                <button
+                  type="button"
+                  className={tab === "element" ? "on" : ""}
+                  onClick={() => setTab("element")}
+                >
+                  Element
                 </button>
               </div>
 
-              <div className="stack pb-fields">
+              {tab === "element" ? (
+                <div className="pb-fields">
+                  <label className="field">
+                    <span>Which part</span>
+                    <select value={element} onChange={(e) => setElement(e.target.value)}>
+                      <option value="">Choose a part, or click one on the left</option>
+                      {(ELEMENTS[current.type] ?? []).map((el) => (
+                        <option key={el.name} value={el.name}>
+                          {el.label}
+                          {touchedElements(current).includes(el.name) ? " (changed)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  {element ? (
+                    <div className="stack" style={{ marginTop: 12 }}>
+                      {ELEMENT_FIELDS.map((f) => (
+                        <Field
+                          key={f.name}
+                          field={f}
+                          device={device}
+                          value={current[elKey(element, f.name, device)] ?? ""}
+                          custom={current[elKey(element, `${f.name}_custom`)] ?? ""}
+                          onChange={(v) =>
+                            setRaw(picked as number, elKey(element, f.name, device), v)
+                          }
+                          onCustom={(v) =>
+                            setRaw(picked as number, elKey(element, `${f.name}_custom`), v)
+                          }
+                        />
+                      ))}
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-sm"
+                        onClick={() => clearElement(picked as number, element)}
+                      >
+                        Put this part back as designed
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <div className="stack pb-fields" hidden={tab === "element"}>
                 {spec.fields
                   .filter((f) =>
                     tab === "style"

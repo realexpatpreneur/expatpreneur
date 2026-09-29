@@ -106,6 +106,7 @@ export function EventRow({
   visiting = false,
   right,
   cover,
+  wrap,
 }: {
   href: string;
   day: string;
@@ -115,9 +116,14 @@ export function EventRow({
   visiting?: boolean;
   right?: React.ReactNode;
   cover?: string | null;
+  wrap?: string;
 }) {
   return (
-    <Link className={`evt linkrow ${cover ? "has-thumb" : ""}`} href={href}>
+    <Link
+      className={`evt linkrow ${cover ? "has-thumb" : ""}`}
+      data-el={wrap}
+      href={href}
+    >
       <div className={`date ${visiting ? "visit" : ""}`}>
         <b>{day}</b>
         <span>{month}</span>

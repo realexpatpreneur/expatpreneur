@@ -389,3 +389,145 @@ export function pairs(value?: string): [string, string][] {
       return i < 0 ? ([l, ""] as [string, string]) : ([l.slice(0, i).trim(), l.slice(i + 1).trim()] as [string, string]);
     });
 }
+
+
+// ===== Elements =====
+//
+// A block is made of parts: a heading, a paragraph, a button, a card.
+// Each part can be styled on its own, on each screen, without touching
+// the others. A part with nothing set looks exactly as the design says.
+
+export type ElementSpec = { name: string; label: string };
+
+export const ELEMENTS: Record<string, ElementSpec[]> = {
+  hero: [
+    { name: "heading", label: "Heading" },
+    { name: "text", label: "Paragraph" },
+    { name: "button", label: "First button" },
+    { name: "button2", label: "Second button" },
+    { name: "quote", label: "Line in the margin" },
+    { name: "search", label: "Search box" },
+  ],
+  heading: [
+    { name: "heading", label: "Heading" },
+    { name: "text", label: "Line underneath" },
+  ],
+  text: [{ name: "body", label: "The text" }],
+  panel: [
+    { name: "box", label: "The box" },
+    { name: "heading", label: "Heading" },
+    { name: "body", label: "Text" },
+    { name: "button", label: "Button" },
+  ],
+  band: [
+    { name: "box", label: "The strip" },
+    { name: "heading", label: "Heading" },
+    { name: "text", label: "Line underneath" },
+    { name: "button", label: "Button" },
+    { name: "button2", label: "Second button" },
+  ],
+  image: [{ name: "image", label: "The photograph" }, { name: "caption", label: "Caption" }],
+  stats: [{ name: "box", label: "Each figure" }, { name: "label", label: "Labels" }, { name: "value", label: "Figures" }],
+  steps: [{ name: "heading", label: "Heading" }, { name: "num", label: "The numbers" }, { name: "title", label: "Step headings" }, { name: "text", label: "Step text" }],
+  features: [{ name: "heading", label: "Heading" }, { name: "box", label: "Each card" }, { name: "title", label: "Card headings" }, { name: "text", label: "Card text" }],
+  faq: [{ name: "heading", label: "Heading" }, { name: "q", label: "Questions" }, { name: "a", label: "Answers" }],
+  quotes: [{ name: "heading", label: "Heading" }, { name: "box", label: "Each quote" }, { name: "quote", label: "The words" }, { name: "who", label: "Who said it" }],
+  layers: [{ name: "heading", label: "Heading" }, { name: "text", label: "Line underneath" }, { name: "box", label: "Each layer" }, { name: "title", label: "Layer names" }],
+  villages: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each card" }],
+  events: [{ name: "heading", label: "Heading" }, { name: "row", label: "Each row" }],
+  businesses: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each card" }],
+  courses: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each card" }],
+  articles: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each card" }],
+  people: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each card" }],
+  videos: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each item" }],
+  shows: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each show" }],
+  story: [{ name: "box", label: "The panel" }, { name: "heading", label: "Heading" }, { name: "body", label: "Text" }, { name: "image", label: "Photograph" }],
+  plans: [{ name: "heading", label: "Heading" }, { name: "card", label: "Each plan" }, { name: "price", label: "The price" }],
+  form: [{ name: "box", label: "The box" }, { name: "heading", label: "Heading" }, { name: "button", label: "Button" }],
+};
+
+// What can be set on a part. Everything here can differ per screen.
+export const ELEMENT_FIELDS: BlockField[] = [
+  { name: "color", label: "Text colour", kind: "colour" },
+  { name: "bg", label: "Background", kind: "colour" },
+  { name: "size", label: "Text size in pixels", kind: "number" },
+  {
+    name: "weight",
+    label: "Weight",
+    kind: "select",
+    options: [["", "As designed"], ["400", "Regular"], ["600", "Medium"], ["700", "Bold"], ["800", "Heavy"]],
+  },
+  {
+    name: "align",
+    label: "Alignment",
+    kind: "select",
+    options: [["", "As designed"], ["left", "Left"], ["center", "Centred"], ["right", "Right"]],
+  },
+  { name: "lh", label: "Line height", kind: "text", hint: "For example 1.4" },
+  { name: "ls", label: "Letter spacing", kind: "text", hint: "For example -0.02em" },
+  { name: "pad", label: "Padding", kind: "text", hint: "For example 16px, or 16px 24px" },
+  { name: "mt", label: "Space above in pixels", kind: "number" },
+  { name: "mb", label: "Space below in pixels", kind: "number" },
+  { name: "radius", label: "Corner radius in pixels", kind: "number" },
+  { name: "border", label: "Border", kind: "text", hint: "For example 1px solid #E3E6EA" },
+  { name: "maxw", label: "Largest width in pixels", kind: "number" },
+  { name: "hide", label: "On this screen", kind: "select", options: [["", "Show it"], ["1", "Hide it"]] },
+];
+
+// Element settings live under one flat key, so they save and load with
+// everything else: el.heading.size, el.heading.size_sm and so on.
+export const elKey = (el: string, name: string, device = "") =>
+  `el.${el}.${name}${device ? `_${device}` : ""}`;
+
+export function elementOf(
+  block: Record<string, string | undefined>,
+  el: string,
+  name: string,
+  device: string
+) {
+  if (!device) return block[elKey(el, name)];
+  if (device === "md") return block[elKey(el, name, "md")] ?? block[elKey(el, name)];
+  return (
+    block[elKey(el, name, "sm")] ??
+    block[elKey(el, name, "md")] ??
+    block[elKey(el, name)]
+  );
+}
+
+// The CSS for one part, on one screen.
+export function elementCss(
+  block: Record<string, string | undefined>,
+  el: string,
+  device: string
+) {
+  const g = (n: string) => elementOf(block, el, n, device);
+  const out: string[] = [];
+  const colour = (v?: string) => (v === "custom" ? undefined : v);
+
+  const color = colour(g("color")) ?? (g("color") === "custom" ? g("color_custom") : undefined);
+  const bg = colour(g("bg")) ?? (g("bg") === "custom" ? g("bg_custom") : undefined);
+
+  if (color) out.push(`color:${color}`);
+  if (bg) out.push(`background:${bg}`);
+  if (g("size")) out.push(`font-size:${g("size")}px`);
+  if (g("weight")) out.push(`font-weight:${g("weight")}`);
+  if (g("align")) out.push(`text-align:${g("align")}`);
+  if (g("lh")) out.push(`line-height:${g("lh")}`);
+  if (g("ls")) out.push(`letter-spacing:${g("ls")}`);
+  if (g("pad")) out.push(`padding:${g("pad")}`);
+  if (g("mt")) out.push(`margin-top:${g("mt")}px`);
+  if (g("mb")) out.push(`margin-bottom:${g("mb")}px`);
+  if (g("radius")) out.push(`border-radius:${g("radius")}px`);
+  if (g("border")) out.push(`border:${g("border")}`);
+  if (g("maxw")) out.push(`max-width:${g("maxw")}px`);
+  if (g("hide") === "1") out.push("display:none");
+  return out.join(";");
+}
+
+// Which parts of a block have been given something.
+export function touchedElements(block: Record<string, string | undefined>) {
+  const names = new Set<string>();
+  for (const k of Object.keys(block))
+    if (k.startsWith("el.")) names.add(k.split(".")[1]);
+  return [...names];
+}

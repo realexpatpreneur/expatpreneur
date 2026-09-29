@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { pairs, styleOf, type Block } from "@/lib/blocks";
+import { pairs, styleOf, elementCss, touchedElements, type Block } from "@/lib/blocks";
 import { toHtml } from "@/components/rich-text";
 import { VillageCard, BusinessCard, CourseCard, ArticleCard, type BusinessRow } from "@/components/cards";
 import { EventRow } from "@/components/feed";
@@ -81,12 +81,23 @@ function Styled({ block: b, children }: { block: Block; children: React.ReactNod
   const plain =
     !bg && !ink && !base.out && !base.inner &&
     !tablet.out && !tablet.inner && !phone.out && !phone.inner &&
-    !b.round;
+    !b.round && !touchedElements(b).length;
 
   if (plain) return <>{children}</>;
 
   // One class per block, and the media queries beside it.
   const id = `b${Math.abs(hash(JSON.stringify(b)))}`;
+  // The parts of this block that have been styled, on each screen.
+  const parts = touchedElements(b);
+  const partCss = (device: string) =>
+    parts
+      .map((el) => {
+        const rule = elementCss(b, el, device);
+        return rule ? `.${id} [data-el="${el}"]{${rule}}` : "";
+      })
+      .filter(Boolean)
+      .join("");
+
   const css = [
     `.${id}{${[
       bg ? `background:${bg}` : "",
@@ -95,15 +106,16 @@ function Styled({ block: b, children }: { block: Block; children: React.ReactNod
       base.out,
     ].filter(Boolean).join(";")}}`,
     base.inner ? `.${id}>div{${base.inner}}` : "",
-    tablet.out || tablet.inner
+    partCss(""),
+    tablet.out || tablet.inner || partCss("md")
       ? `@media (max-width:1024px){${tablet.out ? `.${id}{${tablet.out}}` : ""}${
           tablet.inner ? `.${id}>div{${tablet.inner}}` : ""
-        }}`
+        }${partCss("md")}}`
       : "",
-    phone.out || phone.inner
+    phone.out || phone.inner || partCss("sm")
       ? `@media (max-width:620px){${phone.out ? `.${id}{${phone.out}}` : ""}${
           phone.inner ? `.${id}>div{${phone.inner}}` : ""
-        }}`
+        }${partCss("sm")}}`
       : "",
   ]
     .filter(Boolean)
@@ -132,7 +144,7 @@ function PeopleGrid({
   people: { id: string; full_name: string; headline: string | null; industry?: string | null }[];
 }) {
   const cards = people.map((p) => (
-    <Link className="mcard" key={p.id} href={`/members/${p.id}`}>
+    <Link className="mcard" data-el="card" key={p.id} href={`/members/${p.id}`}>
       <div className="row">
         <Av name={p.full_name} />
         <div style={{ minWidth: 0 }}>
@@ -158,7 +170,7 @@ function SecHead({ heading, href }: { heading?: string; href?: string }) {
   if (!heading) return null;
   return (
     <div className="sechead">
-      <h2 style={{ fontSize: 20 }}>{heading}</h2>
+      <h2 data-el="heading" style={{ fontSize: 20 }}>{heading}</h2>
       {href ? (
         <Link className="small" style={{ fontWeight: 600 }} href={href}>
           See all
@@ -185,28 +197,28 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
 
       const words = (
         <>
-          <h1>{b.heading}</h1>
-          {b.text ? <p className="lead">{b.text}</p> : null}
+          <h1 data-el="heading">{b.heading}</h1>
+          {b.text ? <p className="lead" data-el="text">{b.text}</p> : null}
           {b.button_label || b.second_label ? (
             <div className="row" style={{ marginTop: 18, flexWrap: "wrap" }}>
               {b.button_label ? (
-                <Link className="btn btn-primary" href={b.button_href ?? "/apply"}>
+                <Link className="btn btn-primary" data-el="button" href={b.button_href ?? "/apply"}>
                   {b.button_label}
                 </Link>
               ) : null}
               {b.second_label ? (
-                <Link className="btn btn-ghost" href={b.second_href ?? "/discover"}>
+                <Link className="btn btn-ghost" data-el="button2" href={b.second_href ?? "/discover"}>
                   {b.second_label}
                 </Link>
               ) : null}
             </div>
           ) : null}
           {b.search ? (
-            <label className="input dsearch" style={{ marginTop: 18 }}>
+            <label className="input dsearch" data-el="search" style={{ marginTop: 18 }}>
               <input placeholder={b.search} aria-label={b.search} />
             </label>
           ) : null}
-          {b.quote ? <p className="proverb">{b.quote}</p> : null}
+          {b.quote ? <p className="proverb" data-el="quote">{b.quote}</p> : null}
         </>
       );
 
@@ -226,8 +238,8 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "heading":
       return (
         <section className="sec">
-          <h2 style={{ fontSize: 20 }}>{b.heading}</h2>
-          {b.text ? <p className="intro">{b.text}</p> : null}
+          <h2 data-el="heading" style={{ fontSize: 20 }}>{b.heading}</h2>
+          {b.text ? <p className="intro" data-el="text">{b.text}</p> : null}
         </section>
       );
 
@@ -235,6 +247,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           <div
+            data-el="body"
             className={b.width === "narrow" ? "article" : ""}
             dangerouslySetInnerHTML={{ __html: toHtml(b.body ?? "") }}
           />
@@ -244,13 +257,13 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "panel":
       return (
         <section className="sec">
-          <div className={`panel ${b.tone === "wash" ? "panel-wash" : ""}`}>
-            {b.heading ? <h3 style={{ fontSize: 15 }}>{b.heading}</h3> : null}
+          <div data-el="box" className={`panel ${b.tone === "wash" ? "panel-wash" : ""}`}>
+            {b.heading ? <h3 data-el="heading" style={{ fontSize: 15 }}>{b.heading}</h3> : null}
             {b.body ? (
-              <div dangerouslySetInnerHTML={{ __html: toHtml(b.body) }} />
+              <div data-el="body" dangerouslySetInnerHTML={{ __html: toHtml(b.body) }} />
             ) : null}
             {b.button_label ? (
-              <Link className="btn btn-ghost btn-sm" href={b.button_href ?? "/"}>
+              <Link className="btn btn-ghost btn-sm" data-el="button" href={b.button_href ?? "/"}>
                 {b.button_label}
               </Link>
             ) : null}
@@ -261,18 +274,18 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "band":
       return (
         <section className="sec">
-          <div className={`band ${TONES[b.tone ?? ""] ?? ""}`}>
+          <div data-el="box" className={`band ${TONES[b.tone ?? ""] ?? ""}`}>
             <div style={{ flex: 1, minWidth: 240 }}>
-              <h2 style={{ fontSize: 22 }}>{b.heading}</h2>
-              {b.text ? <p style={{ marginTop: 6 }}>{b.text}</p> : null}
+              <h2 data-el="heading" style={{ fontSize: 22 }}>{b.heading}</h2>
+              {b.text ? <p data-el="text" style={{ marginTop: 6 }}>{b.text}</p> : null}
             </div>
             {b.button_label ? (
-              <Link className="btn btn-mint" href={b.button_href ?? "/apply"}>
+              <Link className="btn btn-mint" data-el="button" href={b.button_href ?? "/apply"}>
                 {b.button_label}
               </Link>
             ) : null}
             {b.second_label ? (
-              <Link className="btn btn-ghost" href={b.second_href ?? "/discover"}>
+              <Link className="btn btn-ghost" data-el="button2" href={b.second_href ?? "/discover"}>
                 {b.second_label}
               </Link>
             ) : null}
@@ -284,13 +297,14 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           <div
+            data-el="image"
             className="photo"
             role="img"
             aria-label={b.caption ?? ""}
             style={{ height: Number(b.height) || 320, backgroundImage: `url('${b.image_url ?? ""}')` }}
           />
           {b.caption ? (
-            <p className="muted small" style={{ marginTop: 8 }}>
+            <p className="muted small" data-el="caption" style={{ marginTop: 8 }}>
               {b.caption}
             </p>
           ) : null}
@@ -306,9 +320,9 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
         <section className="sec">
           <div className={`g3 ${cells.length === 4 ? "g4" : ""} stats3`}>
             {cells.map(([label, value]) => (
-              <div className="stat" key={label}>
-                <span>{label}</span>
-                <b>{value}</b>
+              <div className="stat" data-el="box" key={label}>
+                <span data-el="label">{label}</span>
+                <b data-el="value">{value}</b>
               </div>
             ))}
           </div>
@@ -323,10 +337,10 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <ol className="jpath" style={{ marginTop: 18 }}>
             {pairs(b.items).map(([title, text], n) => (
               <li className="jp-step" key={title} style={{ ["--i" as string]: n }}>
-                <span className="jp-num">{n + 1}</span>
+                <span className="jp-num" data-el="num">{n + 1}</span>
                 <div className="jp-body">
-                  <h3>{title}</h3>
-                  {text ? <p>{text}</p> : null}
+                  <h3 data-el="title">{title}</h3>
+                  {text ? <p data-el="text">{text}</p> : null}
                 </div>
               </li>
             ))}
@@ -340,10 +354,10 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           {b.heading ? <h2 style={{ fontSize: 20 }}>{b.heading}</h2> : null}
           <div className={`g3 ${b.columns === "4" ? "g4" : ""}`} style={{ marginTop: 14 }}>
             {pairs(b.items).map(([title, text]) => (
-              <div className="panel" key={title}>
-                <h3 style={{ fontSize: 14 }}>{title}</h3>
+              <div className="panel" data-el="box" key={title}>
+                <h3 data-el="title" style={{ fontSize: 14 }}>{title}</h3>
                 {text ? (
-                  <p className="muted small" style={{ marginTop: 4 }}>
+                  <p className="muted small" data-el="text" style={{ marginTop: 4 }}>
                     {text}
                   </p>
                 ) : null}
@@ -360,8 +374,8 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <div className="faq" style={{ marginTop: 10 }}>
             {pairs(b.items).map(([q, a]) => (
               <details key={q}>
-                <summary>{q}</summary>
-                <p>{a}</p>
+                <summary data-el="q">{q}</summary>
+                <p data-el="a">{a}</p>
               </details>
             ))}
           </div>
@@ -374,9 +388,9 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           {b.heading ? <h2 style={{ fontSize: 20 }}>{b.heading}</h2> : null}
           <div className="quotes" style={{ marginTop: 14 }}>
             {pairs(b.items).map(([quote, who]) => (
-              <figure className="quote" key={quote}>
-                <blockquote>{quote}</blockquote>
-                <figcaption>
+              <figure className="quote" data-el="box" key={quote}>
+                <blockquote data-el="quote">{quote}</blockquote>
+                <figcaption data-el="who">
                   <b>{who}</b>
                 </figcaption>
               </figure>
@@ -394,10 +408,10 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           {b.text ? <p className="intro">{b.text}</p> : null}
           <div className="layers layers-tint">
             {items.map(([name, text], n) => (
-              <div className="layer" key={name}>
+              <div className="layer" data-el="box" key={name}>
                 <span className="swatch" style={{ background: swatch[n % 3] }} />
-                <h3>{name}</h3>
-                <p>{text}</p>
+                <h3 data-el="title">{name}</h3>
+                <p data-el="text">{text}</p>
               </div>
             ))}
           </div>
@@ -415,7 +429,9 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <SecHead heading={b.heading} href={b.more_href} />
           <div className="g3">
             {list.map((v) => (
-              <VillageCard key={v.slug} village={v} />
+              <div data-el="card" key={v.slug}>
+                <VillageCard village={v} />
+              </div>
             ))}
           </div>
         </section>
@@ -431,6 +447,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
         const d = new Date(e.starts_at);
         return (
           <EventRow
+            wrap="row"
             key={e.id}
             cover={e.cover_url}
             href={`/e/${e.slug}`}
@@ -468,7 +485,11 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "businesses": {
       const list = (data.businesses ?? []).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
-      const cards = list.map((x, n) => <BusinessCard key={x.slug} biz={x} i={n} />);
+      const cards = list.map((x, n) => (
+        <div data-el="card" key={x.slug}>
+          <BusinessCard biz={x} i={n} />
+        </div>
+      ));
       const chips = b.filters === "category" ? list.map((x) => x.category ?? x.industry ?? "Other") : null;
       return (
         <section className="sec">
@@ -485,7 +506,11 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "courses": {
       const list = (data.courses ?? []).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
-      const cards = list.map((c, n) => <CourseCard key={c.slug} course={c} i={n} />);
+      const cards = list.map((c, n) => (
+        <div data-el="card" key={c.slug}>
+          <CourseCard course={c} i={n} />
+        </div>
+      ));
       const chips =
         b.filters === "format"
           ? list.map((c) => (c.format === "live" ? "Live" : "Recorded"))
@@ -505,7 +530,11 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "articles": {
       const list = (data.articles ?? []).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
-      const cards = list.map((a, n) => <ArticleCard key={a.slug} article={a} i={n} />);
+      const cards = list.map((a, n) => (
+        <div data-el="card" key={a.slug}>
+          <ArticleCard article={a} i={n} />
+        </div>
+      ));
       const chips = b.filters === "kind" ? list.map((a) => a.kind ?? "Story") : null;
       return (
         <section className="sec">
@@ -540,7 +569,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <SecHead heading={b.heading} href={b.more_href} />
           <div className="vgrid">
             {list.map((m) => (
-              <Link className="vitem" key={m.id} href={`/watch/${m.slug}`}>
+              <Link className="vitem" data-el="card" key={m.id} href={`/watch/${m.slug}`}>
                 <div
                   className="vthumb"
                   role="img"
@@ -568,7 +597,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <SecHead heading={b.heading} href={b.more_href} />
           <div className="pshows">
             {list.map((sh) => (
-              <Link className="pshow linkrow" key={sh.slug} href={`/watch/show/${sh.slug}`}>
+              <Link className="pshow linkrow" data-el="card" key={sh.slug} href={`/watch/show/${sh.slug}`}>
                 {sh.cover_url ? (
                   <div
                     className="photo"
@@ -624,15 +653,16 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "story":
       return (
         <section className="sec">
-          <div className="story">
+          <div className="story" data-el="box">
             <div
+              data-el="image"
               className="img"
               role="img"
               aria-label={b.heading ?? ""}
               style={b.image_url ? { backgroundImage: `url('${b.image_url}')` } : undefined}
             />
             <div>
-              <h3 style={{ fontSize: 20, maxWidth: "28ch" }}>{b.heading}</h3>
+              <h3 data-el="heading" style={{ fontSize: 20, maxWidth: "28ch" }}>{b.heading}</h3>
               {b.body ? (
                 <p className="muted" style={{ marginTop: 8, maxWidth: "56ch" }}>
                   {b.body}
@@ -657,12 +687,12 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           {b.text ? <p className="intro">{b.text}</p> : null}
           <div className="plans">
             {list.map((p, n) => (
-              <div className={`plan2 ${n === list.length - 1 ? "p2-best" : ""}`} key={p.slug}>
+              <div className={`plan2 ${n === list.length - 1 ? "p2-best" : ""}`} data-el="card" key={p.slug}>
                 <div className="p2-top">
                   <h3>{p.name}</h3>
                   <span className="p2-tag">{p.blurb}</span>
                 </div>
-                <div className="p2-price">
+                <div className="p2-price" data-el="price">
                   <b>
                     {p.price_cents
                       ? `${(p.price_cents / 100).toFixed(0)} ${p.currency}`
