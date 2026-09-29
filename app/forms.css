@@ -147,14 +147,16 @@
 .pb-body.wide .pb-fold .ic{transform:rotate(180deg)}
 
 /* The workspace menu folds away */
-.sidefold{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:#fff;
-  color:var(--navy);display:grid;place-items:center;cursor:pointer;flex:none}
+.sidefold{width:34px;height:34px;border-radius:10px;border:1px solid #C7CDD4;background:var(--wash);
+  color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none;
+  box-shadow:0 1px 3px rgba(15,20,25,.1)}
+.sidefold:hover{background:#fff;border-color:var(--blue);color:var(--blue)}
 .sidefold .ic{width:16px;height:16px;transform:rotate(180deg)}
 .mapp.side-shut .sidefold .ic{transform:none}
 .mapp.side-shut > .mside{display:none}
 .mapp.side-shut.v2{grid-template-columns:72px minmax(0,1fr)}
 .mapp.side-shut.v2.no-rail{grid-template-columns:minmax(0,1fr)}
-.admin .sidefold,.shell-global .sidefold{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16);color:#fff}
+.admin .sidefold,.shell-global .sidefold{background:var(--wash);border-color:#C7CDD4;color:var(--ink)}
 
 /* The screens in the builder */
 .pb-devices{display:inline-flex;gap:3px;padding:3px;border-radius:999px;background:rgba(15,20,25,.05)}
@@ -169,3 +171,16 @@
 .pb-pick [data-el]{outline-offset:2px}
 .pb-pick [data-el]:hover{outline:1px dashed var(--blue)}
 .pb-tabs button{padding:7px 10px}
+
+/* Columns, and what a column looks like while it is empty */
+.cols{display:grid;align-items:start}
+.col{min-width:0;display:grid;gap:14px;align-content:start}
+@media (max-width:760px){.cols:not(.cols-keep){grid-template-columns:1fr!important}}
+.pb-pick .col:empty,.pb-pick .col.drop{min-height:90px;border:1px dashed #C7CDD4;border-radius:12px}
+.pb-pick .col.drop{border-color:var(--blue);background:rgba(64,116,174,.06)}
+.pb-kid{position:relative;border:2px solid transparent;border-radius:10px}
+.pb-kid.on{border-color:var(--blue)}
+.pb-kid:hover{border-color:#DCE3EA}
+.pb-addcol{width:100%;border:1px dashed #C7CDD4;background:transparent;border-radius:10px;padding:8px;
+  font:600 12px var(--body);color:var(--muted);cursor:pointer}
+.pb-addcol:hover{border-color:var(--blue);color:var(--blue);background:rgba(64,116,174,.05)}

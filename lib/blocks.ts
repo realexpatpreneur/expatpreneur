@@ -136,6 +136,16 @@ const TONE: [string, string][] = [
 
 export const BLOCKS: BlockSpec[] = [
   {
+    type: "columns",
+    label: "Columns",
+    about: "A row of columns. Any block can be dropped into one, and they can be dragged between columns.",
+    fields: [
+      S("count", "How many columns", [["2", "Two"], ["3", "Three"], ["4", "Four"]]),
+      S("gap", "Space between", [["", "Normal"], ["tight", "Tight"], ["roomy", "Roomy"]]),
+      S("stack", "On a phone", [["", "One under the other"], ["keep", "Keep side by side"]]),
+    ],
+  },
+  {
     type: "hero",
     label: "Hero",
     about: "The top of a page: a heading, a paragraph and up to two buttons.",
@@ -367,6 +377,20 @@ export const BLOCKS: BlockSpec[] = [
 ];
 
 // Every block carries the style settings as well as its own fields.
+// A list block can be given its own order, as the names of its rows.
+// Anything not named keeps its usual place at the end.
+export function inOrder<T extends { slug?: string; id?: string }>(
+  rows: T[],
+  order?: string
+): T[] {
+  const want = String(order ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  if (!want.length) return rows;
+  const key = (r: T) => r.slug ?? r.id ?? "";
+  const named = want.map((w) => rows.find((r) => key(r) === w)).filter(Boolean) as T[];
+  const rest = rows.filter((r) => !want.includes(key(r)));
+  return [...named, ...rest];
+}
+
 export const blockSpec = (type: string) => {
   const b = BLOCKS.find((x) => x.type === type);
   return b ? { ...b, fields: [...b.fields, ...STYLE_FIELDS] } : undefined;
@@ -377,6 +401,24 @@ export const blockLabel: Record<string, string> = Object.fromEntries(
 
 // A block is its type plus whatever its fields hold.
 export type Block = { type: string } & Record<string, string | undefined>;
+
+// A container holds children. They are kept as text on the block, so
+// everything that already reads and writes a block keeps working.
+export const isContainer = (type: string) => type === "columns";
+
+export function kidsOf(block: Block): Block[][] {
+  try {
+    const parsed = JSON.parse(block.kids ?? "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export const withKids = (block: Block, kids: Block[][]): Block => ({
+  ...block,
+  kids: JSON.stringify(kids),
+});
 
 // "Heading | text" on each line, which is how the list fields are written.
 export function pairs(value?: string): [string, string][] {
@@ -400,6 +442,7 @@ export function pairs(value?: string): [string, string][] {
 export type ElementSpec = { name: string; label: string };
 
 export const ELEMENTS: Record<string, ElementSpec[]> = {
+  columns: [{ name: "col", label: "Each column" }],
   hero: [
     { name: "heading", label: "Heading" },
     { name: "text", label: "Paragraph" },

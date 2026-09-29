@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { pairs, styleOf, elementCss, touchedElements, type Block } from "@/lib/blocks";
+import {
+  pairs,
+  styleOf,
+  elementCss,
+  touchedElements,
+  inOrder,
+  kidsOf,
+  type Block,
+} from "@/lib/blocks";
 import { toHtml } from "@/components/rich-text";
 import { VillageCard, BusinessCard, CourseCard, ArticleCard, type BusinessRow } from "@/components/cards";
 import { EventRow } from "@/components/feed";
@@ -144,7 +152,7 @@ function PeopleGrid({
   people: { id: string; full_name: string; headline: string | null; industry?: string | null }[];
 }) {
   const cards = people.map((p) => (
-    <Link className="mcard" data-el="card" key={p.id} href={`/members/${p.id}`}>
+    <Link className="mcard" data-el="card" data-row={p.id} key={p.id} href={`/members/${p.id}`}>
       <div className="row">
         <Av name={p.full_name} />
         <div style={{ minWidth: 0 }}>
@@ -182,6 +190,30 @@ function SecHead({ heading, href }: { heading?: string; href?: string }) {
 
 function One({ block: b, data }: { block: Block; data: BlockData }) {
   switch (b.type) {
+    case "columns": {
+      const count = Number(b.count) || 2;
+      const kids = kidsOf(b);
+      const gap = b.gap === "tight" ? 10 : b.gap === "roomy" ? 34 : 20;
+      return (
+        <section className="sec">
+          <div
+            className={`cols ${b.stack === "keep" ? "cols-keep" : ""}`}
+            style={{ gridTemplateColumns: `repeat(${count}, minmax(0,1fr))`, gap }}
+          >
+            {Array.from({ length: count }).map((_, c) => (
+              <div className="col" data-el="col" key={c}>
+                {(kids[c] ?? []).map((kid, n) => (
+                  <Styled block={kid} key={n}>
+                    <One block={kid} data={data} />
+                  </Styled>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
     case "hero": {
       const art =
         b.art === "image" && b.image_url ? (
@@ -420,7 +452,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "villages": {
-      const list = (data.villages ?? []).filter((v) =>
+      const list = inOrder(data.villages ?? [], b.order).filter((v) =>
         b.show === "open" ? v.status === "open" : b.show === "soon" ? v.status !== "open" : true
       );
       if (!list.length) return null;
@@ -429,7 +461,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <SecHead heading={b.heading} href={b.more_href} />
           <div className="g3">
             {list.map((v) => (
-              <div data-el="card" key={v.slug}>
+              <div data-el="card" data-row={v.slug} key={v.slug}>
                 <VillageCard village={v} />
               </div>
             ))}
@@ -439,7 +471,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "events": {
-      let list = data.events ?? [];
+      let list = inOrder(data.events ?? [], b.order);
       if (b.scope === "public") list = list.filter((e) => e.visibility === "public");
       list = list.slice(0, Number(b.limit) || 4);
       if (!list.length) return null;
@@ -483,10 +515,10 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "businesses": {
-      const list = (data.businesses ?? []).slice(0, Number(b.limit) || 3);
+      const list = inOrder(data.businesses ?? [], b.order).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
       const cards = list.map((x, n) => (
-        <div data-el="card" key={x.slug}>
+        <div data-el="card" data-row={x.slug} key={x.slug}>
           <BusinessCard biz={x} i={n} />
         </div>
       ));
@@ -504,10 +536,10 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "courses": {
-      const list = (data.courses ?? []).slice(0, Number(b.limit) || 3);
+      const list = inOrder(data.courses ?? [], b.order).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
       const cards = list.map((c, n) => (
-        <div data-el="card" key={c.slug}>
+        <div data-el="card" data-row={c.slug} key={c.slug}>
           <CourseCard course={c} i={n} />
         </div>
       ));
@@ -528,10 +560,10 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "articles": {
-      const list = (data.articles ?? []).slice(0, Number(b.limit) || 3);
+      const list = inOrder(data.articles ?? [], b.order).slice(0, Number(b.limit) || 3);
       if (!list.length) return null;
       const cards = list.map((a, n) => (
-        <div data-el="card" key={a.slug}>
+        <div data-el="card" data-row={a.slug} key={a.slug}>
           <ArticleCard article={a} i={n} />
         </div>
       ));
@@ -549,7 +581,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "people": {
-      const list = (data.people ?? []).slice(0, Number(b.limit) || 6);
+      const list = inOrder(data.people ?? [], b.order).slice(0, Number(b.limit) || 6);
       if (!list.length) return null;
       return (
         <section className="sec">
@@ -560,7 +592,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "videos": {
-      let list = data.media ?? [];
+      let list = inOrder(data.media ?? [], b.order);
       if (b.kind) list = list.filter((m) => m.kind === b.kind);
       list = list.slice(0, Number(b.limit) || 8);
       if (!list.length) return null;
@@ -569,7 +601,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <SecHead heading={b.heading} href={b.more_href} />
           <div className="vgrid">
             {list.map((m) => (
-              <Link className="vitem" data-el="card" key={m.id} href={`/watch/${m.slug}`}>
+              <Link className="vitem" data-el="card" data-row={m.slug} key={m.id} href={`/watch/${m.slug}`}>
                 <div
                   className="vthumb"
                   role="img"
@@ -590,14 +622,14 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     }
 
     case "shows": {
-      const list = data.shows ?? [];
+      const list = inOrder(data.shows ?? [], b.order);
       if (!list.length) return null;
       return (
         <section className="sec">
           <SecHead heading={b.heading} href={b.more_href} />
           <div className="pshows">
             {list.map((sh) => (
-              <Link className="pshow linkrow" data-el="card" key={sh.slug} href={`/watch/show/${sh.slug}`}>
+              <Link className="pshow linkrow" data-el="card" data-row={sh.slug} key={sh.slug} href={`/watch/show/${sh.slug}`}>
                 {sh.cover_url ? (
                   <div
                     className="photo"

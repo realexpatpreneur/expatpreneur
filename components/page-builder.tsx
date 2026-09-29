@@ -11,6 +11,9 @@ import {
   ELEMENTS,
   ELEMENT_FIELDS,
   elKey,
+  isContainer,
+  kidsOf,
+  withKids,
   touchedElements,
   blockLabel,
   blockSpec,
@@ -47,8 +50,12 @@ export function PageBuilder({
   const [device, setDevice] = useState("");
   const [picked, setPicked] = useState<number | null>(initial.length ? 0 : null);
   const [dragging, setDragging] = useState<number | null>(null);
+  const [row, setRow] = useState<{ block: number; name: string } | null>(null);
+  const [inside, setInside] = useState<{ block: number; col: number; index: number } | null>(null);
+  const [dragKid, setDragKid] = useState<{ block: number; col: number; index: number } | null>(null);
   const [over, setOver] = useState<number | null>(null);
   const [adding, setAdding] = useState(false);
+  const [addingTo, setAddingTo] = useState<{ block: number; col: number } | null>(null);
   const [tab, setTab] = useState<"content" | "style" | "element">("content");
   const [element, setElement] = useState<string>("");
   const [shut, setShut] = useState(false);
@@ -154,6 +161,50 @@ export function PageBuilder({
     change(next);
   }
 
+  // Children of a container, and the one being edited inside it.
+  function setKids(i: number, kids: Block[][]) {
+    const next = blocks.map((b, n) => (n === i ? withKids(b, kids) : b));
+    change(next);
+  }
+
+  function addKid(i: number, col: number, type: string) {
+    const kids = kidsOf(blocks[i]);
+    while (kids.length <= col) kids.push([]);
+    kids[col] = [...(kids[col] ?? []), { type }];
+    setKids(i, kids);
+    setInside({ block: i, col, index: kids[col].length - 1 });
+    setAdding(false);
+  }
+
+  function moveKid(
+    i: number,
+    from: { col: number; index: number },
+    to: { col: number; index: number }
+  ) {
+    const kids = kidsOf(blocks[i]).map((c) => [...c]);
+    while (kids.length <= Math.max(from.col, to.col)) kids.push([]);
+    const [k] = kids[from.col].splice(from.index, 1);
+    if (!k) return;
+    kids[to.col].splice(to.index, 0, k);
+    setKids(i, kids);
+    setInside({ block: i, col: to.col, index: to.index });
+  }
+
+  function removeKid(i: number, col: number, index: number) {
+    const kids = kidsOf(blocks[i]).map((c) => [...c]);
+    kids[col].splice(index, 1);
+    setKids(i, kids);
+    setInside(null);
+  }
+
+  function setKidField(name: string, value: string) {
+    if (!inside) return;
+    const kids = kidsOf(blocks[inside.block]).map((c) => [...c]);
+    const key = device && PER_DEVICE.includes(name) ? `${name}_${device}` : name;
+    kids[inside.col][inside.index] = { ...kids[inside.col][inside.index], [key]: value };
+    setKids(inside.block, kids);
+  }
+
   function set(i: number, name: string, value: string) {
     const key = fieldName(name);
     const next = blocks.map((b, n) => (n === i ? { ...b, [key]: value } : b));
@@ -173,7 +224,13 @@ export function PageBuilder({
     setSaving(false);
   }
 
-  const current = picked != null ? blocks[picked] : null;
+  // What the panel is editing: a block, or a child inside a container.
+  const parent = picked != null ? blocks[picked] : null;
+  const kid =
+    inside && parent && isContainer(parent.type)
+      ? kidsOf(parent)[inside.col]?.[inside.index] ?? null
+      : null;
+  const current = kid ?? parent;
   const spec = current ? blockSpec(current.type) : null;
 
   return (
@@ -270,6 +327,7 @@ export function PageBuilder({
                   className={`pb-block ${picked === i ? "on" : ""} ${over === i ? "over" : ""}`}
                   onClick={(e) => {
                     setPicked(i);
+                    if (!isContainer(b.type)) setInside(null);
                     // The part under the pointer, if it has a name.
                     const el = (e.target as HTMLElement).closest("[data-el]");
                     const name = el?.getAttribute("data-el") ?? "";
@@ -277,7 +335,18 @@ export function PageBuilder({
                     if (name) setTab("element");
                   }}
                   draggable
-                  onDragStart={() => setDragging(i)}
+                  onDragStart={(e) => {
+                    // A card inside a list drags on its own, and moving
+                    // one sets the order of that list.
+                    const card = (e.target as HTMLElement)?.closest?.("[data-row]");
+                    const name = card?.getAttribute("data-row");
+                    if (name) {
+                      setRow({ block: i, name });
+                      e.stopPropagation();
+                      return;
+                    }
+                    setDragging(i);
+                  }}
                   onDragOver={(e) => {
                     e.preventDefault();
                     setOver(i);
@@ -285,7 +354,26 @@ export function PageBuilder({
                   onDragLeave={() => setOver((o) => (o === i ? null : o))}
                   onDrop={(e) => {
                     e.preventDefault();
+
+                    // Dropped on a card: reorder the list.
+                    const onto = (e.target as HTMLElement)?.closest?.("[data-row]");
+                    const name = onto?.getAttribute("data-row");
+                    if (row && row.block === i && name && name !== row.name) {
+                      const names = [
+                        ...(e.currentTarget.querySelectorAll("[data-row]") as NodeListOf<HTMLElement>),
+                      ].map((n) => n.getAttribute("data-row") as string);
+                      const from = names.indexOf(row.name);
+                      const to = names.indexOf(name);
+                      names.splice(to, 0, ...names.splice(from, 1));
+                      setRaw(i, "order", names.join(","));
+                      setRow(null);
+                      setDragging(null);
+                      setOver(null);
+                      return;
+                    }
+
                     if (dragging != null) move(dragging, i);
+                    setRow(null);
                     setDragging(null);
                     setOver(null);
                   }}
@@ -313,7 +401,31 @@ export function PageBuilder({
                     </button>
                   </div>
                   <div className="pb-render pb-pick">
-                    <Blocks blocks={[b]} data={data} />
+                    {isContainer(b.type) ? (
+                      <Container
+                        block={b}
+                        data={data}
+                        chosen={inside?.block === i ? inside : null}
+                        onPick={(col, index) => {
+                          setPicked(i);
+                          setInside({ block: i, col, index });
+                          setTab("content");
+                        }}
+                        onDragKid={(col, index) => setDragKid({ block: i, col, index })}
+                        onDropKid={(col, index) => {
+                          if (dragKid && dragKid.block === i)
+                            moveKid(i, { col: dragKid.col, index: dragKid.index }, { col, index });
+                          setDragKid(null);
+                        }}
+                        onAdd={(col) => {
+                          setPicked(i);
+                          setAddingTo({ block: i, col });
+                          setAdding(true);
+                        }}
+                      />
+                    ) : (
+                      <Blocks blocks={[b]} data={data} />
+                    )}
                   </div>
                   <button
                     type="button"
@@ -349,7 +461,14 @@ export function PageBuilder({
             <div className="panel">
               <div className="row" style={{ justifyContent: "space-between" }}>
                 <h3 style={{ fontSize: 14 }}>Add a block</h3>
-                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAdding(false)}>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => {
+                    setAdding(false);
+                    setAddingTo(null);
+                  }}
+                >
                   Close
                 </button>
               </div>
@@ -358,7 +477,11 @@ export function PageBuilder({
                   <button
                     type="button"
                     key={s.type}
-                    onClick={() => add(s.type, picked == null ? undefined : picked + 1)}
+                    onClick={() =>
+                      addingTo
+                        ? addKid(addingTo.block, addingTo.col, s.type)
+                        : add(s.type, picked == null ? undefined : picked + 1)
+                    }
                   >
                     <b>{s.label}</b>
                     <span>{s.about}</span>
@@ -370,14 +493,36 @@ export function PageBuilder({
             <div className="panel">
               <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
                 <div>
-                  <h3 style={{ fontSize: 14 }}>{spec.label}</h3>
+                  <h3 style={{ fontSize: 14 }}>
+                    {kid ? `${spec.label}, inside the columns` : spec.label}
+                  </h3>
                   <p className="muted small" style={{ marginTop: 2 }}>
                     {spec.about}
                   </p>
                 </div>
-                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setAdding(true)}>
-                  Add a block
-                </button>
+                <div className="row" style={{ gap: 6 }}>
+                  {kid ? (
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() =>
+                        removeKid(picked as number, inside!.col, inside!.index)
+                      }
+                    >
+                      Remove
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => {
+                      setAddingTo(null);
+                      setAdding(true);
+                    }}
+                  >
+                    Add a block
+                  </button>
+                </div>
               </div>
 
               <div className="pb-tabs">
@@ -466,7 +611,9 @@ export function PageBuilder({
                       }
                       custom={current[`${f.name}_custom`] ?? ""}
                       device={PER_DEVICE.includes(f.name) ? device : ""}
-                      onChange={(v) => set(picked as number, f.name, v)}
+                      onChange={(v) =>
+                        kid ? setKidField(f.name, v) : set(picked as number, f.name, v)
+                      }
                       onCustom={(v) => set(picked as number, `${f.name}_custom`, v)}
                     />
                   ))}
@@ -491,6 +638,89 @@ export function PageBuilder({
         </aside>
       </div>
     </div>
+  );
+}
+
+// A container on the canvas: its columns, its children, and the places
+// a child can be dropped.
+function Container({
+  block,
+  data,
+  chosen,
+  onPick,
+  onDragKid,
+  onDropKid,
+  onAdd,
+}: {
+  block: Block;
+  data: BlockData;
+  chosen: { col: number; index: number } | null;
+  onPick: (col: number, index: number) => void;
+  onDragKid: (col: number, index: number) => void;
+  onDropKid: (col: number, index: number) => void;
+  onAdd: (col: number) => void;
+}) {
+  const count = Number(block.count) || 2;
+  const kids = kidsOf(block);
+  const gap = block.gap === "tight" ? 10 : block.gap === "roomy" ? 34 : 20;
+
+  return (
+    <section className="sec">
+      <div
+        className={`cols ${block.stack === "keep" ? "cols-keep" : ""}`}
+        style={{ gridTemplateColumns: `repeat(${count}, minmax(0,1fr))`, gap }}
+      >
+        {Array.from({ length: count }).map((_, col) => (
+          <div
+            className="col"
+            key={col}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onDropKid(col, (kids[col] ?? []).length);
+            }}
+          >
+            {(kids[col] ?? []).map((k, index) => (
+              <div
+                key={index}
+                className={`pb-kid ${
+                  chosen && chosen.col === col && chosen.index === index ? "on" : ""
+                }`}
+                draggable
+                onDragStart={(e) => {
+                  e.stopPropagation();
+                  onDragKid(col, index);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDropKid(col, index);
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPick(col, index);
+                }}
+              >
+                <Blocks blocks={[k]} data={data} />
+              </div>
+            ))}
+
+            <button
+              type="button"
+              className="pb-addcol"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAdd(col);
+              }}
+            >
+              Add a block here
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 

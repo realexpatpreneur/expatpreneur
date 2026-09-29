@@ -152,6 +152,9 @@ export async function saveBlocks({
     .map((b) => {
       const spec = blockSpec(b.type)!;
       const out: Block = { type: b.type };
+      // A container carries its children, which the catalogue does not
+      // list as a field.
+      if (b.kids) out.kids = b.kids;
       for (const f of spec.fields) {
         const v = String(b[f.name] ?? "").trim();
         if (v) out[f.name] = v;
