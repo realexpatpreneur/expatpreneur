@@ -22,8 +22,21 @@ export default async function LivePage() {
     villages?.find((v) => v.id === id)?.name ?? "Every Village";
 
   const rows = (sessions ?? []) as LiveSession[];
-  const live = rows.filter((s) => s.status === "live");
-  const upcoming = rows.filter((s) => s.status === "scheduled");
+
+  // A room is only happening now if it is also still within its own
+  // hours. Without this, a session left at "live" by mistake sits on
+  // the page as live for ever, which is what it was doing.
+  const stillOn = (s: LiveSession) => {
+    const ends = s.scheduled_end
+      ? new Date(s.scheduled_end).getTime()
+      : new Date(s.scheduled_start).getTime() + 3 * 60 * 60 * 1000;
+    return Date.now() < ends + 30 * 60 * 1000;
+  };
+
+  const live = rows.filter((s) => s.status === "live" && stillOn(s));
+  const upcoming = rows.filter(
+    (s) => s.status === "scheduled" || (s.status === "live" && !stillOn(s))
+  );
 
   const card = (session: LiveSession) => {
     const blocked = joinBlock(session, member, false);
@@ -36,7 +49,7 @@ export default async function LivePage() {
           </div>
         </div>
         <div className="rowmeta">
-          {session.status === "live" ? (
+          {session.status === "live" && stillOn(session) ? (
             <span className="chip chip-mint">Happening now</span>
           ) : null}
           {blocked ? <span className="chip chip-sun">{blocked}</span> : null}

@@ -89,7 +89,7 @@ export default async function DiscoverPage({
       .limit(12),
     supabase
       .from("businesses")
-      .select("id, slug, name, category, summary, image_url")
+      .select("id, slug, name, category, tagline, logo_url")
       .eq("public", true)
       .limit(8),
     supabase
@@ -121,7 +121,7 @@ export default async function DiscoverPage({
   const grps = (groups ?? []).filter((g) => match(g.name, g.description));
   const evs = (events ?? []).filter((e) => match(e.title, e.description, e.venue));
   const crs = (courses ?? []).filter((c) => match(c.title, c.summary));
-  const bizs = (businesses ?? []).filter((b) => match(b.name, b.category, b.summary));
+  const bizs = (businesses ?? []).filter((b) => match(b.name, b.category, b.tagline));
   const meds = (media ?? []).filter((m) => match(m.title, m.summary));
 
   const found =

@@ -27,7 +27,7 @@ export default async function HomePage() {
     supabase.from("village_public_counts").select("village_id, members, circles"),
     supabase
       .from("businesses")
-      .select("id, slug, name, category, summary, offer, logo_url")
+      .select("id, slug, name, category, tagline, offer, logo_url")
       .eq("public", true)
       .limit(3),
     // A published home page can hold any block, so the rows every block

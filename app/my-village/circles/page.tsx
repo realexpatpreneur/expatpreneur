@@ -45,7 +45,7 @@ export default async function VillageCirclesPage() {
           return (
             <Link
               className="circlecard linkrow has-cover"
-              href="/my-circle"
+              href={`/circles/${c.circle_id}`}
               key={c.circle_id}
             >
               <span className={`ctile ct-${TONES[i % TONES.length]}`}>

@@ -40,6 +40,9 @@ export type VillageRow = {
 export function VillageCard({ village }: { village: VillageRow }) {
   const [label, chip] = villageStatus[village.status] ?? [village.status, ""];
   const open = village.status === "open";
+  // Only a launching Village gets the waitlist. Being explored is not
+  // launching, and inviting people to wait for it is a promise.
+  const launching = village.status === "launching";
   return (
     <Link className="vcard" href={`/villages/${village.slug}`}>
       <div
@@ -62,17 +65,17 @@ export function VillageCard({ village }: { village: VillageRow }) {
         </span>
         <p className="muted small">
           {village.country}.{" "}
-          {open
-            ? `${village.members ?? 0} members in ${village.circles ?? 0} Circle${
+          {launching
+            ? "Opening next month."
+            : `${village.members ?? 0} members in ${village.circles ?? 0} Circle${
                 (village.circles ?? 0) === 1 ? "" : "s"
-              }.`
-            : "Opening soon."}
+              }.`}
         </p>
         <span
           className="btn btn-ghost btn-sm"
           style={{ alignSelf: "flex-start", marginTop: "auto" }}
         >
-          {open ? `Explore ${village.name}` : "Join the waitlist"}
+          {launching ? "Join the waitlist" : `Explore ${village.name}`}
         </span>
       </div>
     </Link>

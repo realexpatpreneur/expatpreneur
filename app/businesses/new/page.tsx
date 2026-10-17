@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { BusinessForm } from "../forms";
 
-export const metadata = { title: "Add your business" };
+export const metadata = { title: "Your business listing" };
 
 export default async function NewBusinessPage() {
   const member = await requireMember("/businesses/new");
@@ -25,7 +25,13 @@ export default async function NewBusinessPage() {
           <p className="muted small">
             <Link href="/businesses">Businesses</Link>
           </p>
-          <h1>{existing ? "Your business" : "Add your business"}</h1>
+          <h1>{existing ? "Edit your listing" : "Add your business"}</h1>
+          {existing ? (
+            <p className="lead">
+              You already have a listing, so this is it. Saving changes the
+              one that is live.
+            </p>
+          ) : null}
           <p className="lead">
             Plainly written and specific beats polished. Members are reading it
             to work out whether to introduce you to someone.

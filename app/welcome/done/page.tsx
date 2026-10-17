@@ -60,7 +60,7 @@ export default async function WelcomeDonePage() {
                   from them.
                 </p>
               )}
-              {circle?.whatsapp_url ? (
+              {circle?.whatsapp_url && !/X{4,}/.test(circle.whatsapp_url) ? (
                 <p>
                   <a
                     className="btn mint"
