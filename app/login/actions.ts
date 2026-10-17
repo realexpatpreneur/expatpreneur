@@ -47,7 +47,8 @@ export async function sendSignInLink(
 
     if (said.includes("rate") || said.includes("too many") || error.status === 429)
       return {
-        error: "Too many attempts for now. Wait a few minutes and try again.",
+        error:
+          "The site has run out of sign in emails for this hour. This is a limit on the whole site, not on you, and it goes away when our own email is connected. Use a password instead.",
       };
 
     if (said.includes("sending") || said.includes("smtp") || (error.status ?? 0) >= 500)
