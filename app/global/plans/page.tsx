@@ -25,7 +25,7 @@ export default async function PlansPage() {
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
-          <h1>Plans</h1>
+          <h1>Plans and benefits</h1>
           <p className="lead">
             What membership costs and what each plan says it gives you. This
             is what the public membership page reads.

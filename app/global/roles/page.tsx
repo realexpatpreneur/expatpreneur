@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { RoleForm, EndRole } from "../forms";
+import { readableDate } from "@/lib/labels";
 
 export default async function GlobalRolesPage() {
   const supabase = await createClient();
@@ -38,7 +39,7 @@ export default async function GlobalRolesPage() {
   return (
     <main className="wrap">
       <section className="sec">
-        <h1>Roles</h1>
+        <h1>Permissions</h1>
         <p className="lead">
           Who holds what, and until when. Roles are reviewed once a year, not
           held forever.
@@ -62,7 +63,8 @@ export default async function GlobalRolesPage() {
                       <b>{nameOf(role.profile_id)}</b>
                       <div className="muted small">
                         {label[role.role] ?? role.role}.{" "}
-                        {villageName(role.scope_id)}. Since {role.starts_on}
+                        {villageName(role.scope_id)}. Since{" "}
+                        {readableDate(role.starts_on)}
                         {role.review_on ? `, review ${role.review_on}` : ""}.
                       </div>
                     </div>

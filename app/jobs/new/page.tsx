@@ -22,7 +22,7 @@ export default async function NewJobPage() {
           <p className="muted small">
             <Link href="/jobs">Jobs and freelance</Link>
           </p>
-          <h1>Post something</h1>
+          <h1>Post a job</h1>
           <p className="lead">
             Hiring, a project, or someone to build something with.
           </p>

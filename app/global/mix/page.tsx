@@ -22,7 +22,7 @@ export default async function GlobalMixPage() {
   return (
     <>
       <PageHead
-        title="Village balance"
+        title="Nationality limits"
         sub={`No Village above ${Math.round(
           NATIONALITY_LIMIT * 100
         )} percent of one nationality. Internal only, and never mentioned to members.`}

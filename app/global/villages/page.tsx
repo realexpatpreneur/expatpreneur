@@ -2,6 +2,7 @@ import { PageHead } from "@/components/workspace-shell";
 import { Table, Flag } from "@/components/admin-bits";
 import { createClient } from "@/lib/supabase/server";
 import { VillageForm } from "../forms";
+import { say, villageStatusLabel } from "@/lib/labels";
 
 export default async function GlobalVillagesPage({
   searchParams,
@@ -26,7 +27,7 @@ export default async function GlobalVillagesPage({
 
       <div className="gside" style={{ marginTop: 16 }}>
         <div className="stack">
-          <Table head={["Village", "Status", "Where", "Circles"]}>
+          <Table head={["Village", "Status", "Where", "Time zone"]}>
             {(villages ?? []).map((v) => (
               <tr key={v.id}>
                 <td>
@@ -43,7 +44,7 @@ export default async function GlobalVillagesPage({
                           : ""
                     }`}
                   >
-                    {v.status}
+                    {say(villageStatusLabel, v.status)}
                   </span>
                 </td>
                 <td className="hide-m">

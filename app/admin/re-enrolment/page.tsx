@@ -21,7 +21,9 @@ export default async function ReEnrolmentPage() {
   const admin = await requireAdmin();
   const supabase = await createClient();
 
-  const villageId = admin.villageIds[0] ?? null;
+  // Unordered, so [0] can differ from the Village the rest of the
+  // workspace is showing. Settle it the same way everywhere.
+  const villageId = [...admin.villageIds].sort()[0] ?? null;
 
   const [{ data: village }, { data: people }] = await Promise.all([
     villageId

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { ArticleForm, SuggestionDecision } from "./forms";
+import { say, publishLabel } from "@/lib/labels";
 
 export const metadata = { title: "Media, the Global team" };
 
@@ -92,7 +93,7 @@ export default async function GlobalMediaPage({
                           <span
                             className={`chip ${article.status === "published" ? "chip-mint" : ""}`}
                           >
-                            {article.status}
+                            {say(publishLabel, article.status)}
                           </span>
                         </div>
                       </Link>

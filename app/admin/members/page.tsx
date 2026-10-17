@@ -5,6 +5,7 @@ import { Av } from "@/components/bits";
 import { Ic } from "@/components/icon";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
+import { say, memberStatusLabel } from "@/lib/labels";
 
 export const metadata = { title: "Members, Admin" };
 
@@ -119,7 +120,7 @@ export default async function AdminMembersPage({
                 </span>
               </td>
               <td>
-                <span className="chip">{member.status}</span>
+                <span className="chip">{say(memberStatusLabel, member.status)}</span>
               </td>
             </tr>
           ))}

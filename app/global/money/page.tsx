@@ -79,7 +79,7 @@ export default async function GlobalMoneyPage() {
   return (
     <main className="wrap">
       <section className="sec">
-        <h1>Money</h1>
+        <h1>Payments and payouts</h1>
         <p className="lead">
           Memberships and event tickets. Rows appear here once Stripe is
           connected.

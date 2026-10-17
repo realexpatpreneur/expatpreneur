@@ -20,7 +20,7 @@ export default async function GlobalCitiesPage() {
   return (
     <main className="wrap">
       <section className="sec">
-        <h1>Cities people are asking for</h1>
+        <h1>City suggestions</h1>
         <p className="lead">
           Where the next Villages are, if enough people keep asking.
         </p>

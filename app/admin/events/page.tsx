@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { whenText, priceText, audienceText, type EventRow } from "@/lib/events";
+import { say, publishLabel } from "@/lib/labels";
 
 export const metadata = { title: "Events, Admin" };
 
@@ -63,7 +64,7 @@ export default async function AdminEventsPage() {
                     {audienceText(event, villageName(event.audience_id ?? event.village_id))}
                   </span>
                   <span className={`chip ${event.status === "published" ? "chip-mint" : ""}`}>
-                    {event.status}
+                    {say(publishLabel, event.status)}
                   </span>
                 </div>
               </Link>

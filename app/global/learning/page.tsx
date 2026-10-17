@@ -51,7 +51,7 @@ export default async function GlobalLearningPage() {
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
-          <h1>Learning</h1>
+          <h1>Educators and courses</h1>
           <p className="lead">
             Who teaches here, and what they teach. A course reaches members
             only once somebody has read it.

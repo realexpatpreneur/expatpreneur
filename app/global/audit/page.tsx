@@ -70,7 +70,7 @@ export default async function AuditPage({
           <p className="muted small">
             <Link href="/global">The Global team</Link>
           </p>
-          <h1>The record</h1>
+          <h1>Audit log</h1>
           <p className="lead">
             Who did what, and when. Decisions somebody may have to answer for
             later: memberships, roles, moderation, and anything called off.

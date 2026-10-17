@@ -13,7 +13,7 @@ export default async function UpgradeDonePage({
 
   return (
     <PublicPage>
-        <section className="sec">
+        <section className="pubsec">
           <h1>{cancelled ? "Your plan will end" : "Every Village is open"}</h1>
           <p className="lead">
             {cancelled

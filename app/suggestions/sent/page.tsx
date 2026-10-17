@@ -13,7 +13,7 @@ export default async function SuggestionSentPage({
 
   return (
     <PublicPage>
-        <section className="sec">
+        <section className="pubsec">
           <h1>Thank you</h1>
           <p className="lead">
             {anonymous

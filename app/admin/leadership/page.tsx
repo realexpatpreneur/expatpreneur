@@ -6,13 +6,7 @@ import { SuggestLeaderForm } from "./forms";
 
 export const metadata = { title: "Leadership, the Local Admin workspace" };
 
-const roleLabel: Record<string, string> = {
-  circle_host: "Circle Host",
-  industry_lead: "Industry Lead",
-  pod_lead: "Pod Lead",
-  educator: "Educator",
-  local_admin: "Local Admin",
-};
+import { roleLabel } from "@/lib/labels";
 
 export default async function LeadershipPage() {
   const admin = await requireAdmin();

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
+import { say, resourceKindLabel } from "@/lib/labels";
 
 export const metadata = { title: "Resources library, the Global team" };
 
@@ -88,7 +89,7 @@ export default async function GlobalLibraryPage({
                     </div>
                   </div>
                   <div className="rowmeta">
-                    <span className="chip">{resource.kind}</span>
+                    <span className="chip">{say(resourceKindLabel, resource.kind)}</span>
                     <span className={`chip ${resource.all_villages ? "chip-mint" : ""}`}>
                       {villageName(resource.village_id, resource.all_villages)}
                     </span>

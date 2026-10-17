@@ -72,6 +72,8 @@ export function AccountForm({
         <span>Language</span>
         <select name="language" defaultValue={account.language}>
           <option>English</option>
+          <option>Portugues</option>
+          <option>Francais</option>
         </select>
       </label>
 

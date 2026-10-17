@@ -2,6 +2,7 @@ import { PageHead } from "@/components/workspace-shell";
 import { Stat } from "@/components/admin-bits";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { say, villageStatusLabel } from "@/lib/labels";
 
 export const metadata = { title: "Reporting, Global" };
 
@@ -109,7 +110,7 @@ export default async function GlobalReportingPage() {
                     <span className="chip chip-sun">{village.quiet} quiet</span>
                   ) : null}
                   <span className={`chip ${village.status === "open" ? "chip-mint" : ""}`}>
-                    {village.status}
+                    {say(villageStatusLabel, village.status)}
                   </span>
                 </div>
               </div>
