@@ -1,5 +1,5 @@
 import { PublicPage } from "@/components/public-page";
-import Link from "next/link";
+import { Done } from "@/components/done";
 
 export const metadata = { title: "Thank you, ExpatPreneurs Global" };
 
@@ -9,26 +9,24 @@ export default async function SuggestionSentPage({
   searchParams: Promise<{ how?: string }>;
 }) {
   const { how } = await searchParams;
-  const anonymous = how === "anonymous";
 
   return (
     <PublicPage>
+      <main className="wrap">
         <section className="pubsec">
-          <h1>Thank you</h1>
-          <p className="lead">
-            {anonymous
-              ? "Your suggestion is with the team. It carries no name, so nobody can reply to it, and nobody can trace it back to you."
-              : "Your suggestion is with the team. You will hear what happens with it."}
-          </p>
-          <p>
-            <Link className="btn btn-ghost" href="/suggestions">
-              Send another
-            </Link>{" "}
-            <Link className="btn btn-primary" href="/home">
-              Back to home
-            </Link>
-          </p>
+          <Done
+            title="Thank you"
+            actions={[
+              { label: "Back to home", href: "/home", kind: "primary" },
+              { label: "Send another", href: "/suggestions" },
+            ]}
+          >
+            {how === "anonymous"
+              ? "Your suggestion is with the team, and nothing on it says who sent it."
+              : "Your suggestion is with the team. They read every one."}
+          </Done>
         </section>
-      </PublicPage>
+      </main>
+    </PublicPage>
   );
 }

@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { PublicPage } from "@/components/public-page";
-import { Ic } from "@/components/icon";
+import { Done } from "@/components/done";
 
 export const metadata = { title: "Message sent, ExpatPreneurs Global" };
 
@@ -13,26 +12,20 @@ export default async function ContactSentPage({
 
   return (
     <PublicPage active="/contact">
-      <section className="pubsec">
-        <div className="done">
-          <span className="doneic">
-            <Ic name="check" />
-          </span>
-          <h1>Thanks for getting in touch</h1>
-          <p>
+      <main className="wrap">
+        <section className="pubsec">
+          <Done
+            title="Thanks for getting in touch"
+            actions={[{ label: "Back to home", href: "/", kind: "primary" }]}
+          >
             {kind === "partnership"
               ? "Your message is with the Global team, who agree every partnership."
               : kind === "press"
                 ? "Your request is with the Global team. They handle interviews and stories."
-                : "Your message has reached us. We usually reply within two working days."}
-          </p>
-          <div className="row" style={{ justifyContent: "center", flexWrap: "wrap", marginTop: 8 }}>
-            <Link className="btn btn-primary" href="/">
-              Back to home
-            </Link>
-          </div>
-        </div>
-      </section>
+                : "Your message has reached the Global team. We will reply by email."}
+          </Done>
+        </section>
+      </main>
     </PublicPage>
   );
 }
