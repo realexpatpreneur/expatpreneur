@@ -4,7 +4,15 @@ import { Ic } from "@/components/icon";
 // from the name so a person always gets the same colour.
 const AVC = ["#A8DCD1", "#FEEEEC", "#CFE0F2", "#FBDDB9", "#D9E9D2", "#E8DDF3", "#FFE3A8"];
 
-export function Av({ name, className = "" }: { name: string; className?: string }) {
+export function Av({
+  name,
+  className = "",
+  src = null,
+}: {
+  name: string;
+  className?: string;
+  src?: string | null;
+}) {
   const initials = name
     .split(" ")
     .map((w) => w[0])
@@ -14,7 +22,12 @@ export function Av({ name, className = "" }: { name: string; className?: string 
   for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   return (
     <span className={`av ${className}`} style={{ background: AVC[h % AVC.length] }} aria-hidden="true">
-      {initials}
+      {src ? (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img src={src} alt="" />
+      ) : (
+        initials
+      )}
     </span>
   );
 }

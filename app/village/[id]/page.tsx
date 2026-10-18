@@ -1,6 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { Av } from "@/components/bits";
 import { Ic } from "@/components/icon";
+import { Lock } from "@/components/lock";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -147,20 +148,13 @@ export default async function PostPage({
                 <ReplyForm askId={post.id} />
               </div>
             ) : (
-              <div className="lockline" style={{ marginTop: 10 }}>
-                <Ic name="lock" />
-                <div style={{ flex: 1 }}>
-                  <b style={{ display: "block" }}>
-                    This is from another Village
-                  </b>
-                  <span className="small">
-                    Replying across Villages is part of the paid plan.
-                  </span>
-                </div>
-                <Link className="btn btn-sm btn-dark" href="/upgrade">
-                  See the paid plan
-                </Link>
-              </div>
+              <Lock
+                style={{ marginTop: 10 }}
+                note="Replying across Villages is part of the paid plan."
+                cta="See the paid plan"
+              >
+                This is from another Village
+              </Lock>
             )}
           </div>
         </div>

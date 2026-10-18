@@ -1,5 +1,6 @@
 import { DualPage } from "@/components/dual-page";
 import { PageBlocks } from "@/components/page-blocks";
+import { MemberCard } from "@/components/member-card";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
@@ -9,8 +10,6 @@ export const metadata = {
   description:
     "Members who chose to be listed publicly, across every Village.",
 };
-
-const covers = ["blue", "mint", "pink", "paper", "navy", "sun"] as const;
 
 export default async function PublicMembersPage({
   searchParams,
@@ -103,34 +102,17 @@ export default async function PublicMembersPage({
               the platform, which is their choice to make.
             </p>
           ) : (
-            <div className="g3 g4">
-              {people.map((person, i) => (
-                <Link className="card" href={`/members/${person.id}`} key={person.id}>
-                  {person.avatar_url ? (
-                    <div className="cover photo">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={person.avatar_url} alt="" />
-                    </div>
-                  ) : (
-                    <div className={`cover ${covers[i % covers.length]}`}>
-                      {person.full_name
-                        .split(" ")
-                        .map((part: string) => part[0])
-                        .slice(0, 2)
-                        .join("")}
-                    </div>
-                  )}
-                  <div className="kind">
-                    {person.industry ?? person.business_name ?? ""}
-                  </div>
-                  <p>
-                    <b>{person.full_name}</b>
-                    {person.headline ? `. ${person.headline}` : ""}
-                  </p>
-                  <div className="meta">
-                    <span className="chip">{villageName(person.village_id)}</span>
-                  </div>
-                </Link>
+            <div className="g3">
+              {people.map((person) => (
+                <MemberCard
+                  key={person.id}
+                  person={person}
+                  where={
+                    villageName(person.village_id)
+                      ? `${villageName(person.village_id)} Village`
+                      : ""
+                  }
+                />
               ))}
             </div>
           )}

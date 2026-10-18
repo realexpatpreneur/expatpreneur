@@ -1,4 +1,6 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
+import { MemberCard } from "@/components/member-card";
+import { Lock } from "@/components/lock";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
@@ -14,10 +16,10 @@ export default async function DirectoryPage({
   const member = await requireMember("/directory");
   const supabase = await createClient();
 
-  const { data: villages } = await supabase
-    .from("villages")
-    .select("id, name")
-    .order("name");
+  const [{ data: villages }, { data: circles }] = await Promise.all([
+    supabase.from("villages").select("id, name").order("name"),
+    supabase.from("circles").select("id, name, village_id").order("name"),
+  ]);
 
   // Your own Village is open to every member. The rest of the network
   // is part of the paid plan.
@@ -26,7 +28,9 @@ export default async function DirectoryPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, full_name, headline, business_name, industry, village_id, circle_id, avatar_url")
+    .select(
+      "id, full_name, headline, business_name, industry, village_id, circle_id, avatar_url, founding"
+    )
     .eq("status", "active")
     .order("full_name")
     .limit(100);
@@ -40,9 +44,40 @@ export default async function DirectoryPage({
     );
   }
 
-  const { data: people } = await query;
+  const { data: rows } = await query;
+  const people = (rows ?? []).filter((person) => person.id !== member.id);
+
+  // Where a connection with somebody already stands, so a card can say
+  // so rather than ask again.
+  const { data: links } = await supabase
+    .from("connection_requests")
+    .select("requester_id, recipient_id, status")
+    .or(`requester_id.eq.${member.id},recipient_id.eq.${member.id}`);
+
+  const connection = new Map<string, string>();
+  for (const link of links ?? []) {
+    const them =
+      link.requester_id === member.id ? link.recipient_id : link.requester_id;
+    connection.set(them, link.status);
+  }
+
   const villageName = (id: string | null) =>
     villages?.find((v) => v.id === id)?.name ?? "";
+
+  // The Village, then the Circle, as the prototype has it. The Circle
+  // name drops the Village it repeats.
+  const where = (person: { village_id: string | null; circle_id: string | null }) => {
+    const village = villageName(person.village_id);
+    const circle = person.circle_id
+      ? (circles?.find((c) => c.id === person.circle_id)?.name ?? "")
+      : "";
+    const short = circle.startsWith(`${village} `)
+      ? circle.slice(village.length + 1)
+      : circle;
+    return short ? `${village}, ${short}` : village;
+  };
+
+  const viewer = { id: member.id, village_id: member.village_id, paid };
 
   return (
     <WorkspaceShell kind="member" nav="/directory">
@@ -87,33 +122,37 @@ export default async function DirectoryPage({
         </section>
 
         <section className="sec">
-          {(people ?? []).length === 0 ? (
+          {paid ? null : (
+            <Lock style={{ marginBottom: 18 }}>
+              You can browse every Village. Contacting members in other
+              Villages is included with paid membership.
+            </Lock>
+          )}
+
+          {people.length === 0 ? (
             <div className="panel panel-wash">
               <p className="muted" style={{ margin: 0 }}>
                 Nobody matches that yet.
               </p>
             </div>
           ) : (
-            <div className="g3">
-              {(people ?? []).map((person) => (
-                <Link className="panel" key={person.id} href={`/members/${person.id}`}>
-                  <div className="facerow">
-                    {person.avatar_url ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img className="face" src={person.avatar_url} alt="" />
-                    ) : null}
-                    <h3 style={{ margin: 0 }}>{person.full_name}</h3>
-                  </div>
-                  <p className="muted small" style={{ marginTop: 8 }}>
-                    {person.headline || person.business_name || "Member"}
-                  </p>
-                  <p className="muted small" style={{ marginBottom: 0 }}>
-                    {person.industry ? `${person.industry}. ` : ""}
-                    {villageName(person.village_id)}
-                  </p>
-                </Link>
-              ))}
-            </div>
+            <>
+              <p className="muted small" style={{ marginBottom: 10 }}>
+                {people.length} member{people.length === 1 ? "" : "s"}
+              </p>
+              <div className="g3">
+                {people.map((person) => (
+                  <MemberCard
+                    key={person.id}
+                    person={person}
+                    where={where(person)}
+                    viewer={viewer}
+                    requested={connection.get(person.id) === "pending"}
+                    connected={connection.get(person.id) === "accepted"}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </section>
       </WorkspaceShell>
