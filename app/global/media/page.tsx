@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { ArticleForm, SuggestionDecision } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 import { say, publishLabel } from "@/lib/labels";
 
 export const metadata = { title: "Media, the Global team" };
@@ -44,9 +45,7 @@ export default async function GlobalMediaPage({
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Media"]]} />
           <h1>Media</h1>
           <p className="lead">
             The stories and guides that are read, as against Watch and Listen,

@@ -1,8 +1,8 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { BusinessForm } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Your business listing" };
 
@@ -22,9 +22,7 @@ export default async function NewBusinessPage() {
   return (
     <WorkspaceShell kind="member" nav="/businesses/new">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/businesses">Businesses</Link>
-          </p>
+          <Crumbs trail={[["Businesses", "/businesses"], ["Add your business"]]} />
           <h1>{existing ? "Edit your listing" : "Add your business"}</h1>
           {existing ? (
             <p className="lead">

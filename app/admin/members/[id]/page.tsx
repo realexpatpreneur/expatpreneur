@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { MemberForm } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function AdminMemberPage({
   params,
@@ -55,9 +56,7 @@ export default async function AdminMemberPage({
   return (
     <main className="wrap">
       <section className="sec">
-        <p className="muted small">
-          <Link href="/admin/members">Members</Link>
-        </p>
+        <Crumbs trail={[["Members", "/admin/members"]]} />
         <h1>{member.full_name}</h1>
         <p className="lead">
           {member.headline || member.business_name || "Member"}.{" "}

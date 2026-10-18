@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, nationalityMix, NATIONALITY_LIMIT } from "@/lib/access";
 import { ApproveForm, WaitlistForm, DeclineForm } from "./decision-forms";
+import { Crumbs } from "@/components/crumbs";
 
 const doneText: Record<string, string> = {
   approved:
@@ -91,9 +91,7 @@ export default async function ApplicationPage({
   return (
     <main className="wrap">
       <section className="sec">
-        <p className="muted small">
-          <Link href="/admin/applications">Invitation requests</Link>
-        </p>
+        <Crumbs trail={[["Invitation requests", "/admin/applications"]]} />
         <h1>{application.full_name}</h1>
         <p className="lead">
           {application.city}

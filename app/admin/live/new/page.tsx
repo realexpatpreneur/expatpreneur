@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { SessionForm } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Schedule a session, Admin" };
 
@@ -51,9 +51,7 @@ export default async function NewSessionPage() {
   return (
     <main className="wrap">
       <section className="sec">
-        <p className="muted small">
-          <Link href="/admin/live">Live rooms</Link>
-        </p>
+        <Crumbs trail={[["Live rooms", "/admin/live"], ["Schedule a session"]]} />
         <h1>Schedule a session</h1>
         <p className="lead">
           A room can belong to a Village, a Circle, an Industry Group, a Pod or

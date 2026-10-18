@@ -2,6 +2,7 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { requireMember } from "@/lib/member";
 import { StoryForm } from "./form";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Suggest a story, ExpatPreneurs Global" };
 
@@ -16,9 +17,7 @@ export default async function SuggestStoryPage({
   return (
     <WorkspaceShell kind="member" nav="/media/suggest">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/media">Media</Link>
-          </p>
+          <Crumbs trail={[["Media", "/media"], ["Suggest a story"]]} />
           <h1>Suggest a story</h1>
           <p className="lead">
             The team reads every one. Nothing is written about a member

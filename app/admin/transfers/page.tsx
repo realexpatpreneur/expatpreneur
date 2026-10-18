@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { TransferButtons } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Moves, the Local Admin workspace" };
 
@@ -33,9 +33,7 @@ export default async function TransfersPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/admin/members">Members</Link>
-          </p>
+          <Crumbs trail={[["Members", "/admin/members"], ["Moves"]]} />
           <h1>Moves</h1>
           <p className="lead">
             Members moving city. You see the ones coming to your Village and

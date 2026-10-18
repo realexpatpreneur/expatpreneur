@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
 import { MessageLearnersForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Sales, your courses" };
 
@@ -52,9 +53,7 @@ export default async function SalesPage() {
   return (
     <WorkspaceShell kind="edu" nav="/educator/sales">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/educator">Your courses</Link>
-          </p>
+          <Crumbs trail={[["Your courses", "/educator"], ["Sales"]]} />
           <h1>Sales</h1>
           <p className="lead">
             {paid.length} sold, {money(earned)} earned.{" "}

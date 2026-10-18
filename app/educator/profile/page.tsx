@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { EducatorProfileForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Educator profile, ExpatPreneurs Global" };
 
@@ -29,9 +30,7 @@ export default async function EducatorProfilePage() {
   return (
     <WorkspaceShell kind="edu" nav="/educator/profile">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/educator">Your courses</Link>
-          </p>
+          <Crumbs trail={[["Your courses", "/educator"], ["Educator profile"]]} />
           <h1>Educator profile</h1>
           <p className="lead">
             What a learner reads about you on a course page.

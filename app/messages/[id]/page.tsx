@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid, timeAgo } from "@/lib/member";
 import { MessageForm } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function ThreadPage({
   params,
@@ -59,9 +60,7 @@ export default async function ThreadPage({
   return (
     <WorkspaceShell kind="member" nav="/messages">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/messages">Messages</Link>
-          </p>
+          <Crumbs trail={[["Messages", "/messages"]]} />
           <h1>{person.full_name}</h1>
           <p className="lead">{person.headline}</p>
           <p>

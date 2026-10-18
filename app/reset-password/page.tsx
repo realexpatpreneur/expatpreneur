@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PublicPage } from "@/components/public-page";
 import { ResetForm } from "./form";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Reset your password, ExpatPreneurs Global" };
 
@@ -9,9 +10,7 @@ export default function ResetPasswordPage() {
     <PublicPage>
       <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/login">Sign in</Link>
-          </p>
+          <Crumbs trail={[["Sign in", "/login"], ["Reset your password"]]} />
           <h1>Reset your password</h1>
           <p className="lead">
             Only if you set one. Most members sign in with a link instead,

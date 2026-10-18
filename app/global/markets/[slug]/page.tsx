@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PathwayForm, StepForm } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function GlobalPathwayPage({
   params,
@@ -37,9 +37,7 @@ export default async function GlobalPathwayPage({
   return (
     <main className="wrap">
       <section className="sec">
-        <p className="muted small">
-          <Link href="/global/markets">Market pathways</Link>
-        </p>
+        <Crumbs trail={[["Market pathways", "/global/markets"]]} />
         <h1>{pathway.title}</h1>
         <p className="lead">
           {pathway.country}. {(steps ?? []).length} steps.{" "}

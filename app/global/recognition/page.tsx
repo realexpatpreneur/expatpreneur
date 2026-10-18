@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { AmountsForm, RunButton, PaidForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Team recognition, the Global team" };
 
@@ -76,9 +76,7 @@ export default async function RecognitionPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Team recognition"]]} />
           <h1>Team recognition</h1>
           <p className="lead">
             A monthly thank you for the people building the community. It uses

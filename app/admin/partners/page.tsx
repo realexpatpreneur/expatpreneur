@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { ProposePartnerForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Partnered events, the Local Admin workspace" };
 
@@ -24,9 +24,7 @@ export default async function AdminPartnersPage({
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/admin/events">Events</Link>
-          </p>
+          <Crumbs trail={[["Events", "/admin/events"], ["Partnered events"]]} />
           <h1>Partnered events</h1>
           <p className="lead">
             A sponsor paying for an event, or putting their name on one.

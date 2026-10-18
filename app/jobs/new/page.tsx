@@ -1,8 +1,8 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { JobForm } from "../../businesses/forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Post a job" };
 
@@ -19,9 +19,7 @@ export default async function NewJobPage() {
   return (
     <WorkspaceShell kind="member" nav="/jobs/new">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/jobs">Jobs and freelance</Link>
-          </p>
+          <Crumbs trail={[["Jobs and freelance", "/jobs"], ["Post something"]]} />
           <h1>Post a job</h1>
           <p className="lead">
             Hiring, a project, or someone to build something with.

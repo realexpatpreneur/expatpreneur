@@ -1,7 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Receipts, ExpatPreneurs Global" };
 
@@ -65,9 +65,7 @@ export default async function ReceiptsPage() {
   return (
     <WorkspaceShell kind="member" nav="/settings/receipts">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/settings?show=membership">Settings</Link>
-          </p>
+          <Crumbs trail={[["Settings", "/settings?show=membership"], ["Receipts"]]} />
           <h1>Receipts</h1>
           <p className="lead">
             Membership, event tickets and anything you bought from Learning.

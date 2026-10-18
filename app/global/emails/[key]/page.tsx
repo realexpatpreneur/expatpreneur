@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { TemplateForm } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function EmailTemplatePage({
   params,
@@ -27,9 +28,7 @@ export default async function EmailTemplatePage({
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global/emails">Emails</Link>
-          </p>
+          <Crumbs trail={[["Emails", "/global/emails"]]} />
           <h1>{template.name}</h1>
           <p className="lead">Sent when: {template.sent_when.toLowerCase()}.</p>
           {done ? <div className="flag ok">Saved.</div> : null}

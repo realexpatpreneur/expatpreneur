@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "The record, the Global team" };
 
@@ -67,9 +68,7 @@ export default async function AuditPage({
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["The record"]]} />
           <h1>Audit log</h1>
           <p className="lead">
             Who did what, and when. Decisions somebody may have to answer for

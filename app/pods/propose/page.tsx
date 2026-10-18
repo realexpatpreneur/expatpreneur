@@ -1,7 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
-import Link from "next/link";
 import { requireMember } from "@/lib/member";
 import { ProposePodForm } from "./form";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Propose a Pod, ExpatPreneurs Global" };
 
@@ -11,9 +11,7 @@ export default async function ProposePodPage() {
   return (
     <WorkspaceShell kind="member" nav="/pods/propose">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/pods">Pods</Link>
-          </p>
+          <Crumbs trail={[["Pods", "/pods"], ["Propose a Pod"]]} />
           <h1>Propose a Pod</h1>
           <p className="lead">
             A few members working towards the same thing, for a fixed stretch,

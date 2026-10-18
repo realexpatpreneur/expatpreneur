@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { PhotoForm, RetireButton, RotationForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Photos and consent, the Global team" };
 
@@ -41,9 +41,7 @@ export default async function PhotosConsentPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Photos and consent"]]} />
           <h1>Photos and consent</h1>
           <p className="lead">
             Who appears on the public pages, and when each photograph is next

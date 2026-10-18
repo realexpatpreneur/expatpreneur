@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { PartnerDecision } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Partnered events, the Global team" };
 
@@ -35,9 +35,7 @@ export default async function PartneredEventsPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Partnered events"]]} />
           <h1>Partnered events</h1>
           <p className="lead">
             Sponsorships and co-branded events are approved here before

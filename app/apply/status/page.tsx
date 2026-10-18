@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PublicPage } from "@/components/public-page";
 import { StatusForm } from "./form";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = {
   title: "Where your request stands, ExpatPreneurs Global",
@@ -11,9 +12,7 @@ export default function ApplicationStatusPage() {
     <PublicPage>
       <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/apply">Request an invitation</Link>
-          </p>
+          <Crumbs trail={[["Request an invitation", "/apply"], ["Where your request stands"]]} />
           <h1>Where your request stands</h1>
           <p className="lead">
             Somebody reads every one, so it takes days rather than minutes.

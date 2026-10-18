@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function ShowPage({
   params,
@@ -40,9 +41,7 @@ export default async function ShowPage({
   return (
     <DualPage member={Boolean(member)} nav="/watch/show" active="/watch/show">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/watch">Watch and Listen</Link>
-          </p>
+          <Crumbs trail={[["Watch and Listen", "/watch"]]} />
           <p>
             <span className="chip chip-blue">Podcast</span>
           </p>

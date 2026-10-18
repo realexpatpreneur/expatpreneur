@@ -2,6 +2,7 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Learners, your courses" };
 
@@ -54,9 +55,7 @@ export default async function LearnersPage({
   return (
     <WorkspaceShell kind="edu" nav="/educator/learners">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/educator">Your courses</Link>
-          </p>
+          <Crumbs trail={[["Your courses", "/educator"], ["Learners"]]} />
           <h1>Learners</h1>
           <p className="lead">
             {chosen ? chosen.title : "Who has bought your courses."}

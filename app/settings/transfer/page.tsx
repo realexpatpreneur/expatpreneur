@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
 import { TransferForm } from "./form";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Moving city, ExpatPreneurs Global" };
 
@@ -35,9 +36,7 @@ export default async function TransferPage({
   return (
     <WorkspaceShell kind="member" nav="/settings/transfer">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/settings">Settings</Link>
-          </p>
+          <Crumbs trail={[["Settings", "/settings"], ["Moving city"]]} />
           <h1>Moving city</h1>
           <p className="lead">
             Your profile, your history and the people you know stay with you.

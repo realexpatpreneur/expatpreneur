@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { ReviewButtons } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Learning, the Global team" };
 
@@ -48,9 +49,7 @@ export default async function GlobalLearningPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Learning"]]} />
           <h1>Educators and courses</h1>
           <p className="lead">
             Who teaches here, and what they teach. A course reaches members

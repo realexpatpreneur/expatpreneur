@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 import { say, resourceKindLabel } from "@/lib/labels";
 
 export const metadata = { title: "Resources library, the Global team" };
@@ -36,9 +37,7 @@ export default async function GlobalLibraryPage({
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Resources library"]]} />
           <h1>Resources library</h1>
           <p className="lead">
             Everything shared with every Village, alongside what each Village

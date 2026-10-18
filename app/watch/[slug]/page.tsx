@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { currentUser } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function MediaPage({
   params,
@@ -25,9 +26,7 @@ export default async function MediaPage({
   return (
     <DualPage member={Boolean(user)} nav="/watch" active="/watch">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/watch">Watch and Listen</Link>
-          </p>
+          <Crumbs trail={[["Watch and Listen", "/watch"]]} />
           <h1>{item.title}</h1>
           <p className="lead">{item.summary}</p>
           <p>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Network intelligence, the Global team" };
 
@@ -79,9 +80,7 @@ export default async function NetworkIntelligencePage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Network intelligence"]]} />
           <h1>Network intelligence</h1>
           <p className="lead">How the Villages help each other.</p>
         </section>

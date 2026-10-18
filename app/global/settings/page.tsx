@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { GeneralForm, IntegrationRow, SecurityForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "System settings, the Global team" };
 
@@ -32,9 +33,7 @@ export default async function SystemSettingsPage({
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["System settings"]]} />
           <h1>System settings</h1>
           <p className="lead">
             Languages, integrations, security and backups.

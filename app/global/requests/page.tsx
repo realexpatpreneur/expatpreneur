@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { PodDecision, DataDecision, EnquiryDone } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Requests, the Global team" };
 
@@ -58,9 +58,7 @@ export default async function GlobalRequestsPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Requests"]]} />
           <h1>Requests</h1>
           <p className="lead">
             Messages from the contact page, Pods members want to start, and

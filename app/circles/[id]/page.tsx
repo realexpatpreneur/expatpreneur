@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { whenText } from "@/lib/events";
+import { Crumbs } from "@/components/crumbs";
 
 // A Circle's own page. A member can see any Circle in their Village, but
 // the WhatsApp link appears only on their own, and so do its members.
@@ -64,9 +65,7 @@ export default async function CirclePage({
   return (
     <WorkspaceShell kind="member" nav="/circles">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/my-village">{village?.name ?? "Your"} Village</Link>
-          </p>
+          <Crumbs trail={[[`${village?.name ?? "Your"} Village`, "/my-village"]]} />
           <h1>{circle.name}</h1>
           <p className="lead">
             {circle.status === "preparing"

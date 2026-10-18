@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { ReportDecision } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Reports, the Local Admin workspace" };
 
@@ -42,9 +42,7 @@ export default async function AdminReportsPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/admin">Overview</Link>
-          </p>
+          <Crumbs trail={[["Overview", "/admin"], ["Reports"]]} />
           <h1>Reports</h1>
           <p className="lead">
             Private. Never discuss these in Village channels.

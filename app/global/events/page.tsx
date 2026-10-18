@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { whenText } from "@/lib/events";
 import { timeAgo } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Events, the Global team" };
 
@@ -44,9 +45,7 @@ export default async function GlobalEventsPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Events"]]} />
           <h1>Events</h1>
           <p className="lead">Across the network.</p>
         </section>

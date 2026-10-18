@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { SuggestionAdminForm } from "./form";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function AdminSuggestionPage({
   params,
@@ -36,9 +37,7 @@ export default async function AdminSuggestionPage({
   return (
     <main className="wrap">
       <section className="sec">
-        <p className="muted small">
-          <Link href="/admin/suggestions">Suggestion box</Link>
-        </p>
+        <Crumbs trail={[["Suggestion box", "/admin/suggestions"]]} />
         <h1>{suggestion.title}</h1>
         <p className="lead">
           {suggestion.about === "community" ? "The whole community" : "Village"}.{" "}

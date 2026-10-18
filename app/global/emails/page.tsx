@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Emails, the Global team" };
 
@@ -16,9 +17,7 @@ export default async function EmailsPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Emails"]]} />
           <h1>Emails</h1>
           <p className="lead">
             Sent automatically by the platform. Each one is edited here.

@@ -1,9 +1,9 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
 import { CourseForm, LessonForm, DeleteLessonButton } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function EducatorCoursePage({
   params,
@@ -45,9 +45,7 @@ export default async function EducatorCoursePage({
   return (
     <WorkspaceShell kind="edu" nav="/educator">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/educator">Your courses</Link>
-          </p>
+          <Crumbs trail={[["Your courses", "/educator"]]} />
           <h1>{course.title}</h1>
           <p className="lead">
             {(lessons ?? []).length} lessons. {(enrolments ?? []).length} members

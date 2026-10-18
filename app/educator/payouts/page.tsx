@@ -1,7 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember } from "@/lib/member";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Payouts, your courses" };
 
@@ -41,9 +41,7 @@ export default async function PayoutsPage() {
   return (
     <WorkspaceShell kind="edu" nav="/educator/payouts">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/educator/sales">Sales</Link>
-          </p>
+          <Crumbs trail={[["Sales", "/educator/sales"], ["Payouts"]]} />
           <h1>Payouts</h1>
           <p className="lead">
             You keep {share?.value ?? 70} percent of what a course sells for.

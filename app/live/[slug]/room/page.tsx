@@ -6,6 +6,7 @@ import { requireMember } from "@/lib/member";
 import { liveReady } from "@/lib/livekit";
 import { roleLabel, type LiveSession } from "@/lib/live";
 import { RoomClient } from "./room-client";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function RoomPage({
   params,
@@ -31,9 +32,7 @@ export default async function RoomPage({
   return (
     <WorkspaceShell kind="member" nav="/live/room">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/live">Live rooms</Link>
-          </p>
+          <Crumbs trail={[["Live rooms", "/live"]]} />
           <h1 style={{ fontSize: 26 }}>{session.title}</h1>
           <p className="muted small">
             You are here as {roleLabel[myRole]?.toLowerCase() ?? myRole}.

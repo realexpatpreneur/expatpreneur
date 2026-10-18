@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { SuggestLeaderForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Leadership, the Local Admin workspace" };
 
@@ -49,9 +50,7 @@ export default async function LeadershipPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/admin">Overview</Link>
-          </p>
+          <Crumbs trail={[["Overview", "/admin"], ["Leadership"]]} />
           <h1>Leadership</h1>
           <p className="lead">
             Members who could take on more, when they want to.

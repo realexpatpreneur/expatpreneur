@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { whenText, priceText, audienceText, type EventRow } from "@/lib/events";
 import { DecisionButtons, CheckInButton } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export default async function AdminEventPage({
   params,
@@ -54,9 +55,7 @@ export default async function AdminEventPage({
   return (
     <main className="wrap">
       <section className="sec">
-        <p className="muted small">
-          <Link href="/admin/events">Events</Link>
-        </p>
+        <Crumbs trail={[["Events", "/admin/events"]]} />
         <h1>{event.title}</h1>
         <p className="lead">
           {whenText(event)}. {event.venue ?? "Online"}. {priceText(event)}.

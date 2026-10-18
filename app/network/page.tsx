@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
 import { NotifyButton } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "The Global network, ExpatPreneurs Global" };
 
@@ -44,9 +45,7 @@ export default async function NetworkPage() {
   return (
     <WorkspaceShell kind="member" nav="/network">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/home">Home</Link>
-          </p>
+          <Crumbs trail={[["Home", "/home"], ["The Global network"]]} />
           <h1>The Global network</h1>
           <p className="lead">
             {open.length} {open.length === 1 ? "Village is" : "Villages are"}{" "}

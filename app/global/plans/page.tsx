@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { PlanForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Plans, the Global team" };
 
@@ -22,9 +22,7 @@ export default async function PlansPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/global">The Global team</Link>
-          </p>
+          <Crumbs trail={[["The Global team", "/global"], ["Plans"]]} />
           <h1>Plans and benefits</h1>
           <p className="lead">
             What membership costs and what each plan says it gives you. This

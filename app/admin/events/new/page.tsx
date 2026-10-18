@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { EventForm } from "../forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Create an event, Admin" };
 
@@ -36,9 +36,7 @@ export default async function NewEventPage() {
   return (
     <main className="wrap">
       <section className="sec">
-        <p className="muted small">
-          <Link href="/admin/events">Events</Link>
-        </p>
+        <Crumbs trail={[["Events", "/admin/events"], ["Create an event"]]} />
         <h1>Create an event</h1>
         <p className="lead">
           Public events can be found and booked by anyone. Private ones are for

@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { VillageSettingsForm, ContactGlobalForm } from "./forms";
+import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Village settings, the Local Admin workspace" };
 
@@ -51,9 +51,7 @@ export default async function VillageSettingsPage() {
   return (
     <main className="wrap">
         <section className="sec">
-          <p className="muted small">
-            <Link href="/admin/members">The Local Admin workspace</Link>
-          </p>
+          <Crumbs trail={[["The Local Admin workspace", "/admin/members"], ["Village settings"]]} />
           <h1>Village settings</h1>
           <p className="lead">
             Settings a Local Admin can change. Anything touching brand, money
