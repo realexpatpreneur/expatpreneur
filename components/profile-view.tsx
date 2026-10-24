@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Av, Flag, NationalityFlag } from "@/components/bits";
 import { Ic } from "@/components/icon";
-import { ProfileTabs } from "@/components/profile";
 
 export type ProfilePerson = {
   id: string;
@@ -18,243 +17,224 @@ export type ProfilePerson = {
   looking_for?: string | null;
   founding?: boolean | null;
   avatar_url?: string | null;
+  joined_on?: string | null;
 };
 
-const handleOf = (name: string) =>
-  "@" + name.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "");
+export type Row = [string, React.ReactNode];
 
-// The cover behind a profile, tinted by the Village it belongs to.
-const COVER: Record<string, string> = {
-  dubai: "ph-dubai",
-  lisbon: "ph-lisbon",
-  paris: "ph-paris",
-};
-
-// xprofile: the cover, the card with everything about a person, then
-// the tabs and what sits under them.
-export function ProfileView({
-  person,
-  villageName,
-  villageSlug,
-  circleName,
+// journey(): where somebody is now, and where they have been. The
+// prototype keeps this on one line under the name, with a flag against
+// each place.
+function Journey({
+  city,
   country,
-  relation,
-  actions,
-  notice,
-  stats,
-  publicView = false,
-  activity,
+  lived,
 }: {
-  person: ProfilePerson;
-  villageName?: string | null;
-  villageSlug?: string | null;
-  circleName?: string | null;
-  country?: string | null;
-  relation?: string | null;
-  actions: React.ReactNode;
-  notice?: React.ReactNode;
-  stats?: [number | string, string][];
-  publicView?: boolean;
-  activity?: React.ReactNode;
+  city: string | null;
+  country: string | null;
+  lived: string[];
 }) {
-  const lived = (person.lived_in ?? []).filter(Boolean);
-
-  const about = (
-    <div className="sp-about">
-      {person.nationalities?.length ? (
-        <div>
-          <span className="sp-label">Nationalities</span>
-          <div className="tags">
-            {person.nationalities.map((n) => (
-              <span className="chip" key={n}>
-                <NationalityFlag nationality={n} /> {n}
-              </span>
-            ))}
-          </div>
-        </div>
-      ) : null}
-      {person.languages?.length ? (
-        <div>
-          <span className="sp-label">Languages</span>
-          <div className="tags">
-            {person.languages.map((l) => (
-              <span className="chip" key={l}>
-                {l}
-              </span>
-            ))}
-          </div>
-        </div>
-      ) : null}
-      {person.can_help_with ? (
-        <div>
-          <span className="sp-label">Can help with</span>
-          <p>{person.can_help_with}</p>
-        </div>
-      ) : null}
-      {person.markets_known?.length ? (
-        <div>
-          <span className="sp-label">Markets known</span>
-          <div className="tags">
-            {person.markets_known.map((m) => (
-              <span className="chip" key={m}>
-                <Flag country={m} /> {m}
-              </span>
-            ))}
-          </div>
-        </div>
-      ) : null}
-      <div>
-        <span className="sp-label">Looking for</span>
-        <p>
-          {publicView ? (
-            <span className="muted">Visible to members</span>
-          ) : (
-            person.looking_for ?? <span className="muted">Not said yet</span>
-          )}
-        </p>
-      </div>
-    </div>
-  );
-
-  const tabs = [
-    ...(activity ? [{ id: "activity", label: "Activity", content: activity }] : []),
-    { id: "about", label: "About", content: about },
-  ];
-
+  const here = [city, country].filter(Boolean).join(", ");
+  if (!here && !lived.length) return null;
   return (
-    <div className="sp">
-      <div className={`sp-cover ${villageSlug ? COVER[villageSlug] ?? "" : ""}`}>
-        {villageName ? (
-          <span className="sp-cover-chip">
-            <Ic name="pin" />
-            {villageName}
-            {country ? `, ${country}` : ""}
-          </span>
-        ) : null}
-      </div>
-
-      <div className="sp-card">
-        <div className="sp-row">
-          <span className="sp-avatar">
-            <Av
-              name={person.full_name}
-              className="sp-av"
-              src={person.avatar_url ?? null}
-            />
-            {person.founding ? (
-              <span className="sp-badge" title="Founding member">
-                <Ic name="star" />
-              </span>
-            ) : null}
-          </span>
-          <div className="sp-actions-top">{actions}</div>
-        </div>
-
-        <div className="sp-name">
-          <h1>{person.full_name}</h1>
-          {person.founding ? (
-            <span className="sp-pill sp-pill-gold">Founding member</span>
-          ) : null}
-          {relation ? <span className="sp-pill">{relation}</span> : null}
-        </div>
-        <div className="sp-handle">{handleOf(person.full_name)}</div>
-        {person.headline || person.bio ? (
-          <p className="sp-bio">
-            {[person.headline, person.bio].filter(Boolean).join(". ")}
-          </p>
-        ) : null}
-
-        <div className="sp-chips">
-          {person.industry ? (
-            <span className="sp-chip">
-              <Ic name="briefcase" />
-              {person.industry}
+    <div className="journey">
+      {here ? (
+        <span>
+          <b>Currently based in:</b> {here}{" "}
+          {country ? <Flag country={country} /> : null}
+        </span>
+      ) : null}
+      {here && lived.length ? <span className="jsep">|</span> : null}
+      {lived.length ? (
+        <span>
+          <b>Lived in:</b>{" "}
+          {lived.map((place, i) => (
+            <span key={place}>
+              {i ? ", " : ""}
+              <Flag country={place} /> {place}
             </span>
-          ) : null}
-          {person.business_name ? (
-            <span className="sp-chip">
-              <Ic name="star" />
-              {person.business_name}
-            </span>
-          ) : null}
-          {circleName ? (
-            <span className="sp-chip sp-chip-mint">
-              <Ic name="rings" />
-              {circleName}
-            </span>
-          ) : null}
-        </div>
-
-        {villageName || lived.length ? (
-          <div className="sp-journey">
-            <span className="sp-journey-l">
-              <Ic name="globe" />
-              Expat journey
-            </span>
-            {villageName ? (
-              <span className="sp-stop sp-now">
-                {country ? <Flag country={country} /> : null} {villageName}{" "}
-                <em>now</em>
-              </span>
-            ) : null}
-            {lived.map((place) => (
-              <span className="sp-stop" key={place}>
-                <Flag country={place} /> {place}
-              </span>
-            ))}
-          </div>
-        ) : null}
-
-        {stats?.length ? (
-          <div className="sp-stats">
-            {stats.map(([n, label]) => (
-              <div className="sp-stat" key={label}>
-                <b>{n}</b>
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-        ) : null}
-      </div>
-
-      {notice}
-
-      <ProfileTabs tabs={tabs} />
+          ))}
+        </span>
+      ) : null}
     </div>
   );
 }
 
-// sp-side: the small cards down the right of a profile.
+// The prototype's profile: one panel with the head of it, then two
+// columns, the facts on the left and whatever belongs beside them on
+// the right.
+export function ProfileView({
+  person,
+  villageName,
+  villageCity,
+  country,
+  circleName,
+  roleChip,
+  actions,
+  notice,
+  extraRows,
+  aside,
+  publicView = false,
+}: {
+  person: ProfilePerson;
+  villageName?: string | null;
+  villageCity?: string | null;
+  country?: string | null;
+  circleName?: string | null;
+  roleChip?: string | null;
+  actions?: React.ReactNode;
+  notice?: React.ReactNode;
+  extraRows?: Row[];
+  aside?: React.ReactNode;
+  publicView?: boolean;
+}) {
+  const lived = (person.lived_in ?? []).filter(Boolean);
+
+  const rows: Row[] = [];
+  if (person.nationalities?.length) {
+    rows.push([
+      "Nationalities",
+      <div className="tags" key="nat">
+        {person.nationalities.map((n) => (
+          <span className="chip" key={n}>
+            <NationalityFlag nationality={n} /> {n}
+          </span>
+        ))}
+      </div>,
+    ]);
+  }
+  if (person.languages?.length) rows.push(["Languages", person.languages.join(", ")]);
+  if (person.can_help_with) rows.push(["I can help with", person.can_help_with]);
+  if (person.markets_known?.length) {
+    rows.push([
+      "Markets I know",
+      <div className="tags" key="mk">
+        {person.markets_known.map((m) => (
+          <span className="chip" key={m}>
+            <Flag country={m} /> {m}
+          </span>
+        ))}
+      </div>,
+    ]);
+  }
+  rows.push([
+    "I am looking for",
+    publicView ? (
+      <span className="muted">Members only</span>
+    ) : (
+      person.looking_for ?? <span className="muted">Not said yet</span>
+    ),
+  ]);
+  for (const row of extraRows ?? []) rows.push(row);
+
+  return (
+    <>
+      <div className="panel">
+        <div className="profhead">
+          <Av
+            name={person.full_name}
+            className="av-lg"
+            src={person.avatar_url ?? null}
+          />
+          <div>
+            <h1 style={{ fontSize: 22 }}>{person.full_name}</h1>
+            {person.headline || person.bio ? (
+              <p className="muted">
+                {[person.headline, person.bio].filter(Boolean).join(". ")}
+              </p>
+            ) : null}
+            <Journey city={villageCity ?? null} country={country ?? null} lived={lived} />
+            <div className="tags" style={{ marginTop: 8 }}>
+              {villageName ? (
+                <span className="chip chip-blue">
+                  <Ic name="pin" style={{ width: 13, height: 13 }} />
+                  {villageName} Village
+                </span>
+              ) : null}
+              {person.industry ? <span className="chip">{person.industry}</span> : null}
+              {person.founding ? (
+                <span className="chip chip-founding">
+                  <Ic name="star" style={{ width: 13, height: 13 }} />
+                  Founding member
+                </span>
+              ) : null}
+              {roleChip ? <span className="chip chip-mint">{roleChip}</span> : null}
+              {circleName ? <span className="chip">{circleName}</span> : null}
+            </div>
+          </div>
+          {actions ? <div className="actions row">{actions}</div> : null}
+        </div>
+        {notice}
+      </div>
+
+      <div className="gside" style={{ marginTop: 18 }}>
+        <div className="panel">
+          <dl className="kv">
+            {rows.map(([label, value]) => (
+              <div key={label} style={{ display: "contents" }}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <div className="stack">{aside}</div>
+      </div>
+    </>
+  );
+}
+
+// The panels down the right of a profile, as the prototype writes them:
+// a heading, a line under it, and the whole thing a link when there is
+// somewhere to go.
 export function SideCard({
   href,
-  icon,
   title,
   line,
-  note,
+  cta,
 }: {
   href?: string;
-  icon: string;
   title: string;
   line?: string | null;
-  note?: string | null;
+  cta?: string | null;
 }) {
   const inner = (
     <>
-      <span className="sp-side-ic">
-        <Ic name={icon} />
-      </span>
-      <span className="sp-side-body">
-        <b>{title}</b>
-        {line ? <span>{line}</span> : null}
-        {note ? <em>{note}</em> : null}
-      </span>
+      <h3 style={{ fontSize: 14 }}>{title}</h3>
+      {line ? (
+        <p className="muted small" style={{ marginTop: 4 }}>
+          {line}
+        </p>
+      ) : null}
+      {cta ? (
+        <span className="small" style={{ fontWeight: 600, color: "var(--blue)" }}>
+          {cta}
+        </span>
+      ) : null}
     </>
   );
   return href ? (
-    <Link className="sp-side" href={href}>
+    <Link className="panel linkrow" href={href}>
       {inner}
     </Link>
   ) : (
-    <div className="sp-side">{inner}</div>
+    <div className="panel">{inner}</div>
+  );
+}
+
+// The Activity panel, counted rather than guessed at.
+export function ActivityCard({ rows }: { rows: [string, number][] }) {
+  return (
+    <div className="panel">
+      <h3 style={{ fontSize: 14 }}>Activity</h3>
+      <dl className="kv" style={{ gridTemplateColumns: "1fr auto", marginTop: 8 }}>
+        {rows.map(([label, n]) => (
+          <div key={label} style={{ display: "contents" }}>
+            <dt>{label}</dt>
+            <dd>{n}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }

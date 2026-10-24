@@ -1,6 +1,9 @@
 import { DualPage } from "@/components/dual-page";
-import { ProfileView, SideCard } from "@/components/profile-view";
+import { ProfileView, SideCard, type Row } from "@/components/profile-view";
+import { Crumbs } from "@/components/crumbs";
+import { Lock } from "@/components/lock";
 import { Ic } from "@/components/icon";
+import { readableDate } from "@/lib/labels";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -21,8 +24,8 @@ export default async function MemberProfilePage({
   // A signed-in member may read the member-only fields. A stranger is not
   // granted them at all, so asking for them would fail the whole query.
   const columns = me
-    ? "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, avatar_url, public_profile"
-    : "id, full_name, headline, bio, business_name, industry, lived_in, village_id, avatar_url, public_profile";
+    ? "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, avatar_url, public_profile, founding, joined_on"
+    : "id, full_name, headline, bio, business_name, industry, lived_in, village_id, avatar_url, public_profile, founding";
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -46,6 +49,8 @@ export default async function MemberProfilePage({
     circle_id?: string | null;
     avatar_url: string | null;
     public_profile: boolean;
+    founding?: boolean | null;
+    joined_on?: string | null;
   } | null;
 
   if (!person) notFound();
@@ -54,12 +59,10 @@ export default async function MemberProfilePage({
   const { data: village } = person.village_id
     ? await supabase
         .from("villages")
-        .select("name, slug")
+        .select("name, slug, city, country")
         .eq("id", person.village_id)
         .maybeSingle()
     : { data: null };
-
-  const villageSlug = (village as { slug?: string } | null)?.slug ?? null;
 
   const sameVillage = Boolean(me) && person.village_id === me?.village_id;
   const canContact =
@@ -76,42 +79,43 @@ export default async function MemberProfilePage({
           )
           .maybeSingle();
 
-  const country = null;
+  const villageCity = (village as { city?: string } | null)?.city ?? null;
+  const country = (village as { country?: string } | null)?.country ?? null;
 
   // What a member may do about this person, in the order the prototype
   // puts it: the one action that matters, then share and report.
   let action: React.ReactNode;
   if (!me) {
     action = (
-      <Link className="sp-cta" href="/apply">
+      <Link className="btn btn-primary" href="/apply">
         <Ic name="hand" />
         Request your invitation
       </Link>
     );
   } else if (person.id === me.id) {
     action = (
-      <Link className="sp-cta sp-cta-glass" href="/me/edit">
+      <Link className="btn btn-primary" href="/me/edit">
         <Ic name="edit" />
         Edit profile
       </Link>
     );
   } else if (sameVillage) {
     action = (
-      <Link className="sp-cta" href={`/messages/${person.id}`}>
+      <Link className="btn btn-primary" href={`/messages/${person.id}`}>
         <Ic name="chat" />
         Message
       </Link>
     );
   } else if (connection?.status === "accepted") {
     action = (
-      <Link className="sp-cta" href={`/messages/${person.id}`}>
+      <Link className="btn btn-primary" href={`/messages/${person.id}`}>
         <Ic name="chat" />
         Open the thread
       </Link>
     );
   } else if (connection?.status === "pending") {
     action = (
-      <span className="sp-cta sp-cta-soft">
+      <span className="chip chip-blue">
         <Ic name="check" />
         {connection.requester_id === me.id ? "Request sent" : "They asked to connect"}
       </span>
@@ -120,9 +124,9 @@ export default async function MemberProfilePage({
     action = <ConnectionRequestForm recipientId={person.id} />;
   } else {
     action = (
-      <Link className="sp-cta" href="/upgrade">
+      <Link className="btn btn-primary" href="/upgrade">
         <Ic name="lock" />
-        Connect
+        Request to connect
       </Link>
     );
   }
@@ -140,85 +144,84 @@ export default async function MemberProfilePage({
 
   const notice =
     me && person.id !== me.id && !sameVillage && !canContact ? (
-      <div className="sp-notice">
-        <Ic name="lock" />
-        <span>
-          <b>{person.full_name.split(" ")[0]} is in the {village?.name ?? "another"} Village.</b>{" "}
-          Paid members can connect across Villages.
-        </span>
-        <Link className="sp-mini" href="/upgrade">
-          See the paid plan
-        </Link>
+      <div style={{ marginTop: 16 }}>
+        <Lock note="Included with paid membership.">
+          {person.full_name.split(" ")[0]} is in the{" "}
+          {village?.name ?? "another"} Village. Paid members can send a
+          connection request.
+        </Lock>
       </div>
     ) : null;
 
   return (
     <DualPage member={Boolean(me)} nav="/members" active="/discover">
-      <div className={me ? "sp-stage" : "pubsec sp-stage"}>
-        <nav className="crumbs" aria-label="Breadcrumb">
-          <Link href={me ? "/directory" : "/members"}>{me ? "Directory" : "Members"}</Link>
-          <Ic name="chev" />
-          <span>{person.full_name}</span>
-        </nav>
+      <section className={me ? "sec" : "pubsec"}>
+        <Crumbs
+          trail={[
+            [me ? "Directory" : "Members", me ? "/directory" : "/members"],
+            [person.full_name],
+          ]}
+        />
 
-        <div className="sp-layout">
-          <div>
-            <ProfileView
-              person={{ ...person, founding: null }}
-              villageName={village?.name ?? null}
-              villageSlug={villageSlug}
-              circleName={null}
-              country={country}
-              relation={relation}
-              publicView={!me}
-              actions={
-                <>
-                  {action}
-                  {me && person.id !== me.id ? (
-                    <Link
-                      className="sp-icon"
-                      aria-label="Report"
-                      href={`/report?member=${person.id}`}
-                    >
-                      <Ic name="flag" />
+        <ProfileView
+          person={person}
+          villageName={village?.name ?? null}
+          villageCity={villageCity}
+          country={country}
+          circleName={relation === "In your Circle" ? "Your Circle" : null}
+          publicView={!me}
+          extraRows={
+            person.joined_on
+              ? [["Member since", readableDate(person.joined_on)] as Row]
+              : undefined
+          }
+          actions={
+            <>
+              {action}
+              {me && person.id !== me.id ? (
+                <Link
+                  className="btn btn-ghost"
+                  aria-label="Report"
+                  href={`/report?member=${person.id}`}
+                >
+                  <Ic name="flag" />
+                </Link>
+              ) : null}
+            </>
+          }
+          notice={notice}
+          aside={
+            <>
+              {person.business_name ? (
+                <SideCard
+                  title={person.business_name}
+                  line={person.industry}
+                  cta="View business"
+                  href="/businesses"
+                />
+              ) : null}
+              {me ? null : (
+                <div className="panel">
+                  <h3 style={{ fontSize: 14 }}>
+                    Connect with {person.full_name.split(" ")[0]}
+                  </h3>
+                  <p className="muted small" style={{ marginTop: 4 }}>
+                    Messaging and introductions are for members.
+                  </p>
+                  <p className="row" style={{ marginTop: 10, flexWrap: "wrap" }}>
+                    <Link className="btn btn-primary btn-sm" href="/login">
+                      Log in
                     </Link>
-                  ) : null}
-                </>
-              }
-              notice={notice}
-            />
-          </div>
-
-          <aside className="sp-aside">
-            {person.business_name ? (
-              <SideCard
-                icon="briefcase"
-                title={person.business_name}
-                line={person.industry}
-              />
-            ) : null}
-            {me ? null : (
-              <div className="sp-side sp-join">
-                <b className="sp-side-title">
-                  Connect with {person.full_name.split(" ")[0]}
-                </b>
-                <span>Messaging and introductions are for members.</span>
-                <Link className="sp-cta" href="/login">
-                  Log in
-                </Link>
-                <Link className="sp-cta sp-cta-glass" href="/apply">
-                  Request your invitation
-                </Link>
-              </div>
-            )}
-            <SideCard
-              icon="shield"
-              title="What is never shown"
-              line="Email, phone and anything written for admins stay private."
-            />
-          </aside>
-        </div>
-      </div>
+                    <Link className="btn btn-ghost btn-sm" href="/apply">
+                      Request your invitation
+                    </Link>
+                  </p>
+                </div>
+              )}
+            </>
+          }
+        />
+      </section>
     </DualPage>
   );
 }
