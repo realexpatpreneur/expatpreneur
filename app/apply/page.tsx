@@ -3,6 +3,7 @@ import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { PublicPage } from "@/components/public-page";
 import { ApplyForm } from "./form";
+import { WhyJoin, WhatHappensNext } from "@/components/why-join";
 
 export const metadata = { title: "Request an invitation, ExpatPreneurs Global" };
 
@@ -12,6 +13,14 @@ export default async function ApplyPage() {
     .from("villages")
     .select("slug, name, status")
     .in("status", ["open", "launching"])
+    .order("name");
+
+  // The panel beside the form names every Village, including the ones
+  // being explored, because somebody reading this may be in one of them.
+  const { data: allVillages } = await supabase
+    .from("villages")
+    .select("name, status")
+    .in("status", ["open", "launching", "exploring"])
     .order("name");
 
   return (
@@ -29,7 +38,15 @@ export default async function ApplyPage() {
           </p>
         </section>
         <section className="sec">
-          <ApplyForm villages={villages ?? []} />
+          <div className="gside">
+            <div>
+              <WhyJoin villages={allVillages ?? []} />
+              <div style={{ marginTop: 18 }}>
+                <ApplyForm villages={villages ?? []} />
+              </div>
+            </div>
+            <WhatHappensNext />
+          </div>
         </section>
       </main>
           </PageBlocks>

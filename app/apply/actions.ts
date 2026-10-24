@@ -106,6 +106,13 @@ export async function submitApplication(
         formData.get("not_dating") ? "Professional, not a dating space" : "",
       ].filter(Boolean),
       offers_admin: formData.get("offers_admin") ? "Yes" : "No",
+      city_entrepreneurs: String(formData.get("city_entrepreneurs") ?? ""),
+      city_english: String(formData.get("city_english") ?? ""),
+      la_years: String(formData.get("la_years") ?? ""),
+      la_hours: String(formData.get("la_hours") ?? ""),
+      la_experience: String(formData.get("la_experience") ?? ""),
+      la_why: String(formData.get("la_why") ?? ""),
+      la_partner: String(formData.get("la_partner") ?? ""),
     },
   })
     .select("reference")

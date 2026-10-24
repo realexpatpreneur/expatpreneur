@@ -62,6 +62,14 @@ const ATTEND = [
 
 const STEPS = ["About you", "Your business", "Good fit", "Review"] as const;
 
+// The three questions the prototype asks when somebody picks a city
+// with no Village in it yet, and the five it asks of anybody offering
+// to run one.
+const HOW_MANY = ["Fewer than 10", "10 to 30", "More than 30"];
+const ENGLISH = ["Yes", "Partly", "No"];
+const LA_YEARS = ["Less than a year", "1 to 3 years", "More than 3 years"];
+const LA_HOURS = ["Up to 5 hours", "5 to 10 hours", "More than 10 hours"];
+
 // The asterisk the prototype puts on every required question.
 const Req = () => (
   <span className="req" aria-label="required">
@@ -107,6 +115,9 @@ const REVIEW: [number, string, Source[]][] = [
     ["In-person meetups", "attend"],
     ["Why join", "why_join"],
     ["Could give back", "contribute"],
+    ["Expat entrepreneurs there", "city_entrepreneurs"],
+    ["English used there", "city_english"],
+    ["Would be Local Admin", "la_why"],
   ]],
 ];
 
@@ -118,6 +129,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
   // Picking a city with no Village opens the panel that explains what
   // happens next, as the prototype does.
   const [village, setVillage] = useState("");
+  const [offersAdmin, setOffersAdmin] = useState(false);
   const [step, setStep] = useState(1);
   const [summary, setSummary] = useState<Panel[]>([]);
   const form = useRef<HTMLFormElement>(null);
@@ -369,16 +381,116 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
                     to our list of suggestions. You can join the network and
                     come to events online in the meantime.
                   </p>
-                  <label className="check" style={{ marginTop: 12 }}>
-                    <input type="checkbox" name="offers_admin" />
+
+                  <div className="panel panel-wash" style={{ marginTop: 12 }}>
+                    <h3 style={{ fontSize: 14 }}>
+                      What we look for in a new city
+                    </h3>
+                    <ul className="ticks" style={{ marginTop: 10 }}>
+                      {[
+                        "A large community of expat entrepreneurs",
+                        "English works as the community language",
+                        "A trusted member ready to be the Local Admin",
+                      ].map((line) => (
+                        <li key={line}>
+                          <Ic name="check" />
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* The city itself was asked on step one, so it is not
+                      asked again here. */}
+                  <div className="formgrid" style={{ marginTop: 14 }}>
+                    <label className="field">
+                      <span>
+                        How many expat entrepreneurs do you know there?
+                      </span>
+                      <select name="city_entrepreneurs" defaultValue="">
+                        <option value="">Choose one</option>
+                        {HOW_MANY.map((o) => (
+                          <option key={o}>{o}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="field">
+                      <span>
+                        Is English widely used by entrepreneurs there?
+                      </span>
+                      <select name="city_english" defaultValue="">
+                        <option value="">Choose one</option>
+                        {ENGLISH.map((o) => (
+                          <option key={o}>{o}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="check" style={{ marginTop: 14 }}>
+                    <input
+                      type="checkbox"
+                      name="offers_admin"
+                      checked={offersAdmin}
+                      onChange={(e) => setOffersAdmin(e.target.checked)}
+                    />
                     <span>
-                      <b>I would be interested in helping start one</b>
+                      <b>I would like to be considered as the Local Admin</b>
                       <small>
-                        A Village needs somebody local who knows people and
-                        turns up. Tell us and we will talk.
+                        Local Admins are trusted members who look after their
+                        Village.
                       </small>
                     </span>
                   </label>
+
+                  <div className="la-extra" hidden={!offersAdmin}>
+                    <h3 style={{ fontSize: 14 }}>
+                      About you as a possible Local Admin
+                    </h3>
+                    <div className="formgrid" style={{ marginTop: 10 }}>
+                      <label className="field">
+                        <span>How long have you lived in this city?</span>
+                        <select name="la_years" defaultValue="">
+                          <option value="">Choose one</option>
+                          {LA_YEARS.map((o) => (
+                            <option key={o}>{o}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="field">
+                        <span>How many hours a month could you give?</span>
+                        <select name="la_hours" defaultValue="">
+                          <option value="">Choose one</option>
+                          {LA_HOURS.map((o) => (
+                            <option key={o}>{o}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="field full">
+                        <span>
+                          Have you run or helped run a community before?
+                        </span>
+                        <textarea
+                          name="la_experience"
+                          rows={2}
+                          placeholder="What you did, and for how long"
+                        />
+                      </label>
+                      <label className="field full">
+                        <span>
+                          Why would you be a good Local Admin for this city?
+                        </span>
+                        <textarea name="la_why" rows={3} />
+                      </label>
+                      <label className="field full">
+                        <span>Who could run it with you?</span>
+                        <input name="la_partner" placeholder="Optional" />
+                        <span className="hint">
+                          Villages usually have two Local Admins.
+                        </span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : null}

@@ -151,6 +151,34 @@ export default async function ApplicationPage({
               <dt>Referred by</dt>
               <dd>{text("referrer")}</dd>
             </dl>
+
+            {answers.offers_admin === "Yes" || answers.city_entrepreneurs ? (
+              <>
+                <h3 style={{ marginTop: 18 }}>No Village in their city</h3>
+                <dl className="kv" style={{ marginTop: 8 }}>
+                  <dt>Expat entrepreneurs they know there</dt>
+                  <dd>{text("city_entrepreneurs")}</dd>
+                  <dt>English used there</dt>
+                  <dd>{text("city_english")}</dd>
+                  <dt>Offered to be Local Admin</dt>
+                  <dd>{text("offers_admin")}</dd>
+                  {answers.offers_admin === "Yes" ? (
+                    <>
+                      <dt>Years in the city</dt>
+                      <dd>{text("la_years")}</dd>
+                      <dt>Hours a month</dt>
+                      <dd>{text("la_hours")}</dd>
+                      <dt>Community experience</dt>
+                      <dd>{text("la_experience")}</dd>
+                      <dt>Why them</dt>
+                      <dd>{text("la_why")}</dd>
+                      <dt>Who could run it with them</dt>
+                      <dd>{text("la_partner")}</dd>
+                    </>
+                  ) : null}
+                </dl>
+              </>
+            ) : null}
           </div>
 
           <div className="stack">
