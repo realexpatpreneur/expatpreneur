@@ -27,7 +27,7 @@ export function NotifyButton({
     <form action={action}>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="village_id" value={villageId} />
-      <button className="btn btn-ghost" type="submit" disabled={pending}>
+      <button className="btn btn-ghost btn-sm" type="submit" disabled={pending}>
         {pending ? "Saving" : "Tell me when it opens"}
       </button>
     </form>

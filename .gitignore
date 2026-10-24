@@ -49,3 +49,12 @@ audit-shots/
 audit-report.md
 recon-report.md
 recon-links.csv
+
+# my working files, not the codebase: the dumped live pages, the
+# comparison output and the two zips they came in.
+live-pages/
+live-pages.zip
+your-versions.zip
+reconstructed-source/
+reconstructed-source.zip
+source-differences.txt

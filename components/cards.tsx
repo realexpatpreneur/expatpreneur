@@ -37,14 +37,25 @@ export type VillageRow = {
 };
 
 // vcard
-export function VillageCard({ village }: { village: VillageRow }) {
+export function VillageCard({
+  village,
+  chipLabel,
+  actions,
+}: {
+  village: VillageRow;
+  // The Global network screen names your own Village rather than its
+  // status, and gives each card its own row of actions. With actions
+  // the card stops being one link, because the actions are the links.
+  chipLabel?: string;
+  actions?: React.ReactNode;
+}) {
   const [label, chip] = villageStatus[village.status] ?? [village.status, ""];
-  const open = village.status === "open";
   // Only a launching Village gets the waitlist. Being explored is not
   // launching, and inviting people to wait for it is a promise.
   const launching = village.status === "launching";
-  return (
-    <Link className="vcard" href={`/villages/${village.slug}`}>
+
+  const body = (
+    <>
       <div
         className={`vphoto ${villagePhoto(village.slug)}`}
         role="img"
@@ -61,7 +72,7 @@ export function VillageCard({ village }: { village: VillageRow }) {
       </div>
       <div className="vbody">
         <span className={`chip ${chip}`} style={{ alignSelf: "flex-start" }}>
-          {label}
+          {chipLabel ?? label}
         </span>
         <p className="muted small">
           {village.country}.{" "}
@@ -71,13 +82,30 @@ export function VillageCard({ village }: { village: VillageRow }) {
                 (village.circles ?? 0) === 1 ? "" : "s"
               }.`}
         </p>
-        <span
-          className="btn btn-ghost btn-sm"
-          style={{ alignSelf: "flex-start", marginTop: "auto" }}
-        >
-          {launching ? "Join the waitlist" : `Explore ${village.name}`}
-        </span>
+        {actions ? (
+          <div
+            className="row"
+            style={{ flexWrap: "wrap", marginTop: "auto" }}
+          >
+            {actions}
+          </div>
+        ) : (
+          <span
+            className="btn btn-ghost btn-sm"
+            style={{ alignSelf: "flex-start", marginTop: "auto" }}
+          >
+            {launching ? "Join the waitlist" : `Explore ${village.name}`}
+          </span>
+        )}
       </div>
+    </>
+  );
+
+  if (actions) return <article className="vcard">{body}</article>;
+
+  return (
+    <Link className="vcard" href={`/villages/${village.slug}`}>
+      {body}
     </Link>
   );
 }

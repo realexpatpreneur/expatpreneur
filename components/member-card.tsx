@@ -90,7 +90,9 @@ export function MemberCard({
           <span className="where">{where}</span>
         </div>
       </Link>
-      <p className="small">{person.headline || person.business_name || ""}</p>
+      {person.headline || person.business_name ? (
+        <p className="small">{person.headline || person.business_name}</p>
+      ) : null}
       <div className="tags">
         {person.industry ? <span className="chip">{person.industry}</span> : null}
         {person.founding ? (

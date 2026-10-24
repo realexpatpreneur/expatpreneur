@@ -1,4 +1,6 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
+import { VillageCard, type VillageRow } from "@/components/cards";
+import { Lock } from "@/components/lock";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
@@ -13,16 +15,17 @@ export default async function NetworkPage() {
   const member = await requireMember("/network");
   const supabase = await createClient();
 
-  const [{ data: villages }, { data: counts }, { data: interest }] =
+  const [{ data: villages }, { data: counts }, { data: circleRows }, { data: interest }] =
     await Promise.all([
       supabase
         .from("villages")
-        .select("id, slug, name, city, country, status, summary")
+        .select("id, slug, name, city, country, status, summary, cover_url")
         .order("name"),
       supabase
         .from("profiles")
         .select("village_id")
         .eq("status", "active"),
+      supabase.from("circles").select("village_id"),
       supabase
         .from("village_interest")
         .select("village_id")
@@ -31,6 +34,20 @@ export default async function NetworkPage() {
 
   const membersIn = (id: string) =>
     (counts ?? []).filter((c) => c.village_id === id).length;
+
+  const circlesIn = (id: string) =>
+    (circleRows ?? []).filter((c) => c.village_id === id).length;
+
+  // The card reads these two off the row, so they are counted here and
+  // handed over. The prototype's network card shows a nationality count
+  // beside the members; 0015 took that column away from members, so it
+  // is not shown rather than guessed at.
+  const card = (v: { id?: string; [k: string]: unknown }) =>
+    ({
+      ...v,
+      members: v.id ? membersIn(v.id as string) : 0,
+      circles: v.id ? circlesIn(v.id as string) : 0,
+    }) as VillageRow;
 
   const asked = (id: string) =>
     (interest ?? []).some((i) => i.village_id === id);
@@ -56,63 +73,49 @@ export default async function NetworkPage() {
           </p>
 
           {paid ? null : (
-            <div className="panel panel-wash" style={{ marginTop: 14 }}>
-              <p className="muted small" style={{ margin: 0 }}>
-                You can browse every Village. Contacting members and
-                attending events in other Villages comes with the paid plan.
-              </p>
-              <p style={{ marginTop: 10 }}>
-                <Link className="btn btn-ghost" href="/upgrade">
-                  See the paid plan
-                </Link>
-              </p>
-            </div>
+            <Lock style={{ marginTop: 14 }}>
+              You can browse every Village. Contacting members and attending
+              events in other Villages is a paid benefit.
+            </Lock>
           )}
         </section>
 
         <section className="sec">
-          <div className="g3 g4">
+          <div className="g3">
             {open.map((village) => {
               const mine = village.id === member.village_id;
               return (
-                <article className="card" key={village.id}>
-                  <div className={`cover ${mine ? "mint" : "blue"}`}>
-                    {village.city}
-                  </div>
-                  <div className="kind">{village.country}</div>
-                  <p>
-                    <b>{village.name}</b>
-                    {village.summary ? `. ${village.summary}` : ""}
-                  </p>
-                  <div className="meta">
-                    <span className="chip">
-                      {mine ? "Your Village" : `${membersIn(village.id)} members`}
-                    </span>
-                  </div>
-                  <p style={{ marginTop: 10 }}>
-                    {mine ? (
-                      <Link className="btn btn-ghost" href="/my-village">
+                <VillageCard
+                  key={village.id}
+                  village={card(village)}
+                  chipLabel={mine ? "Your Village" : undefined}
+                  actions={
+                    mine ? (
+                      <Link className="btn btn-ghost btn-sm" href="/my-village">
                         Open
                       </Link>
                     ) : paid ? (
                       <>
                         <Link
-                          className="btn btn-ghost"
+                          className="btn btn-ghost btn-sm"
                           href={`/directory?village=${village.slug}`}
                         >
                           Members
-                        </Link>{" "}
-                        <Link className="btn btn-ghost" href="/events">
+                        </Link>
+                        <Link className="btn btn-ghost btn-sm" href="/events">
                           Events
                         </Link>
                       </>
                     ) : (
-                      <Link className="btn btn-ghost" href={`/villages/${village.slug}`}>
+                      <Link
+                        className="btn btn-ghost btn-sm"
+                        href={`/villages/${village.slug}`}
+                      >
                         Look around
                       </Link>
-                    )}
-                  </p>
-                </article>
+                    )
+                  }
+                />
               );
             })}
           </div>
@@ -121,22 +124,18 @@ export default async function NetworkPage() {
         {soon.length ? (
           <section className="sec">
             <h2>On the way</h2>
-            <div className="g3 g4" style={{ marginTop: 16 }}>
+            <div className="g3" style={{ marginTop: 16 }}>
               {soon.map((village) => (
-                <article className="card" key={village.id}>
-                  <div className="cover paper">{village.city}</div>
-                  <div className="kind">{village.country}</div>
-                  <p>
-                    <b>{village.name}</b>
-                    {village.summary ? `. ${village.summary}` : ""}
-                  </p>
-                  <div className="meta">
-                    <span className="chip">
-                      {village.status === "launching" ? "Launching" : "Being explored"}
-                    </span>
-                  </div>
-                  <NotifyButton villageId={village.id} already={asked(village.id)} />
-                </article>
+                <VillageCard
+                  key={village.id}
+                  village={card(village)}
+                  actions={
+                    <NotifyButton
+                      villageId={village.id}
+                      already={asked(village.id)}
+                    />
+                  }
+                />
               ))}
             </div>
           </section>
