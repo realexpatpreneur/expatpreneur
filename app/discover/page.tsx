@@ -291,8 +291,8 @@ export default async function DiscoverPage({
                 href={`/businesses/${b.slug}`}
                 kicker={b.category}
                 title={b.name}
-                sub={b.summary}
-                image={b.image_url}
+                sub={b.tagline}
+                image={b.logo_url}
               />
             ))}
           </DSec>
