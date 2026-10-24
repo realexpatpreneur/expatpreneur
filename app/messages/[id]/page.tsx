@@ -108,7 +108,7 @@ export default async function ThreadPage({
                     <p className="muted small" style={{ marginTop: 6 }}>
                       {connection?.status === "pending"
                         ? "Your request is with them. You can write once they accept."
-                        : "Members in other Villages are reached through a request, on Village Membership."}
+                        : "Members in other Villages are reached through a request, with Village Membership."}
                     </p>
                     <Link className="btn btn-ghost" href={`/members/${person.id}`}>
                       Go to their profile
