@@ -98,6 +98,7 @@ export async function submitApplication(
       referrer: String(formData.get("referrer") ?? ""),
       resonate: formData.getAll("resonate").map(String),
       attend: String(formData.get("attend") ?? ""),
+      code_of_conduct: String(formData.get("code_of_conduct") ?? ""),
       conduct: formData.get("conduct") ? "Agreed" : "Not agreed",
       values: [
         formData.get("people") ? "People before transactions" : "",

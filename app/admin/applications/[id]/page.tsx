@@ -142,7 +142,9 @@ export default async function ApplicationPage({
               <dd>{text("resonate")}</dd>
               <dt>In person gatherings</dt>
               <dd>{text("attend")}</dd>
-              <dt>Code of conduct</dt>
+              <dt>Code of Conduct</dt>
+              <dd>{text("code_of_conduct")}</dd>
+              <dt>Terms and privacy</dt>
               <dd>{text("conduct")}</dd>
               <dt>How they heard about us</dt>
               <dd>{text("heard_about")}</dd>
