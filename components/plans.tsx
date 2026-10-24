@@ -13,12 +13,62 @@ export type Plan = {
   id: string;
   slug: string;
   name: string;
+  badge: string | null;
+  tagline: string | null;
   blurb: string | null;
   price_cents: number;
   currency: string;
   interval: string;
   features: string[] | null;
+  not_included: string[] | null;
 };
+
+// Her framework writes a tier as a badge, a price, a line in bold, a
+// sentence of who it is for, and then everything it includes. The card
+// used to list the free tier and what paying adds on top, which counts
+// differently and is why her lists could not be dropped into it.
+function Tier({
+  plan,
+  children,
+}: {
+  plan: Plan;
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <div className="p2-top">
+        <h3>{plan.name}</h3>
+        {plan.badge ? <span className="p2-tag">{plan.badge}</span> : null}
+      </div>
+      {children}
+      {plan.tagline ? (
+        <p className="p2-note">
+          <b>{plan.tagline}</b>
+        </p>
+      ) : null}
+      {plan.blurb ? <p className="p2-note">{plan.blurb}</p> : null}
+    </>
+  );
+}
+
+function Included({ plan }: { plan: Plan }) {
+  return (
+    <ul className="p2-list">
+      {(plan.features ?? []).map((f) => (
+        <li key={f}>
+          <Ic name="check" />
+          {f}
+        </li>
+      ))}
+      {(plan.not_included ?? []).map((f) => (
+        <li className="no" key={f}>
+          <Ic name="x" />
+          {f}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 // The two plan cards and the billing switch above them, as the
 // prototype draws them. The price comes from the Village, since each one
@@ -40,9 +90,6 @@ export function Plans({
   const year = priceLine(pricing, true);
   const priced = monthly !== null;
   const founding = anyFounding(pricing);
-
-  // What Village Membership adds is what the free one does not have.
-  const adds = (paid.features ?? []).slice(0, 3);
 
   return (
     <>
@@ -67,64 +114,38 @@ export function Plans({
 
       <div className="plans">
         <div className="plan2">
-          <div className="p2-top">
-            <h3>{member.name}</h3>
-            <span className="p2-tag">Your own Village</span>
-          </div>
-          <div className="p2-price">
-            <b>By application</b>
-            <span>Every request is read personally</span>
-          </div>
+          <Tier plan={member}>
+            <div className="p2-price">
+              <b>By application</b>
+              <span>Every request is read personally</span>
+            </div>
+          </Tier>
           <Link className="btn btn-ghost" href="/apply">
             Request your invitation
           </Link>
-          <ul className="p2-list">
-            {(member.features ?? []).map((f) => (
-              <li key={f}>
-                <Ic name="check" />
-                {f}
-              </li>
-            ))}
-            {adds.map((f) => (
-              <li className="no" key={f}>
-                <Ic name="x" />
-                {f}
-              </li>
-            ))}
-          </ul>
+          <Included plan={member} />
         </div>
 
         <div className="plan2 p2-best">
-          <span className="p2-ribbon">Village Membership</span>
-          <div className="p2-top">
-            <h3>{paid.name}</h3>
-            <span className="p2-tag">Every Village</span>
-          </div>
-          <div className="p2-price">
-            <b>{(yearly ? year : monthly) ?? "Not set yet"}</b>
-            <span>
-              {priced
-                ? (yearly ? "per year" : "per month") +
-                  ", in your Village's currency" +
-                  (founding ? ", while founding places last" : "")
-                : "The price is still being decided"}
-            </span>
-          </div>
+          {founding ? (
+            <span className="p2-ribbon">First 50 per village</span>
+          ) : null}
+          <Tier plan={paid}>
+            <div className="p2-price">
+              <b>{(yearly ? year : monthly) ?? "Not set yet"}</b>
+              <span>
+                {priced
+                  ? (yearly ? "per year" : "per month") +
+                    ", in your Village's currency" +
+                    (founding ? ", while founding places last" : "")
+                  : "The price is still being decided"}
+              </span>
+            </div>
+          </Tier>
           <Link className="btn btn-primary" href="/login">
             Sign in
           </Link>
-          <ul className="p2-list">
-            <li>
-              <Ic name="check" />
-              Everything included in {member.name}
-            </li>
-            {(paid.features ?? []).map((f) => (
-              <li key={f}>
-                <Ic name="check" />
-                {f}
-              </li>
-            ))}
-          </ul>
+          <Included plan={paid} />
         </div>
       </div>
     </>

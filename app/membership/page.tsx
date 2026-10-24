@@ -38,7 +38,9 @@ export default async function MembershipPage() {
   const [{ data: plans }, { data: pricing }] = await Promise.all([
     supabase
       .from("plans")
-      .select("id, slug, name, blurb, price_cents, currency, interval, features")
+      .select(
+        "id, slug, name, badge, tagline, blurb, price_cents, currency, interval, features, not_included"
+      )
       .eq("active", true)
       .order("position"),
     // Each Village bills in its own currency, so the card shows a

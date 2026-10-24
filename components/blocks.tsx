@@ -34,7 +34,7 @@ export type BlockData = {
   businesses?: BusinessRow[];
   courses?: { id: string; slug: string; title: string; level?: string | null; format?: string | null; price_cents?: number | null; currency?: string | null; cover_url?: string | null }[];
   articles?: { id: string; slug: string; title: string; standfirst: string | null; kind?: string; cover_url?: string | null }[];
-  plans?: { slug: string; name: string; blurb: string | null; price_cents: number; currency: string; interval: string; features: string[] }[];
+  plans?: { slug: string; name: string; badge?: string | null; tagline?: string | null; blurb: string | null; price_cents: number; currency: string; interval: string; features: string[]; not_included?: string[] | null }[];
   pricing?: Pricing[];
   people?: { id: string; full_name: string; headline: string | null; industry?: string | null; avatar_url?: string | null }[];
   media?: { id: string; slug: string; kind: string; title: string; summary?: string | null; duration?: string | null; cover_url?: string | null }[];
@@ -816,7 +816,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
               <div className={`plan2 ${n === list.length - 1 ? "p2-best" : ""}`} data-el="card" key={p.slug}>
                 <div className="p2-top">
                   <h3>{p.name}</h3>
-                  <span className="p2-tag">{p.blurb}</span>
+                  {p.badge ? <span className="p2-tag">{p.badge}</span> : null}
                 </div>
                 <div className="p2-price" data-el="price">
                   <b>
@@ -835,10 +835,22 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
                         : "Every request is read personally"}
                   </span>
                 </div>
+                {p.tagline ? (
+                  <p className="p2-note">
+                    <b>{p.tagline}</b>
+                  </p>
+                ) : null}
+                {p.blurb ? <p className="p2-note">{p.blurb}</p> : null}
                 <ul className="p2-list">
                   {(p.features ?? []).map((f) => (
                     <li key={f}>
                       <Ic name="check" />
+                      {f}
+                    </li>
+                  ))}
+                  {(p.not_included ?? []).map((f) => (
+                    <li className="no" key={f}>
+                      <Ic name="x" />
                       {f}
                     </li>
                   ))}
