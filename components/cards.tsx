@@ -53,6 +53,9 @@ export function VillageCard({
   // Only a launching Village gets the waitlist. Being explored is not
   // launching, and inviting people to wait for it is a promise.
   const launching = village.status === "launching";
+  // A Village nobody has joined yet has nothing to count, so it says
+  // what it is rather than "0 members in 0 Circles".
+  const empty = village.status !== "open" && !village.members;
 
   const body = (
     <>
@@ -78,9 +81,11 @@ export function VillageCard({
           {village.country}.{" "}
           {launching
             ? "Opening next month."
-            : `${village.members ?? 0} members in ${village.circles ?? 0} Circle${
-                (village.circles ?? 0) === 1 ? "" : "s"
-              }.`}
+            : empty
+              ? "Opening soon."
+              : `${village.members ?? 0} members in ${village.circles ?? 0} Circle${
+                  (village.circles ?? 0) === 1 ? "" : "s"
+                }.`}
         </p>
         {actions ? (
           <div

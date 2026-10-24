@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Ic } from "@/components/icon";
-import { ALIASES, LISTS, fold, splitVals, type ListName } from "@/lib/lists";
+import { ALIASES, fold, splitVals } from "@/lib/lists";
 
 // The prototype's combo(): a field you type into that searches a list
 // and gives you back only entries that are on it. Multi fields collect
@@ -16,7 +16,9 @@ import { ALIASES, LISTS, fold, splitVals, type ListName } from "@/lib/lists";
 type Props = {
   name: string;
   label: string;
-  list: ListName;
+  // The list this field searches, handed in by the page so that a page
+  // only carries the lists its own fields use.
+  options: readonly string[];
   multi?: boolean;
   max?: number;
   value?: string | string[] | null;
@@ -31,7 +33,7 @@ type Props = {
 export function Combo({
   name,
   label,
-  list,
+  options,
   multi = false,
   max,
   value = "",
@@ -43,16 +45,15 @@ export function Combo({
   allowNew = false,
 }: Props) {
   const id = useId();
-  const options = LISTS[list] as readonly string[];
 
   const [picked, setPicked] = useState<string[]>(() =>
-    multi ? splitVals(value, list) : []
+    multi ? splitVals(value, options) : []
   );
   // For a single field: the value that is actually on the list, and the
   // text in the box, which may be mid-typing.
   const [valid, setValid] = useState(() => {
     if (multi) return "";
-    const one = splitVals(value, list)[0];
+    const one = splitVals(value, options)[0];
     return one ?? (allowNew ? String(value ?? "") : "");
   });
   const [text, setText] = useState(valid);

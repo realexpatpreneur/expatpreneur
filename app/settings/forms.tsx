@@ -13,6 +13,8 @@ import {
 } from "./actions";
 import { Uploader } from "@/components/uploader";
 import { Combo } from "@/components/combo";
+import { COUNTRIES } from "@/lib/lists/countries";
+import { LANGUAGES } from "@/lib/lists/languages";
 
 // ---------------------------------------------------------------- Account
 
@@ -170,7 +172,7 @@ export function ProfileSettingsForm({
       <Combo
         name="languages"
         label="Languages"
-        list="languages"
+        options={LANGUAGES}
         multi
         value={profile.languages ?? []}
       />
@@ -179,14 +181,14 @@ export function ProfileSettingsForm({
         <Combo
           name="markets_known"
           label="Markets you know"
-          list="countries"
+          options={COUNTRIES}
           multi
           value={profile.markets_known ?? []}
         />
         <Combo
           name="lived_in"
           label="Where you have lived"
-          list="countries"
+          options={COUNTRIES}
           multi
           value={profile.lived_in ?? []}
         />

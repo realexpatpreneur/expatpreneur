@@ -3,6 +3,8 @@
 import { useActionState } from "react";
 import { saveEducatorProfile, type EducatorProfileState } from "./actions";
 import { Combo } from "@/components/combo";
+import { COUNTRIES } from "@/lib/lists/countries";
+import { LANGUAGES } from "@/lib/lists/languages";
 
 export function EducatorProfileForm({
   profile,
@@ -56,7 +58,7 @@ export function EducatorProfileForm({
       <Combo
         name="teaches_in"
         label="Languages you teach in"
-        list="languages"
+        options={LANGUAGES}
         multi
         value={profile?.teaches_in ?? []}
       />
@@ -64,7 +66,7 @@ export function EducatorProfileForm({
       <Combo
         name="markets"
         label="Markets you know"
-        list="countries"
+        options={COUNTRIES}
         multi
         value={profile?.markets ?? []}
       />

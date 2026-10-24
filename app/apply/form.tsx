@@ -5,6 +5,8 @@ import { Captcha } from "@/components/captcha";
 import { Ic } from "@/components/icon";
 import { submitApplication, type ApplyState } from "./actions";
 import { Combo } from "@/components/combo";
+import { COUNTRIES, NATIONALITIES } from "@/lib/lists/countries";
+import { LANGUAGES } from "@/lib/lists/languages";
 
 type Village = { slug: string; name: string; status: string };
 
@@ -111,7 +113,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
         <Combo
           name="nationalities"
           label="Nationalities"
-          list="nationalities"
+          options={NATIONALITIES}
           multi
           max={5}
           hint="Up to five."
@@ -119,13 +121,13 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
         <Combo
           name="languages"
           label="Languages you work in"
-          list="languages"
+          options={LANGUAGES}
           multi
         />
         <Combo
           name="lived_in"
           label="Countries you have lived in"
-          list="countries"
+          options={COUNTRIES}
           multi
           full
         />

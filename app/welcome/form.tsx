@@ -3,6 +3,8 @@
 import { useActionState } from "react";
 import { completeProfile, type WelcomeState } from "./actions";
 import { Combo } from "@/components/combo";
+import { COUNTRIES } from "@/lib/lists/countries";
+import { LANGUAGES } from "@/lib/lists/languages";
 
 type Profile = {
   full_name: string;
@@ -79,7 +81,7 @@ export function WelcomeForm({ profile }: { profile: Profile }) {
       <Combo
         name="languages"
         label="Languages you speak"
-        list="languages"
+        options={LANGUAGES}
         multi
         value={profile.languages ?? []}
       />
@@ -87,7 +89,7 @@ export function WelcomeForm({ profile }: { profile: Profile }) {
       <Combo
         name="markets_known"
         label="Markets you know"
-        list="countries"
+        options={COUNTRIES}
         multi
         value={profile.markets_known ?? []}
         placeholder="Countries you have done business in"
@@ -96,7 +98,7 @@ export function WelcomeForm({ profile }: { profile: Profile }) {
       <Combo
         name="lived_in"
         label="Where you have lived"
-        list="countries"
+        options={COUNTRIES}
         multi
         value={profile.lived_in ?? []}
         placeholder="Your expat journey, in order"
