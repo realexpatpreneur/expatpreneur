@@ -68,7 +68,7 @@ export default async function GlobalLearningPage() {
                   <h3>{course.title}</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     {nameOf(course.educator_id)}. {course.duration ?? course.level}.{" "}
-                    {course.tier === "paid" ? "Paid members only" : "Every member"}.{" "}
+                    {course.tier === "paid" ? "Village Members only" : "Every member"}.{" "}
                     {timeAgo(course.updated_at)}.{" "}
                     <span className="chip">{course.review}</span>
                   </p>

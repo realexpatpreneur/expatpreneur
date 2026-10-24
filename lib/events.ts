@@ -81,7 +81,7 @@ export function audienceText(
     event.audience === "global"
       ? "Members in every Village"
       : audienceName ?? "Members";
-  return event.tier === "paid" ? `${who}, paid members only` : who;
+  return event.tier === "paid" ? `${who}, Village Members only` : who;
 }
 
 // The same rules the database enforces, so the page can explain itself
@@ -93,12 +93,12 @@ export function registrationBlock(
   if (event.visibility === "public") return null;
   if (!member) return "This event is for members.";
   if (event.tier === "paid" && member.plan !== "paid") {
-    return "This event is open to paid members.";
+    return "This event is open to Village Members.";
   }
   if (event.audience === "village" && event.audience_id !== member.village_id) {
     return member.plan === "paid"
       ? null
-      : "Attending events in other Villages is part of the paid plan.";
+      : "Attending events in other Villages is part of Village Membership.";
   }
   if (event.audience === "circle" && event.audience_id !== member.circle_id) {
     return "This event is for one Circle.";

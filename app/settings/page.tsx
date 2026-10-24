@@ -184,7 +184,7 @@ export default async function SettingsPage({
                 <div className="panel">
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <div>
-                      <h3>{isPaid(member) ? "Paid member" : "Member"}</h3>
+                      <h3>{isPaid(member) ? "Village Member" : "Explorer"}</h3>
                       <p className="muted small">
                         {isPaid(member)
                           ? subscription?.current_period_end
@@ -203,7 +203,7 @@ export default async function SettingsPage({
                       <span className="chip chip-mint">Active</span>
                     ) : (
                       <Link className="btn btn-primary" href="/upgrade">
-                        Upgrade to Paid member
+                        Upgrade to Village Membership
                       </Link>
                     )}
                   </div>
@@ -213,7 +213,7 @@ export default async function SettingsPage({
                       <dl className="kv">
                         <dt>Plan</dt>
                         <dd>
-                          Paid member
+                          Village Member
                           {paidPlan && paidPlan.price_cents
                             ? `, ${money(paidPlan.price_cents, paidPlan.currency)} a ${paidPlan.interval}`
                             : ""}
@@ -241,7 +241,7 @@ export default async function SettingsPage({
                           Receipts
                         </Link>
                         <Link className="btn btn-ghost" href="/upgrade">
-                          Cancel paid membership
+                          Cancel Village Membership
                         </Link>
                       </div>
                     </>
@@ -255,7 +255,7 @@ export default async function SettingsPage({
                         </dd>
                         <dt>Cost</dt>
                         <dd>Nothing. Membership comes with your invitation.</dd>
-                        <dt>Paid plan</dt>
+                        <dt>Village Membership</dt>
                         <dd>
                           {paidPlan && paidPlan.price_cents
                             ? `${money(paidPlan.price_cents, paidPlan.currency)} a ${paidPlan.interval}`
@@ -266,7 +266,7 @@ export default async function SettingsPage({
                       </dl>
                       <div className="panel panel-wash" style={{ marginTop: 14 }}>
                         <p className="muted small" style={{ margin: 0 }}>
-                          The paid plan adds every Village: contact members
+                          Village Membership adds every Village: contact members
                           anywhere, events in other Villages as a visiting
                           member, and the Directory of the whole network.
                         </p>

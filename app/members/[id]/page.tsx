@@ -144,10 +144,10 @@ export default async function MemberProfilePage({
         <Ic name="lock" />
         <span>
           <b>{person.full_name.split(" ")[0]} is in the {village?.name ?? "another"} Village.</b>{" "}
-          Paid members can connect across Villages.
+          Village Members can connect across Villages.
         </span>
         <Link className="sp-mini" href="/upgrade">
-          See the paid plan
+          See Village Membership
         </Link>
       </div>
     ) : null;

@@ -41,7 +41,7 @@ export function Plans({
   const priced = monthly !== null;
   const founding = anyFounding(pricing);
 
-  // What the paid plan adds is what the free one does not have.
+  // What Village Membership adds is what the free one does not have.
   const adds = (paid.features ?? []).slice(0, 3);
 
   return (
@@ -95,7 +95,7 @@ export function Plans({
         </div>
 
         <div className="plan2 p2-best">
-          <span className="p2-ribbon">The paid plan</span>
+          <span className="p2-ribbon">Village Membership</span>
           <div className="p2-top">
             <h3>{paid.name}</h3>
             <span className="p2-tag">Every Village</span>

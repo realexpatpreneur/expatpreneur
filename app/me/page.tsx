@@ -100,7 +100,7 @@ export default async function MyProfilePage({
               <SideCard
                 href="/upgrade"
                 icon="star"
-                title="The paid plan"
+                title="Village Membership"
                 line="Reach members in every Village, and promote what you do."
               />
             )}

@@ -68,7 +68,7 @@ export default async function LivePage() {
           <p className="lead">
             Roundtables, clinics and Circle calls. The same rules as
             everywhere else: your Village is open to you, the rest comes with
-            the paid plan.
+            Village Membership.
           </p>
         </section>
 

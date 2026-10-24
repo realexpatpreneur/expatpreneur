@@ -8,7 +8,7 @@ import { getStripe, membershipPriceId, siteUrl, stripeReady } from "@/lib/stripe
 export type CheckoutState = { error?: string };
 
 // Membership. One subscription, cancellable, and the webhook is what
-// actually moves someone onto the paid plan.
+// actually moves someone onto Village Membership.
 export async function startMembershipCheckout(
   _prev: CheckoutState,
   _formData: FormData
@@ -29,7 +29,7 @@ export async function startMembershipCheckout(
     .eq("id", user.id)
     .maybeSingle();
 
-  if (profile?.plan === "paid") return { error: "You are already on the paid plan." };
+  if (profile?.plan === "paid") return { error: "You are already a Village Member." };
 
   const stripe = getStripe();
 

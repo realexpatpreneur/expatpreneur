@@ -102,11 +102,11 @@ export default async function LibraryPage({
               <h3>Resources from other Villages</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 What Dubai learned about licensing is not much use in Lisbon,
-                but some of it travels. The paid plan opens every Village's
+                but some of it travels. Village Membership opens every Village's
                 library.
               </p>
               <Link className="btn btn-ghost" href="/upgrade">
-                See the paid plan
+                See Village Membership
               </Link>
             </div>
           ) : null}

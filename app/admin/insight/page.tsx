@@ -93,7 +93,7 @@ export default async function VillageInsightPage() {
             </p>
           </div>
           <div className="panel">
-            <h3>On the paid plan</h3>
+            <h3>Village Members</h3>
             <p className="lead" style={{ margin: 0 }}>{summary?.paid ?? 0}</p>
             <p className="muted small">
               {summary?.members

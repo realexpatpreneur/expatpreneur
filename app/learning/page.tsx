@@ -140,7 +140,7 @@ export default async function LearningPage({
                             {progress.done} of {progress.lessons} done
                           </span>
                         ) : locked ? (
-                          <span className="chip chip-sun">Paid plan</span>
+                          <span className="chip chip-sun">Village Membership</span>
                         ) : (
                           <>
                             <span className="chip">{priceOf(course)}</span>{" "}
@@ -163,7 +163,7 @@ export default async function LearningPage({
           <div className="panel panel-wash">
             <h3 style={{ fontSize: 15 }}>Teach in the network</h3>
             <p className="muted" style={{ marginTop: 4 }}>
-              Paid members can apply to become educators and earn from their
+              Village Members can apply to become educators and earn from their
               workshops. ExpatPreneurs handles the payment and pays you your
               share.
             </p>

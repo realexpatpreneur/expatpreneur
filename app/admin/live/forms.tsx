@@ -102,7 +102,7 @@ export function SessionForm({
             <span>Membership</span>
             <select name="tier" defaultValue="all">
               <option value="all">All members</option>
-              <option value="paid">Paid members only</option>
+              <option value="paid">Village Members only</option>
             </select>
           </label>
         </div>

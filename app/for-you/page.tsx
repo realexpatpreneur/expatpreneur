@@ -29,7 +29,7 @@ export default async function ForYouPage({
   const myMarkets = [...(mine?.markets_known ?? []), ...(mine?.lived_in ?? [])];
 
   // Everything below runs as this member, so the access rules do the
-  // narrowing: a free member sees their own Village, a paid member sees the
+  // narrowing: a free member sees their own Village, a Village Member sees the
   // network. Nothing here reaches further than the Directory already does.
   const [
     { data: people },
@@ -220,11 +220,11 @@ export default async function ForYouPage({
               <div className="panel panel-wash" style={{ marginTop: 20 }}>
                 <h3>These are people in your own Village</h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
-                  On the paid plan the same page suggests people in every
+                  With Village Membership the same page suggests people in every
                   Village, which is where the markets you do not know yet are.
                 </p>
                 <Link className="btn btn-ghost" href="/upgrade">
-                  See the paid plan
+                  See Village Membership
                 </Link>
               </div>
             )}

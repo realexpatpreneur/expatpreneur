@@ -112,10 +112,10 @@ export default async function JobPage({
                   <>
                     <p className="muted small" style={{ marginTop: 6 }}>
                       They are in another Village, so reaching them is part of
-                      the paid plan.
+                      Village Membership.
                     </p>
                     <Link className="btn btn-ghost" href="/upgrade">
-                      See the paid plan
+                      See Village Membership
                     </Link>
                   </>
                 )}

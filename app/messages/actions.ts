@@ -29,7 +29,7 @@ export async function sendMessage(
   if (error) {
     return {
       error:
-        "That message was refused. Members in other Villages can be messaged once they accept your request, on the paid plan.",
+        "That message was refused. Members in other Villages can be messaged once they accept your request, with Village Membership.",
     };
   }
 
@@ -68,7 +68,7 @@ export async function sendMessage(
 }
 
 // Reaching a member in another Village starts with a request, and the
-// paid plan is what allows sending one.
+// Village Membership is what allows sending one.
 export async function requestConnection(
   _prev: MessageState,
   formData: FormData
@@ -90,7 +90,7 @@ export async function requestConnection(
   if (error) {
     return {
       error:
-        "That request was refused. Reaching members in other Villages is part of the paid plan, and one request per person is enough.",
+        "That request was refused. Reaching members in other Villages is part of Village Membership, and one request per person is enough.",
     };
   }
 

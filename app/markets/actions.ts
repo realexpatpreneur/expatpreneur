@@ -26,7 +26,7 @@ export async function followPathway(
   if (error) {
     return {
       error:
-        "That pathway is not open to you. Some are part of the paid plan.",
+        "That pathway is not open to you. Some are part of Village Membership.",
     };
   }
 

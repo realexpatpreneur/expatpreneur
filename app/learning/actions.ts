@@ -24,7 +24,7 @@ export async function enrol(
   if (error) {
     return {
       error:
-        "That course is not open to you. Some are part of the paid plan.",
+        "That course is not open to you. Some are part of Village Membership.",
     };
   }
 

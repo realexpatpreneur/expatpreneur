@@ -85,7 +85,7 @@ export default async function GlobalMarketsPage() {
                   <p className="muted small" style={{ marginTop: 6 }}>
                     {pathway.country}
                     {pathway.city ? `, ${pathway.city}` : ""}.{" "}
-                    {pathway.tier === "paid" ? "Paid members only." : "Every member."}
+                    {pathway.tier === "paid" ? "Village Members only." : "Every member."}
                   </p>
                   <div className="row">
                     <Link className="btn btn-ghost" href={`/global/markets/${pathway.slug}`}>

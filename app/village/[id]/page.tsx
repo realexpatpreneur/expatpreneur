@@ -153,8 +153,8 @@ export default async function PostPage({
             ) : (
               <Lock
                 style={{ marginTop: 10 }}
-                note="Replying across Villages is part of the paid plan."
-                cta="See the paid plan"
+                note="Replying across Villages is part of Village Membership."
+                cta="See Village Membership"
               >
                 This is from another Village
               </Lock>

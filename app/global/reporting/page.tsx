@@ -74,7 +74,7 @@ export default async function GlobalReportingPage() {
       <div className="g3 g4">
         <Stat label="Active members" value={totals.members} note="Across every Village" />
         <Stat
-          label="On the paid plan"
+          label="Village Members"
           value={totals.paid}
           note={
             totals.members

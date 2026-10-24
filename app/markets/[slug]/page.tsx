@@ -83,7 +83,7 @@ export default async function PathwayPage({
               <span className="chip">{pathway.industry}</span>
             ) : null}{" "}
             {pathway.tier === "paid" ? (
-              <span className="chip chip-sun">Paid plan</span>
+              <span className="chip chip-sun">Village Membership</span>
             ) : null}
           </p>
           <h1>{pathway.title}</h1>
@@ -101,14 +101,14 @@ export default async function PathwayPage({
 
               {locked ? (
                 <div className="panel panel-wash">
-                  <h3>The steps are part of the paid plan</h3>
+                  <h3>The steps are part of Village Membership</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
                     What a pathway is worth is the detail: the order, the costs,
                     the things people get wrong. That comes with paid
                     membership.
                   </p>
                   <Link className="btn btn-ghost" href="/upgrade">
-                    See the paid plan
+                    See Village Membership
                   </Link>
                 </div>
               ) : (

@@ -275,11 +275,11 @@ export default async function EventPage({
                   <>
                     <h3>{blocked}</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
-                      You can still see what is on. The paid plan opens every
+                      You can still see what is on. Village Membership opens every
                       Village, including their events.
                     </p>
                     <Link className="btn btn-ghost" href="/upgrade">
-                      See the paid plan
+                      See Village Membership
                     </Link>
                   </>
                 ) : taken >= event.capacity ? (

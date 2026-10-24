@@ -141,8 +141,8 @@ export default async function MarketExplorationPage({
                 </h3>
                 <p className="muted small" style={{ marginTop: 6 }}>
                   {isPaid(member)
-                    ? "Paid membership lets you answer members in every Village, so you can offer what you know about a market as well as ask."
-                    : "Every member sees every post here. Replying to a member in another Village is part of paid membership."}
+                    ? "Village Membership lets you answer members in every Village, so you can offer what you know about a market as well as ask."
+                    : "Every member sees every post here. Replying to a member in another Village is part of Village Membership."}
                 </p>
               </div>
             </div>

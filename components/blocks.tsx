@@ -803,7 +803,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "plans": {
       const list = data.plans ?? [];
       if (!list.length) return null;
-      // The paid plan is priced by the Village, not by the plans row.
+      // Village Membership is priced by the Village, not by the plans row.
       const pricing = data.pricing ?? [];
       const paidLine = priceLine(pricing, false);
       const founding = anyFounding(pricing);

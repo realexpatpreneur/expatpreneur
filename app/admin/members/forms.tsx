@@ -63,7 +63,7 @@ export function MemberForm({
         <span>Plan</span>
         <select name="plan" defaultValue={plan}>
           <option value="member">Member</option>
-          <option value="paid">Paid member</option>
+          <option value="paid">Village Member</option>
         </select>
         <span className="hint">
           Set by hand until payments are live, then Stripe keeps it right.

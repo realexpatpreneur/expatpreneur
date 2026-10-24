@@ -162,7 +162,7 @@ export function CourseForm({
           <span>Who can take it</span>
           <select name="tier" defaultValue={course?.tier ?? "all"}>
             <option value="all">Every member</option>
-            <option value="paid">Paid members only</option>
+            <option value="paid">Village Members only</option>
           </select>
         </label>
         <label className="field">

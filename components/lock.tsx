@@ -2,15 +2,15 @@ import Link from "next/link";
 import { Ic } from "@/components/icon";
 
 // The prototype's lock(). A sun-coloured line that says what is behind
-// paid membership and offers the one way through. Seven screens use it
+// Village Membership and offers the one way through. Seven screens use it
 // there; one page here had it written out by hand.
 //
 // The bold line is the message. The small line and the button carry the
 // prototype's words unless a page needs its own.
 export function Lock({
   children,
-  note = "Included with paid membership.",
-  cta = "See paid membership",
+  note = "Included with Village Membership.",
+  cta = "See Village Membership",
   href = "/upgrade",
   style,
 }: {

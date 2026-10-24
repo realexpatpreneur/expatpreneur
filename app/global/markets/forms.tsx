@@ -83,7 +83,7 @@ export function PathwayForm({
           <span>Who can see the steps</span>
           <select name="tier" defaultValue={pathway?.tier ?? "all"}>
             <option value="all">Every member</option>
-            <option value="paid">Paid members only</option>
+            <option value="paid">Village Members only</option>
           </select>
         </label>
         <label className="field">

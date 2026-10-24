@@ -63,7 +63,7 @@ export async function replyToMarketPost(
   if (error) {
     return {
       error:
-        "That reply was refused. Answering a member in another Village is part of the paid plan.",
+        "That reply was refused. Answering a member in another Village is part of Village Membership.",
     };
   }
 

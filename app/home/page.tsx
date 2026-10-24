@@ -230,7 +230,7 @@ export default async function MemberHomePage() {
                 <p className="muted small">{profile.headline}</p>
                 <div className="tags" style={{ marginTop: 6 }}>
                   <span className={`tiertag ${profile.plan === "paid" ? "" : "free"}`}>
-                    {profile.plan === "paid" ? "Paid member" : "Member"}
+                    {profile.plan === "paid" ? "Village Member" : "Explorer"}
                   </span>
                 </div>
               </div>
@@ -324,7 +324,7 @@ export default async function MemberHomePage() {
 
           {profile.plan === "paid" ? null : (
             <Link className="panel panel-wash linkrow" href="/upgrade">
-              <h3 style={{ fontSize: 14 }}>The paid plan</h3>
+              <h3 style={{ fontSize: 14 }}>Village Membership</h3>
               <p className="muted small" style={{ marginTop: 6 }}>
                 Contact members in any Village, attend their events, and
                 promote what you do.

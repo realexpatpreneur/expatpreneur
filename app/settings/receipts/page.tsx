@@ -46,7 +46,7 @@ export default async function ReceiptsPage() {
       date: p.created_at,
       item:
         p.kind === "membership"
-          ? "Paid membership"
+          ? "Village Membership"
           : p.kind === "event_ticket"
             ? `${events?.find((e) => e.id === p.event_id)?.title ?? "Event"} ticket`
             : p.kind,

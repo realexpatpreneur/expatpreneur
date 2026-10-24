@@ -147,7 +147,7 @@ export default async function LiveSessionPage({
             </span>{" "}
             {village?.name ? <span className="chip">{village.name}</span> : null}{" "}
             {session.tier === "paid" ? (
-              <span className="chip chip-sun">Paid members</span>
+              <span className="chip chip-sun">Village Members</span>
             ) : null}{" "}
             {session.recording !== "off" ? (
               <span className="chip">Recorded</span>
@@ -308,7 +308,7 @@ export default async function LiveSessionPage({
                   <>
                     <h3>{blocked}</h3>
                     <Link className="btn btn-ghost" href="/upgrade">
-                      See the paid plan
+                      See Village Membership
                     </Link>
                   </>
                 ) : mine && ["admitted", "waiting"].includes(mine.state) ? (
@@ -425,11 +425,11 @@ export default async function LiveSessionPage({
                     ? "Anyone with the link, whether they are a member or not."
                     : session.audience === "global"
                       ? session.tier === "paid"
-                        ? "Paid members from every Village."
+                        ? "Village Members from every Village."
                         : "Members from every Village."
                       : session.audience === "circle"
                         ? "One Circle."
-                        : `${village?.name ?? "This Village"}, and paid members visiting from elsewhere.`}
+                        : `${village?.name ?? "This Village"}, and Village Members visiting from elsewhere.`}
                 </p>
               </div>
             </div>

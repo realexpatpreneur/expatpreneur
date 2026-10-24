@@ -31,7 +31,7 @@ export function PostForm({ villageName }: { villageName: string | null }) {
         </select>
         <span className="hint">
           Members in other Villages can read either way. Replying across
-          Villages is part of the paid plan.
+          Villages is part of Village Membership.
         </span>
       </label>
 

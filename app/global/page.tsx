@@ -156,7 +156,7 @@ export default async function GlobalOverviewPage() {
           <div className="panel">
             <SecHead title="Membership" href="/global/plans" label="Plans" />
             <dl className="kv" style={{ gridTemplateColumns: "1fr auto", marginTop: 8 }}>
-              <dt>On the paid plan</dt>
+              <dt>Village Members</dt>
               <dd>{paid ?? 0}</dd>
               <dt>Everyone else</dt>
               <dd>{Math.max(0, (members ?? 0) - (paid ?? 0))}</dd>

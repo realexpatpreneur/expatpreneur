@@ -70,7 +70,7 @@ export default async function MarketsPage() {
                             {progress.done} of {progress.steps} steps
                           </span>
                         ) : locked ? (
-                          <span className="chip chip-sun">Paid plan</span>
+                          <span className="chip chip-sun">Village Membership</span>
                         ) : (
                           <span className="chip">{pathway.title}</span>
                         )}

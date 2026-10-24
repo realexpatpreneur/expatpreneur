@@ -23,7 +23,7 @@ export default async function DirectoryPage({
 
   // Looking is open to every member, which is what the page has always
   // said in the line below the tabs. Contacting somebody in another
-  // Village is the part that needs the paid plan, and the member card
+  // Village is the part that needs Village Membership, and the member card
   // applies that itself.
   //
   // What a free member finds elsewhere is whoever chose to be listed
@@ -127,7 +127,7 @@ export default async function DirectoryPage({
           {paid ? null : (
             <Lock style={{ marginBottom: 18 }}>
               You can browse every Village. Contacting members in other
-              Villages is included with paid membership.
+              Villages is included with Village Membership.
             </Lock>
           )}
 

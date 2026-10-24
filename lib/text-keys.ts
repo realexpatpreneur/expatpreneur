@@ -88,7 +88,7 @@ export const TEXT_PAGES: TextPage[] = [
         label: "Teaching panel, text",
         long: true,
         fallback:
-          "Paid members can apply to become educators and earn from their workshops.",
+          "Village Members can apply to become educators and earn from their workshops.",
       },
     ],
   },

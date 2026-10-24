@@ -211,7 +211,7 @@ export default async function HomePage() {
             <h2 style={{ fontSize: 22 }}>Ready to find your Village?</h2>
             <p style={{ marginTop: 6 }}>
               ExpatPreneurs is by invitation. Membership itself is free; the
-              paid plan adds every Village.
+              Village Membership adds every Village.
             </p>
           </div>
           <Link className="btn btn-mint" href="/apply">

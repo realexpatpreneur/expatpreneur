@@ -174,10 +174,10 @@ export function EventForm({
             <span>Membership</span>
             <select name="tier" defaultValue={event?.tier ?? "all"}>
               <option value="all">All members</option>
-              <option value="paid">Paid members only</option>
+              <option value="paid">Village Members only</option>
             </select>
             <span className="hint">
-              Members from other Villages already need the paid plan to attend.
+              Members from other Villages already need Village Membership to attend.
             </span>
           </label>
         </div>

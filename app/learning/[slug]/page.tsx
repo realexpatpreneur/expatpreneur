@@ -106,7 +106,7 @@ export default async function CoursePage({
             <span className="chip">{course.level}</span>{" "}
             {course.duration ? <span className="chip">{course.duration}</span> : null}{" "}
             {course.tier === "paid" ? (
-              <span className="chip chip-sun">Paid plan</span>
+              <span className="chip chip-sun">Village Membership</span>
             ) : null}
           </p>
           <h1>{course.title}</h1>
@@ -251,13 +251,13 @@ export default async function CoursePage({
                   </>
                 ) : locked ? (
                   <>
-                    <h3>Part of the paid plan</h3>
+                    <h3>Part of Village Membership</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
-                      Some courses come with paid membership, along with the
+                      Some courses come with Village Membership, along with the
                       rest of the network.
                     </p>
                     <Link className="btn btn-ghost" href="/upgrade">
-                      See the paid plan
+                      See Village Membership
                     </Link>
                   </>
                 ) : enrolment ? (

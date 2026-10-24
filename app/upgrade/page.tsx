@@ -9,7 +9,7 @@ import {
   BillingPortalButton,
 } from "./forms";
 
-export const metadata = { title: "The paid plan, ExpatPreneurs Global" };
+export const metadata = { title: "Village Membership, ExpatPreneurs Global" };
 
 export default async function UpgradePage({
   searchParams,
@@ -33,9 +33,9 @@ export default async function UpgradePage({
   return (
     <WorkspaceShell kind="member" nav="/upgrade">
         <section className="sec">
-          <h1>The paid plan</h1>
+          <h1>Village Membership</h1>
           <p className="lead">
-            Membership is free, and stays free. The paid plan is the rest of
+            Explorer membership is free, and stays free. Village Membership is the rest of
             the network.
           </p>
           {state === "cancelled" ? (
@@ -59,7 +59,7 @@ export default async function UpgradePage({
               </div>
 
               <div className="panel">
-                <h3>What the paid plan adds</h3>
+                <h3>What Village Membership adds</h3>
                 <ul className="plain">
                   <li>Replying to members in any Village</li>
                   <li>Asking to connect, and messaging once they accept</li>
@@ -74,7 +74,7 @@ export default async function UpgradePage({
               <div className="panel">
                 {isPaid(member) ? (
                   <>
-                    <h3>You are on the paid plan</h3>
+                    <h3>You are a Village Member</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
                       {subscription?.cancel_at
                         ? "It ends at the end of the period you have paid for."
@@ -102,7 +102,7 @@ export default async function UpgradePage({
                   <>
                     <h3>Not switched on yet</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
-                      The paid plan opens shortly. Until then, ask your Local
+                      Village Membership opens shortly. Until then, ask your Local
                       Admin if you need to reach another Village.
                     </p>
                     <Link className="btn btn-ghost" href="/home">

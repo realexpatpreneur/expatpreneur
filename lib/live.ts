@@ -56,12 +56,12 @@ export function joinBlock(
   if (session.visibility === "public" && session.allow_guests) return null;
   if (!member) return "This room is for members.";
   if (session.tier === "paid" && member.plan !== "paid") {
-    return "This room is open to paid members.";
+    return "This room is open to Village Members.";
   }
   if (session.audience === "village" && session.audience_id !== member.village_id) {
     return member.plan === "paid"
       ? null
-      : "Rooms in other Villages are part of the paid plan.";
+      : "Rooms in other Villages are part of Village Membership.";
   }
   if (session.audience === "circle" && session.audience_id !== member.circle_id) {
     return "This room is for one Circle.";

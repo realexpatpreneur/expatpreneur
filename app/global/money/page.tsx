@@ -89,7 +89,7 @@ export default async function GlobalMoneyPage() {
       <section className="sec">
         <div className="g3">
           <div className="panel">
-            <h3>Paid members</h3>
+            <h3>Village Members</h3>
             <p className="lead" style={{ margin: 0 }}>{paidMembers ?? 0}</p>
           </div>
           <div className="panel">

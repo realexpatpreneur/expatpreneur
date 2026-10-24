@@ -20,7 +20,7 @@ export default async function GroupsPage() {
     supabase.from("group_members").select("group_id").eq("profile_id", member.id),
   ]);
 
-  // Hubs are part of paid membership. The list stays visible, because
+  // Hubs are part of Village Membership. The list stays visible, because
   // finding your trade here is part of what brings people in.
   const paid = isPaid(member);
   const joined = new Set((mine ?? []).map((m) => m.group_id));

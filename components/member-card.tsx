@@ -9,7 +9,7 @@ import { Ic } from "@/components/icon";
 // The action follows the prototype's rule, which is the rule the member
 // profile page already applies: somebody in your own Village can be
 // messaged, and somebody in another Village needs a connection, which
-// is part of the paid plan.
+// is part of Village Membership.
 //
 // The prototype's card also carries nationalities. Migration 0015 took
 // that column away from members deliberately, so there is nothing to
@@ -73,7 +73,7 @@ export function MemberCard({
       action = (
         <Link className="chip chip-sun" href="/upgrade">
           <Ic name="lock" style={{ width: 13, height: 13 }} />
-          Paid members can contact
+          Village Members can contact
         </Link>
       );
     }

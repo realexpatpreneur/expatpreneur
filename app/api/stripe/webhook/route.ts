@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notify";
 
 // Stripe tells us what actually happened. Nothing in the browser is trusted
-// to move someone onto the paid plan or to confirm a ticket.
+// to move someone onto Village Membership or to confirm a ticket.
 export async function POST(request: Request) {
   if (!stripeReady) {
     return NextResponse.json({ error: "Payments are off" }, { status: 503 });
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       await notify(
         profileId,
         "membership",
-        "Your paid membership is live",
+        "Your Village Membership is live",
         "Every Village is open to you now: their members, their events and their resources.",
         "/directory?village=all"
       );

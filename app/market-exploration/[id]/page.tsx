@@ -125,13 +125,13 @@ export default async function MarketPostPage({
                     <MarketReplyForm postId={id} />
                   ) : (
                     <div className="panel panel-wash">
-                      <h3>Replying across Villages is part of the paid plan</h3>
+                      <h3>Replying across Villages is part of Village Membership</h3>
                       <p className="muted small">
                         You can read every post here. Answering a member in
-                        another Village comes with paid membership.
+                        another Village comes with Village Membership.
                       </p>
                       <Link className="btn btn-ghost" href="/upgrade">
-                        See the paid plan
+                        See Village Membership
                       </Link>
                     </div>
                   )}
