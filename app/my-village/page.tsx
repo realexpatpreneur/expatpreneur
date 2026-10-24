@@ -43,7 +43,10 @@ export default async function VillageAskOfferPage({
   const [{ data: authors }, { data: replies }, { data: leadRoles }] =
     await Promise.all([
       authorIds.length
-        ? supabase.from("profiles").select("id, full_name, headline").in("id", authorIds)
+        ? supabase
+            .from("profiles")
+            .select("id, full_name, headline, avatar_url")
+            .in("id", authorIds)
         : Promise.resolve({ data: [] }),
       supabase
         .from("ask_replies")
@@ -61,7 +64,10 @@ export default async function VillageAskOfferPage({
 
   const adminIds = (leadRoles ?? []).map((r) => r.profile_id);
   const { data: admins } = adminIds.length
-    ? await supabase.from("profiles").select("id, full_name, headline").in("id", adminIds)
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, headline, avatar_url")
+        .in("id", adminIds)
     : { data: [] };
 
   const authorOf = (id: string) => authors?.find((a) => a.id === id);
@@ -101,6 +107,7 @@ export default async function VillageAskOfferPage({
                       : member.villageName ?? "Your Village"
                   }
                   replies={replyCount(post.id)}
+                  authorAvatar={authorOf(post.author_id)?.avatar_url ?? null}
                   author={authorOf(post.author_id)?.full_name ?? "A member"}
                   when={timeAgo(post.created_at)}
                 />
@@ -141,7 +148,7 @@ export default async function VillageAskOfferPage({
               <h3 style={{ fontSize: 14 }}>Local Admins</h3>
               {admins.map((a) => (
                 <div className="li" key={a.id}>
-                  <Av name={a.full_name} className="av-sm" />
+                  <Av name={a.full_name} className="av-sm" src={a.avatar_url ?? null} />
                   <div className="grow">
                     <b>{a.full_name}</b>
                   </div>

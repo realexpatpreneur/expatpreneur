@@ -26,7 +26,10 @@ export default async function VillageCirclesPage() {
     : { data: [] };
   const hostIds = (rows ?? []).map((r) => r.host_id).filter(Boolean) as string[];
   const { data: hosts } = hostIds.length
-    ? await supabase.from("profiles").select("id, full_name, headline").in("id", hostIds)
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, headline, avatar_url")
+        .in("id", hostIds)
     : { data: [] };
 
   const rowOf = (id: string) => rows?.find((r) => r.id === id);
@@ -65,7 +68,11 @@ export default async function VillageCirclesPage() {
               </div>
               {host ? (
                 <div className="li" style={{ padding: 0 }}>
-                  <Av name={host.full_name} className="av-sm" />
+                  <Av
+                    name={host.full_name}
+                    className="av-sm"
+                    src={host.avatar_url ?? null}
+                  />
                   <div className="grow">
                     <b>{host.full_name}</b>
                     <span className="muted small">Circle Host</span>

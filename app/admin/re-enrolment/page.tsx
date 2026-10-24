@@ -36,7 +36,9 @@ export default async function ReEnrolmentPage() {
     villageId
       ? supabase
           .from("founding_invites")
-          .select("id, full_name, email, phone, status, last_contact, token")
+          .select(
+            "id, full_name, email, phone, status, last_contact, token, avatar_url"
+          )
           .eq("village_id", villageId)
           .order("full_name")
       : Promise.resolve({ data: [] }),
@@ -78,7 +80,11 @@ export default async function ReEnrolmentPage() {
                   <tr key={person.id}>
                     <td>
                       <div className="row" style={{ gap: 8 }}>
-                        <Av name={person.full_name} className="av-sm" />
+                        <Av
+                          name={person.full_name}
+                          className="av-sm"
+                          src={person.avatar_url ?? null}
+                        />
                         <div>
                           <b>{person.full_name}</b>
                           <div className="muted small">

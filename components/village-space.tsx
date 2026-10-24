@@ -89,6 +89,7 @@ export function AskCard({
   scope,
   replies,
   author,
+  authorAvatar = null,
   when,
 }: {
   id: string;
@@ -98,6 +99,7 @@ export function AskCard({
   scope: string;
   replies: number;
   author: string;
+  authorAvatar?: string | null;
   when: string;
 }) {
   const offer = kind === "offer";
@@ -120,7 +122,7 @@ export function AskCard({
         </div>
         <b style={{ fontWeight: 600 }}>{title}</b>
         <div className="row small muted" style={{ marginTop: 4 }}>
-          <Av name={author} className="av-sm" />
+          <Av name={author} className="av-sm" src={authorAvatar} />
           {author}, {when}
         </div>
       </div>

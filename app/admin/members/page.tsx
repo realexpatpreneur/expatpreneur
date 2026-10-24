@@ -22,7 +22,9 @@ export default async function AdminMembersPage({
   // profiles table no longer hands those columns to anybody signed in.
   let query = supabase
     .from("member_records")
-    .select("id, full_name, email, headline, status, plan, village_id, circle_id")
+    .select(
+      "id, full_name, email, headline, status, plan, village_id, circle_id, avatar_url"
+    )
     .order("full_name")
     .limit(200);
 
@@ -99,7 +101,11 @@ export default async function AdminMembersPage({
             <tr key={member.id}>
               <td>
                 <Link className="row" href={`/admin/members/${member.id}`}>
-                  <Av name={member.full_name} className="av-sm" />
+                  <Av
+                    name={member.full_name}
+                    className="av-sm"
+                    src={member.avatar_url ?? null}
+                  />
                   <div>
                     <b>{member.full_name}</b>
                     <div className="muted small">{member.email}</div>

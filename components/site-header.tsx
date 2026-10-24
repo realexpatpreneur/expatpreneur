@@ -56,7 +56,11 @@ export async function SiteHeader() {
               Your Village
             </Link>
             <Link href="/me" aria-label={name ?? "You"}>
-              <Av name={name ?? "You"} className="av-sm" />
+              <Av
+                name={name ?? "You"}
+                className="av-sm"
+                src={member?.avatar_url ?? null}
+              />
             </Link>
           </>
         ) : (

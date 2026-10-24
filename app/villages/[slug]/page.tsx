@@ -57,14 +57,22 @@ export default async function VillagePublicPage({
     // publicly are named.
     supabase
       .from("member_roles")
-      .select("profile_id, profiles!inner(id, full_name, headline, public_profile)")
+      .select(
+        "profile_id, profiles!inner(id, full_name, headline, public_profile, avatar_url)"
+      )
       .eq("role", "local_admin")
       .eq("scope_id", village.id)
       .is("ended_at", null),
   ]);
 
   const hosts = ((admins ?? []) as unknown as {
-    profiles: { id: string; full_name: string; headline: string | null; public_profile: boolean };
+    profiles: {
+      id: string;
+      full_name: string;
+      headline: string | null;
+      public_profile: boolean;
+      avatar_url: string | null;
+    };
   }[])
     .map((row) => row.profiles)
     .filter((p) => p && p.public_profile);
@@ -202,7 +210,7 @@ export default async function VillagePublicPage({
                 ) : (
                   hosts.map((host) => (
                     <Link className="li linkrow" key={host.id} href={`/members/${host.id}`}>
-                      <Av name={host.full_name} />
+                      <Av name={host.full_name} src={host.avatar_url ?? null} />
                       <div className="grow">
                         <b>{host.full_name}</b>
                         <span className="muted small">{host.headline}</span>

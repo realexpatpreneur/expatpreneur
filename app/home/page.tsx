@@ -28,7 +28,7 @@ export default async function MemberHomePage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("full_name, headline, status, plan, village_id, circle_id")
+    .select("full_name, headline, status, plan, village_id, circle_id, avatar_url")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -106,10 +106,17 @@ export default async function MemberHomePage() {
     ),
   ] as string[];
   const { data: authors } = authorIds.length
-    ? await supabase.from("profiles").select("id, full_name, headline").in("id", authorIds)
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, headline, avatar_url")
+        .in("id", authorIds)
     : { data: [] };
   const who = (id: string | null) =>
-    authors?.find((a) => a.id === id) ?? { full_name: "A member", headline: null };
+    authors?.find((a) => a.id === id) ?? {
+      full_name: "A member",
+      headline: null,
+      avatar_url: null,
+    };
 
   const items: FeedItem[] = [];
 
@@ -117,6 +124,7 @@ export default async function MemberHomePage() {
     const person = who(a.author_id);
     items.push({
       who: person.full_name,
+      avatar: person.avatar_url,
       role: person.headline,
       when: ago(a.sent_at as string),
       kind: "Village announcement",
@@ -133,6 +141,7 @@ export default async function MemberHomePage() {
     const person = who(a.author_id);
     items.push({
       who: person.full_name,
+      avatar: person.avatar_url,
       role: person.headline,
       when: ago(a.created_at),
       kind: a.kind === "offer" ? "Offer" : "Ask",
@@ -194,7 +203,7 @@ export default async function MemberHomePage() {
 
       <div className="feedlayout">
         <div className="feedcol">
-          <Compose name={profile.full_name} />
+          <Compose name={profile.full_name} avatar={profile.avatar_url} />
           {items.length ? (
             items.map((item, i) => <FeedPost key={i} item={item} />)
           ) : (
@@ -211,7 +220,11 @@ export default async function MemberHomePage() {
         <aside className="feedside">
           <div className="panel">
             <div className="row" style={{ gap: 12 }}>
-              <Av name={profile.full_name} className="av-lg" />
+              <Av
+                name={profile.full_name}
+                className="av-lg"
+                src={profile.avatar_url ?? null}
+              />
               <div className="grow">
                 <b>{profile.full_name}</b>
                 <p className="muted small">{profile.headline}</p>

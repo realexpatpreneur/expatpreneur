@@ -17,6 +17,7 @@ export type ProfilePerson = {
   can_help_with?: string | null;
   looking_for?: string | null;
   founding?: boolean | null;
+  avatar_url?: string | null;
 };
 
 const handleOf = (name: string) =>
@@ -135,7 +136,11 @@ export function ProfileView({
       <div className="sp-card">
         <div className="sp-row">
           <span className="sp-avatar">
-            <Av name={person.full_name} className="sp-av" />
+            <Av
+              name={person.full_name}
+              className="sp-av"
+              src={person.avatar_url ?? null}
+            />
             {person.founding ? (
               <span className="sp-badge" title="Founding member">
                 <Ic name="star" />

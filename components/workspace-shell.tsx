@@ -41,6 +41,7 @@ export async function WorkspaceShell({
   // nothing extra.
   const member = name ? null : await currentMember();
   const who: string = name ?? member?.full_name ?? "You";
+  const face = member?.avatar_url ?? null;
 
   const spaces = SPACES[kind] ?? SPACES.member;
   const dark = kind === "admin" || kind === "global";
@@ -48,7 +49,7 @@ export async function WorkspaceShell({
 
   return (
     <div className={`mapp v2 ${spaces.length > 1 ? "" : "no-rail"} ${dark ? "admin" : ""} shell-${kind}`}>
-      <WorkspaceNav kind={kind} name={who} dark={dark} />
+      <WorkspaceNav kind={kind} name={who} dark={dark} avatar={face} />
 
       <div className="mmain">
         <header className="mtop">
@@ -75,7 +76,7 @@ export async function WorkspaceShell({
             <span className="dot" />
           </Link>
           <Link className="show-m" href="/more">
-            <Av name={who} className="av-sm" />
+            <Av name={who} className="av-sm" src={face} />
           </Link>
         </header>
 

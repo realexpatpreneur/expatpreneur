@@ -129,6 +129,7 @@ export type BusinessRow = {
   offer?: string | null;
   logo_url?: string | null;
   owner_name?: string | null;
+  owner_avatar?: string | null;
   village_name?: string | null;
 };
 
@@ -164,7 +165,7 @@ export function BusinessCard({ biz, i = 0, href }: { biz: BusinessRow; i?: numbe
         ) : null}
         {biz.owner_name ? (
           <div className="row small muted" style={{ marginTop: "auto" }}>
-            <Av name={biz.owner_name} className="av-sm" />
+            <Av name={biz.owner_name} className="av-sm" src={biz.owner_avatar ?? null} />
             {biz.owner_name}
             {biz.village_name ? `, ${biz.village_name}` : ""}
           </div>

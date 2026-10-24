@@ -18,10 +18,12 @@ export function WorkspaceNav({
   kind,
   name,
   dark,
+  avatar = null,
 }: {
   kind: string;
   name: string;
   dark: boolean;
+  avatar?: string | null;
 }) {
   const path = usePathname() ?? "/";
   const spaces = SPACES[kind] ?? SPACES.member;
@@ -65,7 +67,7 @@ export function WorkspaceNav({
           ))}
           <div className="rail-foot">
             <Link className="rail-tile rail-you" href="/me" title={name} aria-label={name}>
-              <Av name={name} className="av-sm" />
+              <Av name={name} className="av-sm" src={avatar} />
             </Link>
           </div>
         </nav>

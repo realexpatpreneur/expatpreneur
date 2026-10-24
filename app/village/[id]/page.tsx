@@ -28,7 +28,7 @@ export default async function PostPage({
   const [{ data: author }, { data: replies }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, full_name, headline, village_id")
+      .select("id, full_name, headline, village_id, avatar_url")
       .eq("id", post.author_id)
       .maybeSingle(),
     supabase
@@ -42,7 +42,7 @@ export default async function PostPage({
   const { data: replyAuthors } = replyAuthorIds.length
     ? await supabase
         .from("profiles")
-        .select("id, full_name, headline")
+        .select("id, full_name, headline, avatar_url")
         .in("id", replyAuthorIds)
     : { data: [] };
 
@@ -83,7 +83,11 @@ export default async function PostPage({
             <h1 style={{ fontSize: 20, marginTop: 12 }}>{post.title}</h1>
 
             <div className="row small muted" style={{ marginTop: 8 }}>
-              <Av name={author?.full_name ?? "A member"} className="av-sm" />
+              <Av
+                name={author?.full_name ?? "A member"}
+                className="av-sm"
+                src={author?.avatar_url ?? null}
+              />
               <Link href={mine ? "/me" : `/members/${post.author_id}`}>
                 {author?.full_name ?? "A member"}
               </Link>
@@ -123,12 +127,11 @@ export default async function PostPage({
             <div className="divide" style={{ marginTop: 6 }}>
               {(replies ?? []).length ? (
                 (replies ?? []).map((r) => {
-                  const who =
-                    replyAuthors?.find((a) => a.id === r.author_id)?.full_name ??
-                    "A member";
+                  const them = replyAuthors?.find((a) => a.id === r.author_id);
+                  const who = them?.full_name ?? "A member";
                   return (
                     <div className="li" style={{ alignItems: "flex-start" }} key={r.id}>
-                      <Av name={who} className="av-sm" />
+                      <Av name={who} className="av-sm" src={them?.avatar_url ?? null} />
                       <div className="grow">
                         <b>{who}</b>
                         <p className="small" style={{ whiteSpace: "pre-wrap" }}>

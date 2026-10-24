@@ -4,6 +4,7 @@ import { Ic } from "@/components/icon";
 
 export type FeedItem = {
   who: string;
+  avatar?: string | null;
   role?: string | null;
   when: string;
   kind: string;
@@ -21,7 +22,7 @@ export function FeedPost({ item }: { item: FeedItem }) {
   return (
     <article className="fpost">
       <div className="fp-head">
-        <Av name={item.who} className="av-sm" />
+        <Av name={item.who} className="av-sm" src={item.avatar ?? null} />
         <div className="fp-who">
           <b>{item.who}</b>
           {item.role ? <span>{item.role}</span> : null}
@@ -48,10 +49,16 @@ export function FeedPost({ item }: { item: FeedItem }) {
 }
 
 // The line at the top of the feed that opens the posting form.
-export function Compose({ name }: { name: string }) {
+export function Compose({
+  name,
+  avatar = null,
+}: {
+  name: string;
+  avatar?: string | null;
+}) {
   return (
     <div className="fcompose">
-      <Av name={name} className="av-sm" />
+      <Av name={name} className="av-sm" src={avatar} />
       <Link className="fcompose-box" href="/village/new">
         Ask for something, or offer what you can
       </Link>

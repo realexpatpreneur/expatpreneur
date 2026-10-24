@@ -10,6 +10,7 @@ export type Member = {
   village_id: string | null;
   circle_id: string | null;
   villageName: string | null;
+  avatar_url: string | null;
 };
 
 // Who is signed in. Asked once per page, however many times the page,
@@ -36,7 +37,7 @@ export const currentMember = cache(async function currentMember(): Promise<
   const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, full_name, status, plan, village_id, circle_id")
+    .select("id, full_name, status, plan, village_id, circle_id, avatar_url")
     .eq("id", user.id)
     .maybeSingle();
 
