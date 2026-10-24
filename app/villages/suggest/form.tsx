@@ -3,6 +3,9 @@
 import { useActionState } from "react";
 import { Captcha } from "@/components/captcha";
 import { suggestCity, type CityState } from "./actions";
+import { Combo } from "@/components/combo";
+import { CITIES } from "@/lib/lists/cities";
+import { COUNTRIES } from "@/lib/lists/countries";
 
 export function CitySuggestionForm({
   city = "",
@@ -30,14 +33,21 @@ export function CitySuggestionForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
 
       <div className="g2">
-        <label className="field">
-          <span>City</span>
-          <input name="city" required defaultValue={city} />
-        </label>
-        <label className="field">
-          <span>Country</span>
-          <input name="country" required defaultValue={country} />
-        </label>
+        <Combo
+          name="city"
+          label="City"
+          options={CITIES}
+          value={city}
+          allowNew
+          required
+        />
+        <Combo
+          name="country"
+          label="Country"
+          options={COUNTRIES}
+          value={country}
+          required
+        />
       </div>
 
       <label className="field">

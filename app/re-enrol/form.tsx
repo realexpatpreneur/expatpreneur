@@ -3,6 +3,8 @@
 import { useActionState } from "react";
 import { confirmPlace, notForMe, type ReEnrolState } from "./actions";
 import { Ic } from "@/components/icon";
+import { Combo } from "@/components/combo";
+import { CITIES } from "@/lib/lists/cities";
 
 type Invite = {
   full_name: string;
@@ -70,10 +72,14 @@ export function ReEnrolForm({
             />
           </label>
 
-          <label className="field">
-            <span>Currently based in</span>
-            <input name="city" defaultValue={cityName} />
-          </label>
+          <Combo
+            name="city"
+            label="Currently based in"
+            options={CITIES}
+            value={cityName}
+            allowNew
+            icon="pin"
+          />
 
           <label className="field">
             <span>Business name</span>

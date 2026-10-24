@@ -11,6 +11,8 @@ import {
 } from "./actions";
 import { Combo } from "@/components/combo";
 import { TIMEZONES } from "@/lib/lists/timezones";
+import { CITIES } from "@/lib/lists/cities";
+import { COUNTRIES } from "@/lib/lists/countries";
 
 export function VillageForm({
   village,
@@ -41,17 +43,24 @@ export function VillageForm({
           <span>Name</span>
           <input name="name" required defaultValue={village?.name ?? ""} />
         </label>
-        <label className="field">
-          <span>City</span>
-          <input name="city" required defaultValue={village?.city ?? ""} />
-        </label>
+        <Combo
+          name="city"
+          label="City"
+          options={CITIES}
+          value={village?.city ?? ""}
+          allowNew
+          required
+        />
       </div>
 
       <div className="g2">
-        <label className="field">
-          <span>Country</span>
-          <input name="country" required defaultValue={village?.country ?? ""} />
-        </label>
+        <Combo
+          name="country"
+          label="Country"
+          options={COUNTRIES}
+          value={village?.country ?? ""}
+          required
+        />
         <Combo
           name="timezone"
           label="Time zone"

@@ -2,6 +2,9 @@
 
 import { useActionState } from "react";
 import { savePathway, saveStep, type PathwayAdminState } from "./actions";
+import { Combo } from "@/components/combo";
+import { CITIES } from "@/lib/lists/cities";
+import { COUNTRIES } from "@/lib/lists/countries";
 
 export function PathwayForm({
   pathway,
@@ -40,14 +43,20 @@ export function PathwayForm({
       </label>
 
       <div className="g2">
-        <label className="field">
-          <span>Country</span>
-          <input name="country" required defaultValue={pathway?.country ?? ""} />
-        </label>
-        <label className="field">
-          <span>City</span>
-          <input name="city" defaultValue={pathway?.city ?? ""} />
-        </label>
+        <Combo
+          name="country"
+          label="Country"
+          options={COUNTRIES}
+          value={pathway?.country ?? ""}
+          required
+        />
+        <Combo
+          name="city"
+          label="City"
+          options={CITIES}
+          value={pathway?.city ?? ""}
+          allowNew
+        />
       </div>
 
       <label className="field">

@@ -7,6 +7,7 @@ import { submitApplication, type ApplyState } from "./actions";
 import { Combo } from "@/components/combo";
 import { COUNTRIES, NATIONALITIES } from "@/lib/lists/countries";
 import { LANGUAGES } from "@/lib/lists/languages";
+import { CITIES } from "@/lib/lists/cities";
 
 type Village = { slug: string; name: string; status: string };
 
@@ -102,14 +103,19 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
           <span>Phone (WhatsApp)</span>
           <input name="phone" autoComplete="tel" />
         </label>
-        <label className="field">
-          <span>City you live in now</span>
-          <input name="city" required />
-        </label>
-        <label className="field">
-          <span>Country</span>
-          <input name="country" required />
-        </label>
+        <Combo
+          name="city"
+          label="City you live in now"
+          options={CITIES}
+          allowNew
+          required
+        />
+        <Combo
+          name="country"
+          label="Country"
+          options={COUNTRIES}
+          required
+        />
         <Combo
           name="nationalities"
           label="Nationalities"

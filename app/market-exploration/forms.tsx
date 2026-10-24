@@ -7,6 +7,9 @@ import {
   closeMarketPost,
   type MarketState,
 } from "./actions";
+import { Combo } from "@/components/combo";
+import { CITIES } from "@/lib/lists/cities";
+import { COUNTRIES } from "@/lib/lists/countries";
 
 const stages = [
   ["exploring", "Just exploring"],
@@ -39,16 +42,21 @@ export function MarketPostForm() {
         <input name="industry" required placeholder="Beauty, hospitality, software" />
       </label>
 
-      <label className="field">
-        <span>Country</span>
-        <input name="country" required placeholder="Where you are looking" />
-      </label>
+      <Combo
+        name="country"
+        label="Country"
+        options={COUNTRIES}
+        placeholder="Where you are looking"
+        required
+      />
 
-      <label className="field">
-        <span>City</span>
-        <input name="city" />
-        <span className="hint">Leave it out if the whole country is fine.</span>
-      </label>
+      <Combo
+        name="city"
+        label="City"
+        options={CITIES}
+        allowNew
+        hint="Leave it out if the whole country is fine."
+      />
 
       <label className="field">
         <span>How far along are you?</span>
