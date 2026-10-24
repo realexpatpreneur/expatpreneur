@@ -27,14 +27,16 @@ insert into auth.users (id, email) values
   ('bbbbbbbb-0000-0000-0000-000000000001', 'free@test.invalid'),
   ('bbbbbbbb-0000-0000-0000-000000000002', 'paid@test.invalid'),
   ('bbbbbbbb-0000-0000-0000-000000000003', 'admin@test.invalid'),
-  ('bbbbbbbb-0000-0000-0000-000000000004', 'left@test.invalid');
+  ('bbbbbbbb-0000-0000-0000-000000000004', 'left@test.invalid'),
+  ('bbbbbbbb-0000-0000-0000-000000000005', 'quiet@test.invalid');
 
 insert into profiles (id, full_name, email, phone, status, plan, village_id, public_profile, nationalities)
 values
   ('bbbbbbbb-0000-0000-0000-000000000001', 'Free Alpha',  'free@test.invalid',  '+100000001', 'active', 'member', 'aaaaaaaa-0000-0000-0000-000000000001', false, array['Testish']),
   ('bbbbbbbb-0000-0000-0000-000000000002', 'Paid Beta',   'paid@test.invalid',  '+100000002', 'active', 'paid',   'aaaaaaaa-0000-0000-0000-000000000002', true,  array['Testish']),
   ('bbbbbbbb-0000-0000-0000-000000000003', 'Admin Alpha', 'admin@test.invalid', '+100000003', 'active', 'member', 'aaaaaaaa-0000-0000-0000-000000000001', false, array['Testish']),
-  ('bbbbbbbb-0000-0000-0000-000000000004', 'Left Alpha',  'left@test.invalid',  '+100000004', 'left',   'member', 'aaaaaaaa-0000-0000-0000-000000000001', true,  array['Testish']);
+  ('bbbbbbbb-0000-0000-0000-000000000004', 'Left Alpha',  'left@test.invalid',  '+100000004', 'left',   'member', 'aaaaaaaa-0000-0000-0000-000000000001', true,  array['Testish']),
+  ('bbbbbbbb-0000-0000-0000-000000000005', 'Quiet Beta',  'quiet@test.invalid', '+100000005', 'active', 'member', 'aaaaaaaa-0000-0000-0000-000000000002', false, array['Testish']);
 
 insert into member_roles (profile_id, role, scope, scope_id)
 values ('bbbbbbbb-0000-0000-0000-000000000003', 'local_admin', 'village', 'aaaaaaaa-0000-0000-0000-000000000001');
@@ -156,6 +158,7 @@ declare
   free  uuid := 'bbbbbbbb-0000-0000-0000-000000000001';
   paid  uuid := 'bbbbbbbb-0000-0000-0000-000000000002';
   admin uuid := 'bbbbbbbb-0000-0000-0000-000000000003';
+  quiet uuid := 'bbbbbbbb-0000-0000-0000-000000000005';
 begin
   return query select ''::text, '--- a member''s private columns ---'::text, null::text;
 
@@ -202,6 +205,14 @@ begin
     'a free member sees their own Village',
     pg_temp.can_read(format('select count(*) from profiles where id = %L', admin)),
     true);
+  return query select * from pg_temp.verdict(
+    'a free member sees a listed member in another Village',
+    pg_temp.can_read(format('select count(*) from profiles where id = %L', paid)),
+    true);
+  return query select * from pg_temp.verdict(
+    'a free member does not see an unlisted member in another Village',
+    pg_temp.can_read(format('select count(*) from profiles where id = %L', quiet)),
+    false);
   reset role;
 
   perform pg_temp.as_person(paid);

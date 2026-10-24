@@ -21,10 +21,16 @@ export default async function DirectoryPage({
     supabase.from("circles").select("id, name, village_id").order("name"),
   ]);
 
-  // Your own Village is open to every member. The rest of the network
-  // is part of the paid plan.
+  // Looking is open to every member, which is what the page has always
+  // said in the line below the tabs. Contacting somebody in another
+  // Village is the part that needs the paid plan, and the member card
+  // applies that itself.
+  //
+  // What a free member finds elsewhere is whoever chose to be listed
+  // publicly, since that is what row level security lets them read. The
+  // line under the heading says so rather than promising the lot.
   const paid = isPaid(member);
-  const scope = village === "all" && paid ? "all" : "mine";
+  const scope = village === "all" ? "all" : "mine";
 
   let query = supabase
     .from("profiles")
@@ -86,7 +92,9 @@ export default async function DirectoryPage({
           <p className="lead">
             {scope === "mine"
               ? `Members in the ${member.villageName ?? "your"} Village.`
-              : "Members across every Village."}
+              : paid
+                ? "Members across every Village."
+                : "Your own Village in full, and members elsewhere who are listed publicly."}
           </p>
           <form className="searchrow">
             <input
@@ -106,18 +114,12 @@ export default async function DirectoryPage({
             >
               My Village
             </Link>
-            {paid ? (
-              <Link
-                className={`chip ${scope === "all" ? "chip-mint" : ""}`}
-                href="/directory?village=all"
-              >
-                Every Village
-              </Link>
-            ) : (
-              <Link className="chip" href="/upgrade">
-                Every Village, with the paid plan
-              </Link>
-            )}
+            <Link
+              className={`chip ${scope === "all" ? "chip-mint" : ""}`}
+              href="/directory?village=all"
+            >
+              Every Village
+            </Link>
           </div>
         </section>
 
