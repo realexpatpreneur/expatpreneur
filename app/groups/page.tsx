@@ -1,7 +1,8 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember } from "@/lib/member";
+import { requireMember, isPaid } from "@/lib/member";
+import { Lock } from "@/components/lock";
 
 export const metadata = { title: "Industry Groups, ExpatPreneurs Global" };
 
@@ -19,6 +20,9 @@ export default async function GroupsPage() {
     supabase.from("group_members").select("group_id").eq("profile_id", member.id),
   ]);
 
+  // Hubs are part of paid membership. The list stays visible, because
+  // finding your trade here is part of what brings people in.
+  const paid = isPaid(member);
   const joined = new Set((mine ?? []).map((m) => m.group_id));
   const sizeOf = (id: string) =>
     sizes?.find((s) => s.group_id === id)?.members ?? 0;
@@ -32,6 +36,11 @@ export default async function GroupsPage() {
             Dubai and one in Lisbon have more in common than either has with the
             software company next door.
           </p>
+          {paid ? null : (
+            <Lock style={{ marginTop: 14 }}>
+              Joining an Industry Hub is part of Village Membership.
+            </Lock>
+          )}
         </section>
 
         <section className="sec">
@@ -50,7 +59,9 @@ export default async function GroupsPage() {
                   <h3 style={{ marginTop: 10 }}>{group.name}</h3>
                   <p className="muted small">{group.description}</p>
                   <p className="muted small" style={{ marginBottom: 0 }}>
-                    {sizeOf(group.id)} members
+                    {paid
+                      ? `${sizeOf(group.id)} members`
+                      : "Open to Village Members"}
                     {joined.has(group.id) ? ". You are in this one." : ""}
                   </p>
                 </Link>

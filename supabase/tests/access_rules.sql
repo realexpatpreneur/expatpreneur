@@ -73,6 +73,13 @@ values ('bbbbbbbb-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-0000000
 insert into educator_profiles (profile_id, headline, about)
 values ('bbbbbbbb-0000-0000-0000-000000000002', 'Market entry in the Gulf', 'Did it twice.');
 
+insert into industry_groups (id, slug, name, industry, status)
+values ('cccccccc-0000-0000-0000-000000000001', 'test-hub', 'Test Hub', 'Hospitality', 'open');
+
+insert into pods (id, slug, name, purpose, village_id, capacity, status)
+values ('cccccccc-0000-0000-0000-000000000002', 'test-pod', 'Test Pod', 'Testing',
+        'aaaaaaaa-0000-0000-0000-000000000001', 8, 'open');
+
 -- ------------------------------------------------------------ the checks
 
 create or replace function pg_temp.as_person(who uuid) returns void
@@ -114,6 +121,17 @@ declare n int;
 begin
   execute query into n;
   return coalesce(n, 0) > 0;
+exception when others then
+  return false;
+end $$;
+
+-- Tries a write as whoever the session is pretending to be, then undoes
+-- it. A refusal is an answer, not an error, so it comes back as false.
+create or replace function pg_temp.can_write(query text)
+returns boolean language plpgsql as $$
+begin
+  execute query;
+  return true;
 exception when others then
   return false;
 end $$;
@@ -269,6 +287,49 @@ begin
     'a Local Admin sees who was put forward in their own Village',
     pg_temp.can_read('select count(*) from leadership_suggestions'),
     true);
+  reset role;
+
+  return query select ''::text, '--- Hubs and Pods are paid ---'::text, null::text;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a free member cannot join an Industry Hub',
+    pg_temp.can_write(format(
+      'insert into group_members (group_id, profile_id) values (%L, %L)',
+      'cccccccc-0000-0000-0000-000000000001', free)),
+    false);
+  return query select * from pg_temp.verdict(
+    'a free member cannot join a Growth Pod',
+    pg_temp.can_write(format(
+      'insert into pod_members (pod_id, profile_id) values (%L, %L)',
+      'cccccccc-0000-0000-0000-000000000002', free)),
+    false);
+  reset role;
+
+  perform pg_temp.as_person(paid);
+  return query select * from pg_temp.verdict(
+    'a paid member joins an Industry Hub',
+    pg_temp.can_write(format(
+      'insert into group_members (group_id, profile_id) values (%L, %L)',
+      'cccccccc-0000-0000-0000-000000000001', paid)),
+    true);
+  return query select * from pg_temp.verdict(
+    'a paid member joins a Growth Pod',
+    pg_temp.can_write(format(
+      'insert into pod_members (pod_id, profile_id) values (%L, %L)',
+      'cccccccc-0000-0000-0000-000000000002', paid)),
+    true);
+  return query select * from pg_temp.verdict(
+    'a paid member sees who is in a Hub',
+    pg_temp.can_read('select count(*) from group_members'),
+    true);
+  reset role;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a free member does not see who is in a Hub',
+    pg_temp.can_read('select count(*) from group_members'),
+    false);
   reset role;
 
   return query select ''::text, '--- a stranger ---'::text, null::text;

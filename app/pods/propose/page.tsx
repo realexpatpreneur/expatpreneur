@@ -1,12 +1,14 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
-import { requireMember } from "@/lib/member";
+import { requireMember, isPaid } from "@/lib/member";
+import { Lock } from "@/components/lock";
 import { ProposePodForm } from "./form";
 import { Crumbs } from "@/components/crumbs";
 
 export const metadata = { title: "Propose a Pod, ExpatPreneurs Global" };
 
 export default async function ProposePodPage() {
-  await requireMember("/pods/propose");
+  const member = await requireMember("/pods/propose");
+  const paid = isPaid(member);
 
   return (
     <WorkspaceShell kind="member" nav="/pods/propose">
@@ -21,7 +23,15 @@ export default async function ProposePodPage() {
 
         <section className="sec">
           <div className="gside">
-            <ProposePodForm />
+            {paid ? (
+              <ProposePodForm />
+            ) : (
+              <div className="panel">
+                <Lock note="">
+                  Proposing a Growth Pod is part of Village Membership.
+                </Lock>
+              </div>
+            )}
             <div className="stack">
               <div className="panel panel-wash">
                 <h3>What makes a Pod work</h3>

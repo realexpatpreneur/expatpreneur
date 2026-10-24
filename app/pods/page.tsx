@@ -1,7 +1,8 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember } from "@/lib/member";
+import { requireMember, isPaid } from "@/lib/member";
+import { Lock } from "@/components/lock";
 
 export const metadata = { title: "Pods, ExpatPreneurs Global" };
 
@@ -21,6 +22,7 @@ export default async function PodsPage() {
       supabase.from("villages").select("id, name"),
     ]);
 
+  const paid = isPaid(member);
   const joined = new Set((mine ?? []).map((p) => p.pod_id));
   const sizeOf = (id: string) =>
     sizes?.find((s) => s.pod_id === id) ?? { members: 0, places_left: 0 };
@@ -35,11 +37,17 @@ export default async function PodsPage() {
             Small and committed. A handful of members who meet on a rhythm and
             hold each other to what they said they would do.
           </p>
-          <p>
-            <Link className="btn btn-primary" href="/pods/propose">
-              Propose a Pod
-            </Link>
-          </p>
+          {paid ? (
+            <p>
+              <Link className="btn btn-primary" href="/pods/propose">
+                Propose a Pod
+              </Link>
+            </p>
+          ) : (
+            <Lock style={{ marginTop: 14 }}>
+              Joining or proposing a Growth Pod is part of Village Membership.
+            </Lock>
+          )}
         </section>
 
         <section className="sec">
@@ -60,8 +68,10 @@ export default async function PodsPage() {
                     <h3 style={{ marginTop: 10 }}>{pod.name}</h3>
                     <p className="muted small">{pod.purpose}</p>
                     <p className="muted small" style={{ marginBottom: 0 }}>
-                      Meets {pod.cadence}. {size.members} members,{" "}
-                      {size.places_left} places left
+                      Meets {pod.cadence}.{" "}
+                      {paid
+                        ? `${size.members} members, ${size.places_left} places left`
+                        : "Open to Village Members"}
                       {joined.has(pod.id) ? ". You are in this one." : ""}
                     </p>
                   </Link>
