@@ -12,6 +12,7 @@ import {
   type SettingsState,
 } from "./actions";
 import { Uploader } from "@/components/uploader";
+import { Combo } from "@/components/combo";
 
 // ---------------------------------------------------------------- Account
 
@@ -166,29 +167,29 @@ export function ProfileSettingsForm({
         <span className="hint">Members only. Never public.</span>
       </label>
 
-      <label className="field">
-        <span>Languages</span>
-        <input
-          name="languages"
-          defaultValue={(profile.languages ?? []).join(", ")}
-        />
-      </label>
+      <Combo
+        name="languages"
+        label="Languages"
+        list="languages"
+        multi
+        value={profile.languages ?? []}
+      />
 
       <div className="g2">
-        <label className="field">
-          <span>Markets you know</span>
-          <input
-            name="markets_known"
-            defaultValue={(profile.markets_known ?? []).join(", ")}
-          />
-        </label>
-        <label className="field">
-          <span>Where you have lived</span>
-          <input
-            name="lived_in"
-            defaultValue={(profile.lived_in ?? []).join(", ")}
-          />
-        </label>
+        <Combo
+          name="markets_known"
+          label="Markets you know"
+          list="countries"
+          multi
+          value={profile.markets_known ?? []}
+        />
+        <Combo
+          name="lived_in"
+          label="Where you have lived"
+          list="countries"
+          multi
+          value={profile.lived_in ?? []}
+        />
       </div>
 
       <button className="btn btn-primary" type="submit" disabled={pending}>

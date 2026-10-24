@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { Captcha } from "@/components/captcha";
 import { Ic } from "@/components/icon";
 import { submitApplication, type ApplyState } from "./actions";
+import { Combo } from "@/components/combo";
 
 type Village = { slug: string; name: string; status: string };
 
@@ -107,19 +108,27 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
           <span>Country</span>
           <input name="country" required />
         </label>
-        <label className="field">
-          <span>Nationalities</span>
-          <input name="nationalities" placeholder="Separate with commas" />
-          <span className="hint">Up to five.</span>
-        </label>
-        <label className="field">
-          <span>Languages you work in</span>
-          <input name="languages" placeholder="Separate with commas" />
-        </label>
-        <label className="field full">
-          <span>Countries you have lived in</span>
-          <input name="lived_in" placeholder="Separate with commas" />
-        </label>
+        <Combo
+          name="nationalities"
+          label="Nationalities"
+          list="nationalities"
+          multi
+          max={5}
+          hint="Up to five."
+        />
+        <Combo
+          name="languages"
+          label="Languages you work in"
+          list="languages"
+          multi
+        />
+        <Combo
+          name="lived_in"
+          label="Countries you have lived in"
+          list="countries"
+          multi
+          full
+        />
         <div className="field full privacy">
           <Ic name="globe" style={{ color: "#4074AE" }} />
           <span className="muted small">

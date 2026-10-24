@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { completeProfile, type WelcomeState } from "./actions";
+import { Combo } from "@/components/combo";
 
 type Profile = {
   full_name: string;
@@ -75,32 +76,31 @@ export function WelcomeForm({ profile }: { profile: Profile }) {
         <span className="hint">Members see this. The public never does.</span>
       </label>
 
-      <label className="field">
-        <span>Languages you speak</span>
-        <input
-          name="languages"
-          defaultValue={(profile.languages ?? []).join(", ")}
-          placeholder="Separate with commas"
-        />
-      </label>
+      <Combo
+        name="languages"
+        label="Languages you speak"
+        list="languages"
+        multi
+        value={profile.languages ?? []}
+      />
 
-      <label className="field">
-        <span>Markets you know</span>
-        <input
-          name="markets_known"
-          defaultValue={(profile.markets_known ?? []).join(", ")}
-          placeholder="Countries you have done business in"
-        />
-      </label>
+      <Combo
+        name="markets_known"
+        label="Markets you know"
+        list="countries"
+        multi
+        value={profile.markets_known ?? []}
+        placeholder="Countries you have done business in"
+      />
 
-      <label className="field">
-        <span>Where you have lived</span>
-        <input
-          name="lived_in"
-          defaultValue={(profile.lived_in ?? []).join(", ")}
-          placeholder="Your expat journey, in order"
-        />
-      </label>
+      <Combo
+        name="lived_in"
+        label="Where you have lived"
+        list="countries"
+        multi
+        value={profile.lived_in ?? []}
+        placeholder="Your expat journey, in order"
+      />
 
       <label className="check">
         <input

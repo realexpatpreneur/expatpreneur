@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { saveEducatorProfile, type EducatorProfileState } from "./actions";
+import { Combo } from "@/components/combo";
 
 export function EducatorProfileForm({
   profile,
@@ -52,23 +53,21 @@ export function EducatorProfileForm({
         />
       </label>
 
-      <label className="field">
-        <span>Languages you teach in</span>
-        <input
-          name="teaches_in"
-          defaultValue={(profile?.teaches_in ?? []).join(", ")}
-          placeholder="English, French"
-        />
-      </label>
+      <Combo
+        name="teaches_in"
+        label="Languages you teach in"
+        list="languages"
+        multi
+        value={profile?.teaches_in ?? []}
+      />
 
-      <label className="field">
-        <span>Markets you know</span>
-        <input
-          name="markets"
-          defaultValue={(profile?.markets ?? []).join(", ")}
-          placeholder="United Arab Emirates, Saudi Arabia"
-        />
-      </label>
+      <Combo
+        name="markets"
+        label="Markets you know"
+        list="countries"
+        multi
+        value={profile?.markets ?? []}
+      />
 
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}
