@@ -8,6 +8,8 @@ import {
   type EventFormState,
 } from "./actions";
 import { Uploader } from "@/components/uploader";
+import { Combo } from "@/components/combo";
+import { TIMEZONES } from "@/lib/lists/timezones";
 
 type Option = { value: string; label: string };
 
@@ -81,16 +83,12 @@ export function EventForm({
             <span>End time</span>
             <input name="end_time" type="time" />
           </label>
-          <label className="field">
-            <span>Time zone</span>
-            <select name="timezone" defaultValue="Asia/Dubai">
-              <option value="Asia/Dubai">Dubai</option>
-              <option value="Europe/Lisbon">Lisbon</option>
-              <option value="Europe/Paris">Paris</option>
-              <option value="Europe/Madrid">Madrid</option>
-              <option value="UTC">UTC</option>
-            </select>
-          </label>
+          <Combo
+            name="timezone"
+            label="Time zone"
+            options={TIMEZONES}
+            value="Asia/Dubai"
+          />
         </div>
         <label className="field">
           <span>Venue</span>

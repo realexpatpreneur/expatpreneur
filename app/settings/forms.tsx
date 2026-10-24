@@ -13,6 +13,7 @@ import {
 } from "./actions";
 import { Uploader } from "@/components/uploader";
 import { Combo } from "@/components/combo";
+import { TIMEZONES } from "@/lib/lists/timezones";
 import { COUNTRIES } from "@/lib/lists/countries";
 import { LANGUAGES } from "@/lib/lists/languages";
 
@@ -20,6 +21,7 @@ import { LANGUAGES } from "@/lib/lists/languages";
 
 export function AccountForm({
   account,
+  languages,
 }: {
   account: {
     email: string;
@@ -27,6 +29,10 @@ export function AccountForm({
     time_zone: string;
     language: string;
   };
+  // What the platform is actually available in, from the Global team's
+  // own settings, rather than a list typed in here that promises
+  // translations nobody has written.
+  languages: string[];
 }) {
   const [state, action, pending] = useActionState<SettingsState, FormData>(
     saveAccount,
@@ -61,22 +67,20 @@ export function AccountForm({
             Leave it empty to keep signing in by emailed link.
           </span>
         </label>
-        <label className="field">
-          <span>Time zone</span>
-          <select name="time_zone" defaultValue={account.time_zone}>
-            <option>Gulf Standard Time (Dubai)</option>
-            <option>Western European Time (Lisbon)</option>
-            <option>Central European Time (Paris)</option>
-          </select>
-        </label>
+        <Combo
+          name="time_zone"
+          label="Time zone"
+          options={TIMEZONES}
+          value={account.time_zone}
+        />
       </div>
 
       <label className="field">
         <span>Language</span>
         <select name="language" defaultValue={account.language}>
-          <option>English</option>
-          <option>Portugues</option>
-          <option>Francais</option>
+          {languages.map((l) => (
+            <option key={l}>{l}</option>
+          ))}
         </select>
       </label>
 

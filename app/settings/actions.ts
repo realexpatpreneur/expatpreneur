@@ -47,7 +47,7 @@ export async function saveAccount(
     .update({
       email: email || undefined,
       phone: String(formData.get("phone") ?? "").trim() || null,
-      time_zone: String(formData.get("time_zone") ?? "Gulf Standard Time (Dubai)"),
+      time_zone: String(formData.get("time_zone") ?? "Asia/Dubai"),
       language: String(formData.get("language") ?? "English"),
     })
     .eq("id", user.id);

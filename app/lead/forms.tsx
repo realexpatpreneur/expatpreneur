@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 import { openRoomForMine, saveMyGroup, saveMyPod, type LeadState } from "./actions";
+import { Combo } from "@/components/combo";
+import { TIMEZONES } from "@/lib/lists/timezones";
 
 export function OpenRoomForm({
   things,
@@ -45,16 +47,12 @@ export function OpenRoomForm({
         </label>
       </div>
 
-      <label className="field">
-        <span>Time zone</span>
-        <select name="timezone" defaultValue="Asia/Dubai">
-          <option value="Asia/Dubai">Dubai</option>
-          <option value="Europe/Lisbon">Lisbon</option>
-          <option value="Europe/Paris">Paris</option>
-          <option value="Europe/Madrid">Madrid</option>
-          <option value="UTC">UTC</option>
-        </select>
-      </label>
+      <Combo
+        name="timezone"
+        label="Time zone"
+        options={TIMEZONES}
+        value="Asia/Dubai"
+      />
 
       <label className="field">
         <span>What it is for</span>

@@ -40,6 +40,7 @@ export default async function SettingsPage({
     { data: circle },
     { data: blocked },
     { data: plans },
+    { data: siteSettings },
   ] = await Promise.all([
     supabase
       .from("member_records")
@@ -76,9 +77,29 @@ export default async function SettingsPage({
       .select("slug, name, price_cents, currency, interval, features")
       .eq("active", true)
       .order("position"),
+    supabase
+      .from("settings")
+      .select("key, value")
+      .in("key", ["default_language", "languages_prepared"]),
   ]);
 
   if (!profile) return null;
+
+  // The languages a member may choose are the one the platform is
+  // written in plus the ones the Global team has marked as ready. That
+  // list lives in Global settings, so this page cannot promise a
+  // translation that does not exist.
+  const settingRows = (siteSettings ?? []) as { key: string; value: string }[];
+  const setting = (key: string) =>
+    settingRows.find((s) => s.key === key)?.value ?? "";
+  const defaultLanguage = setting("default_language") || "English";
+  const availableLanguages = [
+    defaultLanguage,
+    ...setting("languages_prepared")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+  ].filter((l, i, all) => all.indexOf(l) === i);
 
   const blockedIds = (blocked ?? []).map((b) => b.blocked_id);
   const { data: blockedPeople } = blockedIds.length
@@ -131,9 +152,10 @@ export default async function SettingsPage({
                   account={{
                     email: profile.email ?? "",
                     phone: profile.phone,
-                    time_zone: profile.time_zone ?? "Gulf Standard Time (Dubai)",
-                    language: profile.language ?? "English",
+                    time_zone: profile.time_zone ?? "Asia/Dubai",
+                    language: profile.language ?? defaultLanguage,
                   }}
+                  languages={availableLanguages}
                 />
                 <div className="panel">
                   <h3>Your Village</h3>

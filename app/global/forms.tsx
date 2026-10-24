@@ -9,6 +9,8 @@ import {
   updateCity,
   type GlobalState,
 } from "./actions";
+import { Combo } from "@/components/combo";
+import { TIMEZONES } from "@/lib/lists/timezones";
 
 export function VillageForm({
   village,
@@ -50,14 +52,12 @@ export function VillageForm({
           <span>Country</span>
           <input name="country" required defaultValue={village?.country ?? ""} />
         </label>
-        <label className="field">
-          <span>Time zone</span>
-          <input
-            name="timezone"
-            defaultValue={village?.timezone ?? "UTC"}
-            placeholder="Europe/Paris"
-          />
-        </label>
+        <Combo
+          name="timezone"
+          label="Time zone"
+          options={TIMEZONES}
+          value={village?.timezone ?? "UTC"}
+        />
       </div>
 
       <label className="field">

@@ -6,6 +6,8 @@ import {
   writeToGlobal,
   type VillageSettingsState,
 } from "./actions";
+import { Combo } from "@/components/combo";
+import { TIMEZONES } from "@/lib/lists/timezones";
 
 export function VillageSettingsForm({
   village,
@@ -34,15 +36,12 @@ export function VillageSettingsForm({
           <span>Village name</span>
           <input name="name" defaultValue={village.name} required />
         </label>
-        <label className="field">
-          <span>Time zone</span>
-          <select name="timezone" defaultValue={village.timezone}>
-            <option value="Asia/Dubai">Gulf Standard Time</option>
-            <option value="Europe/Lisbon">Western European Time</option>
-            <option value="Europe/Paris">Central European Time</option>
-            <option value="Europe/Madrid">Central European Time (Madrid)</option>
-          </select>
-        </label>
+        <Combo
+          name="timezone"
+          label="Time zone"
+          options={TIMEZONES}
+          value={village.timezone}
+        />
       </div>
 
       <div className="g2">

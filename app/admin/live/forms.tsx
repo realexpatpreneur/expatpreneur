@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 import { saveSession, addSessionHost, type SessionFormState } from "./actions";
+import { Combo } from "@/components/combo";
+import { TIMEZONES } from "@/lib/lists/timezones";
 
 type Option = { value: string; label: string };
 
@@ -46,16 +48,12 @@ export function SessionForm({
             <span>End</span>
             <input name="end_time" type="time" />
           </label>
-          <label className="field">
-            <span>Time zone</span>
-            <select name="timezone" defaultValue="Asia/Dubai">
-              <option value="Asia/Dubai">Dubai</option>
-              <option value="Europe/Lisbon">Lisbon</option>
-              <option value="Europe/Paris">Paris</option>
-              <option value="Europe/Madrid">Madrid</option>
-              <option value="UTC">UTC</option>
-            </select>
-          </label>
+          <Combo
+            name="timezone"
+            label="Time zone"
+            options={TIMEZONES}
+            value="Asia/Dubai"
+          />
         </div>
         {events.length ? (
           <label className="field">
