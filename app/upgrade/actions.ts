@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe, membershipPriceId, siteUrl, stripeReady } from "@/lib/stripe";
+import { ticketPrice } from "@/lib/events";
 
 export type CheckoutState = { error?: string };
 
@@ -76,12 +77,22 @@ export async function startTicketCheckout(
 
   const { data: event } = await supabase
     .from("events")
-    .select("id, title, price_cents, currency, requires_approval")
+    .select("id, title, price_cents, member_price_cents, currency, requires_approval")
     .eq("id", eventId)
     .maybeSingle();
 
   if (!event) return { error: "That event could not be found." };
-  if (!event.price_cents) return { error: "This event is free." };
+
+  // What this buyer pays, which is the member price when they are on
+  // Village Membership and the event carries one.
+  const { data: buyer } = await supabase
+    .from("profiles")
+    .select("plan")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const amount = ticketPrice(event, buyer?.plan === "paid");
+  if (!amount) return { error: "This event is free." };
 
   const { error: holdError } = await supabase.from("event_registrations").insert({
     event_id: eventId,
@@ -101,7 +112,7 @@ export async function startTicketCheckout(
         quantity: 1,
         price_data: {
           currency: event.currency.toLowerCase(),
-          unit_amount: event.price_cents,
+          unit_amount: amount,
           product_data: { name: event.title },
         },
       },

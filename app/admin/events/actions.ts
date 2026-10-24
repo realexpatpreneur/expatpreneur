@@ -120,6 +120,11 @@ export async function saveEvent(
     capacity: Number(formData.get("capacity") ?? 30),
     visitor_places: Number(formData.get("visitor_places") ?? 0),
     price_cents: Math.round(Number(formData.get("price") ?? 0) * 100),
+    // Empty means members pay the same as everybody else.
+    member_price_cents:
+      String(formData.get("member_price") ?? "").trim() === ""
+        ? null
+        : Math.round(Number(formData.get("member_price")) * 100),
     currency: String(formData.get("currency") ?? "AED"),
     refund_policy: String(formData.get("refund_policy") ?? "48h"),
     reminders: {

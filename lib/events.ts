@@ -24,6 +24,7 @@ export type EventRow = {
   capacity: number;
   visitor_places: number;
   price_cents: number;
+  member_price_cents: number | null;
   currency: string;
   status: string;
   village_id: string | null;
@@ -66,9 +67,34 @@ export function whenText(event: { starts_at: string; ends_at: string | null; tim
   return `${date}, ${from} to ${to}`;
 }
 
-export function priceText(event: { price_cents: number; currency: string }) {
-  if (!event.price_cents) return "Free";
-  return `${(event.price_cents / 100).toFixed(2)} ${event.currency}`;
+// What this person pays for a ticket. A Village Member pays the member
+// price when the event carries one; null means the same as everybody
+// else, which is how a course has worked since 0021.
+export function ticketPrice(
+  event: { price_cents: number; member_price_cents?: number | null },
+  paid = false
+) {
+  if (paid && event.member_price_cents != null) return event.member_price_cents;
+  return event.price_cents;
+}
+
+export function priceText(
+  event: { price_cents: number; member_price_cents?: number | null; currency: string },
+  paid = false
+) {
+  const cents = ticketPrice(event, paid);
+  if (!cents) return "Free";
+  return `${(cents / 100).toFixed(2)} ${event.currency}`;
+}
+
+// The saving a Village Member gets here, if there is one, in a line.
+export function memberSaving(
+  event: { price_cents: number; member_price_cents?: number | null; currency: string }
+) {
+  const m = event.member_price_cents;
+  if (m == null || m >= event.price_cents) return null;
+  if (!m) return "Free for Village Members";
+  return `${(m / 100).toFixed(2)} ${event.currency} for Village Members`;
 }
 
 // Who the event is open to, in a line a member can read.

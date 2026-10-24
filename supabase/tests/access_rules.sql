@@ -343,6 +343,24 @@ begin
     false);
   reset role;
 
+  return query select ''::text, '--- hosting needs the paid plan ---'::text, null::text;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a free member cannot set up as an educator',
+    pg_temp.can_write(format(
+      'insert into educator_profiles (profile_id, headline) values (%L, ''No'')', free)),
+    false);
+  reset role;
+
+  perform pg_temp.as_person(paid);
+  return query select * from pg_temp.verdict(
+    'an educator still manages their own profile',
+    pg_temp.can_write(format(
+      'update educator_profiles set headline = ''Still mine'' where profile_id = %L', paid)),
+    true);
+  reset role;
+
   return query select ''::text, '--- a stranger ---'::text, null::text;
 
   perform pg_temp.as_stranger();

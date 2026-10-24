@@ -3,7 +3,8 @@ import { Stat } from "@/components/admin-bits";
 import { Ic } from "@/components/icon";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember } from "@/lib/member";
+import { requireMember, isPaid } from "@/lib/member";
+import { Lock } from "@/components/lock";
 import { CourseForm } from "./forms";
 
 export const metadata = { title: "Educator, ExpatPreneurs Global" };
@@ -158,7 +159,13 @@ export default async function EducatorPage({
                 ))
               )}
             </div>
-            <CourseForm />
+            {isPaid(member) || isEducator ? (
+              <CourseForm />
+            ) : (
+              <Lock note="">
+                Hosting a workshop is part of Village Membership.
+              </Lock>
+            )}
           </div>
         </section>
       </WorkspaceShell>

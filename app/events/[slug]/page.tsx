@@ -2,10 +2,12 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember } from "@/lib/member";
+import { requireMember, isPaid } from "@/lib/member";
 import {
   whenText,
   priceText,
+  ticketPrice,
+  memberSaving,
   audienceText,
   registrationBlock,
   type EventRow,
@@ -22,6 +24,8 @@ export default async function EventPage({
 }) {
   const { slug } = await params;
   const member = await requireMember("/events");
+  // A Village Member pays the member price where the event carries one.
+  const paying = isPaid(member);
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -171,7 +175,12 @@ export default async function EventPage({
                       : ""}
                   </dd>
                   <dt>Price</dt>
-                  <dd>{priceText(event)}</dd>
+                  <dd>
+                    {priceText(event, paying)}
+                    {!paying && memberSaving(event)
+                      ? `. ${memberSaving(event)}`
+                      : ""}
+                  </dd>
                   <dt>Places</dt>
                   <dd>
                     {taken} of {event.capacity} taken
@@ -307,9 +316,9 @@ export default async function EventPage({
                       </p>
                     </>
                   )
-                ) : event.price_cents && stripeReady ? (
+                ) : ticketPrice(event, paying) && stripeReady ? (
                   <>
-                    <h3>{priceText(event)}</h3>
+                    <h3>{priceText(event, paying)}</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
                       A ticket confirms your place. Paying is what registers
                       you.
@@ -320,9 +329,9 @@ export default async function EventPage({
                       label="Get a ticket"
                     />
                   </>
-                ) : event.price_cents ? (
+                ) : ticketPrice(event, paying) ? (
                   <>
-                    <h3>{priceText(event)}</h3>
+                    <h3>{priceText(event, paying)}</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
                       Tickets are not being taken online yet. Register here and
                       the host will sort the payment with you.

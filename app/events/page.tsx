@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { pageText } from "@/lib/text";
-import { whoIsHere } from "@/lib/member";
+import { whoIsHere, isPaid } from "@/lib/member";
 import { DualPage } from "@/components/dual-page";
 import { PageHead } from "@/components/workspace-shell";
 import { EventRow } from "@/components/feed";
@@ -142,7 +142,9 @@ export default async function EventsPage({
                     ) : blocked ? (
                       <span className="chip chip-sun">{blocked}</span>
                     ) : (
-                      <span className="chip">{priceText(event)}</span>
+                      <span className="chip">
+                        {priceText(event, member ? isPaid(member) : false)}
+                      </span>
                     )
                   }
                 />

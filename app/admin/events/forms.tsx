@@ -27,6 +27,7 @@ export function EventForm({
     capacity: number;
     visitor_places: number;
     price_cents: number;
+    member_price_cents?: number | null;
     currency: string;
     visibility: string;
     audience: string;
@@ -239,6 +240,24 @@ export function EventForm({
               defaultValue={event ? event.price_cents / 100 : 0}
             />
             <span className="hint">Zero is free. A small ticket makes people turn up.</span>
+          </label>
+          <label className="field">
+            <span>Village Member price</span>
+            <input
+              name="member_price"
+              type="number"
+              min={0}
+              step="0.01"
+              defaultValue={
+                event?.member_price_cents == null
+                  ? ""
+                  : event.member_price_cents / 100
+              }
+            />
+            <span className="hint">
+              Leave empty and members pay the same as everybody else. Zero
+              makes it free for them.
+            </span>
           </label>
           <label className="field">
             <span>Currency</span>
