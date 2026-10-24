@@ -5,8 +5,10 @@ import { Blocks } from "@/components/blocks";
 
 export const metadata = { title: "Terms of service, ExpatPreneurs Global" };
 
-// Draft only. The company details, the governing law and the fee terms are
-// placeholders, and a lawyer signs this off before launch.
+// Draft only. The company details and the governing law are still
+// placeholders, and a lawyer signs this off before launch. The fee clause
+// no longer names a figure, because each Village is priced in its own
+// currency and the membership page is where the current price is shown.
 export default async function TermsPage() {
   // A published page replaces what is written below.
   const page = await livePage("terms");
@@ -70,10 +72,11 @@ export default async function TermsPage() {
 
             <h3>5. Fees</h3>
             <p className="muted small">
-              Membership is free. The paid plan is charged [amount and period],
-              renews automatically, and can be cancelled at any time, running
-              until the end of the period already paid for. Event tickets are
-              refundable as stated on the event.
+              Membership is free. The paid plan is priced in the currency of
+              your own Village and is shown on the membership page before you
+              pay. It renews automatically, and can be cancelled at any time,
+              running until the end of the period already paid for. Event
+              tickets are refundable as stated on the event.
             </p>
 
             <h3>6. What we do not promise</h3>

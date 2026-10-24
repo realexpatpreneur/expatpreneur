@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { type Pricing, priceLine, anyFounding } from "@/lib/pricing";
 import {
   pairs,
   styleOf,
@@ -34,6 +35,7 @@ export type BlockData = {
   courses?: { id: string; slug: string; title: string; level?: string | null; format?: string | null; price_cents?: number | null; currency?: string | null; cover_url?: string | null }[];
   articles?: { id: string; slug: string; title: string; standfirst: string | null; kind?: string; cover_url?: string | null }[];
   plans?: { slug: string; name: string; blurb: string | null; price_cents: number; currency: string; interval: string; features: string[] }[];
+  pricing?: Pricing[];
   people?: { id: string; full_name: string; headline: string | null; industry?: string | null; avatar_url?: string | null }[];
   media?: { id: string; slug: string; kind: string; title: string; summary?: string | null; duration?: string | null; cover_url?: string | null }[];
   shows?: { slug: string; name: string; about: string | null; cover_url?: string | null }[];
@@ -801,6 +803,10 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
     case "plans": {
       const list = data.plans ?? [];
       if (!list.length) return null;
+      // The paid plan is priced by the Village, not by the plans row.
+      const pricing = data.pricing ?? [];
+      const paidLine = priceLine(pricing, false);
+      const founding = anyFounding(pricing);
       return (
         <section className="sec memsec">
           {b.heading ? <h2>{b.heading}</h2> : null}
@@ -814,11 +820,20 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
                 </div>
                 <div className="p2-price" data-el="price">
                   <b>
-                    {p.price_cents
-                      ? `${(p.price_cents / 100).toFixed(0)} ${p.currency}`
-                      : "By application"}
+                    {p.slug === "paid" && paidLine
+                      ? paidLine
+                      : p.price_cents
+                        ? `${(p.price_cents / 100).toFixed(0)} ${p.currency}`
+                        : "By application"}
                   </b>
-                  <span>{p.price_cents ? `per ${p.interval}` : "Every request is read personally"}</span>
+                  <span>
+                    {p.slug === "paid" && paidLine
+                      ? "per month, in your Village's currency" +
+                        (founding ? ", while founding places last" : "")
+                      : p.price_cents
+                        ? `per ${p.interval}`
+                        : "Every request is read personally"}
+                  </span>
                 </div>
                 <ul className="p2-list">
                   {(p.features ?? []).map((f) => (

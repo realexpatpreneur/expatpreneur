@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Ic } from "@/components/icon";
+import {
+  type Pricing,
+  priceLine,
+  anyFounding,
+} from "@/lib/pricing";
 
 export type Plan = {
   id: string;
@@ -15,26 +20,26 @@ export type Plan = {
   features: string[] | null;
 };
 
-function money(cents: number, currency: string) {
-  return (cents / 100).toLocaleString("en-GB", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  });
-}
-
 // The two plan cards and the billing switch above them, as the
-// prototype draws them. A year is ten months, so two months are free.
-export function Plans({ plans }: { plans: Plan[] }) {
+// prototype draws them. The price comes from the Village, since each one
+// bills in its own currency, at its founding rate while that is open.
+export function Plans({
+  plans,
+  pricing = [],
+}: {
+  plans: Plan[];
+  pricing?: Pricing[];
+}) {
   const [yearly, setYearly] = useState(false);
 
   const member = plans.find((p) => p.slug === "member");
   const paid = plans.find((p) => p.slug === "paid");
   if (!member || !paid) return null;
 
-  const priced = paid.price_cents > 0;
-  const monthly = priced ? money(paid.price_cents, paid.currency) : "Not set yet";
-  const year = priced ? money(paid.price_cents * 10, paid.currency) : "Not set yet";
+  const monthly = priceLine(pricing, false);
+  const year = priceLine(pricing, true);
+  const priced = monthly !== null;
+  const founding = anyFounding(pricing);
 
   // What the paid plan adds is what the free one does not have.
   const adds = (paid.features ?? []).slice(0, 3);
@@ -55,7 +60,7 @@ export function Plans({ plans }: { plans: Plan[] }) {
             className={yearly ? "on" : ""}
             onClick={() => setYearly(true)}
           >
-            Yearly <em>2 months free</em>
+            Yearly
           </button>
         </div>
       ) : null}
@@ -96,12 +101,12 @@ export function Plans({ plans }: { plans: Plan[] }) {
             <span className="p2-tag">Every Village</span>
           </div>
           <div className="p2-price">
-            <b>{yearly ? year : monthly}</b>
+            <b>{(yearly ? year : monthly) ?? "Not set yet"}</b>
             <span>
               {priced
-                ? yearly
-                  ? "per year, two months free"
-                  : "per month"
+                ? (yearly ? "per year" : "per month") +
+                  ", in your Village's currency" +
+                  (founding ? ", while founding places last" : "")
                 : "The price is still being decided"}
             </span>
           </div>
