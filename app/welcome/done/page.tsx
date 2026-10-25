@@ -13,9 +13,13 @@ export default async function WelcomeDonePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, village_id, circle_id")
+    .select("full_name, village_id, circle_id, status, plan")
     .eq("id", user.id)
     .maybeSingle();
+
+  // Approved, signed in, profile written, and not yet paid for. Their
+  // membership begins at the checkout, so that is all this page offers.
+  const awaiting = profile?.status === "invited";
 
   const [{ data: village }, { data: circle }] = await Promise.all([
     profile?.village_id
@@ -33,6 +37,35 @@ export default async function WelcomeDonePage() {
           .maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
+
+  if (awaiting) {
+    return (
+      <WorkspaceShell kind="member" nav="/welcome/done">
+        <section className="sec">
+          <h1>One thing left.</h1>
+          <p className="lead">
+            {village?.name
+              ? `Your profile is written and your place in ${village.name} is held. Membership starts when it is paid for.`
+              : "Your profile is written and your place is held. Membership starts when it is paid for."}
+          </p>
+        </section>
+
+        <section className="sec">
+          <div className="panel" style={{ maxWidth: 560 }}>
+            <h3>Your membership</h3>
+            <p className="muted small" style={{ margin: "6px 0 12px" }}>
+              Your Village sets its own price, in its own currency. The next
+              page shows yours and takes you to the checkout. Your Circle and
+              its WhatsApp group follow straight after.
+            </p>
+            <Link className="btn btn-primary" href="/upgrade">
+              See what your Village costs
+            </Link>
+          </div>
+        </section>
+      </WorkspaceShell>
+    );
+  }
 
   return (
     <WorkspaceShell kind="member" nav="/welcome/done">

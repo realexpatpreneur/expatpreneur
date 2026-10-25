@@ -1,7 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember, isPaid } from "@/lib/member";
+import { requireAccount, isPaid } from "@/lib/member";
 import { stripeReady } from "@/lib/stripe";
 import { money, rateOf, anyFounding, type Pricing } from "@/lib/pricing";
 import {
@@ -18,7 +18,9 @@ export default async function UpgradePage({
   searchParams: Promise<{ state?: string }>;
 }) {
   const { state } = await searchParams;
-  const member = await requireMember("/upgrade");
+  // The one member page somebody reaches before their membership is
+  // live, because this is where it becomes live.
+  const member = await requireAccount("/upgrade");
   const supabase = await createClient();
 
   const { data: subscription } = isPaid(member)

@@ -67,10 +67,49 @@ export async function POST(request: Request) {
       // count in village_pricing counts. The rate itself is held by the
       // Stripe subscription, so it survives as long as that does.
       const tookFounding = session.metadata?.founding === "yes";
-      await service
+
+      // This is the moment membership begins. Somebody who was invited
+      // becomes a member, and the Circle their Local Admin chose while
+      // approving them is given now rather than on approval.
+      const { data: joining } = await service
         .from("profiles")
-        .update(tookFounding ? { plan: "paid", founding: true } : { plan: "paid" })
-        .eq("id", profileId);
+        .select("status, circle_id, village_id")
+        .eq("id", profileId)
+        .maybeSingle();
+
+      const wasInvited = joining?.status === "invited";
+
+      const { data: application } = wasInvited
+        ? await service
+            .from("applications")
+            .select("circle_id")
+            .eq("profile_id", profileId)
+            .maybeSingle()
+        : { data: null };
+
+      const becoming: Record<string, unknown> = { plan: "paid" };
+      if (tookFounding) becoming.founding = true;
+      if (wasInvited) becoming.status = "active";
+      if (wasInvited && application?.circle_id && !joining?.circle_id) {
+        becoming.circle_id = application.circle_id;
+      }
+
+      await service.from("profiles").update(becoming).eq("id", profileId);
+
+      // And the group task, which waited for the same moment.
+      if (becoming.circle_id) {
+        const { data: circle } = await service
+          .from("circles")
+          .select("name")
+          .eq("id", becoming.circle_id as string)
+          .maybeSingle();
+        await service.from("whatsapp_tasks").insert({
+          village_id: joining?.village_id ?? null,
+          profile_id: profileId,
+          kind: "add",
+          group_name: circle?.name ?? "Village group",
+        });
+      }
 
       await notify(
         profileId,

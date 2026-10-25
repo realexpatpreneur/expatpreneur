@@ -21,9 +21,10 @@ async function loadApplication(id: string) {
   return data;
 }
 
-// Approving does four things: it creates the account and sends the
-// invitation email, it creates the member profile, it places them in a
-// Circle, and it leaves a WhatsApp task so the groups stay in step.
+// Approving sends the invitation and makes the record. It no longer
+// opens the door. The Circle the admin chooses is remembered on the
+// application and given when the payment completes, which is the order
+// her framework sets out: approved, invited, account, payment, member.
 export async function approveApplication(
   _prev: DecisionState,
   formData: FormData
@@ -82,8 +83,10 @@ export async function approveApplication(
       email: application.email,
       phone: application.phone,
       village_id: application.village_id,
-      circle_id: circleId,
-      status: "onboarding",
+      // The Circle waits for the payment. So does the status: 'invited'
+      // is outside is_member(), so the private side stays shut without
+      // any rule having to be changed.
+      status: "invited",
       plan: "member",
       industry: application.industry,
       business_name: application.business_name,
@@ -109,25 +112,17 @@ export async function approveApplication(
       decided_by: admin.userId,
       decided_at: invitedAt.toISOString(),
       profile_id: userId,
+      circle_id: circleId,
       invited_at: invitedAt.toISOString(),
       invite_expires_at: invitedUntil.toISOString(),
       invites_sent: (application.invites_sent ?? 0) + 1,
     })
     .eq("id", id);
 
-  if (circleId) {
-    const { data: circle } = await service
-      .from("circles")
-      .select("name")
-      .eq("id", circleId)
-      .maybeSingle();
-    await service.from("whatsapp_tasks").insert({
-      village_id: application.village_id,
-      profile_id: userId,
-      kind: "add",
-      group_name: circle?.name ?? "Village group",
-    });
-  }
+  // The WhatsApp task waits for the payment too. Adding somebody to the
+  // Circle group before they have joined would put them in a room they
+  // are not yet in, and taking them back out is worse than never having
+  // added them. The webhook raises it when the money clears.
 
   // The template wants the Village and the names of its Local Admins.
   const { data: village } = application.village_id

@@ -28,6 +28,18 @@ export async function completeProfile(
     return { error: "Please confirm you have read how the community works." };
   }
 
+  // Finishing the profile is not what makes somebody a member any more.
+  // Payment is. So this promotes the people who were already part way
+  // through the old flow, and leaves an invited applicant where they
+  // are until their payment lands.
+  const { data: before } = await supabase
+    .from("profiles")
+    .select("status")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const stillInvited = before?.status === "invited";
+
   const { error } = await supabase
     .from("profiles")
     .update({
@@ -42,7 +54,7 @@ export async function completeProfile(
       markets_known: list(formData.get("markets_known")),
       lived_in: list(formData.get("lived_in")),
       public_profile: Boolean(formData.get("public_profile")),
-      status: "active",
+      ...(stillInvited ? {} : { status: "active" }),
     })
     .eq("id", user.id);
 

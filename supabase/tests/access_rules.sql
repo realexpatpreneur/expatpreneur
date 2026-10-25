@@ -28,7 +28,8 @@ insert into auth.users (id, email) values
   ('bbbbbbbb-0000-0000-0000-000000000002', 'paid@test.invalid'),
   ('bbbbbbbb-0000-0000-0000-000000000003', 'admin@test.invalid'),
   ('bbbbbbbb-0000-0000-0000-000000000004', 'left@test.invalid'),
-  ('bbbbbbbb-0000-0000-0000-000000000005', 'quiet@test.invalid');
+  ('bbbbbbbb-0000-0000-0000-000000000005', 'quiet@test.invalid'),
+  ('bbbbbbbb-0000-0000-0000-000000000006', 'invited@test.invalid');
 
 insert into profiles (id, full_name, email, phone, status, plan, village_id, public_profile, nationalities)
 values
@@ -36,7 +37,8 @@ values
   ('bbbbbbbb-0000-0000-0000-000000000002', 'Paid Beta',   'paid@test.invalid',  '+100000002', 'active', 'paid',   'aaaaaaaa-0000-0000-0000-000000000002', true,  array['Testish']),
   ('bbbbbbbb-0000-0000-0000-000000000003', 'Admin Alpha', 'admin@test.invalid', '+100000003', 'active', 'member', 'aaaaaaaa-0000-0000-0000-000000000001', false, array['Testish']),
   ('bbbbbbbb-0000-0000-0000-000000000004', 'Left Alpha',  'left@test.invalid',  '+100000004', 'left',   'member', 'aaaaaaaa-0000-0000-0000-000000000001', true,  array['Testish']),
-  ('bbbbbbbb-0000-0000-0000-000000000005', 'Quiet Beta',  'quiet@test.invalid', '+100000005', 'active', 'member', 'aaaaaaaa-0000-0000-0000-000000000002', false, array['Testish']);
+  ('bbbbbbbb-0000-0000-0000-000000000005', 'Quiet Beta',  'quiet@test.invalid', '+100000005', 'active', 'member', 'aaaaaaaa-0000-0000-0000-000000000002', false, array['Testish']),
+  ('bbbbbbbb-0000-0000-0000-000000000006', 'Invited One', 'invited@test.invalid', '+100000006', 'invited', 'member', 'aaaaaaaa-0000-0000-0000-000000000001', false, array['Testish']);
 
 insert into member_roles (profile_id, role, scope, scope_id)
 values ('bbbbbbbb-0000-0000-0000-000000000003', 'local_admin', 'village', 'aaaaaaaa-0000-0000-0000-000000000001');
@@ -159,6 +161,7 @@ declare
   paid  uuid := 'bbbbbbbb-0000-0000-0000-000000000002';
   admin uuid := 'bbbbbbbb-0000-0000-0000-000000000003';
   quiet uuid := 'bbbbbbbb-0000-0000-0000-000000000005';
+  waiting uuid := 'bbbbbbbb-0000-0000-0000-000000000006';
 begin
   return query select ''::text, '--- a member''s private columns ---'::text, null::text;
 
@@ -359,6 +362,29 @@ begin
     pg_temp.can_write(format(
       'update educator_profiles set headline = ''Still mine'' where profile_id = %L', paid)),
     true);
+  reset role;
+
+  return query select ''::text, '--- approved, but not paid for ---'::text, null::text;
+
+  perform pg_temp.as_person(waiting);
+  return query select * from pg_temp.verdict(
+    'somebody invited can read their own profile',
+    pg_temp.can_read(format('select count(*) from profiles where id = %L', waiting)),
+    true);
+  return query select * from pg_temp.verdict(
+    'somebody invited does not read the asks of the Village they were offered',
+    pg_temp.can_read('select count(*) from asks'),
+    false);
+  return query select * from pg_temp.verdict(
+    'somebody invited does not read the Directory',
+    pg_temp.can_read(format('select count(*) from profiles where id = %L', admin)),
+    false);
+  return query select * from pg_temp.verdict(
+    'somebody invited cannot join an Industry Hub',
+    pg_temp.can_write(format(
+      'insert into group_members (group_id, profile_id) values (%L, %L)',
+      'cccccccc-0000-0000-0000-000000000001', waiting)),
+    false);
   reset role;
 
   return query select ''::text, '--- a stranger ---'::text, null::text;

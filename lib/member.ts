@@ -29,7 +29,7 @@ export const currentUser = cache(async function currentUser() {
 // the same way. Returns null for a visitor, or for somebody still in the
 // welcome flow.
 export const currentMember = cache(async function currentMember(): Promise<
-  (Member & { onboarding: boolean }) | null
+  (Member & { onboarding: boolean; invited: boolean }) | null
 > {
   const user = await currentUser();
   if (!user) return null;
@@ -55,6 +55,10 @@ export const currentMember = cache(async function currentMember(): Promise<
     ...profile,
     villageName: village?.name ?? null,
     onboarding: profile.status === "onboarding",
+    // Approved and signed in, but membership has not been paid for yet.
+    // is_member() already leaves this status out, so the database says
+    // no to the private side on its own.
+    invited: profile.status === "invited",
   };
 });
 
@@ -67,6 +71,22 @@ export async function requireMember(next: string): Promise<Member> {
   const member = await currentMember();
   if (!member) redirect("/home");
   if (member.onboarding) redirect("/welcome");
+  if (member.invited) redirect("/welcome");
+
+  return member;
+}
+
+// For the few pages somebody has to reach before their membership is
+// live: the welcome flow and the checkout. An account and a profile,
+// nothing more. Every other page uses requireMember.
+export async function requireAccount(
+  next: string
+): Promise<Member & { onboarding: boolean; invited: boolean }> {
+  const user = await currentUser();
+  if (!user) redirect(`/login?next=${next}`);
+
+  const member = await currentMember();
+  if (!member) redirect("/home");
 
   return member;
 }
@@ -75,7 +95,7 @@ export async function requireMember(next: string): Promise<Member> {
 // redirecting, so the page can decide what a stranger is shown.
 export async function whoIsHere(): Promise<Member | null> {
   const member = await currentMember();
-  if (!member || member.onboarding) return null;
+  if (!member || member.onboarding || member.invited) return null;
   return member;
 }
 
