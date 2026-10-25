@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageHead } from "@/components/workspace-shell";
 import { siteUrl } from "@/lib/site";
 import { Stat, Table, SecHead } from "@/components/admin-bits";
@@ -17,13 +18,29 @@ const LABEL: Record<string, string> = {
   removed: "To remove",
 };
 
-export default async function ReEnrolmentPage() {
+export default async function ReEnrolmentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ village?: string }>;
+}) {
+  const { village: chosen = "" } = await searchParams;
   const admin = await requireAdmin();
   const supabase = await createClient();
 
-  // Unordered, so [0] can differ from the Village the rest of the
-  // workspace is showing. Settle it the same way everywhere.
-  const villageId = [...admin.villageIds].sort()[0] ?? null;
+  // A Local Admin has one Village and lands on it. The Global team has
+  // all of them, which is who does this at launch, so they choose.
+  const { data: mine } = admin.villageIds.length
+    ? await supabase
+        .from("villages")
+        .select("id, slug, name")
+        .in("id", admin.villageIds)
+        .order("name")
+    : { data: [] };
+
+  const villageId =
+    (mine ?? []).find((v) => v.slug === chosen)?.id ??
+    [...admin.villageIds].sort()[0] ??
+    null;
 
   const [{ data: village }, { data: people }] = await Promise.all([
     villageId
@@ -46,6 +63,12 @@ export default async function ReEnrolmentPage() {
 
   const rows = people ?? [];
   const count = (s: string) => rows.filter((r) => r.status === s).length;
+
+  // Nobody was written to without an address, so the admin needs to know
+  // which of them to reach another way.
+  const noAddress = rows
+    .filter((r) => !r.email && !["re_enrolled", "declined", "removed"].includes(r.status))
+    .map((r) => r.full_name);
   const site = siteUrl;
 
   return (
@@ -54,6 +77,20 @@ export default async function ReEnrolmentPage() {
         title="Re-enrolment"
         sub={`Bringing the current ${village?.name ?? "Village"} WhatsApp members onto the platform.`}
       />
+
+      {(mine ?? []).length > 1 ? (
+        <div className="tabs" style={{ marginBottom: 16 }}>
+          {(mine ?? []).map((v) => (
+            <Link
+              className={`chip ${v.id === villageId ? "chip-mint" : ""}`}
+              href={`/admin/re-enrolment?village=${v.slug}`}
+              key={v.id}
+            >
+              {v.name}
+            </Link>
+          ))}
+        </div>
+      ) : null}
 
       <div className="g3 g4">
         <Stat label="On the list" value={rows.length} note="From the WhatsApp group" />
@@ -65,6 +102,20 @@ export default async function ReEnrolmentPage() {
         />
         <Stat label="Stepping away" value={count("declined")} note="They told us" />
       </div>
+
+      {noAddress.length ? (
+        <div className="panel panel-wash" style={{ marginTop: 16 }}>
+          <h3 style={{ fontSize: 14 }}>
+            {noAddress.length === 1
+              ? "One person has no email address"
+              : `${noAddress.length} people have no email address`}
+          </h3>
+          <p className="muted small" style={{ marginTop: 6 }}>
+            Nothing was written to them. Send their link by WhatsApp: it is
+            beside their name in the list. {noAddress.join(", ")}.
+          </p>
+        </div>
+      ) : null}
 
       <div className="gside" style={{ marginTop: 22 }}>
         <div className="stack">
