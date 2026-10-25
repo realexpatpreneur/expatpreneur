@@ -65,7 +65,7 @@ body{background:#fff}
 
 .ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13px;border:1.5px solid transparent;cursor:pointer;white-space:nowrap;background:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:4px;padding:8px 14px;font-weight:600;font-size:13px;border:1.5px solid transparent;cursor:pointer;white-space:nowrap;background:none}
 
 .btn-primary{background:var(--blue);color:#fff}
 
@@ -1451,7 +1451,7 @@ fieldset.choiceset legend{font-weight:600;font-size:12.5px;margin-bottom:8px;col
 
 .sp-tabs{display:flex;gap:4px;margin:18px 16px 12px;padding:5px;border-radius:999px;background:rgba(44,62,80,.05);overflow-x:auto;position:sticky;top:calc(var(--barh,0px) + 64px);z-index:3;backdrop-filter:blur(12px)}
 
-.sp-tabs button{flex:1;min-width:max-content;border:0;background:transparent;padding:9px 16px;border-radius:999px;font:700 13px Inter,system-ui,sans-serif;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.sp-tabs button{flex:1;min-width:max-content;border:0;background:transparent;padding:9px 16px;border-radius:4px;font:700 13px Inter,system-ui,sans-serif;color:var(--muted);cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
 
 .sp-tabs button:hover{color:var(--navy)}
 
@@ -1560,7 +1560,7 @@ a.sp-side:hover{transform:translateY(-1px)}
 
 .sp-person .grow span{font-size:12px;color:var(--muted)}
 
-.sp-mini{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;color:var(--navy);background:rgba(44,62,80,.06);white-space:nowrap}
+.sp-mini{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:700;color:var(--navy);background:rgba(44,62,80,.06);white-space:nowrap}
 
 .sp-mini:hover{background:rgba(44,62,80,.1)}
 
@@ -1656,7 +1656,7 @@ a.sp-side:hover{transform:translateY(-1px)}
 
 .show-tabs::-webkit-scrollbar{display:none}
 
-.show-tabs button{white-space:nowrap;border:1px solid var(--line);background:#fff;color:#3B4650;border-radius:999px;padding:8px 16px;font:500 13.5px Inter,system-ui,sans-serif;box-shadow:0 1px 2px rgba(15,20,25,.06)}
+.show-tabs button{white-space:nowrap;border:1px solid var(--line);background:#fff;color:#3B4650;border-radius:4px;padding:8px 16px;font:500 13.5px Inter,system-ui,sans-serif;box-shadow:0 1px 2px rgba(15,20,25,.06)}
 
 .show-tabs button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
 
@@ -1837,7 +1837,7 @@ a.sp-side:hover{transform:translateY(-1px)}
 /* ===== Pricing cards ===== */
 .billing{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:rgba(15,20,25,.05);margin-top:22px}
 
-.billing button{border:0;background:transparent;border-radius:999px;padding:8px 18px;font:600 13px Inter,system-ui,sans-serif;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.billing button{border:0;background:transparent;border-radius:4px;padding:8px 18px;font:600 13px Inter,system-ui,sans-serif;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 
 .billing button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(15,20,25,.12),0 4px 10px rgba(15,20,25,.08)}
 
@@ -1880,7 +1880,7 @@ a.sp-side:hover{transform:translateY(-1px)}
 /* ===== Hero: larger heading, bigger buttons, portrait and flags ===== */
 .hero h1{font-size:clamp(32px,4vw,46px);line-height:1.08}
 
-.hero .btn{padding:14px 26px;font-size:15.5px;border-radius:999px}
+.hero .btn{padding:14px 26px;font-size:15.5px;border-radius:4px}
 
 .hero .btn .ic{width:19px;height:19px}
 
@@ -2123,7 +2123,7 @@ body, .app{color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
 
 .sechead h3, .panel h3{letter-spacing:-.02em}
 /* ---- buttons ---- */
-.btn{border-radius:8px;font-weight:600;border-width:1px;box-shadow:0 1px 2px rgba(15,20,25,.08);transition:background .15s,border-color .15s,color .15s,box-shadow .15s,transform .15s}
+.btn{border-radius:4px;font-weight:600;border-width:1px;box-shadow:0 1px 2px rgba(15,20,25,.08);transition:background .15s,border-color .15s,color .15s,box-shadow .15s,transform .15s}
 
 .btn:hover{transform:none}
 
@@ -2345,7 +2345,7 @@ body, .app{color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
 
 .sp-badge{background:var(--sun);box-shadow:none}
 
-.sp-cta{border-radius:8px;height:38px;background:var(--ink);box-shadow:none;font-weight:600}
+.sp-cta{border-radius:4px;height:38px;background:var(--ink);box-shadow:none;font-weight:600}
 
 .sp-cta:hover{transform:none;background:#000}
 
@@ -2377,7 +2377,7 @@ body, .app{color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
 
 .sp-tabs{background:transparent;border-bottom:1px solid var(--line);border-radius:0;padding:0;margin:18px 0 12px;backdrop-filter:none;position:static}
 
-.sp-tabs button{flex:0 0 auto;border-radius:0;border-bottom:2px solid transparent;color:var(--muted);font-weight:500;box-shadow:none}
+.sp-tabs button{flex:0 0 auto;border-radius:4px;border-bottom:2px solid transparent;color:var(--muted);font-weight:500;box-shadow:none}
 
 .sp-tabs button[aria-selected="true"]{background:transparent;color:var(--ink);border-bottom-color:var(--ink);font-weight:600;box-shadow:none}
 
@@ -2399,7 +2399,7 @@ body, .app{color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
 
 .sp-biz-img{border-radius:8px}
 
-.sp-mini{border-radius:8px;background:var(--wash);border:1px solid var(--line);font-weight:600}
+.sp-mini{border-radius:4px;background:var(--wash);border:1px solid var(--line);font-weight:600}
 
 .sp-meter{background:#EDEFF2}
 
@@ -2472,7 +2472,7 @@ body, .app{color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
 
 .panel{padding:20px}
 /* pill buttons and controls */
-.btn, .sp-cta, .sp-mini, .show-tabs button{border-radius:999px}
+.btn, .sp-cta, .sp-mini, .show-tabs button{border-radius:4px}
 
 .btn-sm{padding:6px 14px}
 
@@ -3081,10 +3081,13 @@ a.card:hover {
 .band .muted { color: #C2D3E6; }
 
 /* ==== EP HOME 2026 START (script 182) ==== */
-/* The home page carries the design board's own inline styles. Only the
-   board's motion and hover rules live here, scoped to .ep-home and with
-   the board's class names prefixed, so nothing else on the site is
-   touched and the site's own .btn and .card rules do not reach inside. */
+/* The home page carries the design board's own inline styles. What lives
+   here is only what the markup cannot carry: the board's motion and hover
+   rules, and the sizing that has to respond to the screen. Everything is
+   scoped to .ep-home, and the board's class names are prefixed, so nothing
+   else on the site is touched and the site's own .btn and .card rules do
+   not reach inside. */
+
 /* the board was drawn with the browser's own defaults; the site sets a
    smaller base size and a border-box reset, so both are restored here and
    nowhere else, or every padding and line height on the page shifts */
@@ -3110,24 +3113,53 @@ a.card:hover {
   .ep-home .ep-rise { opacity: 1; transform: none; }
 }
 
-/* The board is a desktop artboard with fixed widths and one card placed by
-   coordinates. These rules only apply below 900px, so the desktop rendering
-   is untouched. */
+/* Fluid type. The top of each clamp is the board's own size, so at
+   1280px and wider the page is exactly as approved. */
+.ep-home .ep-fs-24 { font-size: clamp(13px, 1.875vw, 24px); }
+.ep-home .ep-fs-30 { font-size: clamp(16px, 2.344vw, 30px); }
+.ep-home .ep-fs-42 { font-size: clamp(23px, 3.281vw, 42px); }
+.ep-home .ep-fs-44 { font-size: clamp(24px, 3.438vw, 44px); }
+.ep-home .ep-fs-46 { font-size: clamp(25px, 3.594vw, 46px); }
+.ep-home .ep-fs-48 { font-size: clamp(26px, 3.75vw, 48px); }
+.ep-home .ep-fs-52 { font-size: clamp(28px, 4.062vw, 52px); }
+.ep-home .ep-fs-66 { font-size: clamp(36px, 5.156vw, 66px); }
+
+/* Side gutters and the hero's own vertical room. */
+.ep-home .ep-gutter { padding-left: clamp(20px, 3.75vw, 48px) !important; padding-right: clamp(20px, 3.75vw, 48px) !important; }
+.ep-home .ep-hero-in { padding-top: clamp(26px, 5.6vh, 72px) !important; padding-bottom: clamp(30px, 6.25vh, 80px) !important; }
+.ep-home .ep-hero-img { height: clamp(230px, 46vh, 420px) !important; }
+
+/* Short viewports: keep the hero inside the first screen. */
+@media (max-height: 820px) and (min-width: 901px) {
+  .ep-home .ep-hero-in { padding-top: 26px !important; padding-bottom: 30px !important; }
+  .ep-home .ep-hero-img { height: 38vh !important; }
+}
+
+/* The board is a desktop artboard: fixed column widths, one card placed by
+   coordinates, and rows that are meant to sit side by side. These rules only
+   apply below 900px, so the desktop rendering is untouched. */
 @media (max-width: 900px) {
   .ep-home .ep-float { position: static !important; left: auto !important; top: auto !important; margin-top: 18px; }
   .ep-home .ep-wide-col,
   .ep-home .ep-side-col { width: 100% !important; height: auto !important; flex: 1 1 100% !important; }
   .ep-home .ep-icon { width: 120px !important; height: 120px !important; }
   .ep-home [style*="grid-template-columns: repeat(4"] { grid-template-columns: 1fr 1fr !important; }
-  /* the board's rows are sized for a wide screen; let every one of them wrap */
   .ep-home [style*="display:flex"] { flex-wrap: wrap !important; }
-  .ep-home [style*="padding: 112px 48px"],
-  .ep-home [style*="padding: 96px 48px"],
-  .ep-home [style*="padding: 72px 48px"] { padding-left: 20px !important; padding-right: 20px !important; }
+  /* the three cards that overlap the wide photograph stack instead */
+  .ep-home .ep-overlap { flex-direction: column !important; margin-top: -40px !important; }
 }
+
 @media (max-width: 560px) {
   .ep-home [style*="grid-template-columns: repeat(4"] { grid-template-columns: 1fr !important; }
   .ep-home .ep-icon { width: 104px !important; height: 104px !important; }
+  /* a column that is told to share the row equally has nothing to share on a
+     phone, so let every one of them take the full width and stack */
+  .ep-home [style*="flex:1 1 0"] { flex-basis: 100% !important; }
+  /* a phone shows the hero stacked, so it needs less air and a shorter
+     headline than the one the board sets for a wide screen */
+  .ep-home .ep-hero-in { gap: 24px !important; }
+  .ep-home .ep-fs-66 { font-size: clamp(30px, 8.6vw, 44px) !important; }
+  .ep-home .ep-hero-img { height: 190px !important; }
   /* the event card is placed over the photo card's corner, which covers the
      name once the column is only as wide as a phone */
   .ep-home [style*="right:-22px"] { position: static !important; margin-top: 14px; }
