@@ -3131,38 +3131,70 @@ a.card:hover {
 /* Side gutters and the hero's own vertical room. */
 .ep-home .ep-gutter { padding-left: clamp(20px, 3.75vw, 48px) !important; padding-right: clamp(20px, 3.75vw, 48px) !important; }
 
-/* Short viewports: keep the hero inside the first screen. */
+/* Short viewports: keep the hero inside the first screen. The hero's top
+   padding never changes, so the card hanging off the photograph stays put. */
 @media (max-height: 760px) and (min-width: 901px) {
   .ep-home .ep-hero-in { padding-bottom: 44px !important; }
 }
 
-/* The board is a desktop artboard: fixed column widths, one card placed by
-   coordinates, and rows that are meant to sit side by side. These rules only
-   apply below 900px, so the desktop rendering is untouched. */
-@media (max-width: 900px) {
-  .ep-home .ep-float { position: static !important; left: auto !important; top: auto !important; margin-top: 18px; }
-  .ep-home .ep-wide-col,
-  .ep-home .ep-side-col { width: 100% !important; height: auto !important; flex: 1 1 100% !important; }
-  .ep-home .ep-icon { width: 120px !important; height: 120px !important; }
-  .ep-home [style*="grid-template-columns: repeat(4"] { grid-template-columns: 1fr 1fr !important; }
+/* ---------------------------------------------------------------------
+   The board is a desktop artboard: fixed column widths, rows meant to sit
+   side by side, and one card placed by coordinates. Below are the narrow
+   layouts, section by section. None of this applies above 980px.
+   --------------------------------------------------------------------- */
+
+/* Columns given a fixed width on a wide screen take the full width here. */
+@media (max-width: 980px) {
   .ep-home [style*="display:flex"] { flex-wrap: wrap !important; }
-  /* the three cards that overlap the wide photograph stack instead */
-  .ep-home .ep-overlap { flex-direction: column !important; margin-top: -40px !important; }
+  .ep-home .ep-wide-col { width: 100% !important; height: auto !important; flex: 1 1 100% !important; }
+  /* the founder's portrait: full width, but a height it can live with
+     rather than one driven by the picture's own proportions */
+  .ep-home .ep-side-col { width: 100% !important; height: 440px !important; flex: 1 1 100% !important; }
+  /* a portrait cropped to a wide band from its middle shows a torso, so hold
+     the crop near the top where the face is */
+  .ep-home .ep-side-col img { object-position: 50% 12% !important; }
 }
 
-@media (max-width: 560px) {
-  .ep-home [style*="grid-template-columns: repeat(4"] { grid-template-columns: 1fr !important; }
+@media (max-width: 900px) {
+  /* the card that hangs off the hero photograph drops below it rather than
+     becoming a third column beside it */
+  /* box-sizing is content-box in here, as the board was drawn, so this card
+     needs border-box for its max-width to include its own padding */
+  .ep-home .ep-float { position: static !important; left: auto !important; top: auto !important;
+                       flex: 0 0 100% !important; width: max-content; max-width: 100%;
+                       box-sizing: border-box !important; margin-top: 14px; }
+  .ep-home .ep-icon { width: 120px !important; height: 120px !important; }
+  .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr 1fr !important; }
+  /* the four tiles beside the founder are sized for a wide screen; let them
+     take the height their own words need */
+  .ep-home [style*="height:217px"] { height: 180px !important; }
+  .ep-home [style*="height:88px"] { height: 76px !important; }
+  /* a Village row gives its name and its line a row each, so the badge and
+     the link sit together underneath instead of wrapping one at a time */
+  .ep-home .ep-vrow > span:nth-child(1),
+  .ep-home .ep-vrow > span:nth-child(2) { flex: 0 0 100% !important; }
+  .ep-home .ep-vrow { gap: 14px !important; }
+  /* the event card sits over the photograph's caption once that column is
+     the full width of the page */
+  .ep-home [style*="right:-22px"] { position: static !important; margin: 14px 0 0 auto; width: max-content; }
+}
+
+/* The three cards over the wide photograph stay in a row while there is room
+   for them, and stack only when there is not. */
+@media (max-width: 700px) {
+  .ep-home .ep-overlap { flex-direction: column !important; margin-top: -40px !important; gap: 14px !important; }
+  .ep-home .ep-overlap > div { padding: 32px 26px !important; }
   .ep-home .ep-icon { width: 104px !important; height: 104px !important; }
-  /* a column that is told to share the row equally has nothing to share on a
-     phone, so let every one of them take the full width and stack */
+}
+
+@media (max-width: 620px) {
+  .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr !important; }
+  /* a column told to share a row equally has nothing to share on a phone */
   .ep-home [style*="flex:1 1 0"] { flex-basis: 100% !important; }
-  /* a phone shows the hero stacked, so it needs less air and a shorter
-     headline than the one the board sets for a wide screen */
   .ep-home .ep-hero-in { gap: 24px !important; }
   .ep-home .ep-fs-61 { font-size: clamp(30px, 8.2vw, 42px) !important; }
   .ep-home .ep-hero-img { height: 230px !important; }
-  /* the event card is placed over the photo card's corner, which covers the
-     name once the column is only as wide as a phone */
-  .ep-home [style*="right:-22px"] { position: static !important; margin-top: 14px; }
+  .ep-home .ep-side-col { height: 360px !important; }
+  .ep-home [style*="height:217px"] { height: auto !important; min-height: 0; }
 }
 /* ==== EP HOME 2026 END ==== */

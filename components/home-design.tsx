@@ -31,8 +31,8 @@ function villageLine(v: HomeVillage) {
   if (v.summary) return v.summary;
   if (v.status === "open")
     return `${v.members} members across ${v.circles} ${v.circles === 1 ? "Circle" : "Circles"}, meeting monthly.`;
-  if (v.members) return `${v.members} founding members, the first Circle forming now.`;
-  return "Local Admins being prepared ahead of the first gathering.";
+  if (v.members) return `${v.members} members so far, the first Circle forming now.`;
+  return "The first members are gathering ahead of the opening.";
 }
 
 export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
@@ -183,7 +183,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
         </div>
 
         {villages.map((v, i) => (
-          <div key={v.slug} style={{ display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "center", padding: "26px", borderRadius: "20px", background: "#FFFFFF", boxShadow: "0 8px 26px rgba(44, 62, 80, 0.09)", marginBottom: i === villages.length - 1 ? "0" : "14px" }}>
+          <div key={v.slug} className="ep-vrow" style={{ display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "center", padding: "26px", borderRadius: "20px", background: "#FFFFFF", boxShadow: "0 8px 26px rgba(44, 62, 80, 0.09)", marginBottom: i === villages.length - 1 ? "0" : "14px" }}>
             <span style={{ flex: "1 1 200px", minWidth: "0" }}>
               <b style={{ display: "block", fontFamily: "Inter, system-ui, sans-serif", fontSize: "30px", fontWeight: "500", color: "#2C3E50" }}>{v.name}</b>
               <span style={{ fontSize: "14px", color: "#6B7C8C" }}>{v.country}</span>
