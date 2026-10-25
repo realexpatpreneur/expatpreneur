@@ -135,7 +135,7 @@ export default async function MediaPage({
           <section className="sec">
             <h2>The people in these stories are members</h2>
             <p className="lead">
-              Membership is by invitation and costs nothing.
+              Membership is by invitation.
             </p>
             <p>
               <Link className="btn btn-primary" href="/apply">

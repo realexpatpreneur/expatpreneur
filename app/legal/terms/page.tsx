@@ -72,7 +72,7 @@ export default async function TermsPage() {
 
             <h3>5. Fees</h3>
             <p className="muted small">
-              Explorer membership is free. Village Membership is priced in the currency of
+              Village Membership is priced in the currency of
               your own Village and is shown on the membership page before you
               pay. It renews automatically, and can be cancelled at any time,
               running until the end of the period already paid for. Event

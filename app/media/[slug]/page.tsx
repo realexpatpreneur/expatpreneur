@@ -107,7 +107,7 @@ export default async function ArticlePage({
                 <div className="panel panel-wash">
                   <h3>Join them</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
-                    Membership is by invitation and costs nothing.
+                    Membership is by invitation.
                   </p>
                   <Link className="btn btn-primary" href="/apply">
                     Request an invitation

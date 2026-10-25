@@ -126,7 +126,7 @@ export default async function ShowPage({
                 <div className="panel panel-wash">
                   <h3>The people in these conversations are members</h3>
                   <p className="muted small" style={{ marginTop: 6 }}>
-                    Membership is by invitation and costs nothing.
+                    Membership is by invitation.
                   </p>
                   <Link className="btn btn-primary" href="/apply">
                     Request an invitation

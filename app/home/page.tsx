@@ -30,7 +30,7 @@ export default async function MemberHomePage() {
   const { data: profile, error } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, headline, status, plan, village_id, circle_id, avatar_url, looking_for, can_help_with"
+      "id, full_name, headline, status, plan, village_id, circle_id, avatar_url, looking_for, can_help_with, complimentary"
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -269,11 +269,11 @@ export default async function MemberHomePage() {
               <div className="grow">
                 <b>{profile.full_name}</b>
                 <p className="muted small">{profile.headline}</p>
-                <div className="tags" style={{ marginTop: 6 }}>
-                  <span className={`tiertag ${profile.plan === "paid" ? "" : "free"}`}>
-                    {profile.plan === "paid" ? "Village Member" : "Explorer"}
-                  </span>
-                </div>
+                {profile.plan === "paid" || profile.complimentary ? (
+                  <div className="tags" style={{ marginTop: 6 }}>
+                    <span className="tiertag">Village Member</span>
+                  </div>
+                ) : null}
               </div>
             </div>
             <div className="path" style={{ marginTop: 12 }}>

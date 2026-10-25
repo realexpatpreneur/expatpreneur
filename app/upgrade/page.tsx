@@ -23,6 +23,15 @@ export default async function UpgradePage({
   const member = await requireAccount("/upgrade");
   const supabase = await createClient();
 
+  // The list on this page is her catalogue, held in plans, rather than
+  // anything written here. One place to change it, and it is the same
+  // list the public membership page shows.
+  const { data: plan } = await supabase
+    .from("plans")
+    .select("blurb, features")
+    .eq("slug", "paid")
+    .maybeSingle();
+
   const { data: subscription } = isPaid(member)
     ? await supabase
         .from("subscriptions")
@@ -58,8 +67,7 @@ export default async function UpgradePage({
         <section className="sec">
           <h1>Village Membership</h1>
           <p className="lead">
-            Explorer membership is free, and stays free. Village Membership is the rest of
-            the network.
+            {plan?.blurb ?? "Village Membership opens every Village."}
           </p>
           {state === "cancelled" ? (
             <div className="flag hold">Checkout was cancelled. Nothing was charged.</div>
@@ -70,25 +78,11 @@ export default async function UpgradePage({
           <div className="gside">
             <div className="stack">
               <div className="panel">
-                <h3>What free membership gives you</h3>
+                <h3>What Village Membership includes</h3>
                 <ul className="plain">
-                  <li>Your Village, your Circle and its WhatsApp group</li>
-                  <li>Ask and Offer in your own Village</li>
-                  <li>The Directory of your Village</li>
-                  <li>Your Village's events and resources</li>
-                  <li>Reading every Market Exploration post</li>
-                  <li>The suggestion box</li>
-                </ul>
-              </div>
-
-              <div className="panel">
-                <h3>What Village Membership adds</h3>
-                <ul className="plain">
-                  <li>Replying to members in any Village</li>
-                  <li>Asking to connect, and messaging once they accept</li>
-                  <li>The Directory of every Village</li>
-                  <li>Events in other Villages, as a visiting member</li>
-                  <li>Resources from every Village</li>
+                  {((plan?.features ?? []) as string[]).map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -147,14 +141,6 @@ export default async function UpgradePage({
                     </Link>
                   </>
                 )}
-              </div>
-
-              <div className="panel panel-wash">
-                <h3>Why it is not everything</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
-                  Your own Village is the point, and it is free. Paying is for
-                  people whose work crosses borders.
-                </p>
               </div>
             </div>
           </div>

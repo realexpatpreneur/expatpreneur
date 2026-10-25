@@ -10,12 +10,12 @@ import { Ic } from "@/components/icon";
 export const metadata = {
   title: "Membership, ExpatPreneurs Global",
   description:
-    "Explorer membership is by invitation and costs nothing. Village Membership opens the rest of the network.",
+    "Membership is by invitation. Village Membership is priced in the currency of your own Village.",
 };
 
 const QUESTIONS: [string, string][] = [
   ["Why is membership by invitation?", "So every Village stays trusted and useful. Every request is read personally."],
-  ["Does membership cost anything?", "Membership in your own Village comes with your invitation and costs nothing. There is one paid tier, Village Membership, which adds every Village. It is priced in the currency of your own Village, at the founding rate while founding places last there."],
+  ["Does membership cost anything?", "Village Membership is priced in the currency of your own Village, at the founding rate while founding places last there."],
   ["I am already in the Dubai WhatsApp group. Do I pay?", "No. Re-enrol on the platform and your place stays, with a founding member badge. Village Membership is optional, for reaching every Village."],
   ["Who can request an invitation?", "Anyone building a business in a country that is not their country of origin, from the idea stage to expansion."],
   ["Why do you ask about my nationalities and the countries I have lived in?", "They make up your expat journey on your profile, so members can find people who know a market or speak a language."],

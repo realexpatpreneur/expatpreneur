@@ -148,8 +148,7 @@ export default async function GlobalReportingPage() {
               <h3>Money</h3>
               {(money ?? []).length === 0 ? (
                 <p className="muted small" style={{ marginTop: 6 }}>
-                  Nothing taken yet. Membership is free and tickets are not
-                  charged until Stripe is live.
+                  Nothing taken yet. Nothing is charged until Stripe is live.
                 </p>
               ) : (
                 <div className="divide" style={{ marginTop: 12 }}>

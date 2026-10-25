@@ -112,8 +112,7 @@ export default async function GlobalMoneyPage() {
         {(payments ?? []).length === 0 ? (
           <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>
-              Nothing yet. Membership is free for now and tickets are not
-              charged until Stripe is live.
+              Nothing yet. Nothing is charged until Stripe is live.
             </p>
           </div>
         ) : (

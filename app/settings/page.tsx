@@ -184,7 +184,7 @@ export default async function SettingsPage({
                 <div className="panel">
                   <div className="row" style={{ justifyContent: "space-between" }}>
                     <div>
-                      <h3>{isPaid(member) ? "Village Member" : "Explorer"}</h3>
+                      <h3>{isPaid(member) ? "Village Member" : "Membership"}</h3>
                       <p className="muted small">
                         {isPaid(member)
                           ? subscription?.current_period_end
@@ -198,7 +198,7 @@ export default async function SettingsPage({
                             : member.complimentary
                               ? "Complimentary, given by an admin."
                               : "Active"
-                          : "Included with your invitation."}
+                          : "Village Membership is not active on this account."}
                       </p>
                     </div>
                     {isPaid(member) ? (
