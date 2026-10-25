@@ -3093,6 +3093,10 @@ a.card:hover {
    nowhere else, or every padding and line height on the page shifts */
 .ep-home { font-family: Inter, system-ui, sans-serif; color: #2C3E50; font-size: 16px; line-height: normal; }
 .ep-home *, .ep-home *::before, .ep-home *::after { box-sizing: content-box; }
+/* the site caps every image at max-width 100%, which makes a picture given
+   an explicit height shrink that height to keep its ratio; the board was
+   drawn without that cap, and every picture here is already width 100% */
+.ep-home img { max-width: none; }
 .ep-home a { color: #2C3E50; }
 .ep-home a:hover { color: #4074AE; }
 
@@ -3122,15 +3126,14 @@ a.card:hover {
 .ep-home .ep-fs-46 { font-size: clamp(25px, 3.594vw, 46px); }
 .ep-home .ep-fs-48 { font-size: clamp(26px, 3.75vw, 48px); }
 .ep-home .ep-fs-52 { font-size: clamp(28px, 4.062vw, 52px); }
-.ep-home .ep-fs-66 { font-size: clamp(36px, 5.156vw, 66px); }
+.ep-home .ep-fs-61 { font-size: clamp(33px, 4.766vw, 61px); }
 
 /* Side gutters and the hero's own vertical room. */
 .ep-home .ep-gutter { padding-left: clamp(20px, 3.75vw, 48px) !important; padding-right: clamp(20px, 3.75vw, 48px) !important; }
-.ep-home .ep-hero-in { padding-top: clamp(26px, 5.6vh, 72px) !important; padding-bottom: clamp(30px, 6.25vh, 80px) !important; }
 
 /* Short viewports: keep the hero inside the first screen. */
-@media (max-height: 820px) and (min-width: 901px) {
-  .ep-home .ep-hero-in { padding-top: 26px !important; padding-bottom: 30px !important; }
+@media (max-height: 760px) and (min-width: 901px) {
+  .ep-home .ep-hero-in { padding-bottom: 44px !important; }
 }
 
 /* The board is a desktop artboard: fixed column widths, one card placed by
@@ -3156,7 +3159,7 @@ a.card:hover {
   /* a phone shows the hero stacked, so it needs less air and a shorter
      headline than the one the board sets for a wide screen */
   .ep-home .ep-hero-in { gap: 24px !important; }
-  .ep-home .ep-fs-66 { font-size: clamp(30px, 8.6vw, 44px) !important; }
+  .ep-home .ep-fs-61 { font-size: clamp(30px, 8.2vw, 42px) !important; }
   .ep-home .ep-hero-img { height: 230px !important; }
   /* the event card is placed over the photo card's corner, which covers the
      name once the column is only as wide as a phone */

@@ -46,7 +46,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
           <span style={{ "width": "7px", "height": "7px", "borderRadius": "50%", "background": "#2F6A5E", "display": "inline-block" }}></span>
           Dubai is open. Lisbon and Paris are next.
         </p>
-        <h1 className="ep-fs-66" style={{ "margin": "0 0 24px", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "66px", "lineHeight": "1.04", "fontWeight": "700", "letterSpacing": "-0.02em", "color": "#2C3E50" }}>Your business needs a village too.</h1>
+        <h1 className="ep-fs-61" style={{ "margin": "0 0 24px", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "61px", "lineHeight": "1.04", "fontWeight": "700", "letterSpacing": "-0.02em", "color": "#2C3E50" }}>Your business needs<br />a village too.</h1>
         <p style={{ "margin": "0 0 34px", "maxWidth": "480px", "fontSize": "18px", "lineHeight": "1.7", "color": "#5E6E7E" }}>A curated network of expat entrepreneurs. Belong to a small, trusted community in your city, and reach people you can trust in other markets.</p>
         <div style={{ "display": "flex", "flexWrap": "wrap", "gap": "14px", "marginBottom": "34px" }}>
           <Link href="/apply" style={{ "textDecoration": "none", "background": "#2C3E50", "color": "#FFFFFF", "fontSize": "16px", "fontWeight": "600", "padding": "17px 32px", "borderRadius": "4px", "boxShadow": "0 10px 24px rgba(44, 62, 80, 0.16)" }}>Request your invitation</Link>
