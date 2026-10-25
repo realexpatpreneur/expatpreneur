@@ -3117,56 +3117,66 @@ a.card:hover {
   .ep-home .ep-rise { opacity: 1; transform: none; }
 }
 
-/* Fluid type. The top of each clamp is the board's own size, so at
-   1280px and wider the page is exactly as approved. */
-.ep-home .ep-fs-24 { font-size: clamp(13px, 1.875vw, 24px); }
-.ep-home .ep-fs-30 { font-size: clamp(16px, 2.344vw, 30px); }
-.ep-home .ep-fs-42 { font-size: clamp(23px, 3.281vw, 42px); }
-.ep-home .ep-fs-44 { font-size: clamp(24px, 3.438vw, 44px); }
-.ep-home .ep-fs-46 { font-size: clamp(25px, 3.594vw, 46px); }
-.ep-home .ep-fs-48 { font-size: clamp(26px, 3.75vw, 48px); }
-.ep-home .ep-fs-52 { font-size: clamp(28px, 4.062vw, 52px); }
-.ep-home .ep-fs-61 { font-size: clamp(33px, 4.766vw, 61px); }
+/* Fluid type. The top of each clamp is a tenth below the board's own
+   size for display text, which is the reduction wanted on a wide
+   screen; the bottom is half of that, which is what a phone gets. */
+.ep-home .ep-fs-17 { font-size: clamp(14px, 1.328vw, 17px) !important; }
+.ep-home .ep-fs-18 { font-size: clamp(14px, 1.406vw, 18px) !important; }
+.ep-home .ep-fs-19 { font-size: clamp(14px, 1.484vw, 19px) !important; }
+.ep-home .ep-fs-20 { font-size: clamp(14px, 1.562vw, 20px) !important; }
+.ep-home .ep-fs-21 { font-size: clamp(14px, 1.641vw, 21px) !important; }
+.ep-home .ep-fs-24 { font-size: clamp(14px, 1.719vw, 22px) !important; }
+.ep-home .ep-fs-27 { font-size: clamp(14px, 1.875vw, 24px) !important; }
+.ep-home .ep-fs-30 { font-size: clamp(14px, 2.109vw, 27px) !important; }
+.ep-home .ep-fs-42 { font-size: clamp(19px, 2.969vw, 38px) !important; }
+.ep-home .ep-fs-44 { font-size: clamp(20px, 3.125vw, 40px) !important; }
+.ep-home .ep-fs-46 { font-size: clamp(20px, 3.203vw, 41px) !important; }
+.ep-home .ep-fs-48 { font-size: clamp(22px, 3.359vw, 43px) !important; }
+.ep-home .ep-fs-52 { font-size: clamp(24px, 3.672vw, 47px) !important; }
+.ep-home .ep-fs-61 { font-size: clamp(28px, 4.297vw, 55px) !important; }
 
-/* Side gutters and the hero's own vertical room. */
+/* The page's side gutters. */
 .ep-home .ep-gutter { padding-left: clamp(20px, 3.75vw, 48px) !important; padding-right: clamp(20px, 3.75vw, 48px) !important; }
 
-/* Short viewports: keep the hero inside the first screen. The hero's top
-   padding never changes, so the card hanging off the photograph stays put. */
+/* Short viewports: keep the hero inside the first screen. Its top padding
+   never changes, so the card on the photograph stays where it belongs. */
 @media (max-height: 760px) and (min-width: 901px) {
   .ep-home .ep-hero-in { padding-bottom: 44px !important; }
 }
 
 /* ---------------------------------------------------------------------
    The board is a desktop artboard: fixed column widths, rows meant to sit
-   side by side, and one card placed by coordinates. Below are the narrow
-   layouts, section by section. None of this applies above 980px.
+   side by side, and columns that stick while a taller one scrolls past.
+   Below are the narrow layouts. None of it applies above 980px.
    --------------------------------------------------------------------- */
 
-/* Columns given a fixed width on a wide screen take the full width here. */
 @media (max-width: 980px) {
   .ep-home [style*="display:flex"] { flex-wrap: wrap !important; }
-  .ep-home .ep-wide-col { width: 100% !important; height: auto !important; flex: 1 1 100% !important; }
-  /* the founder's portrait: full width, but a height it can live with
-     rather than one driven by the picture's own proportions */
+  /* the room the stacking cards need to pin on a wide screen is dead space
+     once nothing sticks */
+  .ep-home .ep-wide-col { width: 100% !important; height: auto !important; flex: 1 1 100% !important;
+                          padding-bottom: 0 !important; }
+  /* the founder's portrait: full width, but a height it can live with rather
+     than one driven by the picture's own proportions, and a crop held near
+     the top so the frame holds a face and not a torso */
   .ep-home .ep-side-col { width: 100% !important; height: 440px !important; flex: 1 1 100% !important; }
-  /* a portrait cropped to a wide band from its middle shows a torso, so hold
-     the crop near the top where the face is */
   .ep-home .ep-side-col img { object-position: 50% 12% !important; }
+  /* nothing sticks once the columns are stacked, or the cards that pin on a
+     wide screen come to rest on top of the heading beside them */
+  .ep-home [style*="position:sticky"] { position: static !important; }
 }
 
 @media (max-width: 900px) {
-  /* the card that hangs off the hero photograph drops below it rather than
-     becoming a third column beside it */
-  /* box-sizing is content-box in here, as the board was drawn, so this card
-     needs border-box for its max-width to include its own padding */
-  .ep-home .ep-float { position: static !important; left: auto !important; top: auto !important;
-                       flex: 0 0 100% !important; width: max-content; max-width: 100%;
-                       box-sizing: border-box !important; margin-top: 14px; }
+  /* both cards stay on the photograph once the column is the full width of
+     the page: the request near its top, the event near its foot, anchored
+     from the top so neither drifts off the picture as it changes height */
+  .ep-home .ep-float { left: 12px !important; right: auto !important;
+                       top: 14px !important; bottom: auto !important;
+                       max-width: calc(100% - 24px); box-sizing: border-box !important; }
   .ep-home .ep-icon { width: 120px !important; height: 120px !important; }
   .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr 1fr !important; }
-  /* the four tiles beside the founder are sized for a wide screen; let them
-     take the height their own words need */
+  /* the four tiles beside the founder keep equal heights while they are in
+     two columns, so the pair lines up */
   .ep-home [style*="height:217px"] { height: 180px !important; }
   .ep-home [style*="height:88px"] { height: 76px !important; }
   /* a Village row gives its name and its line a row each, so the badge and
@@ -3174,13 +3184,11 @@ a.card:hover {
   .ep-home .ep-vrow > span:nth-child(1),
   .ep-home .ep-vrow > span:nth-child(2) { flex: 0 0 100% !important; }
   .ep-home .ep-vrow { gap: 14px !important; }
-  /* the event card sits over the photograph's caption once that column is
-     the full width of the page */
-  .ep-home [style*="right:-22px"] { position: static !important; margin: 14px 0 0 auto; width: max-content; }
+  .ep-home [style*="right:-22px"] { right: 10px !important; bottom: 120px !important; }
 }
 
-/* The three cards over the wide photograph stay in a row while there is room
-   for them, and stack only when there is not. */
+/* The three cards over the wide photograph keep their row while there is
+   room, and stack only when there is not. */
 @media (max-width: 700px) {
   .ep-home .ep-overlap { flex-direction: column !important; margin-top: -40px !important; gap: 14px !important; }
   .ep-home .ep-overlap > div { padding: 32px 26px !important; }
@@ -3192,7 +3200,6 @@ a.card:hover {
   /* a column told to share a row equally has nothing to share on a phone */
   .ep-home [style*="flex:1 1 0"] { flex-basis: 100% !important; }
   .ep-home .ep-hero-in { gap: 24px !important; }
-  .ep-home .ep-fs-61 { font-size: clamp(30px, 8.2vw, 42px) !important; }
   .ep-home .ep-hero-img { height: 230px !important; }
   .ep-home .ep-side-col { height: 360px !important; }
   .ep-home [style*="height:217px"] { height: auto !important; min-height: 0; }
