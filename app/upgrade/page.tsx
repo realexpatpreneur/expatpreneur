@@ -2,7 +2,8 @@ import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, isPaid } from "@/lib/member";
-import { stripeReady, membershipPriceId } from "@/lib/stripe";
+import { stripeReady } from "@/lib/stripe";
+import { money, rateOf, anyFounding, type Pricing } from "@/lib/pricing";
 import {
   UpgradeButton,
   CancelMembershipButton,
@@ -28,7 +29,27 @@ export default async function UpgradePage({
         .maybeSingle()
     : { data: null };
 
-  const live = stripeReady && Boolean(membershipPriceId);
+  // What this member's own Village charges, in its own currency, at its
+  // founding rate while founding is open there.
+  const { data: rate } = member.village_id
+    ? await supabase
+        .from("village_pricing")
+        .select(
+          "village_slug, village_name, currency, month_cents, year_cents, founding_month_cents, founding_year_cents, founding_open"
+        )
+        .eq("plan_slug", "paid")
+        .eq("village_id", member.village_id)
+        .maybeSingle()
+    : { data: null };
+
+  const priced = (rate ?? null) as Pricing | null;
+  const monthCents = priced ? rateOf(priced, false) : null;
+  const yearCents = priced ? rateOf(priced, true) : null;
+  const monthly = monthCents ? money(monthCents, priced!.currency) : null;
+  const yearly = yearCents ? money(yearCents, priced!.currency) : null;
+  const founding = priced ? anyFounding([priced]) : false;
+
+  const live = stripeReady && Boolean(monthly);
 
   return (
     <WorkspaceShell kind="member" nav="/upgrade">
@@ -91,19 +112,31 @@ export default async function UpgradePage({
                   </>
                 ) : live ? (
                   <>
-                    <h3>Open every Village</h3>
+                    <h3>
+                      {monthly
+                        ? `${monthly} a month in ${priced!.village_name}`
+                        : "Open every Village"}
+                    </h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
+                      {founding
+                        ? "This is the founding rate, and it stays yours for as long as your membership runs without a break. "
+                        : ""}
                       Cancel whenever you like. It runs to the end of the period
                       you have already paid for.
                     </p>
-                    <UpgradeButton label="Go to checkout" />
+                    <UpgradeButton
+                      label="Go to checkout"
+                      monthly={monthly}
+                      yearly={yearly}
+                    />
                   </>
                 ) : (
                   <>
                     <h3>Not switched on yet</h3>
                     <p className="muted small" style={{ marginTop: 6 }}>
-                      Village Membership opens shortly. Until then, ask your Local
-                      Admin if you need to reach another Village.
+                      {stripeReady
+                        ? "Your Village has no price set yet. Your Local Admin or the Global team sets it, and this opens the moment they do."
+                        : "Village Membership opens shortly. Until then, ask your Local Admin if you need to reach another Village."}
                     </p>
                     <Link className="btn btn-ghost" href="/home">
                       Back to home

@@ -5,7 +5,11 @@ import { siteUrl } from "@/lib/site";
 // so plainly instead of failing.
 export const stripeReady = Boolean(process.env.STRIPE_SECRET_KEY);
 
-export const membershipPriceId = process.env.STRIPE_MEMBERSHIP_PRICE_ID ?? "";
+// Membership used to be one Stripe price for the whole network, which
+// cannot say AED 59 for Dubai and EUR 15 for Paris, nor the founding
+// rate against the standard one, nor a month against a year. The price
+// is built from the member's own Village at checkout instead, the way a
+// ticket already was, so there is nothing here to keep in step.
 
 export function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY;

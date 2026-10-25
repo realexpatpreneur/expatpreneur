@@ -9,7 +9,15 @@ import {
   type CheckoutState,
 } from "./actions";
 
-export function UpgradeButton({ label }: { label: string }) {
+export function UpgradeButton({
+  label,
+  monthly,
+  yearly,
+}: {
+  label: string;
+  monthly?: string | null;
+  yearly?: string | null;
+}) {
   const [state, action, pending] = useActionState<CheckoutState, FormData>(
     startMembershipCheckout,
     {}
@@ -18,6 +26,30 @@ export function UpgradeButton({ label }: { label: string }) {
   return (
     <form action={action}>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
+
+      {monthly && yearly ? (
+        <div className="choicegrid" style={{ marginBottom: 12 }}>
+          <label className="radio">
+            <input type="radio" name="interval" value="month" defaultChecked />
+            <span>
+              <b>{monthly}</b>
+              <span className="hint" style={{ display: "block" }}>
+                every month
+              </span>
+            </span>
+          </label>
+          <label className="radio">
+            <input type="radio" name="interval" value="year" />
+            <span>
+              <b>{yearly}</b>
+              <span className="hint" style={{ display: "block" }}>
+                every year
+              </span>
+            </span>
+          </label>
+        </div>
+      ) : null}
+
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Opening checkout" : label}
       </button>

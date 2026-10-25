@@ -3,8 +3,9 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getStripe, membershipPriceId, siteUrl, stripeReady } from "@/lib/stripe";
+import { getStripe, siteUrl, stripeReady } from "@/lib/stripe";
 import { ticketPrice } from "@/lib/events";
+import { rateOf, type Pricing } from "@/lib/pricing";
 
 export type CheckoutState = { error?: string };
 
@@ -12,9 +13,9 @@ export type CheckoutState = { error?: string };
 // actually moves someone onto Village Membership.
 export async function startMembershipCheckout(
   _prev: CheckoutState,
-  _formData: FormData
+  formData: FormData
 ): Promise<CheckoutState> {
-  if (!stripeReady || !membershipPriceId) {
+  if (!stripeReady) {
     return { error: "Payments are not switched on yet." };
   }
 
@@ -26,11 +27,40 @@ export async function startMembershipCheckout(
 
   const { data: profile } = await supabase
     .from("member_records")
-    .select("full_name, email, plan")
+    .select("full_name, email, plan, village_id")
     .eq("id", user.id)
     .maybeSingle();
 
   if (profile?.plan === "paid") return { error: "You are already a Village Member." };
+  if (!profile?.village_id) {
+    return { error: "Your Village has to be set before you can take membership." };
+  }
+
+  // The price belongs to the Village, in the Village's own currency, at
+  // its founding rate while founding is still open there.
+  const yearly = String(formData.get("interval") ?? "month") === "year";
+
+  const { data: rate } = await supabase
+    .from("village_pricing")
+    .select(
+      "village_name, currency, month_cents, year_cents, founding_month_cents, founding_year_cents, founding_open"
+    )
+    .eq("plan_slug", "paid")
+    .eq("village_id", profile.village_id)
+    .maybeSingle();
+
+  if (!rate) {
+    return { error: "Your Village has no price set yet. Tell your Local Admin." };
+  }
+
+  const amount = rateOf(rate as unknown as Pricing, yearly);
+  if (!amount) {
+    return { error: "Your Village has no price set yet. Tell your Local Admin." };
+  }
+
+  // Whether this is a founding seat is decided here and recorded on the
+  // payment, so the webhook can mark the badge without guessing later.
+  const founding = Boolean(rate.founding_open);
 
   const stripe = getStripe();
 
@@ -44,12 +74,31 @@ export async function startMembershipCheckout(
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    line_items: [{ price: membershipPriceId, quantity: 1 }],
+    line_items: [
+      {
+        quantity: 1,
+        price_data: {
+          currency: String(rate.currency).toLowerCase(),
+          unit_amount: amount,
+          recurring: { interval: yearly ? "year" : "month" },
+          product_data: {
+            name: `Village Membership, ${rate.village_name}`,
+          },
+        },
+      },
+    ],
     customer: existing?.provider_customer ?? undefined,
     customer_email: existing?.provider_customer ? undefined : profile?.email ?? user.email,
     client_reference_id: user.id,
-    metadata: { profile_id: user.id, kind: "membership" },
-    subscription_data: { metadata: { profile_id: user.id } },
+    metadata: {
+      profile_id: user.id,
+      kind: "membership",
+      founding: founding ? "yes" : "no",
+      interval: yearly ? "year" : "month",
+    },
+    subscription_data: {
+      metadata: { profile_id: user.id, founding: founding ? "yes" : "no" },
+    },
     success_url: `${siteUrl}/upgrade/done?state=paid`,
     cancel_url: `${siteUrl}/upgrade?state=cancelled`,
   });

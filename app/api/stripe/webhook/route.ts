@@ -63,7 +63,14 @@ export async function POST(request: Request) {
         { onConflict: "profile_id" }
       );
 
-      await service.from("profiles").update({ plan: "paid" }).eq("id", profileId);
+      // A founding seat is claimed by paying, which is what the seat
+      // count in village_pricing counts. The rate itself is held by the
+      // Stripe subscription, so it survives as long as that does.
+      const tookFounding = session.metadata?.founding === "yes";
+      await service
+        .from("profiles")
+        .update(tookFounding ? { plan: "paid", founding: true } : { plan: "paid" })
+        .eq("id", profileId);
 
       await notify(
         profileId,
