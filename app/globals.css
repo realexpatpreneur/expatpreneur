@@ -3079,3 +3079,141 @@ a.card:hover {
 
 .band p { color: #DCE6EF; }
 .band .muted { color: #C2D3E6; }
+
+/* ==== EP HOME 2026 START (script 182) ==== */
+/* =====================================================================
+   The 2026 home page, as approved on the design canvas.
+   Everything in this block is prefixed h26- and is used only by
+   components/home-design.tsx, so no other page is affected.
+   ===================================================================== */
+
+.h26{font-family:var(--body);color:var(--ink);background:var(--paper)}
+.h26 h1,.h26 h2{margin:0;font-family:var(--display);color:var(--navy);font-weight:600;letter-spacing:-0.028em}
+.h26 p{margin:0}
+.h26 a{text-decoration:none}
+.h26 .h26-wrap{max-width:1200px;margin:0 auto;padding:0 64px}
+.h26 .h26-sec{padding:112px 64px}
+
+.h26 .h26-eyebrow{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--sun);margin-bottom:18px}
+.h26 .h26-eyebrow-blue{color:var(--blue)}
+.h26 .h26-eyebrow-sun{color:var(--sun)}
+.h26 .h26-h1{font-size:clamp(38px,5vw,62px);line-height:1.04;max-width:14ch}
+.h26 .h26-h2{font-size:clamp(28px,3.4vw,44px);line-height:1.12}
+.h26 .h26-h2-sm{font-size:clamp(26px,2.8vw,36px);max-width:19ch}
+.h26 .h26-h2-tight{max-width:720px}
+.h26 .h26-h2-white{color:#FFFFFF}
+.h26 .h26-lead{margin-top:30px;max-width:640px;font-size:17px;line-height:1.65;color:var(--muted)}
+.h26 .h26-intro{margin-top:18px;max-width:620px;font-size:15.5px;line-height:1.7;color:var(--muted)}
+.h26 .h26-note{margin-top:30px;font-size:13px;color:var(--muted)}
+
+.h26 .h26-btn{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 30px;border-radius:999px;background:var(--blue);color:#FFFFFF;font-size:14.5px;font-weight:600;border:1px solid var(--blue);transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+.h26 .h26-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(64,116,174,.26)}
+.h26 .h26-btn-ghost{background:transparent;color:var(--navy);border-color:rgba(44,62,80,.22)}
+.h26 .h26-btn-ghost:hover{box-shadow:0 12px 26px rgba(44,62,80,.12)}
+.h26 .h26-btn-white{background:#FFFFFF;color:var(--navy);border-color:#FFFFFF}
+.h26 .h26-btn-white:hover{box-shadow:0 12px 26px rgba(44,62,80,.18)}
+.h26 .h26-btn-clear{background:transparent;color:#FFFFFF;border-color:rgba(255,255,255,.55)}
+.h26 .h26-btn-clear:hover{box-shadow:0 12px 26px rgba(0,0,0,.18)}
+.h26 .h26-ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:34px}
+.h26 .h26-link{align-self:center;font-size:14px;font-weight:600;color:var(--blue)}
+.h26 .h26-link:hover{text-decoration:underline}
+
+/* 1. hero */
+.h26 .h26-hero{background:linear-gradient(180deg,var(--wash) 0,var(--paper) 100%);padding:104px 0 96px}
+.h26 .h26-hero-in{display:grid;justify-items:center;text-align:center}
+.h26 .h26-badge{display:inline-block;padding:9px 18px;border-radius:999px;background:var(--mint-soft);border:1px solid rgba(64,116,174,.14);color:var(--navy);font-size:12.5px;font-weight:600;margin-bottom:26px}
+
+/* 2. the three levels */
+.h26 .h26-band{padding:112px 0 150px;background:linear-gradient(180deg,rgba(64,116,174,0) 0,rgba(64,116,174,.06) 190px,rgba(64,116,174,.06) calc(100% - 150px),rgba(64,116,174,0) 100%)}
+.h26 .h26-shot{margin-top:52px}
+.h26 .h26-shot-img{overflow:hidden;border-radius:22px;box-shadow:0 18px 44px rgba(44,62,80,.12)}
+.h26 .h26-shot-img img{display:block;width:100%;height:430px;object-fit:cover;filter:blur(3px);transform:scale(1.03)}
+.h26 .h26-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:-158px;padding:0 24px}
+.h26 .h26-level{min-height:397px;display:flex;flex-direction:column;justify-content:center;padding:44px 34px;border-radius:20px;background:#FFFFFF;border:1px solid rgba(64,116,174,.10);box-shadow:0 14px 34px rgba(44,62,80,.10);text-align:center;animation:h26-rise .7s cubic-bezier(.22,.61,.36,1) both}
+.h26 .h26-ic{display:block;width:168px;height:168px;margin:0 auto 30px;object-fit:contain}
+.h26 .h26-level-name{font-family:var(--display);font-size:21px;font-weight:600;color:var(--navy);letter-spacing:-.02em}
+.h26 .h26-level-text{margin-top:12px;font-size:14.5px;line-height:1.65;color:var(--muted)}
+@keyframes h26-rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.h26-level{animation:none}}
+
+/* 3. the founder, with the figures */
+.h26 .h26-founder{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+.h26 .h26-portrait{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 18px 44px rgba(44,62,80,.14)}
+.h26 .h26-portrait img{display:block;width:100%;height:560px;object-fit:cover}
+.h26 .h26-portrait .h26-btn{position:absolute;left:28px;bottom:28px}
+.h26 .h26-bento{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+.h26 .h26-col{display:grid;gap:18px}
+.h26 .h26-tile{border-radius:18px;padding:26px}
+.h26 .h26-tile-num{position:relative;display:flex;align-items:center;justify-content:center;min-height:148px;background:rgba(64,116,174,.045);border:1px solid rgba(64,116,174,.10)}
+.h26 .h26-tile-num b{font-family:var(--display);font-size:62px;font-weight:600;color:var(--navy);letter-spacing:-.04em;line-height:1}
+.h26 .h26-glyph{position:absolute;right:20px;top:20px;width:10px;height:10px;border-radius:999px;background:var(--sun);opacity:.55}
+.h26 .h26-tile-tall{min-height:198px;display:flex;flex-direction:column;justify-content:space-between}
+.h26 .h26-tile-lift{background:#FFFFFF;border:1px solid rgba(64,116,174,.10);box-shadow:0 12px 30px rgba(44,62,80,.11),0 2px 6px rgba(44,62,80,.05)}
+.h26 .h26-tile-head{font-family:var(--display);font-size:17px;font-weight:600;color:var(--navy);line-height:1.35;letter-spacing:-.018em}
+.h26 .h26-tile-foot{margin-top:14px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+
+/* 4. by invitation */
+.h26 .h26-invite{display:grid;grid-template-columns:auto 1fr 1fr;gap:34px;align-items:center;padding:34px 40px;border-radius:20px;background:var(--wash);box-shadow:-16px 0 22px -18px rgba(44,62,80,.16),16px 0 22px -18px rgba(44,62,80,.16)}
+.h26 .h26-invite-mark{width:54px;height:54px;border-radius:999px;background:radial-gradient(120% 120% at 32% 28%,var(--mint),rgba(64,116,174,.55))}
+.h26 .h26-invite-head{font-family:var(--display);font-size:22px;font-weight:600;color:var(--navy);letter-spacing:-.02em}
+.h26 .h26-invite-text{font-size:14.5px;line-height:1.6;color:var(--muted);margin-bottom:18px}
+
+/* 5. the Villages */
+.h26 .h26-sechead{display:flex;justify-content:space-between;gap:24px;margin-bottom:34px}
+.h26 .h26-rows{display:grid;gap:14px}
+.h26 .h26-row{display:grid;grid-template-columns:200px 1fr auto auto;gap:24px;align-items:center;padding:26px 28px;border-radius:16px;border:1px solid var(--line);background:#FFFFFF;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.h26 .h26-row:hover{transform:translateY(-2px);border-color:rgba(64,116,174,.26);box-shadow:0 14px 30px rgba(44,62,80,.09)}
+.h26 .h26-row-name{display:grid}
+.h26 .h26-row-name b{font-family:var(--display);font-size:19px;font-weight:600;color:var(--navy);letter-spacing:-.02em}
+.h26 .h26-row-name small{font-size:12.5px;color:var(--muted);margin-top:3px}
+.h26 .h26-row-line{font-size:14px;line-height:1.6;color:var(--muted)}
+.h26 .h26-row-go{font-size:13.5px;font-weight:600;color:var(--blue);white-space:nowrap}
+.h26 .h26-chip{padding:6px 14px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.h26 .h26-chip-open{background:var(--mint-soft);color:#1F5C4D}
+.h26 .h26-chip-launching{background:var(--sun-soft);color:#8A5420}
+.h26 .h26-chip-exploring{background:var(--blue-soft);color:#2F5581}
+
+/* 6. what members do */
+.h26 .h26-wash{padding:104px 0;background:var(--wash)}
+.h26 .h26-four{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:48px}
+.h26 .h26-four>div{display:grid;gap:12px;padding-top:22px;border-top:2px solid rgba(64,116,174,.18)}
+.h26 .h26-four b{font-family:var(--display);font-size:17px;font-weight:600;color:var(--navy);letter-spacing:-.018em}
+.h26 .h26-four span{font-size:14px;line-height:1.65;color:var(--muted)}
+
+/* 7. the numbers, stacking as you scroll */
+.h26 .h26-numbers{display:grid;grid-template-columns:.95fr 1.05fr;gap:64px;align-items:start}
+.h26 .h26-numbers-side{position:sticky;top:120px}
+.h26 .h26-stack{display:grid;gap:28px;padding-bottom:160px}
+.h26 .h26-card{position:sticky;top:140px;border-radius:22px;padding:40px;backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border:1px solid rgba(255,255,255,.65);box-shadow:0 14px 34px rgba(44,62,80,.10),inset 0 1px 0 rgba(255,255,255,.75)}
+.h26 .h26-card-1{background:rgba(64,116,174,.25)}
+.h26 .h26-card-2{background:rgba(168,220,209,.61)}
+.h26 .h26-card-3{background:rgba(124,92,148,.25)}
+.h26 .h26-card b{display:block;font-family:var(--display);font-size:68px;font-weight:600;color:var(--navy);letter-spacing:-.045em;line-height:1}
+.h26 .h26-card-head{margin-top:16px;font-family:var(--display);font-size:21px;font-weight:600;color:var(--navy);letter-spacing:-.02em}
+.h26 .h26-card-text{margin-top:12px;font-size:14.5px;line-height:1.65;color:#3C4C5C}
+
+/* 8. the close */
+.h26 .h26-close{padding:112px 0;background:var(--navy);text-align:center}
+.h26 .h26-close .h26-wrap{display:grid;justify-items:center}
+.h26 .h26-close-text{margin-top:20px;max-width:560px;font-size:15.5px;line-height:1.7;color:rgba(255,255,255,.76)}
+
+/* narrower screens */
+@media (max-width:1040px){
+  .h26 .h26-wrap{padding:0 32px}
+  .h26 .h26-sec{padding:84px 32px}
+  .h26 .h26-hero-in,.h26 .h26-founder,.h26 .h26-numbers{grid-template-columns:1fr}
+.h26 .h26-levels{grid-template-columns:1fr;margin-top:-90px;padding:0}
+  .h26 .h26-level{min-height:0}
+  .h26 .h26-four{grid-template-columns:1fr 1fr}
+  .h26 .h26-numbers-side{position:static}
+  .h26 .h26-invite{grid-template-columns:1fr;gap:20px}
+  .h26 .h26-row{grid-template-columns:1fr;gap:12px}
+}
+@media (max-width:620px){
+  .h26 .h26-wrap{padding:0 20px}
+  .h26 .h26-sec{padding:64px 20px}
+  .h26 .h26-four{grid-template-columns:1fr}
+  .h26 .h26-bento{grid-template-columns:1fr}
+  .h26 .h26-ic{width:124px;height:124px}
+}
+/* ==== EP HOME 2026 END ==== */
