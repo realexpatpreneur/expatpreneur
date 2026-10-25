@@ -61,6 +61,13 @@ update profiles set circle_id = 'cccccccc-0000-0000-0000-000000000001'
 update profiles set circle_id = 'cccccccc-0000-0000-0000-000000000002'
  where id = 'bbbbbbbb-0000-0000-0000-000000000002';
 
+-- Two people on the re-enrolment list, one in each Village, one of them
+-- marked as holding membership without paying.
+insert into founding_invites (id, village_id, full_name, email, complimentary, complimentary_reason)
+values
+  ('99999999-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'Waiting Alpha', 'wait-a@test.invalid', true, 'Local Admin, Alpha'),
+  ('99999999-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000002', 'Waiting Beta',  'wait-b@test.invalid', false, null);
+
 -- Something to look at in each Village.
 insert into asks (id, author_id, village_id, kind, title, body, status)
 values
@@ -538,6 +545,51 @@ begin
   return query select * from pg_temp.verdict(
     'a Local Admin cannot read the way into a Circle of another Village',
     pg_temp.can_read(format('select count(*) from circle_rooms where id = %L', circleB)),
+    false);
+  reset role;
+
+  return query select ''::text, '--- the re-enrolment list ---'::text, null::text;
+
+  perform pg_temp.as_person(admin);
+  return query select * from pg_temp.verdict(
+    'a Local Admin reads the re-enrolment list of their own Village',
+    pg_temp.can_read('select count(*) from founding_invites where village_id = ''aaaaaaaa-0000-0000-0000-000000000001'''),
+    true);
+  return query select * from pg_temp.verdict(
+    'a Local Admin cannot read the re-enrolment list of another Village',
+    pg_temp.can_read('select count(*) from founding_invites where village_id = ''aaaaaaaa-0000-0000-0000-000000000002'''),
+    false);
+  return query select * from pg_temp.verdict(
+    'a Local Admin sees who on the list was marked complimentary',
+    pg_temp.can_read('select count(*) from founding_invites where complimentary'),
+    true);
+  reset role;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a member cannot read the re-enrolment list',
+    pg_temp.can_read('select count(*) from founding_invites'),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot put themselves on the re-enrolment list',
+    pg_temp.can_write('insert into founding_invites (village_id, full_name, complimentary) values (''aaaaaaaa-0000-0000-0000-000000000001'', ''Me'', true)'),
+    false);
+  reset role;
+
+  perform pg_temp.as_stranger();
+  return query select * from pg_temp.verdict(
+    'a stranger cannot read the re-enrolment list',
+    pg_temp.can_read('select count(*) from founding_invites'),
+    false);
+  reset role;
+
+  -- Somebody already in a Village who claims their place is a
+  -- pre-approved applicant who has not paid yet, which is the same
+  -- state as anybody approved from an expression of interest.
+  perform pg_temp.as_person(waiting);
+  return query select * from pg_temp.verdict(
+    'somebody who has claimed their place but not paid is not paid up',
+    pg_temp.can_read('select count(*) from circles'),
     false);
   reset role;
 

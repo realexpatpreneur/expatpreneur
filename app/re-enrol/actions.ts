@@ -42,7 +42,9 @@ export async function confirmPlace(
 
   const { data: invite } = await service
     .from("founding_invites")
-    .select("id, village_id, full_name, phone, status")
+    .select(
+      "id, village_id, full_name, phone, status, complimentary, complimentary_reason, added_by"
+    )
     .eq("token", token)
     .maybeSingle();
 
@@ -82,9 +84,21 @@ export async function confirmPlace(
       phone: String(formData.get("phone") ?? "") || invite.phone,
       business_name: String(formData.get("business_name") ?? "") || null,
       village_id: invite.village_id,
-      status: "onboarding",
+      // Her framework: existing community members receive pre-approved
+      // invitations at the founding rate. So claiming the place sets the
+      // account up and the membership begins at the payment, exactly as
+      // it does for anybody approved from an expression of interest. The
+      // volunteers she named are marked complimentary instead, and go
+      // straight in.
+      status: invite.complimentary ? "onboarding" : "invited",
       plan: "member",
       founding: true,
+      complimentary: Boolean(invite.complimentary),
+      complimentary_reason: invite.complimentary
+        ? invite.complimentary_reason ?? "Already a member before the platform"
+        : null,
+      complimentary_by: invite.complimentary ? invite.added_by ?? null : null,
+      complimentary_at: invite.complimentary ? new Date().toISOString() : null,
     },
     { onConflict: "id" }
   );

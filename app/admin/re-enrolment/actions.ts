@@ -17,7 +17,8 @@ async function sendPlaceLetter(
   name: string,
   villageName: string | null,
   token: string,
-  again = false
+  again = false,
+  complimentary = false
 ) {
   const first = (name ?? "").split(" ")[0] || "there";
   await sendEmail(
@@ -31,6 +32,9 @@ async function sendPlaceLetter(
       again
         ? "The link below is the same one. It takes a couple of minutes and then you are set up."
         : "The link below sets up your account. It takes a couple of minutes, and nobody is deciding anything about you: your place is yours.",
+      complimentary
+        ? "Your membership is already paid for, so there is nothing to pay and nothing to set up beyond your profile."
+        : "Your Village Membership is at the founding rate, which is the lowest it will be, and it begins when it is paid for.",
     ],
     { label: "Claim your place", href: url(`/re-enrol/${token}`) }
   );
@@ -48,6 +52,11 @@ export async function importList(
   const raw = String(formData.get("people") ?? "").trim();
   if (!raw) return { error: "Nothing to add." };
 
+  // Whether this whole paste is of people who hold Village Membership
+  // without paying for it. One person can be changed afterwards.
+  const complimentary = formData.get("complimentary") === "on";
+  const reason = String(formData.get("complimentary_reason") ?? "").trim();
+
   const rows = raw
     .split("\n")
     .map((line) => line.trim())
@@ -58,7 +67,15 @@ export async function importList(
       const email = parts.find((p) => p.includes("@")) ?? null;
       const phone =
         parts.find((p) => /^[+0-9][0-9 ()-]{6,}$/.test(p)) ?? null;
-      return { village_id: villageId, full_name: name, email, phone };
+      return {
+        village_id: villageId,
+        full_name: name,
+        email,
+        phone,
+        complimentary,
+        complimentary_reason: complimentary ? reason || null : null,
+        added_by: admin.userId,
+      };
     })
     .filter((r) => r.full_name);
 
@@ -68,7 +85,7 @@ export async function importList(
   const { data: added, error } = await supabase
     .from("founding_invites")
     .insert(rows)
-    .select("full_name, email, token");
+    .select("full_name, email, token, complimentary");
   if (error) return { error: error.message };
 
   // The list is no use until the people on it hear about it. Anybody
@@ -87,7 +104,9 @@ export async function importList(
       String(person.email),
       person.full_name,
       village?.name ?? null,
-      person.token
+      person.token,
+      false,
+      Boolean(person.complimentary)
     );
     sent += 1;
   }
@@ -104,6 +123,29 @@ export async function importList(
   return { done: `${rows.length} added${tail}` };
 }
 
+// Changing one person on the list, either way.
+export async function setComplimentary(
+  _prev: ReEnrolAdminState,
+  formData: FormData
+): Promise<ReEnrolAdminState> {
+  const admin = await requireAdmin();
+  const on = String(formData.get("on") ?? "") === "yes";
+  const id = String(formData.get("id") ?? "");
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("founding_invites")
+    .update({
+      complimentary: on,
+      added_by: admin.userId,
+    })
+    .eq("id", id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/admin/re-enrolment");
+  return { done: on ? "complimentary" : "paying" };
+}
+
 export async function remind(
   _prev: ReEnrolAdminState,
   formData: FormData
@@ -114,7 +156,7 @@ export async function remind(
 
   const { data: person } = await supabase
     .from("founding_invites")
-    .select("full_name, email, token, village_id")
+    .select("full_name, email, token, village_id, complimentary")
     .eq("id", id)
     .maybeSingle();
 
@@ -138,7 +180,8 @@ export async function remind(
       person.full_name,
       village?.name ?? null,
       person.token,
-      true
+      true,
+      Boolean(person.complimentary)
     );
   }
 

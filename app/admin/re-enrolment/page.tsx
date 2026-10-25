@@ -6,7 +6,13 @@ import { Av } from "@/components/bits";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
-import { ImportForm, RemindButton, DeadlineForm, CloseOutButton } from "./forms";
+import {
+  ImportForm,
+  RemindButton,
+  DeadlineForm,
+  CloseOutButton,
+  ComplimentaryToggle,
+} from "./forms";
 
 export const metadata = { title: "Re-enrolment, Local Admin" };
 
@@ -54,7 +60,7 @@ export default async function ReEnrolmentPage({
       ? supabase
           .from("founding_invites")
           .select(
-            "id, full_name, email, phone, status, last_contact, token, avatar_url"
+            "id, full_name, email, phone, status, last_contact, token, complimentary"
           )
           .eq("village_id", villageId)
           .order("full_name")
@@ -131,11 +137,7 @@ export default async function ReEnrolmentPage({
                   <tr key={person.id}>
                     <td>
                       <div className="row" style={{ gap: 8 }}>
-                        <Av
-                          name={person.full_name}
-                          className="av-sm"
-                          src={person.avatar_url ?? null}
-                        />
+                        <Av name={person.full_name} className="av-sm" />
                         <div>
                           <b>{person.full_name}</b>
                           <div className="muted small">
@@ -156,13 +158,24 @@ export default async function ReEnrolmentPage({
                       >
                         {LABEL[person.status] ?? person.status}
                       </span>
+                      {person.complimentary ? (
+                        <span className="chip chip-mint" style={{ marginLeft: 6 }}>
+                          Complimentary
+                        </span>
+                      ) : null}
                     </td>
                     <td className="hide-m">
                       {person.last_contact ? timeAgo(person.last_contact) : "Not yet"}
                     </td>
                     <td>
                       {person.status === "re_enrolled" ? null : (
-                        <RemindButton id={person.id} />
+                        <>
+                          <RemindButton id={person.id} />
+                          <ComplimentaryToggle
+                            id={person.id}
+                            on={Boolean(person.complimentary)}
+                          />
+                        </>
                       )}
                     </td>
                     <td>

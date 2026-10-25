@@ -6,6 +6,7 @@ import {
   remind,
   setDeadline,
   closeOut,
+  setComplimentary,
   type ReEnrolAdminState,
 } from "./actions";
 
@@ -32,8 +33,55 @@ export function ImportForm({ villageId }: { villageId: string }) {
           email, separated by a comma.
         </span>
       </label>
+
+      <label className="check">
+        <input type="checkbox" name="complimentary" />
+        <span>
+          <b>These people hold Village Membership without paying</b>
+          <small>
+            For the Global team, Local Admins, Pod Leaders and Hub hosts.
+            It is waiting for them when they claim their place, and they
+            never see a checkout.
+          </small>
+        </span>
+      </label>
+
+      <label className="field">
+        <span>Why</span>
+        <input name="complimentary_reason" placeholder="Local Admin, Dubai" />
+        <span className="hint">
+          Kept with each record, and copied onto their profile. Only used
+          when the box above is ticked.
+        </span>
+      </label>
+
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Adding" : "Add them to the list"}
+      </button>
+    </form>
+  );
+}
+
+// One person, after the fact. The admin pastes a list and then
+// remembers that one of them is a Pod Leader.
+export function ComplimentaryToggle({
+  id,
+  on,
+}: {
+  id: string;
+  on: boolean;
+}) {
+  const [, action, pending] = useActionState<ReEnrolAdminState, FormData>(
+    setComplimentary,
+    {}
+  );
+
+  return (
+    <form action={action}>
+      <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="on" value={on ? "" : "yes"} />
+      <button className="btn btn-ghost btn-sm" type="submit" disabled={pending}>
+        {pending ? "Saving" : on ? "Make them pay" : "Make it complimentary"}
       </button>
     </form>
   );
