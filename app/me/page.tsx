@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { currentUser } from "@/lib/member";
+import { currentUser, roleCarriesMembership } from "@/lib/member";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { ProfileView, SideCard } from "@/components/profile-view";
 import { Ic } from "@/components/icon";
@@ -25,12 +25,18 @@ export default async function MyProfilePage({
   const { data: person } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, public_profile, plan, avatar_url"
+      "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, public_profile, plan, avatar_url, complimentary"
     )
     .eq("id", user.id)
     .maybeSingle();
 
   if (!person) redirect("/home");
+
+  // The same question Settings and Home ask, asked the same way.
+  const onMembership =
+    person.plan === "paid" ||
+    Boolean(person.complimentary) ||
+    (await roleCarriesMembership(user.id));
 
   const [{ data: village }, { data: circle }] = await Promise.all([
     person.village_id
@@ -96,7 +102,7 @@ export default async function MyProfilePage({
                 line={person.industry}
               />
             ) : null}
-            {person.plan === "paid" ? null : (
+            {onMembership ? null : (
               <SideCard
                 href="/upgrade"
                 icon="star"

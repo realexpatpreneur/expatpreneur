@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { currentUser } from "@/lib/member";
+import { currentUser, roleCarriesMembership } from "@/lib/member";
 import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
 import { FeedPost, Compose, WaRow, EventRow, type FeedItem } from "@/components/feed";
 import { Av } from "@/components/bits";
@@ -34,6 +34,13 @@ export default async function MemberHomePage() {
     )
     .eq("id", user.id)
     .maybeSingle();
+
+  // The same question Settings asks, asked the same way, so the two
+  // pages cannot disagree about whether somebody is a Village Member.
+  const onMembership =
+    profile?.plan === "paid" ||
+    Boolean(profile?.complimentary) ||
+    (await roleCarriesMembership(user.id));
 
   if (error) {
     return (
@@ -269,7 +276,7 @@ export default async function MemberHomePage() {
               <div className="grow">
                 <b>{profile.full_name}</b>
                 <p className="muted small">{profile.headline}</p>
-                {profile.plan === "paid" || profile.complimentary ? (
+                {onMembership ? (
                   <div className="tags" style={{ marginTop: 6 }}>
                     <span className="tiertag">Village Member</span>
                   </div>
@@ -363,7 +370,7 @@ export default async function MemberHomePage() {
             </div>
           ) : null}
 
-          {profile.plan === "paid" ? null : (
+          {onMembership ? null : (
             <Link className="panel panel-wash linkrow" href="/upgrade">
               <h3 style={{ fontSize: 14 }}>Village Membership</h3>
               <p className="muted small" style={{ marginTop: 6 }}>

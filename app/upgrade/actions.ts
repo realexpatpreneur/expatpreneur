@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe, siteUrl, stripeReady } from "@/lib/stripe";
 import { ticketPrice } from "@/lib/events";
+import { roleCarriesMembership } from "@/lib/member";
 import { rateOf, type Pricing } from "@/lib/pricing";
 
 export type CheckoutState = { error?: string };
@@ -27,11 +28,20 @@ export async function startMembershipCheckout(
 
   const { data: profile } = await supabase
     .from("member_records")
-    .select("full_name, email, plan, village_id")
+    .select("full_name, email, plan, village_id, complimentary")
     .eq("id", user.id)
     .maybeSingle();
 
-  if (profile?.plan === "paid") return { error: "You are already a Village Member." };
+  // A complimentary member must never reach a checkout. Before this,
+  // the guard only looked at the plan, so a Local Admin or a Pod Leader
+  // could be taken to Stripe and charged for what they already have.
+  if (
+    profile?.plan === "paid" ||
+    profile?.complimentary ||
+    (await roleCarriesMembership(user.id))
+  ) {
+    return { error: "You are already a Village Member." };
+  }
   if (!profile?.village_id) {
     return { error: "Your Village has to be set before you can take membership." };
   }
@@ -136,11 +146,16 @@ export async function startTicketCheckout(
   // Village Membership and the event carries one.
   const { data: buyer } = await supabase
     .from("profiles")
-    .select("plan")
+    .select("plan, complimentary")
     .eq("id", user.id)
     .maybeSingle();
 
-  const amount = ticketPrice(event, buyer?.plan === "paid");
+  const amount = ticketPrice(
+    event,
+    buyer?.plan === "paid" ||
+      Boolean(buyer?.complimentary) ||
+      (await roleCarriesMembership(user.id))
+  );
   if (!amount) return { error: "This event is free." };
 
   const { error: holdError } = await supabase.from("event_registrations").insert({

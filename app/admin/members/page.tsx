@@ -23,7 +23,7 @@ export default async function AdminMembersPage({
   let query = supabase
     .from("member_records")
     .select(
-      "id, full_name, email, headline, status, plan, village_id, circle_id, avatar_url"
+      "id, full_name, email, headline, status, plan, village_id, circle_id, avatar_url, complimentary"
     )
     .order("full_name")
     .limit(200);
@@ -121,8 +121,16 @@ export default async function AdminMembersPage({
               </td>
               <td className="hide-m">{villageName(member.village_id)}</td>
               <td>
-                <span className={`tiertag ${member.plan === "paid" ? "" : "free"}`}>
-                  {member.plan === "paid" ? "Paid" : "Member"}
+                <span
+                  className={`tiertag ${
+                    member.plan === "paid" || member.complimentary ? "" : "free"
+                  }`}
+                >
+                  {member.plan === "paid"
+                    ? "Paid"
+                    : member.complimentary
+                      ? "Complimentary"
+                      : "Member"}
                 </span>
               </td>
               <td>

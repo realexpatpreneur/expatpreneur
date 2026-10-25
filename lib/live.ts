@@ -47,19 +47,28 @@ export const stateLabel: Record<string, string> = {
 
 // The same rules the database enforces, so a page can explain itself
 // rather than failing when someone presses join.
+// The same question as everywhere else: given counts as paid.
+const onMembership = (member: { plan: string; complimentary?: boolean }) =>
+  member.plan === "paid" || Boolean(member.complimentary);
+
 export function joinBlock(
   session: LiveSession,
-  member: { plan: string; village_id: string | null; circle_id: string | null } | null,
+  member: {
+    plan: string;
+    complimentary?: boolean;
+    village_id: string | null;
+    circle_id: string | null;
+  } | null,
   isHost: boolean
 ): string | null {
   if (isHost) return null;
   if (session.visibility === "public" && session.allow_guests) return null;
   if (!member) return "This room is for members.";
-  if (session.tier === "paid" && member.plan !== "paid") {
+  if (session.tier === "paid" && !onMembership(member)) {
     return "This room is open to Village Members.";
   }
   if (session.audience === "village" && session.audience_id !== member.village_id) {
-    return member.plan === "paid"
+    return onMembership(member)
       ? null
       : "Rooms in other Villages are part of Village Membership.";
   }

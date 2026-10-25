@@ -112,17 +112,27 @@ export function audienceText(
 
 // The same rules the database enforces, so the page can explain itself
 // instead of failing on submit.
+// Membership given rather than paid for counts everywhere it is given,
+// so this asks the same question lib/member.ts asks.
+const onMembership = (member: { plan: string; complimentary?: boolean }) =>
+  member.plan === "paid" || Boolean(member.complimentary);
+
 export function registrationBlock(
   event: EventRow,
-  member: { plan: string; village_id: string | null; circle_id: string | null } | null
+  member: {
+    plan: string;
+    complimentary?: boolean;
+    village_id: string | null;
+    circle_id: string | null;
+  } | null
 ): string | null {
   if (event.visibility === "public") return null;
   if (!member) return "This event is for members.";
-  if (event.tier === "paid" && member.plan !== "paid") {
+  if (event.tier === "paid" && !onMembership(member)) {
     return "This event is open to Village Members.";
   }
   if (event.audience === "village" && event.audience_id !== member.village_id) {
-    return member.plan === "paid"
+    return onMembership(member)
       ? null
       : "Attending events in other Villages is part of Village Membership.";
   }

@@ -17,6 +17,33 @@ export type Member = {
   complimentary?: boolean;
 };
 
+// The roles her framework gives membership to, in one place. Two pages
+// were working this out separately and had already drifted apart, which
+// is how a Local Admin could hold the access and not be shown as
+// holding it.
+export const ROLES_THAT_CARRY_MEMBERSHIP = [
+  "global_admin",
+  "local_admin",
+  "pod_lead",
+  "industry_lead",
+];
+
+// Membership without paying comes from two places, and a page has to
+// agree with the database about both or it will lock a door the data
+// leaves open.
+export async function roleCarriesMembership(profileId: string) {
+  const supabase = await createClient();
+  const { data: roles } = await supabase
+    .from("member_roles")
+    .select("role")
+    .eq("profile_id", profileId)
+    .is("ended_at", null);
+
+  return (roles ?? []).some((r) =>
+    ROLES_THAT_CARRY_MEMBERSHIP.includes(r.role)
+  );
+}
+
 // Who is signed in. Asked once per page, however many times the page,
 // the header and the workspace shell each want to know: without this,
 // one page render made three or four round trips to the auth server
@@ -49,19 +76,7 @@ export const currentMember = cache(async function currentMember(): Promise<
 
   if (!profile) return null;
 
-  // Membership without paying comes from two places, and the page has to
-  // agree with the database about both or it will lock a door the data
-  // leaves open. The roles are the ones her framework names: hers, the
-  // Local Admins, the Growth Pod Leaders and the Industry Hub hosts.
-  const { data: roles } = await supabase
-    .from("member_roles")
-    .select("role")
-    .eq("profile_id", user.id)
-    .is("ended_at", null);
-
-  const byRole = (roles ?? []).some((r) =>
-    ["global_admin", "local_admin", "pod_lead", "industry_lead"].includes(r.role)
-  );
+  const byRole = await roleCarriesMembership(user.id);
 
   const { data: village } = profile.village_id
     ? await supabase
