@@ -94,6 +94,11 @@ export async function submitApplication(
       link: String(formData.get("link") ?? ""),
       why_join: String(formData.get("why_join") ?? ""),
       contribute: String(formData.get("contribute") ?? ""),
+      // These two are the applicant's own words about what they need and
+      // what they offer. With consent they become their introduction.
+      looking_for: String(formData.get("looking_for") ?? ""),
+      can_help_with: String(formData.get("can_help_with") ?? ""),
+      share_answers: formData.get("share_answers") ? "Yes" : "No",
       heard_about: String(formData.get("heard_about") ?? ""),
       referrer: String(formData.get("referrer") ?? ""),
       resonate: formData.getAll("resonate").map(String),

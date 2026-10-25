@@ -115,6 +115,9 @@ const REVIEW: [number, string, Source[]][] = [
     ["In-person meetups", "attend"],
     ["Why join", "why_join"],
     ["Could give back", "contribute"],
+    ["Looking for", "looking_for"],
+    ["Can help with", "can_help_with"],
+    ["Shared with the Village", "share_answers"],
     ["Expat entrepreneurs there", "city_entrepreneurs"],
     ["English used there", "city_english"],
     ["Would be Local Admin", "la_why"],
@@ -508,6 +511,45 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
             <label className="field">
               <span>Member who referred you</span>
               <input name="referrer" placeholder="Optional" />
+            </label>
+
+            <label className="field full">
+              <span>
+                What I am looking for
+                <Req />
+              </span>
+              <textarea
+                name="looking_for"
+                rows={3}
+                required={on(3)}
+                placeholder="The help, the people or the openings that would make a difference right now"
+              />
+            </label>
+
+            <label className="field full">
+              <span>
+                What I can help with
+                <Req />
+              </span>
+              <textarea
+                name="can_help_with"
+                rows={3}
+                required={on(3)}
+                placeholder="What you know, who you know, or what you are glad to be asked about"
+              />
+            </label>
+
+            <label className="check field full">
+              <input type="checkbox" name="share_answers" value="Yes" />
+              <span>
+                <b>These two answers may be shared with my Village.</b>
+                <span className="hint" style={{ display: "block" }}>
+                  They become the introduction waiting for you when you
+                  join, so members know how to help and what to ask you.
+                  Leave this unticked and only the team reading your
+                  request will see them.
+                </span>
+              </span>
             </label>
 
             <fieldset className="field full choiceset">

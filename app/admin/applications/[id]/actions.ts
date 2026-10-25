@@ -45,6 +45,14 @@ export async function approveApplication(
     return { error: "Choose a Village for this person before approving." };
   }
 
+  // Their own words about what they need and what they offer, carried
+  // onto the profile only if they said the Village could see them. The
+  // introduction they find waiting is built from these.
+  const answers = (application.answers ?? {}) as Record<string, unknown>;
+  const shared = String(answers.share_answers ?? "") === "Yes";
+  const lookingFor = shared ? String(answers.looking_for ?? "").trim() : "";
+  const canHelpWith = shared ? String(answers.can_help_with ?? "").trim() : "";
+
   const service = createAdminClient();
   const site = siteUrl;
 
@@ -79,6 +87,8 @@ export async function approveApplication(
       plan: "member",
       industry: application.industry,
       business_name: application.business_name,
+      looking_for: lookingFor || null,
+      can_help_with: canHelpWith || null,
       nationalities: application.nationalities ?? [],
       languages: application.languages ?? [],
       joined_on: new Date().toISOString().slice(0, 10),
@@ -87,13 +97,21 @@ export async function approveApplication(
   );
   if (profileError) return { error: profileError.message };
 
+  // The offer of a place stands for fourteen days. After that they ask
+  // for another link rather than filling the form in again.
+  const invitedAt = new Date();
+  const invitedUntil = new Date(invitedAt.getTime() + 14 * 24 * 60 * 60 * 1000);
+
   await service
     .from("applications")
     .update({
       status: "approved",
       decided_by: admin.userId,
-      decided_at: new Date().toISOString(),
+      decided_at: invitedAt.toISOString(),
       profile_id: userId,
+      invited_at: invitedAt.toISOString(),
+      invite_expires_at: invitedUntil.toISOString(),
+      invites_sent: (application.invites_sent ?? 0) + 1,
     })
     .eq("id", id);
 

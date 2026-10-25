@@ -138,6 +138,12 @@ export default async function ApplicationPage({
               <dd>{text("why_join")}</dd>
               <dt>What they could give</dt>
               <dd>{text("contribute")}</dd>
+              <dt>Looking for</dt>
+              <dd>{text("looking_for")}</dd>
+              <dt>Can help with</dt>
+              <dd>{text("can_help_with")}</dd>
+              <dt>Shared with the Village</dt>
+              <dd>{text("share_answers")}</dd>
               <dt>What resonates</dt>
               <dd>{text("resonate")}</dd>
               <dt>In person gatherings</dt>
@@ -212,6 +218,23 @@ export default async function ApplicationPage({
                   This request was {application.status}. Nothing further to do
                   here.
                 </p>
+                {application.status === "approved" &&
+                application.invite_expires_at ? (
+                  <p className="muted small" style={{ marginTop: 8 }}>
+                    {new Date(application.invite_expires_at) > new Date()
+                      ? `Their invitation stands until ${new Date(
+                          application.invite_expires_at
+                        ).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}.`
+                      : "Their invitation has run out. They can ask for a new link from the status page without applying again."}
+                    {application.invites_sent > 1
+                      ? ` ${application.invites_sent} links sent.`
+                      : ""}
+                  </p>
+                ) : null}
               </div>
             ) : (
               <>

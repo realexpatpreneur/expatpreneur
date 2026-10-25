@@ -3,6 +3,7 @@ import { PageBlocks } from "@/components/page-blocks";
 import { createClient } from "@/lib/supabase/server";
 import { pageText } from "@/lib/text";
 import { whoIsHere, isPaid } from "@/lib/member";
+import { SubscribeForm } from "@/app/media/subscribe-form";
 import { DualPage } from "@/components/dual-page";
 import { PageHead } from "@/components/workspace-shell";
 import { EventRow } from "@/components/feed";
@@ -167,6 +168,15 @@ export default async function EventsPage({
             <Link className="btn btn-mint" href="/apply">
               Request your invitation
             </Link>
+          </div>
+
+          <div className="panel panel-wash" style={{ marginTop: 22 }}>
+            <h3 style={{ fontSize: 15 }}>Hear about the open ones</h3>
+            <p className="muted small" style={{ margin: "6px 0 12px" }}>
+              Some gatherings are open to anybody. We will write when one is
+              near you, and not otherwise.
+            </p>
+            <SubscribeForm source="events" />
           </div>
         </section>
       )}
