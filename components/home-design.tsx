@@ -257,7 +257,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
   </div>
   
   <div style={{ "position": "relative" }}>
-    <img className="ep-hero-img" src="/brand/invite.jpg" alt="A member among the people who read invitation requests" style={{ "display": "block", "width": "100%", "height": "420px", "objectFit": "cover" }} />
+    <img src="/brand/invite.jpg" alt="A member among the people who read invitation requests" style={{ "display": "block", "width": "100%", "height": "420px", "objectFit": "cover" }} />
     <div style={{ "position": "absolute", "inset": "0", "background": "linear-gradient(90deg, rgba(44,62,80,0.92) 0%, rgba(44,62,80,0.72) 55%, rgba(44,62,80,0.5) 100%)" }}></div>
     <div style={{ "position": "absolute", "inset": "0", "display": "flex", "alignItems": "center" }}>
       <div className="ep-gutter" style={{ "maxWidth": "1200px", "margin": "0 auto", "padding": "0 48px", "width": "100%", "boxSizing": "border-box" }}>

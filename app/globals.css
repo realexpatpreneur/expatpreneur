@@ -3127,12 +3127,10 @@ a.card:hover {
 /* Side gutters and the hero's own vertical room. */
 .ep-home .ep-gutter { padding-left: clamp(20px, 3.75vw, 48px) !important; padding-right: clamp(20px, 3.75vw, 48px) !important; }
 .ep-home .ep-hero-in { padding-top: clamp(26px, 5.6vh, 72px) !important; padding-bottom: clamp(30px, 6.25vh, 80px) !important; }
-.ep-home .ep-hero-img { height: clamp(230px, 46vh, 420px) !important; }
 
 /* Short viewports: keep the hero inside the first screen. */
 @media (max-height: 820px) and (min-width: 901px) {
   .ep-home .ep-hero-in { padding-top: 26px !important; padding-bottom: 30px !important; }
-  .ep-home .ep-hero-img { height: 38vh !important; }
 }
 
 /* The board is a desktop artboard: fixed column widths, one card placed by
@@ -3159,7 +3157,7 @@ a.card:hover {
      headline than the one the board sets for a wide screen */
   .ep-home .ep-hero-in { gap: 24px !important; }
   .ep-home .ep-fs-66 { font-size: clamp(30px, 8.6vw, 44px) !important; }
-  .ep-home .ep-hero-img { height: 190px !important; }
+  .ep-home .ep-hero-img { height: 230px !important; }
   /* the event card is placed over the photo card's corner, which covers the
      name once the column is only as wide as a phone */
   .ep-home [style*="right:-22px"] { position: static !important; margin-top: 14px; }
