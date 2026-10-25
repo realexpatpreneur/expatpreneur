@@ -29,10 +29,15 @@ export async function createPost(
     .eq("id", user.id)
     .maybeSingle();
 
+  // An introduction is for the Village you are in, not the network.
+  const kind = String(formData.get("kind") ?? "ask");
+  const reach =
+    kind === "introduction" ? "village" : String(formData.get("reach") ?? "village");
+
   const { error } = await supabase.from("asks").insert({
     author_id: user.id,
-    kind: String(formData.get("kind") ?? "ask"),
-    reach: String(formData.get("reach") ?? "village"),
+    kind,
+    reach,
     village_id: profile?.village_id ?? null,
     category: String(formData.get("category") ?? "").trim() || null,
     title,
@@ -59,9 +64,17 @@ export async function replyToPost(
   const body = String(formData.get("body") ?? "").trim();
   if (!body) return { error: "Write a line or two first." };
 
+  // Up to three people, by identifier rather than by name typed into
+  // the text, so a name spelled two ways still reaches one person.
+  const mentions = formData
+    .getAll("mentions")
+    .map(String)
+    .filter(Boolean)
+    .slice(0, 3);
+
   const { error } = await supabase
     .from("ask_replies")
-    .insert({ ask_id: askId, author_id: user.id, body });
+    .insert({ ask_id: askId, author_id: user.id, body, mentions });
 
   if (error) {
     return {
@@ -81,6 +94,19 @@ export async function replyToPost(
       "reply",
       `${me?.full_name ?? "A member"} answered your post`,
       ask.title,
+      `/village/${askId}`
+    );
+  }
+
+  // The people the reply points at hear about it too. The author of the
+  // post is told once, above, and not twice.
+  for (const who of mentions) {
+    if (who === user.id || who === ask?.author_id) continue;
+    await notify(
+      who,
+      "mention",
+      `${me?.full_name ?? "A member"} thinks you two should meet`,
+      ask?.title ?? null,
       `/village/${askId}`
     );
   }

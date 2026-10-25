@@ -33,17 +33,38 @@ export default async function PostPage({
       .maybeSingle(),
     supabase
       .from("ask_replies")
-      .select("id, body, author_id, created_at")
+      .select("id, body, author_id, created_at, mentions")
       .eq("ask_id", id)
       .order("created_at"),
   ]);
 
-  const replyAuthorIds = [...new Set((replies ?? []).map((r) => r.author_id))];
+  // Everybody a reply names, plus everybody who wrote one, in one read.
+  const mentionedIds = (replies ?? []).flatMap(
+    (r: { mentions?: string[] | null }) => r.mentions ?? []
+  );
+  const replyAuthorIds = [
+    ...new Set([
+      ...(replies ?? []).map((r) => r.author_id),
+      ...mentionedIds,
+    ]),
+  ];
   const { data: replyAuthors } = replyAuthorIds.length
     ? await supabase
         .from("profiles")
         .select("id, full_name, headline, avatar_url")
         .in("id", replyAuthorIds)
+    : { data: [] };
+
+  // Who this reply could point at: the members of the Village it is in.
+  const { data: neighbours } = member.village_id
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, headline")
+        .eq("village_id", member.village_id)
+        .eq("status", "active")
+        .neq("id", member.id)
+        .order("full_name")
+        .limit(100)
     : { data: [] };
 
   const sameVillage =
@@ -52,6 +73,8 @@ export default async function PostPage({
   const mine = post.author_id === member.id;
 
   const offer = post.kind === "offer";
+  const intro = post.kind === "introduction";
+  const kindName = intro ? "Introduction" : offer ? "Offer" : "Ask";
   const resolved = post.status === "resolved";
 
   return (
@@ -61,15 +84,15 @@ export default async function PostPage({
         <Ic name="chev" />
         <Link href="/my-village">Ask &amp; Offer</Link>
         <Ic name="chev" />
-        <span>{offer ? "Offer" : "Ask"}</span>
+        <span>{kindName}</span>
       </nav>
 
       <div className="gside">
         <div className="stack">
           <div className="panel">
             <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
-              <span className={`kindtag ${offer ? "offer" : "ask"}`}>
-                {offer ? "Offer" : "Ask"}
+              <span className={`kindtag ${offer || intro ? "offer" : "ask"}`}>
+                {kindName}
               </span>
               <span className={`chip ${resolved ? "" : "chip-mint"}`}>
                 {resolved ? "Resolved" : "Open"}
@@ -137,6 +160,27 @@ export default async function PostPage({
                         <p className="small" style={{ whiteSpace: "pre-wrap" }}>
                           {r.body}
                         </p>
+                        {(r.mentions ?? []).length ? (
+                          <p className="muted small" style={{ marginTop: 4 }}>
+                            Pointing at{" "}
+                            {(r.mentions ?? []).map(
+                              (who: string, n: number) => {
+                                const them = replyAuthors?.find(
+                                  (a) => a.id === who
+                                );
+                                if (!them) return null;
+                                return (
+                                  <span key={who}>
+                                    {n ? ", " : ""}
+                                    <Link href={`/members/${them.id}`}>
+                                      {them.full_name}
+                                    </Link>
+                                  </span>
+                                );
+                              }
+                            )}
+                          </p>
+                        ) : null}
                       </div>
                     </div>
                   );
@@ -148,7 +192,7 @@ export default async function PostPage({
 
             {resolved ? null : canReply ? (
               <div style={{ marginTop: 10 }}>
-                <ReplyForm askId={post.id} />
+                <ReplyForm askId={post.id} people={neighbours ?? []} />
               </div>
             ) : (
               <Lock

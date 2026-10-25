@@ -12,6 +12,7 @@ const FILTERS: [string, string][] = [
   ["all", "All"],
   ["asks", "Asks"],
   ["offers", "Offers"],
+  ["introductions", "Introductions"],
   ["mine", "Yours"],
   ["resolved", "Resolved"],
 ];
@@ -35,6 +36,7 @@ export default async function VillageAskOfferPage({
   else query = query.eq("status", "open");
   if (show === "asks") query = query.eq("kind", "ask");
   if (show === "offers") query = query.eq("kind", "offer");
+  if (show === "introductions") query = query.eq("kind", "introduction");
   if (show === "mine") query = query.eq("author_id", member.id);
 
   const { data: posts } = await query;

@@ -6,6 +6,7 @@ import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
 import { FeedPost, Compose, WaRow, EventRow, type FeedItem } from "@/components/feed";
 import { Av } from "@/components/bits";
 import { Ic } from "@/components/icon";
+import { IntroduceForm } from "@/app/village/forms";
 
 export const metadata = { title: "Home, ExpatPreneurs Global" };
 
@@ -28,7 +29,9 @@ export default async function MemberHomePage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("full_name, headline, status, plan, village_id, circle_id, avatar_url")
+    .select(
+      "id, full_name, headline, status, plan, village_id, circle_id, avatar_url, looking_for, can_help_with"
+    )
     .eq("id", user.id)
     .maybeSingle();
 
@@ -73,6 +76,23 @@ export default async function MemberHomePage() {
 
   const villageName = villageRes.data?.name ?? null;
   const circleName = circleRes.data?.name ?? null;
+
+  // The introduction waiting to be posted. It is written already, out of
+  // the two answers they gave when they asked to join, and it stops
+  // being offered the moment they post one.
+  const { data: introduced } = await supabase
+    .from("asks")
+    .select("id")
+    .eq("author_id", profile.id)
+    .eq("kind", "introduction")
+    .limit(1)
+    .maybeSingle();
+
+  const toIntroduce =
+    !introduced &&
+    Boolean(
+      (profile.looking_for ?? "").trim() || (profile.can_help_with ?? "").trim()
+    );
 
   // What has happened lately, and what is coming.
   const [{ data: asks }, { data: announcements }, { data: events }] =
@@ -144,8 +164,13 @@ export default async function MemberHomePage() {
       avatar: person.avatar_url,
       role: person.headline,
       when: ago(a.created_at),
-      kind: a.kind === "offer" ? "Offer" : "Ask",
-      tone: a.kind === "offer" ? "mint" : "sun",
+      kind:
+        a.kind === "introduction"
+          ? "Introduction"
+          : a.kind === "offer"
+            ? "Offer"
+            : "Ask",
+      tone: a.kind === "ask" ? "sun" : "mint",
       text: a.body.length > 220 ? `${a.body.slice(0, 220)}\u2026` : a.body,
       embedTitle: a.title,
       embedLine: a.village_id === profile.village_id ? "Your Village" : "All Villages",
@@ -200,6 +225,22 @@ export default async function MemberHomePage() {
           </Link>
         }
       />
+
+      {toIntroduce ? (
+        <section className="sec">
+          <h2 style={{ fontSize: 18 }}>Say hello first</h2>
+          <p className="muted small" style={{ margin: "6px 0 12px" }}>
+            {villageName
+              ? `${villageName} cannot help somebody it has not met. This is already written from what you told us.`
+              : "Your Village cannot help somebody it has not met. This is already written from what you told us."}
+          </p>
+          <IntroduceForm
+            name={firstName}
+            lookingFor={(profile.looking_for ?? "").trim()}
+            canHelpWith={(profile.can_help_with ?? "").trim()}
+          />
+        </section>
+      ) : null}
 
       <div className="feedlayout">
         <div className="feedcol">

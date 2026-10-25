@@ -65,7 +65,14 @@ export function PostForm({ villageName }: { villageName: string | null }) {
   );
 }
 
-export function ReplyForm({ askId }: { askId: string }) {
+export function ReplyForm({
+  askId,
+  people = [],
+}: {
+  askId: string;
+  // Members this reply can point at. Empty and the picker is left out.
+  people?: { id: string; full_name: string; headline?: string | null }[];
+}) {
   const [state, action, pending] = useActionState<PostState, FormData>(
     replyToPost,
     {}
@@ -79,8 +86,76 @@ export function ReplyForm({ askId }: { askId: string }) {
         <span>Your reply</span>
         <textarea name="body" rows={3} required />
       </label>
+
+      {people.length ? (
+        <label className="field">
+          <span>Put them in touch with somebody</span>
+          <select name="mentions" multiple size={5}>
+            {people.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.full_name}
+                {p.headline ? `, ${p.headline}` : ""}
+              </option>
+            ))}
+          </select>
+          <span className="hint">
+            Up to three. Everybody you choose is told, and their names
+            appear under your reply.
+          </span>
+        </label>
+      ) : null}
+
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Sending" : "Reply"}
+      </button>
+    </form>
+  );
+}
+
+// The post a new member finds already written for them, out of the two
+// answers they gave when they asked to join. They edit it and post it.
+export function IntroduceForm({
+  lookingFor,
+  canHelpWith,
+  name,
+}: {
+  lookingFor: string;
+  canHelpWith: string;
+  name: string;
+}) {
+  const [state, action, pending] = useActionState<PostState, FormData>(
+    createPost,
+    {}
+  );
+
+  const body = [
+    canHelpWith ? `What I can help with: ${canHelpWith}` : "",
+    lookingFor ? `What I am looking for: ${lookingFor}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  return (
+    <form action={action} className="panel">
+      {state.error ? <div className="flag hold">{state.error}</div> : null}
+      <input type="hidden" name="kind" value="introduction" />
+
+      <label className="field">
+        <span>Your introduction</span>
+        <input name="title" required defaultValue={`${name} has joined`} />
+      </label>
+
+      <label className="field">
+        <span>In your own words</span>
+        <textarea name="body" rows={6} required defaultValue={body} />
+        <span className="hint">
+          Written from what you told us when you asked to join. Change
+          anything you like before it goes up.
+        </span>
+      </label>
+
+      <button className="btn btn-primary" type="submit" disabled={pending}>
+        {pending ? "Posting" : "Post your introduction"}
       </button>
     </form>
   );
