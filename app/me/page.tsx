@@ -40,7 +40,11 @@ export default async function MyProfilePage({
 
   const [{ data: village }, { data: circle }] = await Promise.all([
     person.village_id
-      ? supabase.from("villages").select("name, slug, country").eq("id", person.village_id).maybeSingle()
+      ? supabase
+          .from("villages")
+          .select("name, slug, country, cover_url")
+          .eq("id", person.village_id)
+          .maybeSingle()
       : Promise.resolve({ data: null }),
     person.circle_id
       ? supabase.from("circles").select("name").eq("id", person.circle_id).maybeSingle()
@@ -64,7 +68,7 @@ export default async function MyProfilePage({
             <ProfileView
               person={person}
               villageName={village?.name ?? null}
-              villageSlug={village?.slug ?? null}
+              villageCover={village?.cover_url ?? null}
               country={village?.country ?? null}
               circleName={publicView ? null : circle?.name ?? null}
               publicView={publicView}

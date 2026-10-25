@@ -10,6 +10,7 @@ import {
   type GlobalState,
 } from "./actions";
 import { Combo } from "@/components/combo";
+import { Uploader } from "@/components/uploader";
 import { TIMEZONES } from "@/lib/lists/timezones";
 import { CITIES } from "@/lib/lists/cities";
 import { COUNTRIES } from "@/lib/lists/countries";
@@ -25,6 +26,7 @@ export function VillageForm({
     timezone: string;
     status: string;
     summary: string | null;
+    cover_url?: string | null;
   };
 }) {
   const [state, action, pending] = useActionState<GlobalState, FormData>(
@@ -84,6 +86,14 @@ export function VillageForm({
         <span>One line for the public site</span>
         <textarea name="summary" rows={2} defaultValue={village?.summary ?? ""} />
       </label>
+
+      <Uploader
+        name="cover_url"
+        folder="villages"
+        label="Cover image"
+        hint="The Village page shows it, and so does the cover behind every member's profile in this Village. A photograph of the city or of the people beats a graphic."
+        current={village?.cover_url}
+      />
 
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}

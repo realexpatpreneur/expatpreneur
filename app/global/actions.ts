@@ -30,6 +30,7 @@ export async function saveVillage(
     timezone: String(formData.get("timezone") ?? "UTC"),
     status: String(formData.get("status") ?? "exploring"),
     summary: String(formData.get("summary") ?? "").trim() || null,
+    cover_url: String(formData.get("cover_url") ?? "").trim() || null,
   };
 
   const slug =

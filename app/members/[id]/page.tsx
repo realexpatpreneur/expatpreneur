@@ -54,12 +54,13 @@ export default async function MemberProfilePage({
   const { data: village } = person.village_id
     ? await supabase
         .from("villages")
-        .select("name, slug")
+        .select("name, slug, cover_url")
         .eq("id", person.village_id)
         .maybeSingle()
     : { data: null };
 
-  const villageSlug = (village as { slug?: string } | null)?.slug ?? null;
+  const villageCover =
+    (village as { cover_url?: string | null } | null)?.cover_url ?? null;
 
   const sameVillage = Boolean(me) && person.village_id === me?.village_id;
   const canContact =
@@ -166,7 +167,7 @@ export default async function MemberProfilePage({
             <ProfileView
               person={{ ...person, founding: null }}
               villageName={village?.name ?? null}
-              villageSlug={villageSlug}
+              villageCover={villageCover}
               circleName={null}
               country={country}
               relation={relation}

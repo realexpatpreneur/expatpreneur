@@ -23,11 +23,16 @@ export type ProfilePerson = {
 const handleOf = (name: string) =>
   "@" + name.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "");
 
-// The cover behind a profile, tinted by the Village it belongs to.
-const COVER: Record<string, string> = {
-  dubai: "ph-dubai",
-  lisbon: "ph-lisbon",
-  paris: "ph-paris",
+// The cover behind a profile is the Village's own image, which is how
+// the prototype has it. The stylesheet composites it under a gradient
+// through a custom property, so all this has to do is set the property.
+// It used to name a class per Village slug instead, which could never
+// show: a later rule in globals.css replaces the whole background, and
+// a Village added after those three had no class at all.
+const coverImage = (url?: string | null) => {
+  const clean = (url ?? "").trim().replace(/['"\\()]/g, "");
+  if (!clean) return undefined;
+  return { "--img": `url('${clean}')` } as React.CSSProperties;
 };
 
 // xprofile: the cover, the card with everything about a person, then
@@ -35,7 +40,7 @@ const COVER: Record<string, string> = {
 export function ProfileView({
   person,
   villageName,
-  villageSlug,
+  villageCover,
   circleName,
   country,
   relation,
@@ -47,7 +52,7 @@ export function ProfileView({
 }: {
   person: ProfilePerson;
   villageName?: string | null;
-  villageSlug?: string | null;
+  villageCover?: string | null;
   circleName?: string | null;
   country?: string | null;
   relation?: string | null;
@@ -123,7 +128,7 @@ export function ProfileView({
 
   return (
     <div className="sp">
-      <div className={`sp-cover ${villageSlug ? COVER[villageSlug] ?? "" : ""}`}>
+      <div className="sp-cover" style={coverImage(villageCover)}>
         {villageName ? (
           <span className="sp-cover-chip">
             <Ic name="pin" />
