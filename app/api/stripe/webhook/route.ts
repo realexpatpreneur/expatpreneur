@@ -118,6 +118,34 @@ export async function POST(request: Request) {
         "Every Village is open to you now: their members, their events and their resources.",
         "/directory?village=all"
       );
+
+      // Somebody has actually joined, which is the Local Admin's cue:
+      // the WhatsApp group, the welcome, the introduction. Until now
+      // nobody was told, so a join could sit unnoticed.
+      if (wasInvited && joining?.village_id) {
+        const { data: locals } = await service
+          .from("member_roles")
+          .select("profile_id")
+          .eq("role", "local_admin")
+          .eq("scope_id", joining.village_id)
+          .is("ended_at", null);
+
+        const { data: joiner } = await service
+          .from("profiles")
+          .select("full_name")
+          .eq("id", profileId)
+          .maybeSingle();
+
+        for (const local of locals ?? []) {
+          await notify(
+            local.profile_id,
+            "announcement",
+            `${joiner?.full_name ?? "A new member"} has joined`,
+            "They have paid, so their membership is live. The WhatsApp group is the part only you can do.",
+            `/admin/members/${profileId}`
+          );
+        }
+      }
     }
 
     // A course. The buyer may be a member or a stranger, so the purchase

@@ -15,12 +15,16 @@ export function MemberForm({
   circleId,
   status,
   plan,
+  complimentary,
+  complimentaryReason,
 }: {
   id: string;
   circles: { id: string; name: string; places_left: number }[];
   circleId: string | null;
   status: string;
   plan: string;
+  complimentary: boolean;
+  complimentaryReason: string | null;
 }) {
   const [state, action, pending] = useActionState<MemberAdminState, FormData>(
     updateMember,
@@ -67,6 +71,33 @@ export function MemberForm({
         </select>
         <span className="hint">
           Set by hand until payments are live, then Stripe keeps it right.
+        </span>
+      </label>
+
+      <label className="check" style={{ marginTop: 10 }}>
+        <input
+          type="checkbox"
+          name="complimentary"
+          defaultChecked={complimentary}
+        />
+        <span>
+          <b>Complimentary membership</b>
+          <small>
+            Everything a Village Member has, without going through checkout.
+          </small>
+        </span>
+      </label>
+
+      <label className="field">
+        <span>Why</span>
+        <input
+          name="complimentary_reason"
+          defaultValue={complimentaryReason ?? ""}
+          placeholder="Local Admin, Dubai"
+        />
+        <span className="hint">
+          Kept with the record so the next admin knows. Only used when the box
+          above is ticked.
         </span>
       </label>
 

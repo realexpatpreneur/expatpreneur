@@ -19,13 +19,21 @@ export default async function CirclePage({
 
   const { data: circle } = await supabase
     .from("circles")
-    .select("id, name, village_id, capacity, status, whatsapp_url, host_id")
+    .select("id, name, village_id, capacity, status, host_id")
     .eq("id", id)
     .maybeSingle();
 
   if (!circle) notFound();
 
   const mine = circle.id === member.circle_id;
+
+  // The group link lives behind a view that hands it out only for a
+  // member's own Circle, and only while their membership is live.
+  const { data: room } = await supabase
+    .from("circle_rooms")
+    .select("whatsapp_url")
+    .eq("id", circle.id)
+    .maybeSingle();
 
   const [{ data: members }, { data: host }, { data: village }, { data: events }] =
     await Promise.all([
@@ -74,11 +82,11 @@ export default async function CirclePage({
                   host ? `, hosted by ${host.full_name}` : ""
                 }.`}
           </p>
-          {mine && circle.whatsapp_url ? (
+          {mine && room?.whatsapp_url ? (
             <p>
               <a
                 className="btn btn-primary"
-                href={circle.whatsapp_url}
+                href={room.whatsapp_url}
                 target="_blank"
                 rel="noreferrer"
               >

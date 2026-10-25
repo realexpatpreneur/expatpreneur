@@ -106,6 +106,8 @@ export default async function AdminMemberPage({
             circleId={member.circle_id}
             status={member.status}
             plan={member.plan}
+            complimentary={Boolean(member.complimentary)}
+            complimentaryReason={member.complimentary_reason ?? null}
           />
         </div>
       </section>

@@ -31,7 +31,7 @@ export default async function WhatsappTasksPage() {
   // The group's own link, so the admin goes straight there rather than
   // scrolling WhatsApp looking for it.
   const { data: circles } = await supabase
-    .from("circles")
+    .from("circle_rooms")
     .select("name, whatsapp_url");
 
   const groupLink = (name: string) =>

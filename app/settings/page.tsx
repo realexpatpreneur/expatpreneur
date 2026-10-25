@@ -195,7 +195,9 @@ export default async function SettingsPage({
                                 month: "long",
                                 year: "numeric",
                               })}`
-                            : "Active"
+                            : member.complimentary
+                              ? "Complimentary, given by an admin."
+                              : "Active"
                           : "Included with your invitation."}
                       </p>
                     </div>
@@ -214,9 +216,11 @@ export default async function SettingsPage({
                         <dt>Plan</dt>
                         <dd>
                           Village Member
-                          {paidPlan && paidPlan.price_cents
-                            ? `, ${money(paidPlan.price_cents, paidPlan.currency)} a ${paidPlan.interval}`
-                            : ""}
+                          {member.complimentary
+                            ? ", complimentary"
+                            : paidPlan && paidPlan.price_cents
+                              ? `, ${money(paidPlan.price_cents, paidPlan.currency)} a ${paidPlan.interval}`
+                              : ""}
                         </dd>
                         <dt>Payment method</dt>
                         <dd>Held by Stripe</dd>

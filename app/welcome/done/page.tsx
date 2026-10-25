@@ -31,7 +31,7 @@ export default async function WelcomeDonePage() {
       : Promise.resolve({ data: null }),
     profile?.circle_id
       ? supabase
-          .from("circles")
+          .from("circle_rooms")
           .select("name, whatsapp_url")
           .eq("id", profile.circle_id)
           .maybeSingle()

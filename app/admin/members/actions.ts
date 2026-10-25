@@ -22,17 +22,38 @@ export async function updateMember(
 
   const { data: before } = await supabase
     .from("profiles")
-    .select("circle_id")
+    .select("circle_id, complimentary")
     .eq("id", id)
     .maybeSingle();
 
+  // Complimentary membership is the way somebody has everything a Village
+  // Member has without paying for it: the Global team, Local Admins, Pod
+  // Leaders, Hub hosts, and the members who were here before this site.
+  // Who granted it and when are kept, so a later admin can see.
+  const complimentary = formData.get("complimentary") === "on";
+  const reason = String(formData.get("complimentary_reason") ?? "").trim();
+  const wasComplimentary = Boolean(before?.complimentary);
+
+  const changes: Record<string, unknown> = {
+    circle_id: circleId,
+    status: String(formData.get("status") ?? "active"),
+    plan: String(formData.get("plan") ?? "member"),
+    complimentary,
+    complimentary_reason: complimentary ? reason || null : null,
+  };
+
+  if (complimentary && !wasComplimentary) {
+    changes.complimentary_by = admin.userId;
+    changes.complimentary_at = new Date().toISOString();
+  }
+  if (!complimentary && wasComplimentary) {
+    changes.complimentary_by = null;
+    changes.complimentary_at = null;
+  }
+
   const { error } = await supabase
     .from("profiles")
-    .update({
-      circle_id: circleId,
-      status: String(formData.get("status") ?? "active"),
-      plan: String(formData.get("plan") ?? "member"),
-    })
+    .update(changes)
     .eq("id", id);
 
   if (error) return { error: error.message };
@@ -41,6 +62,8 @@ export async function updateMember(
     circle_id: circleId,
     status: String(formData.get("status") ?? "active"),
     plan: String(formData.get("plan") ?? "member"),
+    complimentary,
+    complimentary_reason: complimentary ? reason || null : null,
   });
 
   // Moving someone between Circles means the WhatsApp groups change too.

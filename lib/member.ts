@@ -11,6 +11,10 @@ export type Member = {
   circle_id: string | null;
   villageName: string | null;
   avatar_url: string | null;
+  // Membership given rather than paid for: a volunteer role carries it,
+  // or it was given by hand, which is what the people already in a
+  // Village get at launch.
+  complimentary?: boolean;
 };
 
 // Who is signed in. Asked once per page, however many times the page,
@@ -37,11 +41,27 @@ export const currentMember = cache(async function currentMember(): Promise<
   const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, full_name, status, plan, village_id, circle_id, avatar_url")
+    .select(
+      "id, full_name, status, plan, village_id, circle_id, avatar_url, complimentary"
+    )
     .eq("id", user.id)
     .maybeSingle();
 
   if (!profile) return null;
+
+  // Membership without paying comes from two places, and the page has to
+  // agree with the database about both or it will lock a door the data
+  // leaves open. The roles are the ones her framework names: hers, the
+  // Local Admins, the Growth Pod Leaders and the Industry Hub hosts.
+  const { data: roles } = await supabase
+    .from("member_roles")
+    .select("role")
+    .eq("profile_id", user.id)
+    .is("ended_at", null);
+
+  const byRole = (roles ?? []).some((r) =>
+    ["global_admin", "local_admin", "pod_lead", "industry_lead"].includes(r.role)
+  );
 
   const { data: village } = profile.village_id
     ? await supabase
@@ -53,6 +73,7 @@ export const currentMember = cache(async function currentMember(): Promise<
 
   return {
     ...profile,
+    complimentary: Boolean(profile.complimentary) || byRole,
     villageName: village?.name ?? null,
     onboarding: profile.status === "onboarding",
     // Approved and signed in, but membership has not been paid for yet.
@@ -99,7 +120,9 @@ export async function whoIsHere(): Promise<Member | null> {
   return member;
 }
 
-export const isPaid = (member: Member) => member.plan === "paid";
+// What the private side opens for, matching is_paid() in the database.
+export const isPaid = (member: Member) =>
+  member.plan === "paid" || Boolean(member.complimentary);
 
 export function timeAgo(iso: string) {
   const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);

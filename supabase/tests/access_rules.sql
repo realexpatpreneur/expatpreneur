@@ -43,6 +43,24 @@ values
 insert into member_roles (profile_id, role, scope, scope_id)
 values ('bbbbbbbb-0000-0000-0000-000000000003', 'local_admin', 'village', 'aaaaaaaa-0000-0000-0000-000000000001');
 
+-- A Circle in each Village, each with the way into its room, and
+-- somebody whose membership was given rather than paid for.
+insert into circles (id, village_id, name, capacity, status, whatsapp_url) values
+  ('cccccccc-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001', 'Test Circle Alpha', 50, 'open', 'https://chat.whatsapp.com/test-alpha'),
+  ('cccccccc-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000002', 'Test Circle Beta',  50, 'open', 'https://chat.whatsapp.com/test-beta');
+
+insert into auth.users (id, email) values
+  ('bbbbbbbb-0000-0000-0000-000000000007', 'free2@test.invalid');
+
+insert into profiles (id, full_name, email, phone, status, plan, village_id, public_profile, nationalities, complimentary, circle_id)
+values
+  ('bbbbbbbb-0000-0000-0000-000000000007', 'Comp Alpha', 'free2@test.invalid', '+100000007', 'active', 'member', 'aaaaaaaa-0000-0000-0000-000000000001', false, array['Testish'], true, 'cccccccc-0000-0000-0000-000000000001');
+
+update profiles set circle_id = 'cccccccc-0000-0000-0000-000000000001'
+ where id = 'bbbbbbbb-0000-0000-0000-000000000001';
+update profiles set circle_id = 'cccccccc-0000-0000-0000-000000000002'
+ where id = 'bbbbbbbb-0000-0000-0000-000000000002';
+
 -- Something to look at in each Village.
 insert into asks (id, author_id, village_id, kind, title, body, status)
 values
@@ -162,6 +180,9 @@ declare
   admin uuid := 'bbbbbbbb-0000-0000-0000-000000000003';
   quiet uuid := 'bbbbbbbb-0000-0000-0000-000000000005';
   waiting uuid := 'bbbbbbbb-0000-0000-0000-000000000006';
+  comp  uuid := 'bbbbbbbb-0000-0000-0000-000000000007';
+  circleA uuid := 'cccccccc-0000-0000-0000-000000000001';
+  circleB uuid := 'cccccccc-0000-0000-0000-000000000002';
 begin
   return query select ''::text, '--- a member''s private columns ---'::text, null::text;
 
@@ -458,6 +479,127 @@ begin
     pg_temp.can_read('select count(*) from leadership_suggestions'),
     false);
   reset role;
+
+  return query select ''::text, '--- the way into a Circle room ---'::text, null::text;
+
+  perform pg_temp.as_person(paid);
+  return query select * from pg_temp.verdict(
+    'a paying member reads the way into their own Circle',
+    pg_temp.can_read(format('select count(*) from circle_rooms where id = %L and whatsapp_url is not null', circleB)),
+    true);
+  return query select * from pg_temp.verdict(
+    'a paying member cannot read the way into any other Circle',
+    pg_temp.can_read(format('select count(*) from circle_rooms where id = %L', circleA)),
+    false);
+  return query select * from pg_temp.verdict(
+    'nobody signed in may select every column of circles',
+    pg_temp.can_read('select count(*) from (select * from circles) z'),
+    false);
+  reset role;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a member who is not paying reads no Circle at all',
+    pg_temp.can_read('select count(*) from circles'),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member who is not paying cannot read the way into their own Circle',
+    pg_temp.can_read(format('select count(*) from circle_rooms where id = %L', circleA)),
+    false);
+  reset role;
+
+  perform pg_temp.as_person(comp);
+  return query select * from pg_temp.verdict(
+    'the test is signed in as the complimentary member it thinks it is',
+    pg_temp.whoami() = comp, true);
+  return query select * from pg_temp.verdict(
+    'a complimentary member reads the Circles of their Village',
+    pg_temp.can_read('select count(*) from circles'),
+    true);
+  return query select * from pg_temp.verdict(
+    'a complimentary member reads the way into their own Circle',
+    pg_temp.can_read(format('select count(*) from circle_rooms where id = %L and whatsapp_url is not null', circleA)),
+    true);
+  return query select * from pg_temp.verdict(
+    'a complimentary member reads the Directory, like anybody paying',
+    pg_temp.can_read(format('select count(*) from profiles where id = %L', paid)),
+    true);
+  return query select * from pg_temp.verdict(
+    'a complimentary member sees that their own membership is complimentary',
+    pg_temp.can_read(format('select count(*) from profiles where id = %L and complimentary', comp)),
+    true);
+  reset role;
+
+  perform pg_temp.as_person(admin);
+  return query select * from pg_temp.verdict(
+    'a Local Admin reads the way into a Circle of their own Village',
+    pg_temp.can_read(format('select count(*) from circle_rooms where id = %L and whatsapp_url is not null', circleA)),
+    true);
+  return query select * from pg_temp.verdict(
+    'a Local Admin cannot read the way into a Circle of another Village',
+    pg_temp.can_read(format('select count(*) from circle_rooms where id = %L', circleB)),
+    false);
+  reset role;
+
+  return query select ''::text, '--- nobody promotes themselves ---'::text, null::text;
+
+  perform pg_temp.as_person(free);
+  return query select * from pg_temp.verdict(
+    'a member cannot give themselves the paid plan',
+    pg_temp.can_write(format('update profiles set plan = %L where id = %L', 'paid', free)),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot give themselves complimentary membership',
+    pg_temp.can_write(format('update profiles set complimentary = true where id = %L', free)),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot claim a founding seat',
+    pg_temp.can_write(format('update profiles set founding = true where id = %L', free)),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot move themselves into another Village',
+    pg_temp.can_write(format('update profiles set village_id = %L where id = %L',
+      'aaaaaaaa-0000-0000-0000-000000000002', free)),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member cannot put themselves in a Circle',
+    pg_temp.can_write(format('update profiles set circle_id = %L where id = %L', circleB, free)),
+    false);
+  return query select * from pg_temp.verdict(
+    'a member can still edit their own headline',
+    pg_temp.can_write(format('update profiles set headline = %L where id = %L', 'Baker', free)),
+    true);
+  reset role;
+
+  perform pg_temp.as_person(waiting);
+  return query select * from pg_temp.verdict(
+    'somebody invited cannot make themselves active without paying',
+    pg_temp.can_write(format('update profiles set status = %L where id = %L', 'active', waiting)),
+    false);
+  reset role;
+
+  -- Row level security filters rather than refuses, so a write an admin
+  -- is not allowed to make succeeds against nothing. Whether it worked
+  -- is read back afterwards, as the owner, rather than taken from the
+  -- statement not raising.
+  perform pg_temp.as_person(admin);
+  perform pg_temp.can_write(format('update profiles set complimentary = true where id = %L', free));
+  perform pg_temp.can_write(format('update profiles set complimentary = true where id = %L', paid));
+  reset role;
+
+  return query select * from pg_temp.verdict(
+    'a Local Admin may give complimentary membership in their own Village',
+    (select complimentary from profiles where id = free),
+    true);
+  return query select * from pg_temp.verdict(
+    'a Local Admin cannot give it in another Village',
+    (select complimentary from profiles where id = paid),
+    false);
+
+  -- The two writes that were meant to work are undone, so nothing after
+  -- this reads a member the earlier checks changed.
+  update profiles set complimentary = false, headline = null where id = free;
+
   return;
 end $fn$;
 

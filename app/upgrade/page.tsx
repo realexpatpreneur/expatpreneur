@@ -103,7 +103,9 @@ export default async function UpgradePage({
                         ? "It ends at the end of the period you have paid for."
                         : subscription?.current_period_end
                           ? `Renews ${new Date(subscription.current_period_end).toLocaleDateString("en-GB")}.`
-                          : "Set by an admin rather than a subscription."}
+                          : member.complimentary
+                            ? "Complimentary, given by an admin rather than paid for."
+                            : "Set by an admin rather than a subscription."}
                     </p>
                     {live && subscription?.status === "active" ? (
                       <>
