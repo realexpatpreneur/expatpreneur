@@ -99,6 +99,14 @@ export async function saveEvent(
 
   const venue = String(formData.get("venue") ?? "").trim();
 
+  // A Zoom room is a venue like any other. Pasting one is what makes the
+  // event online, so nobody has to remember to write the word as well.
+  const onlineUrl = String(formData.get("online_url") ?? "").trim();
+  if (onlineUrl && !/^https?:\/\//i.test(onlineUrl)) {
+    return { error: "The Zoom link needs to start with https://" };
+  }
+  const isOnline = Boolean(onlineUrl) || venue.toLowerCase() === "online";
+
   const row = {
     title,
     description: String(formData.get("description") ?? "").trim() || null,
@@ -106,10 +114,11 @@ export async function saveEvent(
     starts_at: startsAt,
     ends_at: endsAt,
     timezone: String(formData.get("timezone") ?? "Asia/Dubai"),
-    venue: venue || null,
+    venue: venue || (isOnline ? "Online" : null),
     address: String(formData.get("address") ?? "").trim() || null,
+    online_url: onlineUrl || null,
     release_hours: Number(formData.get("release_hours") ?? 48),
-    is_online: venue.toLowerCase() === "online",
+    is_online: isOnline,
     visibility,
     audience,
     audience_id,
@@ -142,7 +151,7 @@ export async function saveEvent(
     // What it looked like before, so the guests can be told what moved.
     const { data: before } = await supabase
       .from("events")
-      .select("slug, title, starts_at, ends_at, timezone, venue, address, status, reminders")
+      .select("slug, title, starts_at, ends_at, timezone, venue, address, online_url, status, reminders")
       .eq("id", id)
       .maybeSingle();
 
@@ -155,7 +164,8 @@ export async function saveEvent(
       const moved =
         before.starts_at !== row.starts_at ||
         (before.venue ?? "") !== (row.venue ?? "") ||
-        (before.address ?? "") !== (row.address ?? "");
+        (before.address ?? "") !== (row.address ?? "") ||
+        (before.online_url ?? "") !== (row.online_url ?? "");
 
       if (calledOff) {
         await record(admin.userId, "event.cancelled", "event", id, { title });

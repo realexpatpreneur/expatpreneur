@@ -38,6 +38,7 @@ export function EventForm({
     reminders: Record<string, boolean>;
     cover_url?: string | null;
     address?: string | null;
+    online_url?: string | null;
     release_hours?: number | null;
     status?: string;
   };
@@ -95,16 +96,32 @@ export function EventForm({
           <span>Venue</span>
           <input name="venue" defaultValue={event?.venue ?? ""} />
           <span className="hint">
-            The name of the place, which everyone can see. Write Online for a
-            call.
+            The name of the place, which everyone can see. Leave it empty for a
+            Zoom event and it says Online by itself.
+          </span>
+        </label>
+        <label className="field">
+          <span>Zoom link</span>
+          <input
+            name="online_url"
+            type="url"
+            inputMode="url"
+            placeholder="https://us02web.zoom.us/j/..."
+            defaultValue={event?.online_url ?? ""}
+          />
+          <span className="hint">
+            Paste the Zoom room and that room becomes the venue. Guests see it
+            once they are registered, near the time, and it also goes out with
+            their reminder. It can be added or changed after the event is made.
           </span>
         </label>
         <div className="g2">
           <label className="field">
-            <span>Full address, or the link for a call</span>
+            <span>Full address</span>
             <input name="address" defaultValue={event?.address ?? ""} />
             <span className="hint">
-              Only people who are going see this, and only near the time.
+              For a place people walk into. Only those who are going see it, and
+              only near the time.
             </span>
           </label>
           <label className="field">
