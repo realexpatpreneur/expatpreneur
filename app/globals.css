@@ -3098,6 +3098,9 @@ a.card:hover {
    drawn without that cap, and every picture here is already width 100% */
 .ep-home img { max-width: none; }
 .ep-home a { color: #2C3E50; }
+/* the hero's buttons carry both a full label and a short one; the short one
+   only appears once the page is narrow */
+.ep-home .ep-short { display: none; }
 .ep-home a:hover { color: #4074AE; }
 
 @keyframes ep-rise { from { opacity: 0; transform: translateY(28px) } to { opacity: 1; transform: none } }
@@ -3169,13 +3172,36 @@ a.card:hover {
 }
 
 @container app (max-width: 900px) {
-  /* both cards stay on the photograph once the column is the full width of
-     the page: the request near its top, the event near its foot, anchored
-     from the top so neither drifts off the picture as it changes height */
-  .ep-home .ep-float { left: 12px !important; right: auto !important;
-                       top: 14px !important; bottom: auto !important;
-                       max-width: calc(100% - 24px); box-sizing: border-box !important; }
   .ep-home .ep-icon { width: 120px !important; height: 120px !important; }
+
+  /* On a narrow screen the page is one long column, and the two tinted
+     bands fade so gently that nothing tells one section from the next. The
+     bands go flat, and every white panel that is told apart from the page
+     by a shadow alone gets an edge as well. */
+  .ep-home .ep-band { background-image: none !important;
+                      background-color: rgba(64,116,174,0.05) !important; }
+  .ep-home .ep-panel { border: 1px solid rgba(64,116,174,0.13) !important; }
+  .ep-home .ep-card { border-color: rgba(64,116,174,0.20) !important; }
+
+  /* the hero's buttons drop a word each and stay on one line */
+  .ep-home .ep-long { display: none !important; }
+  .ep-home .ep-short { display: inline !important; }
+  .ep-home .ep-cta-row { flex-wrap: nowrap !important; gap: 10px !important; }
+  .ep-home .ep-hero-btn { padding-left: 18px !important; padding-right: 18px !important;
+                          white-space: nowrap; text-align: center; }
+
+  /* the photograph keeps enough height to hold a face */
+  .ep-home .ep-hero-img { height: 345px !important; }
+
+  /* the request sits on the picture below the face, with its avatar beside
+     its words rather than above them, and the event card hangs at the foot
+     of the picture on the other side */
+  .ep-home .ep-float { flex-wrap: nowrap !important;
+                       top: 162px !important; bottom: auto !important;
+                       left: 10px !important; right: auto !important;
+                       max-width: 88% !important; box-sizing: border-box !important; }
+  .ep-home [style*="right:-22px"] { top: 242px !important; bottom: auto !important;
+                                    right: 10px !important; }
   .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr 1fr !important; }
   /* the four tiles beside the founder keep equal heights while they are in
      two columns, so each pair lines up */
@@ -3186,7 +3212,6 @@ a.card:hover {
   .ep-home .ep-vrow > span:nth-child(1),
   .ep-home .ep-vrow > span:nth-child(2) { flex: 0 0 100% !important; }
   .ep-home .ep-vrow { gap: 14px !important; }
-  .ep-home [style*="right:-22px"] { right: 10px !important; bottom: 120px !important; }
 }
 
 /* The three cards over the wide photograph keep their row while there is
@@ -3202,7 +3227,6 @@ a.card:hover {
   /* a column told to share a row equally has nothing to share on a phone */
   .ep-home [style*="flex:1 1 0"] { flex-basis: 100% !important; }
   .ep-home .ep-hero-in { gap: 24px !important; }
-  .ep-home .ep-hero-img { height: 230px !important; }
   .ep-home .ep-side-col { height: 360px !important; }
   /* those four tiles are a two by two block on a wide screen, where a right
      aligned line and a small square balance the pair beside them. Stacked

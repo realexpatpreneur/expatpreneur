@@ -48,9 +48,9 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
         </p>
         <h1 className="ep-fs-61" style={{ "margin": "0 0 24px", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "61px", "lineHeight": "1.04", "fontWeight": "700", "letterSpacing": "-0.02em", "color": "#2C3E50" }}>Your business needs<br />a village too.</h1>
         <p className="ep-fs-18" style={{ "margin": "0 0 34px", "maxWidth": "480px", "fontSize": "18px", "lineHeight": "1.7", "color": "#5E6E7E" }}>A curated network of expat entrepreneurs. Belong to a small, trusted community in your city, and reach people you can trust in other markets.</p>
-        <div style={{ "display": "flex", "flexWrap": "wrap", "gap": "14px", "marginBottom": "34px" }}>
-          <Link href="/apply" style={{ "textDecoration": "none", "background": "#2C3E50", "color": "#FFFFFF", "fontSize": "16px", "fontWeight": "600", "padding": "17px 32px", "borderRadius": "4px", "boxShadow": "0 10px 24px rgba(44, 62, 80, 0.16)" }}>Request your invitation</Link>
-          <Link href="/villages" style={{ "textDecoration": "none", "background": "#FFFFFF", "color": "#2C3E50", "fontSize": "16px", "fontWeight": "600", "padding": "16px 30px", "borderRadius": "4px", "border": "1px solid #E3E8EE" }}>Find your Village</Link>
+        <div className="ep-cta-row" style={{ "display": "flex", "flexWrap": "wrap", "gap": "14px", "marginBottom": "34px" }}>
+          <Link className="ep-hero-btn" href="/apply" style={{ "textDecoration": "none", "background": "#2C3E50", "color": "#FFFFFF", "fontSize": "16px", "fontWeight": "600", "padding": "17px 32px", "borderRadius": "4px", "boxShadow": "0 10px 24px rgba(44, 62, 80, 0.16)" }}><span className="ep-long">Request your invitation</span><span className="ep-short">Request invitation</span></Link>
+          <Link className="ep-hero-btn" href="/villages" style={{ "textDecoration": "none", "background": "#FFFFFF", "color": "#2C3E50", "fontSize": "16px", "fontWeight": "600", "padding": "16px 30px", "borderRadius": "4px", "border": "1px solid #E3E8EE" }}><span className="ep-long">Find your Village</span><span className="ep-short">Find Village</span></Link>
         </div>
         <div style={{ "display": "flex", "flexWrap": "wrap", "gap": "14px", "alignItems": "center" }}>
           <span style={{ "display": "flex" }}>
@@ -92,7 +92,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
 
 </div>
   </div>
-  <div style={{ "background": "linear-gradient(180deg, rgba(64,116,174,0) 0, rgba(64,116,174,0.06) 190px, rgba(64,116,174,0.06) calc(100% - 150px), rgba(64,116,174,0) 100%)" }}>
+  <div className="ep-band" style={{ "background": "linear-gradient(180deg, rgba(64,116,174,0) 0, rgba(64,116,174,0.06) 190px, rgba(64,116,174,0.06) calc(100% - 150px), rgba(64,116,174,0) 100%)" }}>
   <div className="ep-gutter" style={{ "maxWidth": "1200px", "margin": "0 auto", "padding": "112px 48px 0" }}>
     <div style={{ "maxWidth": "720px", "marginBottom": "44px" }}>
       <p style={{ "margin": "0 0 16px", "fontSize": "13px", "fontWeight": "600", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#5E6E7E" }}>How it is built</p>
@@ -184,7 +184,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
         </div>
 
         {villages.map((v, i) => (
-          <div key={v.slug} className="ep-vrow" style={{ display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "center", padding: "26px", borderRadius: "20px", background: "#FFFFFF", boxShadow: "0 8px 26px rgba(44, 62, 80, 0.09)", marginBottom: i === villages.length - 1 ? "0" : "14px" }}>
+          <div key={v.slug} className="ep-vrow ep-panel" style={{ display: "flex", flexWrap: "wrap", gap: "20px", alignItems: "center", padding: "26px", borderRadius: "20px", background: "#FFFFFF", boxShadow: "0 8px 26px rgba(44, 62, 80, 0.09)", marginBottom: i === villages.length - 1 ? "0" : "14px" }}>
             <span style={{ flex: "1 1 200px", minWidth: "0" }}>
               <b className="ep-fs-30" style={{ display: "block", fontFamily: "Inter, system-ui, sans-serif", fontSize: "30px", fontWeight: "500", color: "#2C3E50" }}>{v.name}</b>
               <span style={{ fontSize: "14px", color: "#6B7C8C" }}>{v.country}</span>
@@ -244,7 +244,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
       </div>
 
       <div style={{ "flex": "1 1 380px", "minWidth": "0" }}>
-        <div style={{ "background": "#FFFFFF", "borderRadius": "20px", "boxShadow": "0 8px 26px rgba(44, 62, 80, 0.09)", "padding": "32px 30px" }}>
+        <div className="ep-panel" style={{ "background": "#FFFFFF", "borderRadius": "20px", "boxShadow": "0 8px 26px rgba(44, 62, 80, 0.09)", "padding": "32px 30px" }}>
           <p style={{ "margin": "0 0 4px", "display": "inline-flex", "alignItems": "center", "gap": "9px", "fontSize": "12px", "fontWeight": "600", "letterSpacing": "0.08em", "textTransform": "uppercase", "color": "#2F6A5E", "background": "#E6F4F1", "padding": "7px 14px", "borderRadius": "999px" }}>
             <span style={{ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#2F6A5E", "display": "inline-block" }}></span>
             Billed in your Village's currency
@@ -343,7 +343,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
     </div>
   </div>
   
-  <div style={{ "background": "linear-gradient(180deg, rgba(64,116,174,0) 0, rgba(64,116,174,0.06) 190px, rgba(64,116,174,0.06) calc(100% - 150px), rgba(64,116,174,0) 100%)" }}>
+  <div className="ep-band" style={{ "background": "linear-gradient(180deg, rgba(64,116,174,0) 0, rgba(64,116,174,0.06) 190px, rgba(64,116,174,0.06) calc(100% - 150px), rgba(64,116,174,0) 100%)" }}>
   <div className="ep-gutter" style={{ "maxWidth": "1200px", "margin": "0 auto", "padding": "112px 48px 96px" }}>
     <div style={{ "display": "flex", "flexWrap": "wrap", "gap": "60px", "alignItems": "flex-start" }}>
 
