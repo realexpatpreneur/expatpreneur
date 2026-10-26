@@ -3630,8 +3630,14 @@ body, .app { font-size:14.5px; }
 
 .mapp .mmain{ background:var(--canvas); }
 
-/* The side panel takes its colour from --ink, which moved when the
-   headings did. It goes back to where it was; that was not asked for. */
+/* The side panel. Two faults, one each way.
+   In the member space it was #F1F3F5, one point off the canvas, so the
+   nav dissolved into the page the moment the canvas arrived. It is a
+   white surface now, the way the columns either side of a feed are.
+   In the admin space it takes its colour from --ink, which moved when
+   the headings did in 208. It goes back to where it was. */
+.mapp .mside{ background:#fff; border-right:1px solid var(--cardline); }
+.mapp .rail{ background:#fff; border-right:1px solid var(--cardline); }
 .admin .mside{ background:#0F1419; border-color:#0F1419; }
 
 /* Three radial gradients were painted behind every product page. A haze
