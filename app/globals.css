@@ -3672,3 +3672,29 @@ body, .app { font-size:14.5px; }
 .mapp .rerow:hover,
 .mapp .table tbody tr:hover{ background:#F7F8FA; }
 /* ==== EP CANVAS END ==== */
+
+/* ==== EP RHYTHM START (script 212) ==== */
+/* These were never tabs. The markup puts a chip inside a .tabs strip and
+   tints the current one mint, which is where the boxy, dated look comes
+   from. A tab is a word with a line under it. The field and spacing half
+   of this lives in forms.css, which loads after this file and would
+   otherwise win. */
+.app .tabs{ gap:2px; border-bottom:1px solid var(--line); }
+.app .tabs > .chip{
+  background:transparent;
+  border:0;
+  border-bottom:2px solid transparent;
+  border-radius:0;
+  padding:10px 14px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--muted);
+}
+.app .tabs > .chip:hover{ color:var(--ink); }
+.app .tabs > .chip-mint,
+.app .tabs > .chip[aria-current]{
+  background:transparent;
+  color:var(--ink);
+  border-bottom-color:var(--ink);
+}
+/* ==== EP RHYTHM END ==== */

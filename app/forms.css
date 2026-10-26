@@ -197,3 +197,39 @@
 .tabs .tabbtn{border:0;background:transparent;padding:11px 14px;font:500 13px var(--body);
   color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
 .tabs .tabbtn[aria-current]{color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
+
+/* ==== EP RHYTHM FORMS START (script 212) ==== */
+/* A field with a 14px corner and an inset shadow is a control from 2012.
+   It sits flat on the card now and matches the corner scale the rest of
+   the system uses. */
+.app .field > input,
+.app .field > select,
+.app .field > textarea{
+  border-radius:8px;
+  border-color:#CBD2D9;
+  box-shadow:none;
+}
+.app .field > input:focus,
+.app .field > select:focus,
+.app .field > textarea:focus{
+  outline:0;
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(31,95,191,.16);
+}
+
+/* Rhythm. A hint sat 6px under its own control and 14px from the next
+   label, close enough that it read as belonging to the field below it
+   rather than the one above. A Save button sat 14px under the last
+   field, close enough to look attached to it. */
+.app .field > span.hint{ margin-top:7px; line-height:1.45; }
+.app *:not(.formgrid):not(.g2):not(.g3):not(.g4):not(.choicegrid):not(.stackform) > .field + .field{ margin-top:18px; }
+.app form > .btn,
+.app form > button,
+.app .field + .btn,
+.app .field + button,
+.app .field + .row{ margin-top:22px; }
+.app .formgrid + .btn,
+.app .formgrid + .row,
+.app .stackform + .btn,
+.app .stackform + .row{ margin-top:22px; }
+/* ==== EP RHYTHM FORMS END ==== */
