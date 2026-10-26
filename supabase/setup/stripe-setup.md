@@ -1,15 +1,18 @@
 # Switching payments on
 
-Everything below is built. None of it runs until the four settings at
+Everything below is built. None of it runs until the three settings at
 the bottom exist in Vercel.
 
 ## What to make in Stripe
 
-**1. The membership price.** Products, add a product called Paid
-member, recurring, monthly, at whatever you decide the price is. Copy
-its price identifier, which starts with `price_`.
+There is no product or price to make. Membership used to be one Stripe
+price for the whole network, which cannot say AED 59 for Dubai and EUR 15
+for Paris, nor the founding rate against the standard one, nor a month
+against a year. Each Village's own price is sent to Stripe at the moment
+of checkout instead. Set the prices in the platform, under Global team,
+Plans, and Stripe charges whatever is there.
 
-**2. The webhook.** Developers, Webhooks, add an endpoint pointing at:
+**1. The webhook.** Developers, Webhooks, add an endpoint pointing at:
 
     https://expatpreneur.vercel.app/api/stripe/webhook
 
@@ -23,26 +26,28 @@ Send it these five events and nothing else:
 
 Copy the signing secret, which starts with `whsec_`.
 
-**3. The card portal.** Settings, Billing, Customer portal, turn it on
+**2. The card portal.** Settings, Billing, Customer portal, turn it on
 and allow cancelling. That is what the Update card and Cancel buttons
 in a member's settings open.
 
-## The four settings, in Vercel
+## The three settings, in Vercel
 
-    STRIPE_SECRET_KEY            sk_live_... or sk_test_... to try it
-    STRIPE_MEMBERSHIP_PRICE_ID   price_...
-    STRIPE_WEBHOOK_SECRET        whsec_...
-    NEXT_PUBLIC_SITE_URL         the address, once the domain exists
+    STRIPE_SECRET_KEY     sk_live_... or sk_test_... to try it
+    STRIPE_WEBHOOK_SECRET whsec_...
+    NEXT_PUBLIC_SITE_URL  the address, once the domain exists
+
+Set each one for Production, Preview and Development, then redeploy.
+Nothing reads a new setting until a deploy goes out.
 
 Use the test keys first. Stripe gives you a card number to pay with,
 and nothing real moves.
 
 ## Two things to set inside the platform, not in Stripe
 
-**The price members see.** Global team, Plans. The price on the
-Membership page comes from there, not from Stripe, so the page can say
-what it costs before Stripe is connected. Put the same number in both
-or the page will disagree with the checkout.
+**The prices.** Global team, Plans, and each Village's own pricing.
+This is the only place a membership price lives. It is what the
+Membership page shows and what Stripe charges, so the two cannot
+disagree.
 
 **The educator share.** Global team, Plans, the educator share setting.
 It is 70 percent until somebody decides otherwise. The payouts form
