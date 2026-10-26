@@ -3118,25 +3118,24 @@ a.card:hover {
 }
 
 /* Fluid type, in container units. The rest of the site is responsive
-   through container queries on .app, so this block uses the same measure:
-   cqi is one percent of that container's width, not of the viewport. The
-   two differ on a real handset, which is why viewport units left this page
-   oversized there. The top of each clamp is a tenth below the board's own
-   size, the bottom is half of that. */
-.ep-home .ep-fs-17 { font-size: clamp(14px, 1.328cqi, 17px) !important; }
-.ep-home .ep-fs-18 { font-size: clamp(14px, 1.406cqi, 18px) !important; }
-.ep-home .ep-fs-19 { font-size: clamp(14px, 1.484cqi, 19px) !important; }
-.ep-home .ep-fs-20 { font-size: clamp(14px, 1.562cqi, 20px) !important; }
-.ep-home .ep-fs-21 { font-size: clamp(14px, 1.641cqi, 21px) !important; }
-.ep-home .ep-fs-24 { font-size: clamp(14px, 1.719cqi, 22px) !important; }
-.ep-home .ep-fs-27 { font-size: clamp(14px, 1.875cqi, 24px) !important; }
-.ep-home .ep-fs-30 { font-size: clamp(14px, 2.109cqi, 27px) !important; }
-.ep-home .ep-fs-42 { font-size: clamp(19px, 2.969cqi, 38px) !important; }
-.ep-home .ep-fs-44 { font-size: clamp(20px, 3.125cqi, 40px) !important; }
-.ep-home .ep-fs-46 { font-size: clamp(20px, 3.203cqi, 41px) !important; }
-.ep-home .ep-fs-48 { font-size: clamp(22px, 3.359cqi, 43px) !important; }
-.ep-home .ep-fs-52 { font-size: clamp(24px, 3.672cqi, 47px) !important; }
-.ep-home .ep-fs-61 { font-size: clamp(28px, 4.297cqi, 55px) !important; }
+   through container queries on .app, so this block uses the same
+   measure: cqi is one percent of that container's width, not of the
+   viewport. The two differ on a handset, which is what left this page
+   at desktop sizes there. */
+.ep-home .ep-fs-17 { font-size: clamp(15px, 1.328cqi, 17px) !important; }
+.ep-home .ep-fs-18 { font-size: clamp(15px, 1.406cqi, 18px) !important; }
+.ep-home .ep-fs-19 { font-size: clamp(16px, 1.484cqi, 19px) !important; }
+.ep-home .ep-fs-20 { font-size: clamp(17px, 1.562cqi, 20px) !important; }
+.ep-home .ep-fs-21 { font-size: clamp(18px, 1.641cqi, 21px) !important; }
+.ep-home .ep-fs-24 { font-size: clamp(17px, 1.719cqi, 22px) !important; }
+.ep-home .ep-fs-27 { font-size: clamp(19px, 1.875cqi, 24px) !important; }
+.ep-home .ep-fs-30 { font-size: clamp(21px, 2.109cqi, 27px) !important; }
+.ep-home .ep-fs-42 { font-size: clamp(21px, 2.969cqi, 38px) !important; }
+.ep-home .ep-fs-44 { font-size: clamp(22px, 3.125cqi, 40px) !important; }
+.ep-home .ep-fs-46 { font-size: clamp(23px, 3.203cqi, 41px) !important; }
+.ep-home .ep-fs-48 { font-size: clamp(24px, 3.359cqi, 43px) !important; }
+.ep-home .ep-fs-52 { font-size: clamp(26px, 3.672cqi, 47px) !important; }
+.ep-home .ep-fs-61 { font-size: clamp(30px, 4.297cqi, 55px) !important; }
 
 /* The page's side gutters. */
 .ep-home .ep-gutter { padding-left: clamp(20px, 3.75cqi, 48px) !important; padding-right: clamp(20px, 3.75cqi, 48px) !important; }
@@ -3179,9 +3178,9 @@ a.card:hover {
   .ep-home .ep-icon { width: 120px !important; height: 120px !important; }
   .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr 1fr !important; }
   /* the four tiles beside the founder keep equal heights while they are in
-     two columns, so the pair lines up */
-  .ep-home [style*="height:217px"] { height: 180px !important; }
-  .ep-home [style*="height:88px"] { height: 76px !important; }
+     two columns, so each pair lines up */
+  .ep-home .ep-tile-text { height: 180px !important; }
+  .ep-home .ep-tile-num { height: 76px !important; }
   /* a Village row gives its name and its line a row each, so the badge and
      the link sit together underneath instead of wrapping one at a time */
   .ep-home .ep-vrow > span:nth-child(1),
@@ -3205,6 +3204,13 @@ a.card:hover {
   .ep-home .ep-hero-in { gap: 24px !important; }
   .ep-home .ep-hero-img { height: 230px !important; }
   .ep-home .ep-side-col { height: 360px !important; }
-  .ep-home [style*="height:217px"] { height: auto !important; min-height: 0; }
+  /* those four tiles are a two by two block on a wide screen, where a right
+     aligned line and a small square balance the pair beside them. Stacked
+     into full width bars neither reads, so the text goes left, the tiles
+     take the height their words need, and the square goes away */
+  .ep-home .ep-tile-text { height: auto !important; min-height: 0; }
+  .ep-home .ep-tile-text p { text-align: left !important; }
+  .ep-home .ep-tile-num { height: 72px !important; }
+  .ep-home .ep-tile-num > span { display: none !important; }
 }
 /* ==== EP HOME 2026 END ==== */

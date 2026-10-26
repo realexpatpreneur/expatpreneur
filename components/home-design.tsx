@@ -140,21 +140,21 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
         <h2 className="ep-fs-42" style={{ "margin": "0 0 46px", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "42px", "lineHeight": "1.16", "fontWeight": "700", "letterSpacing": "-0.012em", "color": "#2C3E50", "textAlign": "left" }}>Six countries, one lesson: local belonging needs global continuity</h2>
         <div style={{ "display": "flex", "gap": "5px" }}>
           <div style={{ "flex": "1 1 0", "display": "flex", "flexDirection": "column", "gap": "5px" }}>
-        <div className="ep-rise" style={{ "background": "rgba(64,116,174,0.035)", "border": "1px solid rgba(64,116,174,0.17)", "boxSizing": "border-box", "borderRadius": "16px", "height": "88px", "padding": "0 24px", "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
+        <div className="ep-tile-num ep-rise" style={{ "background": "rgba(64,116,174,0.035)", "border": "1px solid rgba(64,116,174,0.17)", "boxSizing": "border-box", "borderRadius": "16px", "height": "88px", "padding": "0 24px", "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
           <p className="ep-fs-30" style={{ "margin": "0", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "30px", "fontWeight": "700", "color": "#2C3E50" }}>3</p>
           <span style={{ "width": "26px", "height": "26px", "border": "1.5px solid rgba(64,116,174,0.35)", "borderRadius": "8px" }}></span>
         </div>
-        <div className="ep-rise" style={{ "background": "#FFFFFF", "border": "1px solid rgba(64,116,174,0.10)", "boxShadow": "0 12px 30px rgba(44,62,80,0.11), 0 2px 6px rgba(44,62,80,0.05)", "boxSizing": "border-box", "borderRadius": "16px", "height": "217px", "padding": "24px", "display": "flex", "flexDirection": "column", "justifyContent": "space-between" }}>
+        <div className="ep-tile-text ep-rise" style={{ "background": "#FFFFFF", "border": "1px solid rgba(64,116,174,0.10)", "boxShadow": "0 12px 30px rgba(44,62,80,0.11), 0 2px 6px rgba(44,62,80,0.05)", "boxSizing": "border-box", "borderRadius": "16px", "height": "217px", "padding": "24px", "display": "flex", "flexDirection": "column", "justifyContent": "space-between" }}>
           <p className="ep-fs-20" style={{ "margin": "0", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "20px", "lineHeight": "1.3", "fontWeight": "600", "color": "#2C3E50", "textAlign": "right" }}>Villages, with more being explored</p>
           <p style={{ "margin": "0", "fontSize": "14px", "lineHeight": "1.5", "color": "#5E6E7E" }}>Dubai is open. Lisbon and Paris are next.</p>
         </div>
           </div>
           <div style={{ "flex": "1 1 0", "display": "flex", "flexDirection": "column", "gap": "5px" }}>
-        <div className="ep-rise" style={{ "background": "#FFFFFF", "border": "1px solid rgba(64,116,174,0.10)", "boxShadow": "0 12px 30px rgba(44,62,80,0.11), 0 2px 6px rgba(44,62,80,0.05)", "boxSizing": "border-box", "borderRadius": "16px", "height": "213px", "padding": "24px", "display": "flex", "flexDirection": "column", "justifyContent": "space-between" }}>
+        <div className="ep-tile-text ep-rise" style={{ "background": "#FFFFFF", "border": "1px solid rgba(64,116,174,0.10)", "boxShadow": "0 12px 30px rgba(44,62,80,0.11), 0 2px 6px rgba(44,62,80,0.05)", "boxSizing": "border-box", "borderRadius": "16px", "height": "213px", "padding": "24px", "display": "flex", "flexDirection": "column", "justifyContent": "space-between" }}>
           <p className="ep-fs-20" style={{ "margin": "0", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "20px", "lineHeight": "1.3", "fontWeight": "600", "color": "#2C3E50", "textAlign": "right" }}>Members to a Circle, never more</p>
           <p style={{ "margin": "0", "fontSize": "14px", "lineHeight": "1.5", "color": "#5E6E7E" }}>Your home base of up to fifty members, where real relationships form.</p>
         </div>
-        <div className="ep-rise" style={{ "background": "rgba(64,116,174,0.035)", "border": "1px solid rgba(64,116,174,0.17)", "boxSizing": "border-box", "borderRadius": "16px", "height": "92px", "padding": "0 24px", "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
+        <div className="ep-tile-num ep-rise" style={{ "background": "rgba(64,116,174,0.035)", "border": "1px solid rgba(64,116,174,0.17)", "boxSizing": "border-box", "borderRadius": "16px", "height": "92px", "padding": "0 24px", "display": "flex", "alignItems": "center", "justifyContent": "space-between" }}>
           <p className="ep-fs-30" style={{ "margin": "0", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "30px", "fontWeight": "700", "color": "#2C3E50" }}>50</p>
           <span style={{ "width": "26px", "height": "26px", "border": "1.5px solid rgba(64,116,174,0.35)", "borderRadius": "8px" }}></span>
         </div>
