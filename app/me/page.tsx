@@ -72,6 +72,30 @@ export default async function MyProfilePage({
               country={village?.country ?? null}
               circleName={publicView ? null : circle?.name ?? null}
               publicView={publicView}
+              explainHidden
+              notice={
+                publicView ? (
+                  <div className="sp-notice">
+                    <Ic name={person.public_profile ? "eye" : "lock"} />
+                    <span>
+                      {person.public_profile ? (
+                        <>
+                          <b>This is the whole of what a visitor sees.</b> They
+                          reach it from the Directory on the website, without
+                          signing in.
+                        </>
+                      ) : (
+                        <>
+                          <b>Nobody outside can reach this page.</b> Your
+                          profile is off the public site, so a visitor opening
+                          this address is told there is nothing here. This is
+                          what they would see if you turned it on.
+                        </>
+                      )}
+                    </span>
+                  </div>
+                ) : null
+              }
               actions={
                 <>
                   <Link className="sp-cta sp-cta-glass" href="/me/edit">

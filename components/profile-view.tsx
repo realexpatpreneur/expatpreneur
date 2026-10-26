@@ -48,6 +48,7 @@ export function ProfileView({
   notice,
   stats,
   publicView = false,
+  explainHidden = false,
   activity,
 }: {
   person: ProfilePerson;
@@ -60,6 +61,9 @@ export function ProfileView({
   notice?: React.ReactNode;
   stats?: [number | string, string][];
   publicView?: boolean;
+  /* Your own preview of the public page, where it is worth saying what is
+     being held back. A stranger is told nothing of the sort. */
+  explainHidden?: boolean;
   activity?: React.ReactNode;
 }) {
   const lived = (person.lived_in ?? []).filter(Boolean);
@@ -78,36 +82,42 @@ export function ProfileView({
           </div>
         </div>
       ) : null}
-      {person.languages?.length ? (
-        <div>
-          <span className="sp-label">Languages</span>
-          <div className="tags">
-            {person.languages.map((l) => (
-              <span className="chip" key={l}>
-                {l}
-              </span>
-            ))}
-          </div>
-        </div>
-      ) : null}
-      {person.can_help_with ? (
-        <div>
-          <span className="sp-label">Can help with</span>
-          <p>{person.can_help_with}</p>
-        </div>
-      ) : null}
-      {person.markets_known?.length ? (
-        <div>
-          <span className="sp-label">Markets known</span>
-          <div className="tags">
-            {person.markets_known.map((m) => (
-              <span className="chip" key={m}>
-                <Flag country={m} /> {m}
-              </span>
-            ))}
-          </div>
-        </div>
-      ) : null}
+      {/* A signed out visitor is not handed these columns at all, so a
+          preview of the public page must not show them either. */}
+      {publicView ? null : (
+        <>
+          {person.languages?.length ? (
+            <div>
+              <span className="sp-label">Languages</span>
+              <div className="tags">
+                {person.languages.map((l) => (
+                  <span className="chip" key={l}>
+                    {l}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          {person.can_help_with ? (
+            <div>
+              <span className="sp-label">Can help with</span>
+              <p>{person.can_help_with}</p>
+            </div>
+          ) : null}
+          {person.markets_known?.length ? (
+            <div>
+              <span className="sp-label">Markets known</span>
+              <div className="tags">
+                {person.markets_known.map((m) => (
+                  <span className="chip" key={m}>
+                    <Flag country={m} /> {m}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </>
+      )}
       <div>
         <span className="sp-label">Looking for</span>
         <p>
@@ -118,6 +128,19 @@ export function ProfileView({
           )}
         </p>
       </div>
+      {/* Only on your own preview. A visitor reading somebody else's
+          profile should not be told what "you" are holding back. */}
+      {publicView && explainHidden ? (
+        <div>
+          <span className="sp-label">Kept for members</span>
+          <p className="muted">
+            Your languages, what you can help with and the markets you know
+            are not on the public site, nor is your Circle, and what you are
+            looking for is named but not shown. Your email and phone are
+            never shown to anybody.
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 
