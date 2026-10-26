@@ -3107,8 +3107,12 @@ a.card:hover {
    1200px they are drawn for. They take the page's gutter below that width,
    and are left exactly as drawn above it. */
 @container app (max-width: 1295px) {
-  .ep-home .ep-gutter-late { padding-left: clamp(20px, 3.75cqi, 48px) !important;
-                             padding-right: clamp(20px, 3.75cqi, 48px) !important; }
+  .ep-home .ep-gutter-late { padding-left: min(clamp(20px, 3.75cqi, 48px), clamp(20px, 3.75vw, 48px)) !important;
+                             padding-right: min(clamp(20px, 3.75cqi, 48px), clamp(20px, 3.75vw, 48px)) !important; }
+}
+@media (max-width: 1295px) {
+  .ep-home .ep-gutter-late { padding-left: min(clamp(20px, 3.75cqi, 48px), clamp(20px, 3.75vw, 48px)) !important;
+                             padding-right: min(clamp(20px, 3.75cqi, 48px), clamp(20px, 3.75vw, 48px)) !important; }
 }
 .ep-home a:hover { color: #4074AE; }
 
@@ -3134,23 +3138,23 @@ a.card:hover {
    measure: cqi is one percent of that container's width, not of the
    viewport. The two differ on a handset, which is what left this page
    at desktop sizes there. */
-.ep-home .ep-fs-17 { font-size: clamp(15px, 1.328cqi, 17px) !important; }
-.ep-home .ep-fs-18 { font-size: clamp(15px, 1.406cqi, 18px) !important; }
-.ep-home .ep-fs-19 { font-size: clamp(16px, 1.484cqi, 19px) !important; }
-.ep-home .ep-fs-20 { font-size: clamp(17px, 1.562cqi, 20px) !important; }
-.ep-home .ep-fs-21 { font-size: clamp(18px, 1.641cqi, 21px) !important; }
-.ep-home .ep-fs-24 { font-size: clamp(17px, 1.719cqi, 22px) !important; }
-.ep-home .ep-fs-27 { font-size: clamp(19px, 1.875cqi, 24px) !important; }
-.ep-home .ep-fs-30 { font-size: clamp(21px, 2.109cqi, 27px) !important; }
-.ep-home .ep-fs-42 { font-size: clamp(21px, 2.969cqi, 38px) !important; }
-.ep-home .ep-fs-44 { font-size: clamp(22px, 3.125cqi, 40px) !important; }
-.ep-home .ep-fs-46 { font-size: clamp(23px, 3.203cqi, 41px) !important; }
-.ep-home .ep-fs-48 { font-size: clamp(24px, 3.359cqi, 43px) !important; }
-.ep-home .ep-fs-52 { font-size: clamp(26px, 3.672cqi, 47px) !important; }
-.ep-home .ep-fs-61 { font-size: clamp(30px, 4.297cqi, 55px) !important; }
+.ep-home .ep-fs-17 { font-size: min(clamp(15px, 1.328cqi, 17px), clamp(15px, 1.328vw, 17px)) !important; }
+.ep-home .ep-fs-18 { font-size: min(clamp(15px, 1.406cqi, 18px), clamp(15px, 1.406vw, 18px)) !important; }
+.ep-home .ep-fs-19 { font-size: min(clamp(16px, 1.484cqi, 19px), clamp(16px, 1.484vw, 19px)) !important; }
+.ep-home .ep-fs-20 { font-size: min(clamp(17px, 1.562cqi, 20px), clamp(17px, 1.562vw, 20px)) !important; }
+.ep-home .ep-fs-21 { font-size: min(clamp(18px, 1.641cqi, 21px), clamp(18px, 1.641vw, 21px)) !important; }
+.ep-home .ep-fs-24 { font-size: min(clamp(17px, 1.719cqi, 22px), clamp(17px, 1.719vw, 22px)) !important; }
+.ep-home .ep-fs-27 { font-size: min(clamp(19px, 1.875cqi, 24px), clamp(19px, 1.875vw, 24px)) !important; }
+.ep-home .ep-fs-30 { font-size: min(clamp(21px, 2.109cqi, 27px), clamp(21px, 2.109vw, 27px)) !important; }
+.ep-home .ep-fs-42 { font-size: min(clamp(21px, 2.969cqi, 38px), clamp(21px, 2.969vw, 38px)) !important; }
+.ep-home .ep-fs-44 { font-size: min(clamp(22px, 3.125cqi, 40px), clamp(22px, 3.125vw, 40px)) !important; }
+.ep-home .ep-fs-46 { font-size: min(clamp(23px, 3.203cqi, 41px), clamp(23px, 3.203vw, 41px)) !important; }
+.ep-home .ep-fs-48 { font-size: min(clamp(24px, 3.359cqi, 43px), clamp(24px, 3.359vw, 43px)) !important; }
+.ep-home .ep-fs-52 { font-size: min(clamp(26px, 3.672cqi, 47px), clamp(26px, 3.672vw, 47px)) !important; }
+.ep-home .ep-fs-61 { font-size: min(clamp(30px, 4.297cqi, 55px), clamp(30px, 4.297vw, 55px)) !important; }
 
 /* The page's side gutters. */
-.ep-home .ep-gutter { padding-left: clamp(20px, 3.75cqi, 48px) !important; padding-right: clamp(20px, 3.75cqi, 48px) !important; }
+.ep-home .ep-gutter { padding-left: min(clamp(20px, 3.75cqi, 48px), clamp(20px, 3.75vw, 48px)) !important; padding-right: min(clamp(20px, 3.75cqi, 48px), clamp(20px, 3.75vw, 48px)) !important; }
 
 /* Short viewports: keep the hero inside the first screen. Its top padding
    never changes, so the card on the photograph stays where it belongs. */
@@ -3165,6 +3169,21 @@ a.card:hover {
    --------------------------------------------------------------------- */
 
 @container app (max-width: 980px) {
+  .ep-home [style*="display:flex"] { flex-wrap: wrap !important; }
+  /* the room the stacking cards need to pin on a wide screen is dead space
+     once nothing sticks */
+  .ep-home .ep-wide-col { width: 100% !important; height: auto !important; flex: 1 1 100% !important;
+                          padding-bottom: 0 !important; }
+  /* the founder's portrait: full width, but a height it can live with rather
+     than one driven by the picture's own proportions, and a crop held near
+     the top so the frame holds a face and not a torso */
+  .ep-home .ep-side-col { width: 100% !important; height: 440px !important; flex: 1 1 100% !important; }
+  .ep-home .ep-side-col img { object-position: 50% 12% !important; }
+  /* nothing sticks once the columns are stacked, or the cards that pin on a
+     wide screen come to rest on top of the heading beside them */
+  .ep-home [style*="position:sticky"] { position: static !important; }
+}
+@media (max-width: 980px) {
   .ep-home [style*="display:flex"] { flex-wrap: wrap !important; }
   /* the room the stacking cards need to pin on a wide screen is dead space
      once nothing sticks */
@@ -3221,6 +3240,47 @@ a.card:hover {
   .ep-home .ep-vrow > span:nth-child(2) { flex: 0 0 100% !important; }
   .ep-home .ep-vrow { gap: 14px !important; }
 }
+@media (max-width: 900px) {
+  .ep-home .ep-icon { width: 120px !important; height: 120px !important; }
+
+  /* On a narrow screen the page is one long column, and the two tinted
+     bands fade so gently that nothing tells one section from the next. The
+     bands go flat, and every white panel that is told apart from the page
+     by a shadow alone gets an edge as well. */
+  .ep-home .ep-band { background-image: none !important;
+                      background-color: rgba(64,116,174,0.05) !important; }
+  .ep-home .ep-panel { border: 1px solid rgba(64,116,174,0.13) !important; }
+  .ep-home .ep-card { border-color: rgba(64,116,174,0.20) !important; }
+
+  /* the hero's buttons drop a word each and stay on one line */
+  .ep-home .ep-long { display: none !important; }
+  .ep-home .ep-short { display: inline !important; }
+  .ep-home .ep-cta-row { flex-wrap: nowrap !important; gap: 10px !important; }
+  .ep-home .ep-hero-btn { padding-left: 18px !important; padding-right: 18px !important;
+                          white-space: nowrap; text-align: center; }
+
+  /* the photograph keeps enough height to hold a face */
+  .ep-home .ep-hero-img { height: 345px !important; }
+
+  /* the request sits on the picture below the face, with its avatar beside
+     its words rather than above them, and the event card hangs at the foot
+     of the picture on the other side */
+  .ep-home .ep-float { flex-wrap: nowrap !important;
+                       top: 238px !important; bottom: auto !important;
+                       left: 10px !important; right: auto !important;
+                       max-width: 88% !important; box-sizing: border-box !important; }
+  .ep-home [style*="right:-22px"] { right: 10px !important; }
+  .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr 1fr !important; }
+  /* the four tiles beside the founder keep equal heights while they are in
+     two columns, so each pair lines up */
+  .ep-home .ep-tile-text { height: 180px !important; }
+  .ep-home .ep-tile-num { height: 76px !important; }
+  /* a Village row gives its name and its line a row each, so the badge and
+     the link sit together underneath instead of wrapping one at a time */
+  .ep-home .ep-vrow > span:nth-child(1),
+  .ep-home .ep-vrow > span:nth-child(2) { flex: 0 0 100% !important; }
+  .ep-home .ep-vrow { gap: 14px !important; }
+}
 
 /* The three cards over the wide photograph keep their row while there is
    room, and stack only when there is not. */
@@ -3229,8 +3289,28 @@ a.card:hover {
   .ep-home .ep-overlap > div { padding: 32px 26px !important; }
   .ep-home .ep-icon { width: 104px !important; height: 104px !important; }
 }
+@media (max-width: 700px) {
+  .ep-home .ep-overlap { flex-direction: column !important; margin-top: -40px !important; gap: 14px !important; }
+  .ep-home .ep-overlap > div { padding: 32px 26px !important; }
+  .ep-home .ep-icon { width: 104px !important; height: 104px !important; }
+}
 
 @container app (max-width: 620px) {
+  .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr !important; }
+  /* a column told to share a row equally has nothing to share on a phone */
+  .ep-home [style*="flex:1 1 0"] { flex-basis: 100% !important; }
+  .ep-home .ep-hero-in { gap: 24px !important; }
+  .ep-home .ep-side-col { height: 360px !important; }
+  /* those four tiles are a two by two block on a wide screen, where a right
+     aligned line and a small square balance the pair beside them. Stacked
+     into full width bars neither reads, so the text goes left, the tiles
+     take the height their words need, and the square goes away */
+  .ep-home .ep-tile-text { height: auto !important; min-height: 0; }
+  .ep-home .ep-tile-text p { text-align: left !important; }
+  .ep-home .ep-tile-num { height: 72px !important; }
+  .ep-home .ep-tile-num > span { display: none !important; }
+}
+@media (max-width: 620px) {
   .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr !important; }
   /* a column told to share a row equally has nothing to share on a phone */
   .ep-home [style*="flex:1 1 0"] { flex-basis: 100% !important; }
