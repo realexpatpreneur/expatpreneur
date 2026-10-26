@@ -76,7 +76,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
 
         
 
-        <div style={{ "position": "absolute", "right": "-22px", "bottom": "0", "background": "#2C3E50", "color": "#FFFFFF", "borderRadius": "16px", "padding": "16px 18px", "boxShadow": "0 14px 34px rgba(44, 62, 80, 0.28)" }}>
+        <div style={{ "position": "absolute", "right": "-22px", "bottom": "-33px", "background": "#2C3E50", "color": "#FFFFFF", "borderRadius": "16px", "padding": "16px 18px", "boxShadow": "0 14px 34px rgba(44, 62, 80, 0.28)" }}>
           <p style={{ "margin": "0 0 3px", "fontSize": "11px", "fontWeight": "600", "letterSpacing": "0.1em", "textTransform": "uppercase", "color": "#F2A65A" }}>Thursday</p>
           <p style={{ "margin": "0 0 2px", "fontSize": "15px", "fontWeight": "600" }}>Founders dinner</p>
           <p style={{ "margin": "0", "fontSize": "12px", "color": "#A9B8C6" }}>Dubai Marina, 7:30 PM</p>
@@ -120,7 +120,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
         <p className="ep-fs-21" style={{ "margin": "0", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "21px", "lineHeight": "1.35", "fontWeight": "600", "letterSpacing": "-0.01em", "color": "#2C3E50" }}>Your home base of up to fifty members, where real relationships form.</p>
       </div>
     </div>
-    </div><div style={{ "maxWidth": "1200px", "margin": "0 auto", "paddingTop": "112px" }}>
+    </div><div className="ep-gutter-late" style={{ "maxWidth": "1200px", "margin": "0 auto", "paddingTop": "112px" }}>
     
     
     
@@ -129,7 +129,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
   </div>
   
   </div>
-  <div style={{ "maxWidth": "1200px", "margin": "0 auto", "paddingTop": "112px" }}>
+  <div className="ep-gutter-late" style={{ "maxWidth": "1200px", "margin": "0 auto", "paddingTop": "112px" }}>
     <div style={{ "display": "flex", "gap": "70px", "alignItems": "flex-start" }}>
       <div className="ep-side-col ep-zoom" style={{ "flex": "none", "width": "409px", "position": "relative" }}>
         <span className="ep-side-col" style={{ "display": "block", "width": "409px", "height": "519px", "borderRadius": "20px", "overflow": "hidden" }}><img src="/brand/founder.jpg" alt="Kristiane Charrier" style={{ "display": "block", "width": "100%", "height": "100%", "objectFit": "cover" }} /></span>
@@ -163,7 +163,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
       </div>
     </div>
   </div>
-  <div style={{ "maxWidth": "1200px", "margin": "0 auto", "paddingTop": "112px" }}>
+  <div className="ep-gutter-late" style={{ "maxWidth": "1200px", "margin": "0 auto", "paddingTop": "112px" }}>
     <div className="ep-rise" style={{ "background": "#F5F8FB", "boxShadow": "-16px 0 22px -18px rgba(44,62,80,0.16), 16px 0 22px -18px rgba(44,62,80,0.16)", "borderRadius": "20px", "padding": "44px 58px", "display": "flex", "flexWrap": "wrap", "gap": "40px", "alignItems": "center" }}>
       <img className="ep-spin" src="/brand/mark.jpg" alt="" style={{ "flex": "none", "width": "120px", "height": "120px", "objectFit": "cover", "borderRadius": "999px" }} />
       <p className="ep-fs-30" style={{ "flex": "1 1 320px", "margin": "0", "fontFamily": "Inter, system-ui, sans-serif", "fontSize": "30px", "lineHeight": "1.25", "fontWeight": "700", "color": "#2C3E50" }}>ExpatPreneurs is by invitation.</p>

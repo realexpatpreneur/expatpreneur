@@ -3101,6 +3101,15 @@ a.card:hover {
 /* the hero's buttons carry both a full label and a short one; the short one
    only appears once the page is narrow */
 .ep-home .ep-short { display: none; }
+
+/* Three sections on the board carry a top padding and no side padding, so
+   their content meets the edge of the screen on anything narrower than the
+   1200px they are drawn for. They take the page's gutter below that width,
+   and are left exactly as drawn above it. */
+@container app (max-width: 1295px) {
+  .ep-home .ep-gutter-late { padding-left: clamp(20px, 3.75cqi, 48px) !important;
+                             padding-right: clamp(20px, 3.75cqi, 48px) !important; }
+}
 .ep-home a:hover { color: #4074AE; }
 
 @keyframes ep-rise { from { opacity: 0; transform: translateY(28px) } to { opacity: 1; transform: none } }
@@ -3197,11 +3206,10 @@ a.card:hover {
      its words rather than above them, and the event card hangs at the foot
      of the picture on the other side */
   .ep-home .ep-float { flex-wrap: nowrap !important;
-                       top: 162px !important; bottom: auto !important;
+                       top: 238px !important; bottom: auto !important;
                        left: 10px !important; right: auto !important;
                        max-width: 88% !important; box-sizing: border-box !important; }
-  .ep-home [style*="right:-22px"] { top: 242px !important; bottom: auto !important;
-                                    right: 10px !important; }
+  .ep-home [style*="right:-22px"] { right: 10px !important; }
   .ep-home [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr 1fr !important; }
   /* the four tiles beside the founder keep equal heights while they are in
      two columns, so each pair lines up */
