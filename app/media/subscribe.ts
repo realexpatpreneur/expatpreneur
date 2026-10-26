@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { tooManyTries, TOO_MANY } from "@/lib/guard";
+import { addToNewsletter } from "@/lib/flodesk";
 
 export type SubscribeState = { error?: string };
 
@@ -23,11 +24,15 @@ export async function subscribe(
 
   const supabase = await createClient();
 
+  const source = String(formData.get("source") ?? "media");
+
   // A duplicate is not an error the person needs to hear about.
-  await supabase.from("newsletter_signups").insert({
-    email,
-    source: String(formData.get("source") ?? "media"),
-  });
+  await supabase.from("newsletter_signups").insert({ email, source });
+
+  // The list proper lives in Flodesk. This never throws, so a signup is
+  // never lost to somebody else's outage, and it does nothing at all until
+  // the key is set.
+  await addToNewsletter(email, source);
 
   redirect("/media/subscribed");
 }
