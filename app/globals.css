@@ -3618,3 +3618,42 @@ body, .app { font-size:14.5px; }
 .headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .headrow .lead{margin-top:4px}
 /* ==== EP EMPTY END ==== */
+
+/* ==== EP CANVAS START (script 210) ==== */
+/* Figure and ground. The product ran white panels on a white page, which
+   is why nothing on it could be seen to float and why every change I made
+   to the panels themselves disappeared. The work area is a canvas now and
+   the panels are cards standing on it, which is the arrangement every
+   product people actually use is built on.
+   The public pages are left alone: this is scoped to the workspace. */
+
+:root{ --canvas:#F0F2F5; --cardline:#E4E6EB; }
+
+.mapp .mmain{ background:var(--canvas); }
+
+/* Three radial gradients were painted behind every product page. A haze
+   is not depth; the canvas is. */
+.mapp .mmain::before{ display:none; }
+
+.mapp .panel,
+.mapp .sp,
+.mapp .sp-side,
+.mapp .circlecard,
+.mapp .tablewrap,
+.mapp .stat,
+.mapp .empty{ background:#fff; border:1px solid var(--cardline); }
+.mapp .empty{ border-style:dashed; }
+
+/* A row answers the pointer, the way an item in a feed does. */
+.mapp .rerow,
+.mapp .table tbody tr,
+.mapp .approw{ transition:background .12s ease; }
+.mapp .rerow:hover,
+.mapp .table tbody tr:hover{ background:#F7F8FA; }
+
+/* Closer packed. An admin page is a working surface, not a brochure. */
+.mapp .panel{ padding:14px 16px; }
+.mapp .stat{ padding:12px 14px; }
+.mapp .sec{ margin-bottom:16px; }
+.mapp .sec > h2{ font-size:16px; margin-bottom:10px; }
+/* ==== EP CANVAS END ==== */
