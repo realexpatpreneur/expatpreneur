@@ -68,3 +68,29 @@ export async function addToNewsletter(email: string, source?: string | null) {
     console.error("Flodesk could not be reached:", error);
   }
 }
+
+// Take an address off the list. A member turning the newsletter off in
+// their settings has to reach Flodesk, because Flodesk is what sends it;
+// a flag in our own table would be a switch wired to nothing, which is
+// what it was before this existed.
+export async function removeFromNewsletter(email: string) {
+  if (!flodeskReady) return;
+
+  try {
+    const res = await fetch(
+      `${BASE}/subscribers/${encodeURIComponent(email)}/unsubscribe`,
+      { method: "POST", headers: callHeaders() }
+    );
+
+    // Somebody who was never on the list is not an error worth raising.
+    if (!res.ok && res.status !== 404) {
+      console.error(
+        "Flodesk refused an unsubscribe:",
+        res.status,
+        (await res.text()).slice(0, 300)
+      );
+    }
+  } catch (error) {
+    console.error("Flodesk could not be reached:", error);
+  }
+}

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { record } from "@/lib/audit";
+import { addToNewsletter, removeFromNewsletter } from "@/lib/flodesk";
 
 const list = (value: FormDataEntryValue | null) =>
   String(value ?? "")
@@ -120,6 +121,24 @@ export async function saveNotificationPrefs(
   );
 
   if (error) return { error: error.message };
+
+  // The newsletter is sent by Flodesk, not by us, so a flag in our own
+  // table switches nothing off. It has to reach them. Before this, a
+  // member could turn the newsletter off, see Saved, and keep getting it.
+  const wantsNewsletter = Boolean(formData.get("newsletter"));
+  const { data: me } = await supabase
+    .from("profiles")
+    .select("email")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (me?.email) {
+    if (wantsNewsletter) {
+      await addToNewsletter(me.email, "settings");
+    } else {
+      await removeFromNewsletter(me.email);
+    }
+  }
 
   revalidatePath("/settings");
   return { done: "saved" };

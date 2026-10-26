@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Captcha } from "@/components/captcha";
 import { subscribe, type SubscribeState } from "./subscribe";
 
 // The prototype's newsletter row: one input, one mint button.
@@ -38,6 +39,11 @@ export function SubscribeForm({ source }: { source?: string }) {
           {pending ? "Sending" : "Subscribe"}
         </button>
       </div>
+
+      {/* The only public form that writes to a mailing list, and the
+          only one that had no check on it. Without this anybody can put
+          somebody else's address on the list. */}
+      <Captcha />
     </form>
   );
 }

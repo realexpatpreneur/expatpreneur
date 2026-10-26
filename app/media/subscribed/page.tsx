@@ -1,7 +1,7 @@
 import { PublicPage } from "@/components/public-page";
 import { Done } from "@/components/done";
 
-export const metadata = { title: "Check your inbox, ExpatPreneurs Global" };
+export const metadata = { title: "You are on the list, ExpatPreneurs Global" };
 
 export default function SubscribedPage() {
   return (
@@ -9,11 +9,12 @@ export default function SubscribedPage() {
       <main className="wrap">
         <section className="pubsec">
           <Done
-            title="Check your inbox"
+            title="You are on the list"
             icon="mail"
             actions={[{ label: "Back to Media", href: "/media", kind: "primary" }]}
           >
-            Confirm your email address to start receiving the newsletter.
+            The next one comes to you. Every email we send has a way off it
+            at the bottom.
           </Done>
         </section>
       </main>

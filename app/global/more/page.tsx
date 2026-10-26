@@ -33,6 +33,7 @@ export default async function GlobalMorePage() {
               ["/global/library", "Resources library"],
               ["/admin/media", "Watch and Listen"],
               ["/global/emails", "Emails"],
+              ["/global/newsletter", "Newsletter"],
               ["/global/money", "Payments and tickets"],
               ["/global/recognition", "Team recognition"],
               ["/global/learning", "Educators and courses"],
