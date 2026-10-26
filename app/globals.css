@@ -3396,6 +3396,89 @@ a.card:hover {
 
 /* ==== EP HOME 2026 END ==== */
 
+/* ==== EP RE-ENROL LIST START (script 206) ==== */
+/* The add-someone list. It was a table of six columns, two of them
+   buttons and one of them a seventy character address, which no width on
+   that page could hold, so it scrolled sideways and a row stood six
+   hundred pixels tall. A person is a band here instead, divided by a
+   hairline rather than boxed, and the band reflows, so everything about
+   somebody is on screen at once at any width. */
+.relist { display: grid; }
+
+.rerow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 16px;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.rerow:first-child { border-top: 0; padding-top: 6px; }
+.rerow:last-child { padding-bottom: 2px; }
+
+.rerow-who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+/* The name takes what room there is and stops, rather than pushing the
+   band wider or wrapping an address down the page. */
+.rerow-who b { display: block; }
+.rerow-who b,
+.rerow-who .muted { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.rerow-state {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px 8px;
+}
+
+/* The address and the two buttons sit on one line while there is room
+   for both, and the address gives way first. */
+/* Grid and flex children refuse to go below their content width unless
+   told to, and two buttons plus an address are wider than a phone. */
+.rerow, .rerow-state, .rerow-foot, .rerow-do { min-width: 0; }
+.rerow-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.rerow-foot .relink { flex: 1 1 240px; }
+.rerow-do { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.relink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 7px 6px 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--wash);
+}
+.relink-url {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--muted);
+}
+.relink .btn { flex: 0 0 auto; }
+
+/* Once the band is too narrow to put the name and the state side by
+   side, the state goes under it and reads from the left like the rest. */
+@container app (max-width: 620px) {
+  .rerow { grid-template-columns: 1fr; gap: 8px; }
+  .rerow-state { justify-content: flex-start; }
+}
+@media (max-width: 620px) {
+  .rerow { grid-template-columns: 1fr; gap: 8px; }
+  .rerow-state { justify-content: flex-start; }
+}
+/* ==== EP RE-ENROL LIST END ==== */
+
 /* ==== EP MENU START (script 193) ==== */
 /* The menu page. Restraint rather than decoration: real type, hairlines,
    and room to breathe. No cards, no pills, no shadows. */

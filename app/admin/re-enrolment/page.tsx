@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { PageHead } from "@/components/workspace-shell";
 import { siteUrl } from "@/lib/site";
-import { Stat, Table, SecHead } from "@/components/admin-bits";
+import { Stat, SecHead } from "@/components/admin-bits";
 import { Av } from "@/components/bits";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
+import { CopyLink } from "./copy-link";
 import {
   ImportForm,
   RemindButton,
@@ -132,21 +133,20 @@ export default async function ReEnrolmentPage({
                 Nobody on it yet. Paste the WhatsApp list beside this.
               </p>
             ) : (
-              <Table head={["Member", "Status", "Last contact", "", ""]}>
+              <div className="relist">
                 {rows.map((person) => (
-                  <tr key={person.id}>
-                    <td>
-                      <div className="row" style={{ gap: 8 }}>
-                        <Av name={person.full_name} className="av-sm" />
-                        <div>
-                          <b>{person.full_name}</b>
-                          <div className="muted small">
-                            {person.email ?? person.phone ?? "No contact yet"}
-                          </div>
+                  <div className="rerow" key={person.id}>
+                    <div className="rerow-who">
+                      <Av name={person.full_name} className="av-sm" />
+                      <div style={{ minWidth: 0 }}>
+                        <b>{person.full_name}</b>
+                        <div className="muted small">
+                          {person.email ?? person.phone ?? "No contact yet"}
                         </div>
                       </div>
-                    </td>
-                    <td>
+                    </div>
+
+                    <div className="rerow-state">
                       <span
                         className={`chip ${
                           person.status === "re_enrolled"
@@ -159,35 +159,30 @@ export default async function ReEnrolmentPage({
                         {LABEL[person.status] ?? person.status}
                       </span>
                       {person.complimentary ? (
-                        <span className="chip chip-mint" style={{ marginLeft: 6 }}>
-                          Complimentary
-                        </span>
+                        <span className="chip chip-mint">Complimentary</span>
                       ) : null}
-                    </td>
-                    <td className="hide-m">
-                      {person.last_contact ? timeAgo(person.last_contact) : "Not yet"}
-                    </td>
-                    <td>
-                      {person.status === "re_enrolled" ? null : (
-                        <>
+                      <span className="muted small rerow-when">
+                        {person.last_contact
+                          ? `Last contact ${timeAgo(person.last_contact)}`
+                          : "Not contacted yet"}
+                      </span>
+                    </div>
+
+                    {person.status === "re_enrolled" ? null : (
+                      <div className="rerow-foot">
+                        <CopyLink href={`${site}/re-enrol/${person.token}`} />
+                        <div className="rerow-do">
                           <RemindButton id={person.id} />
                           <ComplimentaryToggle
                             id={person.id}
                             on={Boolean(person.complimentary)}
                           />
-                        </>
-                      )}
-                    </td>
-                    <td style={{ minWidth: 200 }}>
-                      {person.status === "re_enrolled" ? null : (
-                        <span className="muted small" style={{ wordBreak: "break-all" }}>
-                          {site}/re-enrol/{person.token}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </Table>
+              </div>
             )}
           </div>
 
