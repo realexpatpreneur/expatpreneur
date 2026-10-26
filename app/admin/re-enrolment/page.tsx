@@ -178,7 +178,7 @@ export default async function ReEnrolmentPage({
                         </>
                       )}
                     </td>
-                    <td>
+                    <td style={{ minWidth: 200 }}>
                       {person.status === "re_enrolled" ? null : (
                         <span className="muted small" style={{ wordBreak: "break-all" }}>
                           {site}/re-enrol/{person.token}
