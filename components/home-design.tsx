@@ -101,7 +101,7 @@ export function HomeDesign({ villages }: { villages: HomeVillage[] }) {
     </div>
     <div style={{ "position": "relative" }}>
       <div style={{ "borderRadius": "20px", "overflow": "hidden" }}>
-        <img src="/brand/members.jpg" alt="Members of one Village working through something together" style={{ "display": "block", "width": "100%", "height": "430px", "objectFit": "cover", "filter": "blur(3px)", "transform": "scale(1.03)" }} />
+        <img src="/brand/members.jpg" alt="Members of one Village working through something together" style={{ "display": "block", "width": "100%", "height": "430px", "objectFit": "cover", "filter": "blur(1px)", "transform": "scale(1.03)" }} />
       </div>
       <div className="ep-overlap" style={{ "position": "relative", "marginTop": "-158px", "display": "flex", "gap": "12px" }}>
       <div className="ep-card ep-zoom ep-rise" style={{ "flex": "1 1 0", "minWidth": "0", "background": "#FFFFFF", "border": "1px solid rgba(64,116,174,0.14)", "boxSizing": "border-box", "borderRadius": "20px", "padding": "48px 32px 40px", "textAlign": "center", "animationDelay": "0ms" }}>
