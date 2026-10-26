@@ -3620,16 +3620,19 @@ body, .app { font-size:14.5px; }
 /* ==== EP EMPTY END ==== */
 
 /* ==== EP CANVAS START (script 210) ==== */
-/* Figure and ground. The product ran white panels on a white page, which
-   is why nothing on it could be seen to float and why every change I made
-   to the panels themselves disappeared. The work area is a canvas now and
-   the panels are cards standing on it, which is the arrangement every
-   product people actually use is built on.
-   The public pages are left alone: this is scoped to the workspace. */
+/* Figure and ground. The product ran white panels on a white page, so
+   nothing could be seen to float and every change to the panels
+   themselves disappeared. The work area is a canvas now and the panels
+   are cards standing on it, laid out with the rhythm of a feed.
+   Scoped to the workspace: public pages keep their white. */
 
-:root{ --canvas:#F0F2F5; --cardline:#E4E6EB; }
+:root{ --canvas:#F0F2F5; --cardline:rgba(11,18,32,.09); }
 
 .mapp .mmain{ background:var(--canvas); }
+
+/* The side panel takes its colour from --ink, which moved when the
+   headings did. It goes back to where it was; that was not asked for. */
+.admin .mside{ background:#0F1419; border-color:#0F1419; }
 
 /* Three radial gradients were painted behind every product page. A haze
    is not depth; the canvas is. */
@@ -3641,8 +3644,20 @@ body, .app { font-size:14.5px; }
 .mapp .circlecard,
 .mapp .tablewrap,
 .mapp .stat,
-.mapp .empty{ background:#fff; border:1px solid var(--cardline); }
-.mapp .empty{ border-style:dashed; }
+.mapp .empty{
+  background:#fff;
+  border:1px solid var(--cardline);
+  border-radius:8px;
+  box-shadow:0 1px 2px rgba(11,18,32,.04);
+}
+.mapp .empty{ border-style:dashed; box-shadow:none; }
+
+/* A feed is a stack of cards at one rhythm, not sections at arm's
+   length from each other. */
+.mapp .sec{ margin-bottom:12px; }
+.mapp .sec > h2{ font-size:15px; font-weight:650; margin-bottom:8px; }
+.mapp .panel{ padding:16px; }
+.mapp .stat{ padding:12px 14px; }
 
 /* A row answers the pointer, the way an item in a feed does. */
 .mapp .rerow,
@@ -3650,10 +3665,4 @@ body, .app { font-size:14.5px; }
 .mapp .approw{ transition:background .12s ease; }
 .mapp .rerow:hover,
 .mapp .table tbody tr:hover{ background:#F7F8FA; }
-
-/* Closer packed. An admin page is a working surface, not a brochure. */
-.mapp .panel{ padding:14px 16px; }
-.mapp .stat{ padding:12px 14px; }
-.mapp .sec{ margin-bottom:16px; }
-.mapp .sec > h2{ font-size:16px; margin-bottom:10px; }
 /* ==== EP CANVAS END ==== */
