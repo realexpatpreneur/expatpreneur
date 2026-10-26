@@ -80,8 +80,8 @@ export default async function ReEnrolmentPage({
   return (
     <>
       <PageHead
-        title="Re-enrolment"
-        sub={`Bringing the current ${village?.name ?? "Village"} WhatsApp members onto the platform.`}
+        title="Add someone directly"
+        sub={`Putting people into ${village?.name ?? "the Village"} by hand, without waiting for an invitation request. This is also how the current WhatsApp members were brought onto the platform.`}
       />
 
       {(mine ?? []).length > 1 ? (

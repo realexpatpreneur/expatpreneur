@@ -17,6 +17,7 @@ export default async function AdminMorePage() {
               ["/admin", "Overview"],
               ["/admin/applications", "Invitation requests"],
               ["/admin/members", "Members"],
+              ["/admin/re-enrolment", "Add someone directly"],
               ["/admin/care", "Member care and re-enrolment"],
               ["/admin/circles", "Circles"],
               ["/admin/mix", "Village mix"],

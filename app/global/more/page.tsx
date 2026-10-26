@@ -16,6 +16,7 @@ export default async function GlobalMorePage() {
             items={[
               ["/global", "Overview"],
               ["/admin/applications", "Invitation requests"],
+              ["/admin/re-enrolment", "Add someone directly"],
               ["/global/villages", "Villages"],
               ["/global/events", "Events"],
               ["/global/cities", "City suggestions"],
