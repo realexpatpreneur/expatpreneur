@@ -4,6 +4,7 @@ import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { Crumbs } from "@/components/crumbs";
 import { say, resourceKindLabel } from "@/lib/labels";
+import { Empty } from "@/components/empty";
 
 export const metadata = { title: "Resources library, the Global team" };
 
@@ -76,7 +77,7 @@ export default async function GlobalLibraryPage({
 
         <section className="sec">
           {(resources ?? []).length === 0 ? (
-            <p className="muted">Nothing matches that.</p>
+            <Empty line="Nothing in the library matches that search." tight />
           ) : (
             <div className="divide">
               {(resources ?? []).map((resource) => (

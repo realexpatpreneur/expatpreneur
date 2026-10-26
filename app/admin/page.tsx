@@ -6,6 +6,7 @@ import { Ic } from "@/components/icon";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
 import { whenText } from "@/lib/events";
+import { Empty } from "@/components/empty";
 
 export const metadata = { title: "Overview, the Local Admin workspace" };
 
@@ -201,7 +202,7 @@ export default async function AdminOverviewPage() {
           <div className="panel">
             <SecHead title="Circle capacity" href="/admin/circles" />
             {(circles ?? []).length === 0 ? (
-              <p className="muted small">No Circles yet.</p>
+              <Empty line="This Village has no Circle yet. The first one opens when you are ready." action={{ label: "Open a Circle", href: "/admin/circles" }} tight />
             ) : (
               (circles ?? []).map((circle) => (
                 <Cap
@@ -238,7 +239,7 @@ export default async function AdminOverviewPage() {
           <div className="panel">
             <SecHead title="Next event" href="/admin/events" label="All events" />
             {(events ?? []).length === 0 ? (
-              <p className="muted small">Nothing on the calendar.</p>
+              <Empty line="Nothing is coming up in this Village." action={{ label: "Create an event", href: "/admin/events/new" }} tight />
             ) : (
               <div className="divide">
                 {(events ?? []).map((event) => {

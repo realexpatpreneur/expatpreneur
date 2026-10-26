@@ -82,7 +82,10 @@ export default async function AdminCirclesPage({
                         : "WhatsApp group not linked"}
                     </span>
                   </div>
-                  <CircleForm villages={myVillages} circle={circle} />
+                  <details className="disc">
+                    <summary>Edit this Circle</summary>
+                    <CircleForm villages={myVillages} circle={circle} />
+                  </details>
                 </div>
               );
             })

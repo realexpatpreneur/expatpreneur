@@ -3,6 +3,7 @@ import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { PodDecision, DataDecision, EnquiryDone } from "./forms";
 import { Crumbs } from "@/components/crumbs";
+import { Empty } from "@/components/empty";
 
 export const metadata = { title: "Requests, the Global team" };
 
@@ -70,7 +71,7 @@ export default async function GlobalRequestsPage() {
         <section className="sec">
           <h2>From the contact page</h2>
           {(enquiries ?? []).filter((e) => e.status === "new").length === 0 ? (
-            <p className="muted small">Nothing waiting.</p>
+            <Empty line="Nothing is waiting on you here." tight />
           ) : (
             <div className="stack" style={{ marginTop: 16 }}>
               {(enquiries ?? [])
@@ -113,7 +114,7 @@ export default async function GlobalRequestsPage() {
         <section className="sec">
           <h2>Pods proposed</h2>
           {openPods.length === 0 ? (
-            <p className="muted small">Nothing waiting.</p>
+            <Empty line="Nothing is waiting on you here." tight />
           ) : (
             <div className="stack" style={{ marginTop: 16 }}>
               {openPods.map((proposal) => (
@@ -146,7 +147,7 @@ export default async function GlobalRequestsPage() {
         <section className="sec">
           <h2>Members asking about their own data</h2>
           {openData.length === 0 ? (
-            <p className="muted small">Nothing waiting.</p>
+            <Empty line="Nothing is waiting on you here." tight />
           ) : (
             <div className="stack" style={{ marginTop: 16 }}>
               {openData.map((request) => (

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { Crumbs } from "@/components/crumbs";
+import { Empty } from "@/components/empty";
 
 export const metadata = { title: "The record, the Global team" };
 
@@ -101,7 +102,7 @@ export default async function AuditPage({
 
         <section className="sec">
           {(entries ?? []).length === 0 ? (
-            <p className="muted">Nothing recorded that matches.</p>
+            <Empty line="No action matching that has been recorded." tight />
           ) : (
             <div className="divide">
               {(entries ?? []).map((entry) => (

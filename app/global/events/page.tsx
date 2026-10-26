@@ -4,6 +4,7 @@ import { requireGlobal } from "@/lib/access";
 import { whenText } from "@/lib/events";
 import { timeAgo } from "@/lib/member";
 import { Crumbs } from "@/components/crumbs";
+import { Empty } from "@/components/empty";
 
 export const metadata = { title: "Events, the Global team" };
 
@@ -46,8 +47,15 @@ export default async function GlobalEventsPage() {
     <main className="wrap">
         <section className="sec">
           <Crumbs trail={[["The Global team", "/global"], ["Events"]]} />
-          <h1>Events</h1>
-          <p className="lead">Across the network.</p>
+          <div className="headrow">
+            <div>
+              <h1>Events</h1>
+              <p className="lead">Across the network.</p>
+            </div>
+            <Link className="btn btn-sm" href="/admin/events/new">
+              Create an event
+            </Link>
+          </div>
         </section>
 
         {(partners ?? []).length ? (
@@ -77,7 +85,7 @@ export default async function GlobalEventsPage() {
         <section className="sec">
           <h2>Coming up</h2>
           {upcoming.length === 0 ? (
-            <p className="muted small">Nothing on the calendar anywhere.</p>
+            <Empty line="No event is scheduled anywhere in the network." action={{ label: "Create an event", href: "/admin/events/new" }} />
           ) : (
             <div className="divide" style={{ marginTop: 12 }}>
               {upcoming.map((event) => (
@@ -111,7 +119,7 @@ export default async function GlobalEventsPage() {
         <section className="sec">
           <h2>Already happened</h2>
           {past.length === 0 ? (
-            <p className="muted small">Nothing yet.</p>
+            <Empty line="No event has run yet." tight />
           ) : (
             <div className="divide" style={{ marginTop: 12 }}>
               {past.slice(0, 25).map((event) => (

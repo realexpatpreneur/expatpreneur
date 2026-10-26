@@ -3573,3 +3573,48 @@ body, .app { font-size:14.5px; }
 .cover.pink { background:var(--pink); color:#4A2A16; }
 .cover.navy { background:var(--navy); }
 /* ==== EP SHARPEN END ==== */
+
+/* ==== EP EMPTY START (script 209) ==== */
+/* Empty states. Most of this product said "Nothing waiting." in grey
+   eight point text and left half a screen of white under it, which is
+   what made finished pages read as unfinished. An empty panel now has a
+   shape, a sentence in the product's own voice, and the thing you would
+   have come here to do. */
+.empty{
+  display:grid;
+  justify-items:center;
+  gap:12px;
+  padding:34px 22px;
+  border:1px dashed var(--line);
+  border-radius:var(--r-md);
+  background:var(--wash);
+  text-align:center;
+}
+.empty p{margin:0;color:var(--muted);font-size:13.5px;max-width:46ch}
+.empty-tight{padding:20px 16px;gap:9px}
+
+/* The flat colour the Circle headers should have had. Four gradients on
+   one screen is decoration standing in for information. */
+.ct-blue{background:#1F5FBF}
+.ct-mint{background:#2F8F77}
+.ct-navy{background:#2C3E50}
+.ct-sun{background:#C96F4A}
+.ct-pink{background:#F2A65A;color:#3A2208}
+.cover.sun{background:#C96F4A;color:#fff}
+
+/* A record where most lines read "Not given" is a wall of nothing. The
+   lines that have something keep their place; the rest are counted. */
+.kv-gap{margin:10px 0 0;color:var(--muted);font-size:12.5px}
+
+/* An admin page should not open every edit form at once. */
+.disc{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+.disc>summary{cursor:pointer;list-style:none;font-size:12.5px;font-weight:600;color:var(--blue)}
+.disc>summary::-webkit-details-marker{display:none}
+.disc>summary::after{content:" ...";color:var(--muted)}
+.disc[open]>summary::after{content:"";}
+.disc[open]>summary{margin-bottom:10px}
+/* A page head with nothing to do on it reads as a report rather than a
+   place of work. */
+.headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.headrow .lead{margin-top:4px}
+/* ==== EP EMPTY END ==== */

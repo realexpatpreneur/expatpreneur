@@ -3,6 +3,7 @@ import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { PartnerDecision } from "./forms";
 import { Crumbs } from "@/components/crumbs";
+import { Empty } from "@/components/empty";
 
 export const metadata = { title: "Partnered events, the Global team" };
 
@@ -45,7 +46,7 @@ export default async function PartneredEventsPage() {
 
         <section className="sec">
           {waiting.length === 0 ? (
-            <p className="muted">Nothing waiting.</p>
+            <Empty line="No partner has asked to run an event." tight />
           ) : (
             <div className="stack">
               {waiting.map((request) => (

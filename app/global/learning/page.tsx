@@ -4,6 +4,7 @@ import { requireGlobal } from "@/lib/access";
 import { timeAgo } from "@/lib/member";
 import { ReviewButtons } from "./forms";
 import { Crumbs } from "@/components/crumbs";
+import { Empty } from "@/components/empty";
 
 export const metadata = { title: "Learning, the Global team" };
 
@@ -60,7 +61,7 @@ export default async function GlobalLearningPage() {
         <section className="sec">
           <h2>Waiting to be read</h2>
           {waiting.length === 0 ? (
-            <p className="muted small">Nothing waiting.</p>
+            <Empty line="No educator is waiting for a decision." tight />
           ) : (
             <div className="stack" style={{ marginTop: 16 }}>
               {waiting.map((course) => (
