@@ -3327,6 +3327,25 @@ a.card:hover {
   .ep-home .ep-tile-num { height: 72px !important; }
   .ep-home .ep-tile-num > span { display: none !important; }
 }
+/* ---------------------------------------------------------------------
+   The hero against the fold.
+
+   The hero wants about 710px of room. A laptop at full zoom gives around
+   640, which is why zooming the browser out to 90% made the whole of it
+   fit. These three measures follow the height of the window instead of
+   sitting fixed, so the picture, the member card and the event card are
+   all in view without anyone touching the zoom. Each one stops at the
+   design's own value once the window is tall enough, so nothing changes
+   on a taller screen.
+   --------------------------------------------------------------------- */
+@media (min-width: 981px) {
+  .ep-home .ep-hero-in {
+    padding-top: clamp(36px, calc(100vh - 628px), 72px) !important;
+    padding-bottom: clamp(24px, calc(100vh - 656px), 44px) !important;
+  }
+  .ep-home .ep-hero-img { height: clamp(360px, calc(100vh - 340px), 420px) !important; }
+}
+
 /* ==== EP HOME 2026 END ==== */
 
 /* ==== EP MENU START (script 193) ==== */
