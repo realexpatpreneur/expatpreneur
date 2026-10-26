@@ -117,7 +117,7 @@ export default async function VillageAskOfferPage({
             ) : (
               <div className="panel panel-wash">
                 <h3 style={{ fontSize: 14 }}>Nothing open right now</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Post the first one. An Ask is something you need; an Offer is
                   something you can give.
                 </p>
@@ -129,7 +129,7 @@ export default async function VillageAskOfferPage({
         <div className="stack">
           <div className="panel">
             <h3 style={{ fontSize: 14 }}>How Ask &amp; Offer works</h3>
-            <ul className="ticks" style={{ marginTop: 10 }}>
+            <ul className="ticks" style={{ marginTop: 12 }}>
               <li>
                 <Ic name="check" />
                 Ask for an introduction, a supplier or advice

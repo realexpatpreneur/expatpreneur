@@ -38,7 +38,7 @@ export function SuggestionForm({ villageName }: { villageName: string | null }) 
         />
       </label>
 
-      <h3 style={{ marginBottom: 10 }}>How would you like to send it?</h3>
+      <h3 style={{ marginBottom: 12 }}>How would you like to send it?</h3>
 
       <label className="check">
         <input type="radio" name="how" value="named" defaultChecked />

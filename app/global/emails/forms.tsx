@@ -88,7 +88,7 @@ export function TemplateForm({
         {testState.done ? (
           <div className="flag ok">Sent to your own address.</div>
         ) : null}
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           Goes to you, with the placeholders filled in with example values.
         </p>
         <input type="hidden" name="key" value={template.key} />

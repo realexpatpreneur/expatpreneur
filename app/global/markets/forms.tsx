@@ -32,7 +32,7 @@ export function PathwayForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {pathway ? <input type="hidden" name="id" value={pathway.id} /> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Title</span>
         <input
           name="title"
@@ -133,7 +133,7 @@ export function StepForm({
       <input type="hidden" name="pathway_id" value={pathwayId} />
       {step ? <input type="hidden" name="id" value={step.id} /> : null}
 
-      <div className="g2" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 12 }}>
         <label className="field">
           <span>Position</span>
           <input

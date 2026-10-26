@@ -40,7 +40,7 @@ export function VillageForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {village ? <input type="hidden" name="id" value={village.id} /> : null}
 
-      <div className="g2" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 12 }}>
         <label className="field">
           <span>Name</span>
           <input name="name" required defaultValue={village?.name ?? ""} />
@@ -119,7 +119,7 @@ export function RoleForm({
       <h3>Give someone a role</h3>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Member</span>
         <select name="profile_id" defaultValue={people[0]?.id}>
           {people.map((person) => (

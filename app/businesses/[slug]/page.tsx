@@ -109,7 +109,7 @@ export default async function BusinessPage({
               {business.offer ? (
                 <div className="panel panel-wash">
                   <h3>Current offer</h3>
-                  <p style={{ marginTop: 6 }}>{business.offer}</p>
+                  <p style={{ marginTop: 8 }}>{business.offer}</p>
                 </div>
               ) : null}
 
@@ -132,7 +132,7 @@ export default async function BusinessPage({
               {owner ? (
                 <div className="panel">
                   <h3>Run by</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     <Link href={`/members/${owner.id}`}>{owner.full_name}</Link>
                     {owner.headline ? `, ${owner.headline}` : ""}
                   </p>
@@ -166,7 +166,7 @@ export default async function BusinessPage({
             </div>
             <div className="panel panel-wash">
               <h3>How this works</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Your message goes to the member who runs this business, with
                 your email address so they can reply. Nothing is paid or
                 arranged through ExpatPreneurs.

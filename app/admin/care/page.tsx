@@ -176,7 +176,7 @@ export default async function MemberCarePage({
                         </span>
                       </div>
                       {renewal.note ? (
-                        <p className="muted small" style={{ marginTop: 6 }}>
+                        <p className="muted small" style={{ marginTop: 8 }}>
                           They said: {renewal.note}
                         </p>
                       ) : null}
@@ -196,7 +196,7 @@ export default async function MemberCarePage({
             <OpenRoundForm suggested={currentCycle} />
             <div className="panel panel-wash">
               <h3>Before you open a round</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Speak to the quiet ones first. Someone who has drifted will
                 usually say leaving to a form and staying to a person, and the
                 honest version is worth more either way.

@@ -389,7 +389,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
                     <h3 style={{ fontSize: 14 }}>
                       What we look for in a new city
                     </h3>
-                    <ul className="ticks" style={{ marginTop: 10 }}>
+                    <ul className="ticks" style={{ marginTop: 12 }}>
                       {[
                         "A large community of expat entrepreneurs",
                         "English works as the community language",
@@ -405,7 +405,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
 
                   {/* The city itself was asked on step one, so it is not
                       asked again here. */}
-                  <div className="formgrid" style={{ marginTop: 14 }}>
+                  <div className="formgrid" style={{ marginTop: 16 }}>
                     <label className="field">
                       <span>
                         How many expat entrepreneurs do you know there?
@@ -430,7 +430,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
                     </label>
                   </div>
 
-                  <label className="check" style={{ marginTop: 14 }}>
+                  <label className="check" style={{ marginTop: 16 }}>
                     <input
                       type="checkbox"
                       name="offers_admin"
@@ -450,7 +450,7 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
                     <h3 style={{ fontSize: 14 }}>
                       About you as a possible Local Admin
                     </h3>
-                    <div className="formgrid" style={{ marginTop: 10 }}>
+                    <div className="formgrid" style={{ marginTop: 12 }}>
                       <label className="field">
                         <span>How long have you lived in this city?</span>
                         <select name="la_years" defaultValue="">
@@ -686,13 +686,13 @@ export function ApplyForm({ villages }: { villages: Village[] }) {
           <Captcha />
         </div>
 
-        <p className="small muted" style={{ marginTop: 14 }}>
+        <p className="small muted" style={{ marginTop: 16 }}>
           Questions marked <span className="req">*</span> are required.
         </p>
 
         <div
           className="row"
-          style={{ justifyContent: "space-between", marginTop: 14 }}
+          style={{ justifyContent: "space-between", marginTop: 16 }}
         >
           {step > 1 ? (
             <button

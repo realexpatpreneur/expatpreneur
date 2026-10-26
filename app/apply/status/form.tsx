@@ -31,7 +31,7 @@ export function StatusForm() {
     return (
       <div className="panel">
         <h3>{state.answer}</h3>
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           {used
             ? "Your account is already made. Sign in rather than looking for the link."
             : lapsed

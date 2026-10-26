@@ -98,7 +98,7 @@ export function ReEnrolForm({
           </label>
         </div>
 
-        <label className="check" style={{ marginTop: 14 }}>
+        <label className="check" style={{ marginTop: 16 }}>
           <input type="checkbox" name="staying" defaultChecked />
           <span>
             <b>
@@ -114,14 +114,14 @@ export function ReEnrolForm({
           </span>
         </label>
 
-        <div className="row" style={{ marginTop: 18, flexWrap: "wrap" }}>
+        <div className="row" style={{ marginTop: 20, flexWrap: "wrap" }}>
           <button className="btn btn-primary" type="submit" disabled={pending}>
             {pending ? "Saving" : "Continue to my profile"}
           </button>
         </div>
       </form>
 
-      <form action={leave} style={{ marginTop: 14 }}>
+      <form action={leave} style={{ marginTop: 16 }}>
         <input type="hidden" name="token" value={token} />
         <button className="btn btn-ghost" type="submit" disabled={leaving}>
           {leaving ? "Saving" : "Not for me anymore"}

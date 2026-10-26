@@ -99,7 +99,7 @@ export default async function RecognitionPage() {
               <div className="panel">
                 <h3>Who would be recognised</h3>
                 {(due ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody holds one of these roles yet.
                   </p>
                 ) : (
@@ -133,7 +133,7 @@ export default async function RecognitionPage() {
               <div className="panel">
                 <h3>Recorded</h3>
                 {(payouts ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing recorded yet.
                   </p>
                 ) : (

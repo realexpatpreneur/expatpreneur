@@ -160,7 +160,7 @@ export default async function EventsPage({
           <div className="band">
             <div style={{ flex: 1, minWidth: 240 }}>
               <h2 style={{ fontSize: 22 }}>Most events are for members</h2>
-              <p style={{ marginTop: 6 }}>
+              <p style={{ marginTop: 8 }}>
                 Every Village holds at least one gathering a month, and members
                 can visit the others.
               </p>
@@ -170,7 +170,7 @@ export default async function EventsPage({
             </Link>
           </div>
 
-          <div className="panel panel-wash" style={{ marginTop: 22 }}>
+          <div className="panel panel-wash" style={{ marginTop: 24 }}>
             <h3 style={{ fontSize: 15 }}>Hear about the open ones</h3>
             <p className="muted small" style={{ margin: "6px 0 12px" }}>
               Some gatherings are open to anybody. We will write when one is

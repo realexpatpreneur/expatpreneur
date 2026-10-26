@@ -67,13 +67,13 @@ export default async function EmailPreviewPage({
               Subject: {fill(template.subject)}
             </p>
 
-            <div className="panel panel-wash" style={{ marginTop: 14 }}>
+            <div className="panel panel-wash" style={{ marginTop: 16 }}>
               <p>
                 <b>ExpatPreneurs</b>
               </p>
-              <h3 style={{ marginTop: 10 }}>{fill(template.subject)}</h3>
+              <h3 style={{ marginTop: 12 }}>{fill(template.subject)}</h3>
               {lines.map((line, i) => (
-                <p key={i} style={{ marginTop: 10 }}>
+                <p key={i} style={{ marginTop: 12 }}>
                   {line}
                 </p>
               ))}

@@ -50,7 +50,7 @@ export default async function PagesListPage() {
 
           <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>How this works</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Each page is a list of blocks. While a page is a draft, the site
               shows what is written in the code. Publishing makes the site
               show your blocks instead, and taking it back to draft puts the

@@ -38,12 +38,12 @@ export default async function SharePage({
               {title}
             </p>
 
-            <label className="field" style={{ marginTop: 14 }}>
+            <label className="field" style={{ marginTop: 16 }}>
               <span>Link</span>
               <input value={link} readOnly />
             </label>
 
-            <div className="row" style={{ marginTop: 14, flexWrap: "wrap" }}>
+            <div className="row" style={{ marginTop: 16, flexWrap: "wrap" }}>
               <a
                 className="btn btn-ghost"
                 href={`https://wa.me/?text=${encodeURIComponent(`${title} ${link}`)}`}

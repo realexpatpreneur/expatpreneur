@@ -73,7 +73,7 @@ export default async function GlobalOverviewPage() {
         ))}
       </div>
 
-      <div className="gside" style={{ marginTop: 22 }}>
+      <div className="gside" style={{ marginTop: 24 }}>
         <div className="panel">
           <SecHead title="Needs Global" />
           <div className="divide">

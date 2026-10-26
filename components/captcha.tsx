@@ -37,5 +37,5 @@ export function Captcha() {
   }, []);
 
   if (!SITE_KEY) return null;
-  return <div ref={box} style={{ marginTop: 14 }} />;
+  return <div ref={box} style={{ marginTop: 16 }} />;
 }

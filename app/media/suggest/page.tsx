@@ -29,7 +29,7 @@ export default async function SuggestStoryPage({
           {done ? (
             <div className="panel">
               <h3>Thank you</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 It is with the team. If it fits something coming up, somebody
                 will be in touch.
               </p>

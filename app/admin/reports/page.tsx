@@ -60,7 +60,7 @@ export default async function AdminReportsPage() {
                     <h3>{report.kind}</h3>
                     <span className="chip chip-sun">{report.status}</span>
                   </div>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     About {nameOf(report.subject_id)}. Reported by{" "}
                     {nameOf(report.reporter_id)}, {timeAgo(report.created_at)}.
                   </p>
@@ -101,7 +101,7 @@ export default async function AdminReportsPage() {
 
           <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>When to send one up</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Anything involving safety, money, or a member you would have to
               remove. A Village should not be deciding those on its own, and
               the Global team has the record and the authority.

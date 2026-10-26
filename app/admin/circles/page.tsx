@@ -99,7 +99,7 @@ export default async function AdminCirclesPage({
           </div>
           <div className="panel panel-wash">
             <h3 style={{ fontSize: 14 }}>Why fifty</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Past fifty people stop knowing each other. A full Circle is a good
               sign, not a problem: open the next one and keep the first intact.
             </p>

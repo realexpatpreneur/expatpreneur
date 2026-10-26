@@ -13,7 +13,7 @@ export function OpenRoundForm({ suggested }: { suggested: string }) {
     <form action={action} className="panel">
       <h3>Open a re-enrolment round</h3>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Cycle</span>
         <input name="cycle" defaultValue={suggested} />
         <span className="hint">

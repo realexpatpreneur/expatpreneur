@@ -17,7 +17,7 @@ export function NotifyButton({
 
   if (already || state.done === "asked") {
     return (
-      <p className="muted small" style={{ marginTop: 6 }}>
+      <p className="muted small" style={{ marginTop: 8 }}>
         You will be told when it opens.
       </p>
     );

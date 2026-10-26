@@ -115,7 +115,7 @@ export default async function GroupPage({
               {lead ? (
                 <div className="panel">
                   <h3>Led by</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     <Link href={`/members/${lead.id}`}>{lead.full_name}</Link>
                     {lead.headline ? `, ${lead.headline}` : ""}
                   </p>
@@ -124,7 +124,7 @@ export default async function GroupPage({
 
               <div className="panel panel-wash">
                 <h3>What happens here</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Questions that only make sense inside the trade: suppliers,
                   margins, licensing, the people worth knowing. Still no
                   pitching.

@@ -234,7 +234,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <h1 data-el="heading">{b.heading}</h1>
           {b.text ? <p className="lead" data-el="text">{b.text}</p> : null}
           {b.button_label || b.second_label ? (
-            <div className="row" style={{ marginTop: 18, flexWrap: "wrap" }}>
+            <div className="row" style={{ marginTop: 20, flexWrap: "wrap" }}>
               {b.button_label ? (
                 <Link className="btn btn-primary" data-el="button" href={b.button_href ?? "/apply"}>
                   {b.button_label}
@@ -248,7 +248,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
             </div>
           ) : null}
           {b.search ? (
-            <label className="input dsearch" data-el="search" style={{ marginTop: 18 }}>
+            <label className="input dsearch" data-el="search" style={{ marginTop: 20 }}>
               <input placeholder={b.search} aria-label={b.search} />
             </label>
           ) : null}
@@ -311,7 +311,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
           <div data-el="box" className={`band ${TONES[b.tone ?? ""] ?? ""}`}>
             <div style={{ flex: 1, minWidth: 240 }}>
               <h2 data-el="heading" style={{ fontSize: 22 }}>{b.heading}</h2>
-              {b.text ? <p data-el="text" style={{ marginTop: 6 }}>{b.text}</p> : null}
+              {b.text ? <p data-el="text" style={{ marginTop: 8 }}>{b.text}</p> : null}
             </div>
             {b.button_label ? (
               <Link className="btn btn-mint" data-el="button" href={b.button_href ?? "/apply"}>
@@ -368,7 +368,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           {b.heading ? <h2 style={{ fontSize: 20 }}>{b.heading}</h2> : null}
-          <ol className="jpath" style={{ marginTop: 18 }}>
+          <ol className="jpath" style={{ marginTop: 20 }}>
             {pairs(b.items).map(([title, text], n) => (
               <li className="jp-step" key={title} style={{ ["--i" as string]: n }}>
                 <span className="jp-num" data-el="num">{n + 1}</span>
@@ -386,7 +386,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           {b.heading ? <h2 style={{ fontSize: 20 }}>{b.heading}</h2> : null}
-          <div className={`g3 ${b.columns === "4" ? "g4" : ""}`} style={{ marginTop: 14 }}>
+          <div className={`g3 ${b.columns === "4" ? "g4" : ""}`} style={{ marginTop: 16 }}>
             {pairs(b.items).map(([title, text]) => (
               <div className="panel" data-el="box" key={title}>
                 <h3 data-el="title" style={{ fontSize: 14 }}>{title}</h3>
@@ -405,7 +405,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           {b.heading ? <h2 style={{ fontSize: 20 }}>{b.heading}</h2> : null}
-          <div className="faq" style={{ marginTop: 10 }}>
+          <div className="faq" style={{ marginTop: 12 }}>
             {pairs(b.items).map(([q, a]) => (
               <details key={q}>
                 <summary data-el="q">{q}</summary>
@@ -420,7 +420,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           {b.heading ? <h2 style={{ fontSize: 20 }}>{b.heading}</h2> : null}
-          <div className="quotes" style={{ marginTop: 14 }}>
+          <div className="quotes" style={{ marginTop: 16 }}>
             {pairs(b.items).map(([quote, who]) => (
               <figure className="quote" data-el="box" key={quote}>
                 <blockquote data-el="quote">{quote}</blockquote>
@@ -612,7 +612,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
                 >
                   {m.duration ? <span className="vdur">{m.duration}</span> : null}
                 </div>
-                <div className="vtitle" style={{ marginTop: 10 }}>
+                <div className="vtitle" style={{ marginTop: 12 }}>
                   {m.title}
                 </div>
                 {m.summary ? <div className="vsub">{m.summary}</div> : null}
@@ -732,7 +732,7 @@ function One({ block: b, data }: { block: Block; data: BlockData }) {
       return (
         <section className="sec">
           {b.heading ? <h3 data-el="heading" style={{ fontSize: 15 }}>{b.heading}</h3> : null}
-          <ul className="ticks" style={{ marginTop: 10 }}>
+          <ul className="ticks" style={{ marginTop: 12 }}>
             {String(b.items ?? "")
               .split("\n")
               .map((l) => l.trim())

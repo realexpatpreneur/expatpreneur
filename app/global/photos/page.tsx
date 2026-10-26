@@ -86,7 +86,7 @@ export default async function PhotosConsentPage() {
               <div className="panel">
                 <h3>In use</h3>
                 {live.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing recorded yet.
                   </p>
                 ) : (

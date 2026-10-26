@@ -108,7 +108,7 @@ export default async function SystemSettingsPage({
 
                 <div className="panel panel-wash">
                   <h3>What the chips mean</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Email, payments and live rooms say Connected when their
                     keys are set in the hosting, so nobody can mark them
                     connected by typing it. The rest are notes, because
@@ -123,7 +123,7 @@ export default async function SystemSettingsPage({
                 <SecurityForm values={values} />
                 <div className="panel">
                   <h3>The record</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Every decision a leader makes is recorded: memberships,
                     roles, moderation, and anything called off.
                   </p>
@@ -133,7 +133,7 @@ export default async function SystemSettingsPage({
                 </div>
                 <div className="panel panel-wash">
                   <h3>Backups</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Supabase takes the backups and holds them. Downloading one
                     is done there, under Database, Backups, with the project
                     owner&apos;s account.

@@ -67,7 +67,7 @@ export default async function ReEnrolPage({
             {village.name ?? "your Village"}.
           </p>
 
-          <div style={{ marginTop: 18 }}>
+          <div style={{ marginTop: 20 }}>
             <ReEnrolForm
               token={token}
               invite={{

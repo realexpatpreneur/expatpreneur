@@ -79,7 +79,7 @@ export default async function AdminLivePage({
                       {session.status}
                     </span>
                   </div>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {sessionWhen(session)}.{" "}
                     {session.visibility === "public" ? "Public" : "Members"}
                     {session.tier === "paid" ? ", paid only" : ""}.{" "}

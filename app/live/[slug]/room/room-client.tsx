@@ -137,7 +137,7 @@ export function RoomClient({ slug, onLeaveHref }: { slug: string; onLeaveHref: s
       </LiveKitRoom>
 
       {!ready.canSpeak ? (
-        <p className="muted small" style={{ marginTop: 10 }}>
+        <p className="muted small" style={{ marginTop: 12 }}>
           You are watching this one. A host can give you the floor, and then
           your camera and microphone become available.
         </p>

@@ -20,7 +20,7 @@ export function OpenRoomForm({
       <h3>Open a room</h3>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>For</span>
         <select name="thing" defaultValue={things[0]?.value}>
           {things.map((thing) => (

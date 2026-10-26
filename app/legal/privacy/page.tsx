@@ -26,7 +26,7 @@ export default async function PrivacyPage() {
       <main className="wrap">
         <section className="sec">
           <LegalTabs here="/legal/privacy" />
-          <h1 style={{ marginTop: 18 }}>Privacy policy</h1>
+          <h1 style={{ marginTop: 20 }}>Privacy policy</h1>
           <p className="lead">
             What we hold, why we hold it, and who can see it.
           </p>

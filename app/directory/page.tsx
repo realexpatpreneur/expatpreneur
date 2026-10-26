@@ -125,7 +125,7 @@ export default async function DirectoryPage({
 
         <section className="sec">
           {paid ? null : (
-            <Lock style={{ marginBottom: 18 }}>
+            <Lock style={{ marginBottom: 20 }}>
               You can browse every Village. Contacting members in other
               Villages is included with Village Membership.
             </Lock>
@@ -139,7 +139,7 @@ export default async function DirectoryPage({
             </div>
           ) : (
             <>
-              <p className="muted small" style={{ marginBottom: 10 }}>
+              <p className="muted small" style={{ marginBottom: 12 }}>
                 {people.length} member{people.length === 1 ? "" : "s"}
               </p>
               <div className="g3">

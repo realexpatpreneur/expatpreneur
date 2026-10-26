@@ -73,10 +73,10 @@ export default async function HowItWorksPage() {
           </div>
         </div>
 
-        <div className="g2" style={{ marginTop: 18 }}>
+        <div className="g2" style={{ marginTop: 20 }}>
           <div className="panel">
             <h3 style={{ fontSize: 15 }}>Industry Groups</h3>
-            <p className="muted" style={{ marginTop: 6 }}>
+            <p className="muted" style={{ marginTop: 8 }}>
               Stable groups by profession, such as Creative &amp; Design or
               Hospitality. They connect you with people in your field across
               Circles and, over time, across Villages.
@@ -84,7 +84,7 @@ export default async function HowItWorksPage() {
           </div>
           <div className="panel">
             <h3 style={{ fontSize: 15 }}>Pods</h3>
-            <p className="muted" style={{ marginTop: 6 }}>
+            <p className="muted" style={{ marginTop: 8 }}>
               Small groups of about six members working toward a shared goal,
               such as accountability or entering a new market. Pods have a
               lead, a rhythm and an end date.
@@ -98,7 +98,7 @@ export default async function HowItWorksPage() {
         <div className="g3" style={{ marginTop: 16 }}>
           <div className="panel">
             <Ic name="chat" style={{ color: "#24675A" }} />
-            <h3 style={{ fontSize: 14, marginTop: 10 }}>
+            <h3 style={{ fontSize: 14, marginTop: 12 }}>
               Daily conversation on WhatsApp
             </h3>
             <p className="muted small" style={{ marginTop: 4 }}>
@@ -108,7 +108,7 @@ export default async function HowItWorksPage() {
           </div>
           <div className="panel">
             <Ic name="grid" style={{ color: "var(--blue)" }} />
-            <h3 style={{ fontSize: 14, marginTop: 10 }}>
+            <h3 style={{ fontSize: 14, marginTop: 12 }}>
               Everything else on the platform
             </h3>
             <p className="muted small" style={{ marginTop: 4 }}>
@@ -118,7 +118,7 @@ export default async function HowItWorksPage() {
           </div>
           <div className="panel">
             <Ic name="cal" style={{ color: "#8A4F14" }} />
-            <h3 style={{ fontSize: 14, marginTop: 10 }}>
+            <h3 style={{ fontSize: 14, marginTop: 12 }}>
               In person every month
             </h3>
             <p className="muted small" style={{ marginTop: 4 }}>
@@ -145,7 +145,7 @@ export default async function HowItWorksPage() {
             </li>
           ))}
         </ol>
-        <div className="row" style={{ marginTop: 22, flexWrap: "wrap" }}>
+        <div className="row" style={{ marginTop: 24, flexWrap: "wrap" }}>
           <Link className="btn btn-primary" href="/apply">
             Request your invitation
           </Link>

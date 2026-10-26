@@ -189,7 +189,7 @@ export function CancelSessionButton({
   );
 
   return (
-    <form action={action} style={{ marginTop: 10 }}>
+    <form action={action} style={{ marginTop: 12 }}>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="session_id" value={sessionId} />
       <input type="hidden" name="slug" value={slug} />
@@ -256,7 +256,7 @@ export function RecordingControls({
       )}
 
       {recording && recording.status === "processing" ? (
-        <p className="muted small" style={{ marginTop: 10 }}>
+        <p className="muted small" style={{ marginTop: 12 }}>
           Being processed. It appears here when it is ready.
         </p>
       ) : null}
@@ -438,7 +438,7 @@ export function BreakoutPanel({
           ))}
         </div>
       ) : (
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           No tables yet.
         </p>
       )}
@@ -493,7 +493,7 @@ export function BreakoutPanel({
       )}
 
       {open ? (
-        <p className="muted small" style={{ marginTop: 10 }}>
+        <p className="muted small" style={{ marginTop: 12 }}>
           People rejoin the room to land at their table. Calling them back
           does the same in reverse.
         </p>
@@ -561,7 +561,7 @@ export function QuestionsPanel({
           ))}
         </div>
       ) : (
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           Nothing asked yet.
         </p>
       )}
@@ -579,7 +579,7 @@ export function QuestionsPanel({
       </form>
 
       {isHost && done.length ? (
-        <p className="muted small" style={{ marginTop: 10 }}>
+        <p className="muted small" style={{ marginTop: 12 }}>
           {done.length} answered already.
         </p>
       ) : null}

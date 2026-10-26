@@ -37,7 +37,7 @@ export default function GlobalError({
           <h1 style={{ fontSize: 24, fontWeight: 800, marginTop: 20 }}>
             The site did not load
           </h1>
-          <p style={{ color: "#6B7683", marginTop: 10 }}>
+          <p style={{ color: "#6B7683", marginTop: 12 }}>
             Something failed before the page could be drawn. Try again, and if
             it keeps happening tell the build team.
           </p>

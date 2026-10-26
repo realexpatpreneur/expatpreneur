@@ -26,7 +26,7 @@ export default function ApplicationStatusPage() {
             <div className="stack">
               <div className="panel panel-wash">
                 <h3>Why it takes a while</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Requests go to the Local Admins of the city you named, and
                   they are members with businesses of their own. A week is
                   normal.
@@ -34,7 +34,7 @@ export default function ApplicationStatusPage() {
               </div>
               <div className="panel panel-wash">
                 <h3>Lost the reference?</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Write to us and say which address you used. We will not
                   confirm anything about a request to anybody but the person
                   who made it.

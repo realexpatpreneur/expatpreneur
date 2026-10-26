@@ -37,7 +37,7 @@ export default async function ReportPage({
           {done ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>It is with us</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Your Local Admins and the Global team can see it. They will come
                 back to you. The person it is about is never told who reported
                 it.
@@ -52,7 +52,7 @@ export default async function ReportPage({
               <div className="stack">
                 <div className="panel">
                   <h3>What happens next</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     A Local Admin reads it, speaks to the people involved, and
                     records what was done. Anything serious goes to the Global
                     team. A membership can end over this.
@@ -60,7 +60,7 @@ export default async function ReportPage({
                 </div>
                 <div className="panel panel-wash">
                   <h3>This is not the suggestion box</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Ideas for making the community better belong there, and can
                     be sent anonymously.
                   </p>

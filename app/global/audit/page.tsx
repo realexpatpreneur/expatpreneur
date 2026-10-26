@@ -76,7 +76,7 @@ export default async function AuditPage({
             later: memberships, roles, moderation, and anything called off.
           </p>
 
-          <form className="searchrow" action="/global/audit" style={{ marginTop: 18 }}>
+          <form className="searchrow" action="/global/audit" style={{ marginTop: 20 }}>
             {entity ? <input type="hidden" name="entity" value={entity} /> : null}
             <input name="q" defaultValue={q} placeholder="approved, role, cancelled" />
             <button className="btn btn-ghost" type="submit">
@@ -136,7 +136,7 @@ export default async function AuditPage({
 
           <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>What is not here</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Not everything that happens, only what somebody decided.
               Reading a page, opening a profile and searching the Directory
               are not recorded, and should not be: a log of what members look

@@ -26,7 +26,7 @@ export default async function SuggestCityPage({
           {done ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>Thank you</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 You are counted. When that city has enough people and someone to
                 run it, you will be among the first to hear.
               </p>
@@ -39,7 +39,7 @@ export default async function SuggestCityPage({
               <CitySuggestionForm city={city} country={country} />
               <div className="panel panel-wash">
                 <h3>What makes a Village work</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Enough expat entrepreneurs in one city, a language they share,
                   and someone local willing to run it. Two out of three is not
                   enough, which is why some cities wait.

@@ -122,7 +122,7 @@ export default async function PodPage({
               {lead ? (
                 <div className="panel">
                   <h3>Led by</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     <Link href={`/members/${lead.id}`}>{lead.full_name}</Link>
                     {lead.headline ? `, ${lead.headline}` : ""}
                   </p>
@@ -131,7 +131,7 @@ export default async function PodPage({
 
               <div className="panel panel-wash">
                 <h3>What joining means</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Turning up {pod.cadence}, saying what you are working on, and
                   being asked about it next time. A Pod with people who drift is
                   worse than no Pod.

@@ -107,7 +107,7 @@ export function BillingPortalButton() {
   );
 
   return (
-    <form action={action} style={{ marginTop: 10 }}>
+    <form action={action} style={{ marginTop: 12 }}>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       <button className="btn btn-ghost" type="submit" disabled={pending}>
         {pending ? "Opening" : "Change your card or see invoices"}

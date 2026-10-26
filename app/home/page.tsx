@@ -50,7 +50,7 @@ export default async function MemberHomePage() {
           <Ic name="info" />
           <span>{error.message}</span>
         </div>
-        <p className="muted small" style={{ marginTop: 10 }}>
+        <p className="muted small" style={{ marginTop: 12 }}>
           Signed in as {user.email}. If this persists, send the message above
           to the build team.
         </p>
@@ -257,7 +257,7 @@ export default async function MemberHomePage() {
           ) : (
             <div className="panel panel-wash">
               <h3 style={{ fontSize: 14 }}>Nothing here yet</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 When members post an Ask or an Offer, and when your Village
                 announces something, it appears here.
               </p>
@@ -277,7 +277,7 @@ export default async function MemberHomePage() {
                 <b>{profile.full_name}</b>
                 <p className="muted small">{profile.headline}</p>
                 {onMembership ? (
-                  <div className="tags" style={{ marginTop: 6 }}>
+                  <div className="tags" style={{ marginTop: 8 }}>
                     <span className="tiertag">Village Member</span>
                   </div>
                 ) : null}
@@ -373,7 +373,7 @@ export default async function MemberHomePage() {
           {onMembership ? null : (
             <Link className="panel panel-wash linkrow" href="/upgrade">
               <h3 style={{ fontSize: 14 }}>Village Membership</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Contact members in any Village, attend their events, and
                 promote what you do.
               </p>

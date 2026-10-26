@@ -108,7 +108,7 @@ export default async function VillagePublicPage({
             <span className="chip" style={{ background: "rgba(255,255,255,.9)" }}>
               {statusLine[village.status] ?? village.status}
             </span>
-            <h1 style={{ color: "#fff", fontSize: 32, marginTop: 10 }}>
+            <h1 style={{ color: "#fff", fontSize: 32, marginTop: 12 }}>
               {village.name} Village
             </h1>
           </div>
@@ -129,7 +129,7 @@ export default async function VillagePublicPage({
               <p className="intro">{village.summary}</p>
 
               {/* The prototype's three numbers, in its own order. */}
-              <div className="g3 stats3" style={{ marginTop: 22 }}>
+              <div className="g3 stats3" style={{ marginTop: 24 }}>
                 {opening ? (
                   <>
                     <div className="stat">
@@ -205,7 +205,7 @@ export default async function VillagePublicPage({
               <div className="panel">
                 <h3 style={{ fontSize: 14 }}>Your Local Admins</h3>
                 {hosts.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {opening
                       ? "We are looking for the people who will run this one. If that could be you, say so when you join the waitlist."
                       : "The Local Admins here keep their profiles private."}
@@ -235,7 +235,7 @@ export default async function VillagePublicPage({
                 <h3 style={{ fontSize: 14 }}>
                   {opening ? `Joining ${village.name}` : `Joining ${village.name}`}
                 </h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   {opening
                     ? "A Village opens when there are enough members in the city, two Local Admins and a first Circle Host. Joining the waitlist counts you towards the first, and you can offer to be one of the others."
                     : "ExpatPreneurs is by invitation. Every request is read personally, and accepted members are welcomed into a Circle."}
@@ -243,7 +243,7 @@ export default async function VillagePublicPage({
                 <Link
                   className="btn btn-primary"
                   href={opening ? waitlist : "/apply"}
-                  style={{ marginTop: 14, width: "100%" }}
+                  style={{ marginTop: 16, width: "100%" }}
                 >
                   {opening
                     ? "Join the waitlist"

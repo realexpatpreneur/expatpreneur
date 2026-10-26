@@ -107,7 +107,7 @@ export default async function AdminEventPage({
       <section className="sec">
         <div className="panel">
           <h3>Who can register</h3>
-          <p className="muted small" style={{ marginTop: 6 }}>
+          <p className="muted small" style={{ marginTop: 8 }}>
             {audienceText(event, village?.name ?? null)}.{" "}
             {event.requires_approval
               ? "Each registration waits for your approval."

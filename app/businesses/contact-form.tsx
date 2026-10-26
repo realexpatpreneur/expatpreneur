@@ -47,7 +47,7 @@ export function ContactBusinessForm({
         {pending ? "Sending" : `Send message`}
       </button>
 
-      <p className="muted small" style={{ marginTop: 10 }}>
+      <p className="muted small" style={{ marginTop: 12 }}>
         This goes straight to {name}. ExpatPreneurs does not take part in the
         transaction.
       </p>

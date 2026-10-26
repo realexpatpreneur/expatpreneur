@@ -92,7 +92,7 @@ export default async function UpgradePage({
                 {isPaid(member) ? (
                   <>
                     <h3>You are a Village Member</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {subscription?.cancel_at
                         ? "It ends at the end of the period you have paid for."
                         : subscription?.current_period_end
@@ -115,7 +115,7 @@ export default async function UpgradePage({
                         ? `${monthly} a month in ${priced!.village_name}`
                         : "Open every Village"}
                     </h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {founding
                         ? "This is the founding rate, and it stays yours for as long as your membership runs without a break. "
                         : ""}
@@ -131,7 +131,7 @@ export default async function UpgradePage({
                 ) : (
                   <>
                     <h3>Not switched on yet</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {stripeReady
                         ? "Your Village has no price set yet. Your Local Admin or the Global team sets it, and this opens the moment they do."
                         : "Village Membership opens shortly. Until then, ask your Local Admin if you need to reach another Village."}

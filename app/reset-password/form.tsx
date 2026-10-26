@@ -13,7 +13,7 @@ export function ResetForm() {
     return (
       <div className="panel">
         <h3>Check your inbox</h3>
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           If that address belongs to a member, a link is on its way. It
           opens your settings, where you set a new password.
         </p>

@@ -50,7 +50,7 @@ export default async function AnnouncementsPage({
             <div className="panel">
               <h3>Sent recently</h3>
               {rows.length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing yet.
                 </p>
               ) : (
@@ -74,7 +74,7 @@ export default async function AnnouncementsPage({
             </div>
             <div className="panel panel-wash">
               <h3>A word on frequency</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 One a week at most. Everything else belongs in Ask and Offer or
                 in the WhatsApp group.
               </p>

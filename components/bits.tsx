@@ -200,7 +200,7 @@ export function HeroPreview() {
             Circle 02
           </span>
         </div>
-        <div className="tags" style={{ marginTop: 10 }}>
+        <div className="tags" style={{ marginTop: 12 }}>
           <span className="chip">Creative &amp; Design</span>
           <span className="chip chip-mint">Open to collaborate</span>
         </div>

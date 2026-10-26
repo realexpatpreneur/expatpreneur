@@ -76,7 +76,7 @@ export default async function VillageMixPage() {
                 Nobody has given a nationality yet.
               </p>
             ) : (
-              <div className="divide" style={{ marginTop: 10 }}>
+              <div className="divide" style={{ marginTop: 12 }}>
                 {(mix ?? []).map((row) => (
                   <MixRow
                     key={`${row.village_id}-${row.nationality}`}
@@ -134,7 +134,7 @@ export default async function VillageMixPage() {
         <div className="stack">
           <div className="panel">
             <h3 style={{ fontSize: 15 }}>The rule</h3>
-            <div className="field" style={{ marginTop: 14 }}>
+            <div className="field" style={{ marginTop: 16 }}>
               <label>Nationality limit</label>
               <div
                 className="input"

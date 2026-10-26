@@ -67,7 +67,7 @@ export default async function GlobalLearningPage() {
               {waiting.map((course) => (
                 <div className="panel" key={course.id}>
                   <h3>{course.title}</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {nameOf(course.educator_id)}. {course.duration ?? course.level}.{" "}
                     {course.tier === "paid" ? "Village Members only" : "Every member"}.{" "}
                     {timeAgo(course.updated_at)}.{" "}
@@ -91,7 +91,7 @@ export default async function GlobalLearningPage() {
             <div className="panel">
               <h3>Open to members</h3>
               {live.length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing is open yet.
                 </p>
               ) : (
@@ -120,7 +120,7 @@ export default async function GlobalLearningPage() {
             <div className="stack">
               <div className="panel">
                 <h3>Educators</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   The Educator role is given at Roles, and taken back the same
                   way.
                 </p>
@@ -148,7 +148,7 @@ export default async function GlobalLearningPage() {
 
               <div className="panel panel-wash">
                 <h3>Drafts</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   {drafts.length} being written. Nobody sees them but their
                   educator.
                 </p>

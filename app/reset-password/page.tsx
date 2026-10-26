@@ -23,7 +23,7 @@ export default function ResetPasswordPage() {
             <ResetForm />
             <div className="panel panel-wash">
               <h3>Or skip it</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 A sign in link does the same job without a password to
                 forget.
               </p>

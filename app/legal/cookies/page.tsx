@@ -25,7 +25,7 @@ export default async function CookiesPage() {
       <main className="wrap">
         <section className="sec">
           <LegalTabs here="/legal/cookies" />
-          <h1 style={{ marginTop: 18 }}>Cookie policy</h1>
+          <h1 style={{ marginTop: 20 }}>Cookie policy</h1>
           <p className="lead">
             What we keep on your device, and why.
           </p>

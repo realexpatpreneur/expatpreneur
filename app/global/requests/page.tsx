@@ -96,7 +96,7 @@ export default async function GlobalRequestsPage() {
                             : "Question"}
                       </span>
                     </div>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       <a href={`mailto:${enquiry.email}`}>{enquiry.email}</a>
                       {enquiry.organisation ? `, ${enquiry.organisation}` : ""}.{" "}
                       {timeAgo(enquiry.created_at)}.
@@ -120,7 +120,7 @@ export default async function GlobalRequestsPage() {
               {openPods.map((proposal) => (
                 <div className="panel" key={proposal.id}>
                   <h3>{proposal.name}</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {nameOf(proposal.proposer_id)}
                     {villageName(proposal.village_id)
                       ? `, ${villageName(proposal.village_id)}`
@@ -157,7 +157,7 @@ export default async function GlobalRequestsPage() {
                       ? "Asking for their data to be removed"
                       : "Asking for a copy of their data"}
                   </h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {nameOf(request.profile_id)}.{" "}
                     {people?.find((p) => p.id === request.profile_id)?.email}.{" "}
                     {timeAgo(request.created_at)}.{" "}

@@ -82,7 +82,7 @@ export default async function GlobalMarketsPage() {
                       {pathway.status}
                     </span>
                   </div>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {pathway.country}
                     {pathway.city ? `, ${pathway.city}` : ""}.{" "}
                     {pathway.tier === "paid" ? "Village Members only." : "Every member."}

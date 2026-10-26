@@ -114,7 +114,7 @@ export default async function VillageInsightPage() {
           <div className="stack">
             <div className="panel">
               <h3>Does asking here work?</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 The one number that says whether a Village is alive. A post
                 that goes unanswered is what makes people stop posting.
               </p>
@@ -180,7 +180,7 @@ export default async function VillageInsightPage() {
             <div className="panel">
               <h3>People arriving</h3>
               {(growth ?? []).length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing yet.
                 </p>
               ) : (
@@ -203,7 +203,7 @@ export default async function VillageInsightPage() {
               <div className="panel">
                 <h3>Re-enrolment</h3>
                 {(renewals ?? []).map((row) => (
-                  <div key={row.cycle} style={{ marginTop: 10 }}>
+                  <div key={row.cycle} style={{ marginTop: 12 }}>
                     <b>{row.cycle}</b>
                     <p className="muted small" style={{ margin: "4px 0 0" }}>
                       {row.asked} asked, {row.staying} staying, {row.leaving}{" "}
@@ -216,7 +216,7 @@ export default async function VillageInsightPage() {
 
             <div className="panel panel-wash">
               <h3>What these numbers cannot tell you</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Whether people like each other. Whether the last dinner was any
                 good. Whether someone is about to leave. For that, look at
                 Care and speak to people.

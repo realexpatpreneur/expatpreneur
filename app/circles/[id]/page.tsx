@@ -112,12 +112,12 @@ export default async function CirclePage({
               <div className="panel">
                 <h3>Members</h3>
                 {!mine ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {size} {size === 1 ? "member" : "members"}. The Directory
                     shows everybody in the Village.
                   </p>
                 ) : size === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody here yet.
                   </p>
                 ) : (
@@ -176,7 +176,7 @@ export default async function CirclePage({
               {host ? (
                 <div className="panel">
                   <h3>Host</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     <Link href={`/members/${host.id}`}>{host.full_name}</Link>
                     {host.headline ? `. ${host.headline}` : ""}
                   </p>
@@ -190,7 +190,7 @@ export default async function CirclePage({
 
               <div className="panel panel-wash">
                 <h3>What a Circle is</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Up to fifty people who are meant to know each other, inside
                   a Village that can be any size. Yours is where the WhatsApp
                   group and the smaller gatherings live.

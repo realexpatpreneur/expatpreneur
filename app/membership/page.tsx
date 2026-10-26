@@ -86,7 +86,7 @@ export default async function MembershipPage() {
         <div className="gside">
           <div className="faqcol">
             <h2 style={{ fontSize: 22 }}>Questions</h2>
-            <div className="faq" style={{ marginTop: 10 }}>
+            <div className="faq" style={{ marginTop: 12 }}>
               {QUESTIONS.map(([q, a]) => (
                 <details key={q}>
                   <summary>{q}</summary>
@@ -97,7 +97,7 @@ export default async function MembershipPage() {
           </div>
           <aside className="panel panel-wash">
             <h3 style={{ fontSize: 15 }}>What we expect from members</h3>
-            <ul className="ticks" style={{ marginTop: 10 }}>
+            <ul className="ticks" style={{ marginTop: 12 }}>
               {EXPECTED.map((x) => (
                 <li key={x}>
                   <Ic name="check" />

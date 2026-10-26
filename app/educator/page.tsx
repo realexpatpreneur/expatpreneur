@@ -136,7 +136,7 @@ export default async function EducatorPage({
                           : course.status}
                       </span>
                     </div>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {course.summary}
                     </p>
                     {course.status === "published" && course.review !== "approved" ? (

@@ -133,7 +133,7 @@ export default async function BusinessesPage({
                   {business.industry ? (
                     <span className="chip">{business.industry}</span>
                   ) : null}
-                  <h3 style={{ marginTop: 10 }}>{business.name}</h3>
+                  <h3 style={{ marginTop: 12 }}>{business.name}</h3>
                   <p className="muted small">{business.tagline}</p>
                   <p className="muted small" style={{ marginBottom: 0 }}>
                     {villageName(business.village_id)}

@@ -102,7 +102,7 @@ export default async function PathwayPage({
               {locked ? (
                 <div className="panel panel-wash">
                   <h3>The steps are part of Village Membership</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     What a pathway is worth is the detail: the order, the costs,
                     the things people get wrong. That comes with paid
                     membership.
@@ -186,7 +186,7 @@ export default async function PathwayPage({
               <div className="panel">
                 <h3>Members who know {pathway.country}</h3>
                 {(knowers ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody has listed it yet. Ask in Market Exploration and
                     someone usually turns up.
                   </p>
@@ -231,7 +231,7 @@ export default async function PathwayPage({
               <div className="panel panel-wash">
                 <h3>Open questions about {pathway.country}</h3>
                 {(questions ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     None at the moment.
                   </p>
                 ) : (

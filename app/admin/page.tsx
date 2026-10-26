@@ -127,7 +127,7 @@ export default async function AdminOverviewPage() {
         ))}
       </div>
 
-      <div className="gside" style={{ marginTop: 22 }}>
+      <div className="gside" style={{ marginTop: 24 }}>
         <div className="panel">
           <SecHead title="To do" />
           <div className="divide">

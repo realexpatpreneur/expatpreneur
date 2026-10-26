@@ -37,7 +37,7 @@ export default async function VillageAnnouncementsPage() {
                 <h3 style={{ fontSize: 14 }}>{p.title}</h3>
                 <span className="muted small">{timeAgo(p.sent_at as string)}</span>
               </div>
-              <p className="muted" style={{ marginTop: 6, whiteSpace: "pre-wrap" }}>
+              <p className="muted" style={{ marginTop: 8, whiteSpace: "pre-wrap" }}>
                 {p.body}
               </p>
               <p className="small" style={{ marginTop: 8 }}>
@@ -49,7 +49,7 @@ export default async function VillageAnnouncementsPage() {
         ) : (
           <div className="panel panel-wash">
             <h3 style={{ fontSize: 14 }}>Nothing announced yet</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               When your Local Admins post something for the whole Village, it
               appears here and on your home page.
             </p>

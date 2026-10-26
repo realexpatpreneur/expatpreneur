@@ -68,7 +68,7 @@ export function MenuEditor({
   return (
     <div className="gside">
       <div>
-        <div className="tabs" style={{ marginBottom: 14, flexWrap: "wrap" }}>
+        <div className="tabs" style={{ marginBottom: 16, flexWrap: "wrap" }}>
           {menus.map(([id, label]) => (
             <button
               type="button"
@@ -178,7 +178,7 @@ export function MenuEditor({
 
       <aside className="panel panel-wash">
         <h3 style={{ fontSize: 14 }}>Making a new page findable</h3>
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           Make the page under Pages, publish it, then add a link here
           pointing at it. A page that is still a draft appears in the list
           marked as one, so you can set the link up before it goes live.

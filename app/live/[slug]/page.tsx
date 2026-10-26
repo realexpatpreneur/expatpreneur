@@ -175,7 +175,7 @@ export default async function LiveSessionPage({
 
               <div className="panel">
                 <h3>The room</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Camera, microphone, screen share and chat. Hosts can mute
                   someone, give them the floor or remove them.
                 </p>
@@ -206,7 +206,7 @@ export default async function LiveSessionPage({
               {isHost ? (
                 <div className="panel">
                   <h3>Tables</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Break a big room into small ones. People go to their table
                     when they rejoin, and come back when you call them.
                   </p>
@@ -246,7 +246,7 @@ export default async function LiveSessionPage({
                 <div className="panel">
                   <h3>At the door</h3>
                   {waiting.length === 0 ? (
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       Nobody waiting.
                     </p>
                   ) : (
@@ -273,7 +273,7 @@ export default async function LiveSessionPage({
               <div className="panel">
                 <h3>In the room</h3>
                 {inside.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody yet.
                   </p>
                 ) : (
@@ -330,7 +330,7 @@ export default async function LiveSessionPage({
                 ) : isHost ? (
                   <>
                     <h3>You run this room</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       You do not knock. Use the controls below to open it and
                       go in.
                     </p>
@@ -338,7 +338,7 @@ export default async function LiveSessionPage({
                 ) : !open ? (
                   <>
                     <h3>The doors open shortly before it starts</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       Come back fifteen minutes before, and you will be able to
                       knock.
                     </p>
@@ -356,7 +356,7 @@ export default async function LiveSessionPage({
               {isHost ? (
                 <div className="panel">
                   <h3>Running it</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     You are the {roleLabel[myRole].toLowerCase()} here, either
                     because you made it or because of the role you hold in this
                     Village or Circle.
@@ -382,7 +382,7 @@ export default async function LiveSessionPage({
                   <h3>Recording</h3>
                   {recordingReady ? (
                     <>
-                      <p className="muted small" style={{ marginTop: 6 }}>
+                      <p className="muted small" style={{ marginTop: 8 }}>
                         Everyone in the room is told when it starts. The file
                         lands in our own storage, and only the people this
                         session was open to can watch it. Recordings are kept
@@ -396,7 +396,7 @@ export default async function LiveSessionPage({
                       />
                     </>
                   ) : (
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       Recording needs the storage keys before it can run.
                     </p>
                   )}
@@ -406,7 +406,7 @@ export default async function LiveSessionPage({
               {isHost ? (
                 <div className="panel">
                   <h3>Streaming out</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Send the room to YouTube, LinkedIn or anywhere that takes
                     RTMP, to more than one at a time.
                   </p>
@@ -420,7 +420,7 @@ export default async function LiveSessionPage({
 
               <div className="panel panel-wash">
                 <h3>Who can be here</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   {session.visibility === "public" && session.allow_guests
                     ? "Anyone with the link, whether they are a member or not."
                     : session.audience === "global"

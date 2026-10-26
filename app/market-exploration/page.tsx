@@ -98,7 +98,7 @@ export default async function MarketExplorationPage({
                             {post.country}
                           </span>{" "}
                           <span className="chip">{post.industry}</span>
-                          <div style={{ marginTop: 6 }}>
+                          <div style={{ marginTop: 8 }}>
                             <b>{post.title}</b>
                           </div>
                           <div className="muted small">
@@ -117,7 +117,7 @@ export default async function MarketExplorationPage({
             <div className="stack">
               <div className="panel">
                 <h3>How this differs from Ask &amp; Offer</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Ask &amp; Offer is for what you need this week, usually in your
                   own city. Market Exploration is for the country you are looking
                   into next, and it reaches every Village.
@@ -139,7 +139,7 @@ export default async function MarketExplorationPage({
                     ? "You can reply anywhere"
                     : "Reading is open to everyone"}
                 </h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   {isPaid(member)
                     ? "Village Membership lets you answer members in every Village, so you can offer what you know about a market as well as ask."
                     : "Every member sees every post here. Replying to a member in another Village is part of Village Membership."}

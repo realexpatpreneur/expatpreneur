@@ -60,7 +60,7 @@ export default async function GlobalPathwayPage({
                 </div>
               ))}
           </div>
-          <p className="muted small" style={{ marginTop: 10 }}>
+          <p className="muted small" style={{ marginTop: 12 }}>
             This is the list that tells you which step is missing.
           </p>
         </section>

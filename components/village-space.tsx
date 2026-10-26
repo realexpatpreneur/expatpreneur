@@ -109,7 +109,7 @@ export function AskCard({
         <Ic name={offer ? "sparkle" : "hand"} />
       </span>
       <div className="ao-body">
-        <div className="row" style={{ gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
+        <div className="row" style={{ gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
           <span className={`kindtag ${offer ? "offer" : "ask"}`}>
             {offer ? "Offer" : "Ask"}
           </span>

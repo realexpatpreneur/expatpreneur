@@ -37,7 +37,7 @@ export default async function GroupsPage() {
             software company next door.
           </p>
           {paid ? null : (
-            <Lock style={{ marginTop: 14 }}>
+            <Lock style={{ marginTop: 16 }}>
               Joining an Industry Hub is part of Village Membership.
             </Lock>
           )}
@@ -56,7 +56,7 @@ export default async function GroupsPage() {
               {(groups ?? []).map((group) => (
                 <Link className="panel" key={group.id} href={`/groups/${group.slug}`}>
                   <span className="chip">{group.industry}</span>
-                  <h3 style={{ marginTop: 10 }}>{group.name}</h3>
+                  <h3 style={{ marginTop: 12 }}>{group.name}</h3>
                   <p className="muted small">{group.description}</p>
                   <p className="muted small" style={{ marginBottom: 0 }}>
                     {paid

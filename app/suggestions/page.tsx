@@ -23,7 +23,7 @@ export default async function SuggestionsPage() {
             <div className="stack">
               <div className="panel">
                 <h3>Who reads it</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Suggestions about your Village go to your Local Admins. Ones
                   about the whole community go to the Global team. Nothing you
                   write here appears in the Village or in any WhatsApp group.
@@ -31,7 +31,7 @@ export default async function SuggestionsPage() {
               </div>
               <div className="panel panel-wash">
                 <h3>This is not a report</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   If something has happened between you and another member,
                   report it instead. Those go straight to the Local Admins and
                   are handled privately.

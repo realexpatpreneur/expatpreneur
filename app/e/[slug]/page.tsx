@@ -86,7 +86,7 @@ export default async function PublicEventPage({
               {registered ? (
                 <div className="panel">
                   <h3>You are registered</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {event.requires_approval
                       ? "The host reviews each registration and will be in touch."
                       : "The details are on their way to your inbox."}
@@ -103,7 +103,7 @@ export default async function PublicEventPage({
 
               <div className="panel panel-wash">
                 <h3>About ExpatPreneurs</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   A curated network of expat entrepreneurs. Most of what we do
                   is for members, but some events are open to anyone.
                 </p>

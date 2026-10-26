@@ -119,7 +119,7 @@ export default async function CoursePage({
               {(course.outcomes ?? []).length ? (
                 <div className="panel">
                   <h3>You will learn to</h3>
-                  <ul className="ticks" style={{ marginTop: 10 }}>
+                  <ul className="ticks" style={{ marginTop: 12 }}>
                     {(course.outcomes as string[]).map((outcome) => (
                       <li key={outcome}>
                         <Ic name="check" />
@@ -158,7 +158,7 @@ export default async function CoursePage({
                   <dt>How long</dt>
                   <dd>{course.duration ?? "Not said"}</dd>
                 </dl>
-                <p className="muted small" style={{ marginTop: 10 }}>
+                <p className="muted small" style={{ marginTop: 12 }}>
                   Refunds up to 48 hours before a live session.
                 </p>
               </div>
@@ -205,7 +205,7 @@ export default async function CoursePage({
               {bought ? (
                 <div className="panel panel-wash">
                   <h3>You bought this</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     If it was not what you expected, say so. Refunds are
                     handled by the Global team, not by the educator.
                   </p>
@@ -219,7 +219,7 @@ export default async function CoursePage({
                     <h3>
                       {priceCents === 0 ? "Free" : money(priceCents)}
                     </h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {priceCents === 0
                         ? "Free, but you need an account to take it."
                         : "Anyone can buy this. Members pay the member price."}
@@ -231,7 +231,7 @@ export default async function CoursePage({
                     ) : (
                       <>
                         <BuyButton slug={slug} label={`Buy it, ${money(priceCents)}`} />
-                        <p className="muted small" style={{ marginTop: 10 }}>
+                        <p className="muted small" style={{ marginTop: 12 }}>
                           You will get it by email. Members take it inside the
                           platform, with everything else.
                         </p>
@@ -241,7 +241,7 @@ export default async function CoursePage({
                 ) : !paidFor ? (
                   <>
                     <h3>{money(priceCents)}</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {course.member_price_cents !== null &&
                       course.member_price_cents < course.price_cents
                         ? `The member price. Others pay ${money(course.price_cents)}.`
@@ -252,7 +252,7 @@ export default async function CoursePage({
                 ) : locked ? (
                   <>
                     <h3>Part of Village Membership</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       Some courses come with Village Membership, along with the
                       rest of the network.
                     </p>
@@ -265,7 +265,7 @@ export default async function CoursePage({
                     <h3>
                       {enrolment.completed_at ? "You finished this" : "You are in"}
                     </h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {enrolment.completed_at
                         ? "Go back to any lesson whenever you need it."
                         : "Pick up where you left off."}
@@ -290,7 +290,7 @@ export default async function CoursePage({
               {educator ? (
                 <div className="panel">
                   <h3>Taught by</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {member ? (
                       <Link href={`/members/${educator.id}`}>
                         {educator.full_name}

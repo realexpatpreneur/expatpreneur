@@ -134,7 +134,7 @@ export default async function LearnersPage({
 
           <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>How to reach them</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Members are messaged inside the platform. People who bought
               from the public page have no account, so the only way to reach
               them is writing to everybody who bought the course, which goes

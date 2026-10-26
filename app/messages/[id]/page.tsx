@@ -105,7 +105,7 @@ export default async function ThreadPage({
                 ) : (
                   <>
                     <h3>Not open yet</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {connection?.status === "pending"
                         ? "Your request is with them. You can write once they accept."
                         : "Members in other Villages are reached through a request, with Village Membership."}
@@ -120,7 +120,7 @@ export default async function ThreadPage({
 
             <div className="panel panel-wash">
               <h3>How messages work here</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Inside a Village, members write to each other directly. Across
                 Villages, the person decides first, and Village Membership is what
                 allows the request. Nobody is pitched at without asking.

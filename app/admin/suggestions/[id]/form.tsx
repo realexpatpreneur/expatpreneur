@@ -33,7 +33,7 @@ export function SuggestionAdminForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="id" value={id} />
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Where it stands</span>
         <select name="status" defaultValue={status}>
           {statuses.map(([value, label]) => (

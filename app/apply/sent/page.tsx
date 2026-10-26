@@ -22,7 +22,7 @@ export default async function ApplicationSentPage({
             ]}
             extra={
               ref ? (
-                <p className="muted small" style={{ marginTop: 10 }}>
+                <p className="muted small" style={{ marginTop: 12 }}>
                   Your reference is <b>{ref}</b>. With the email address you
                   used, it shows you where your request stands at any point.
                 </p>

@@ -117,14 +117,14 @@ export default async function ReEnrolmentPage({
               ? "One person has no email address"
               : `${noAddress.length} people have no email address`}
           </h3>
-          <p className="muted small" style={{ marginTop: 6 }}>
+          <p className="muted small" style={{ marginTop: 8 }}>
             Nothing was written to them. Send their link by WhatsApp: it is
             beside their name in the list. {noAddress.join(", ")}.
           </p>
         </div>
       ) : null}
 
-      <div className="gside" style={{ marginTop: 22 }}>
+      <div className="gside" style={{ marginTop: 24 }}>
         <div className="stack">
           <div className="panel">
             <SecHead title="The list" />
@@ -188,7 +188,7 @@ export default async function ReEnrolmentPage({
 
           <div className="panel panel-wash">
             <h3 style={{ fontSize: 14 }}>After the deadline</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               People who did not re-enrol become tasks to remove from the
               WhatsApp group. Nobody is removed automatically, because the
               last thing you want is a machine cutting off a member who was
@@ -206,7 +206,7 @@ export default async function ReEnrolmentPage({
 
           <div className="panel">
             <h3 style={{ fontSize: 14 }}>Deadline</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               {village?.reenrol_deadline
                 ? `Currently ${new Date(village.reenrol_deadline).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.`
                 : "None set."}
@@ -221,7 +221,7 @@ export default async function ReEnrolmentPage({
 
           <div className="panel panel-wash">
             <h3 style={{ fontSize: 14 }}>How the link works</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Each person has their own address. Send it by WhatsApp or email.
               It opens a page with their details already filled in, where they
               confirm, set a password and keep their founding member badge, or

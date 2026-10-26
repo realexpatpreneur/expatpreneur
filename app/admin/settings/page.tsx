@@ -97,7 +97,7 @@ export default async function VillageSettingsPage() {
                   </div>
                 ))}
               </div>
-              <p className="muted small" style={{ marginTop: 10 }}>
+              <p className="muted small" style={{ marginTop: 12 }}>
                 Adding or removing a Local Admin is done by the Global team.
               </p>
             </div>

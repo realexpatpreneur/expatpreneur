@@ -32,7 +32,7 @@ export function LoginForm({ next }: { next: string }) {
 
   return (
     <>
-      <div className="pb-tabs" style={{ maxWidth: 520, marginBottom: 14 }}>
+      <div className="pb-tabs" style={{ maxWidth: 520, marginBottom: 16 }}>
         <button
           type="button"
           className={how === "password" ? "on" : ""}
@@ -82,7 +82,7 @@ export function LoginForm({ next }: { next: string }) {
           <button className="btn btn-primary" type="submit" disabled={linkPending}>
             {linkPending ? "Sending" : "Email me a link"}
           </button>
-          <p className="muted small" style={{ marginTop: 10 }}>
+          <p className="muted small" style={{ marginTop: 12 }}>
             A link needs email to be connected. Until then, use a password.
           </p>
         </form>

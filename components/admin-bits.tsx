@@ -92,7 +92,7 @@ export function Cap({
           {value} of {max}
         </span>
       </div>
-      <div className="bar" style={{ marginTop: 6 }}>
+      <div className="bar" style={{ marginTop: 8 }}>
         <i
           style={{
             width: `${pct}%`,

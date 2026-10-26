@@ -46,7 +46,7 @@ export default async function EmailTemplatePage({
             <div className="stack">
               <div className="panel panel-wash">
                 <h3>Placeholders</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Anything in braces is filled in when the email is sent.
                 </p>
                 <ul>
@@ -66,7 +66,7 @@ export default async function EmailTemplatePage({
 
               <div className="panel panel-wash">
                 <h3>What it looks like</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Every email carries the ExpatPreneurs heading, the message,
                   the button if there is one, and a line to the member&apos;s
                   own settings.

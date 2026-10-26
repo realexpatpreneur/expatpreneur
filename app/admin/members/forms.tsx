@@ -37,7 +37,7 @@ export function MemberForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="id" value={id} />
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Circle</span>
         <select name="circle_id" defaultValue={circleId ?? ""}>
           <option value="">Not placed yet</option>
@@ -74,7 +74,7 @@ export function MemberForm({
         </span>
       </label>
 
-      <label className="check" style={{ marginTop: 10 }}>
+      <label className="check" style={{ marginTop: 12 }}>
         <input
           type="checkbox"
           name="complimentary"
@@ -132,7 +132,7 @@ export function CircleForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {circle ? <input type="hidden" name="id" value={circle.id} /> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Name</span>
         <input name="name" required defaultValue={circle?.name ?? ""} />
       </label>

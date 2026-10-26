@@ -86,7 +86,7 @@ export function ContactGlobalForm() {
     return (
       <div className="panel">
         <h3>Sent</h3>
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           It is with the Global team, and they have been told. It sits with
           the suggestions so it does not get lost in somebody&apos;s inbox.
         </p>

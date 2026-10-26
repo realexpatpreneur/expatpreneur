@@ -168,7 +168,7 @@ export default async function SettingsPage({
                 </div>
                 <div className="panel">
                   <h3>Signing out</h3>
-                  <form action={signOut} style={{ marginTop: 10 }}>
+                  <form action={signOut} style={{ marginTop: 12 }}>
                     <button className="btn btn-ghost" type="submit">
                       Sign out
                     </button>
@@ -237,7 +237,7 @@ export default async function SettingsPage({
                             : "Not known yet"}
                         </dd>
                       </dl>
-                      <div className="row" style={{ marginTop: 14 }}>
+                      <div className="row" style={{ marginTop: 16 }}>
                         <Link className="btn btn-ghost" href="/upgrade">
                           Update card
                         </Link>
@@ -268,7 +268,7 @@ export default async function SettingsPage({
                         <dt>Payment method</dt>
                         <dd>None saved yet</dd>
                       </dl>
-                      <div className="panel panel-wash" style={{ marginTop: 14 }}>
+                      <div className="panel panel-wash" style={{ marginTop: 16 }}>
                         <p className="muted small" style={{ margin: 0 }}>
                           Village Membership adds every Village: contact members
                           anywhere, events in other Villages as a visiting
@@ -307,7 +307,7 @@ export default async function SettingsPage({
 
                 <div className="panel">
                   <h3>Your data</h3>
-                  <div style={{ marginTop: 10 }}>
+                  <div style={{ marginTop: 12 }}>
                     <MyDataButtons />
                   </div>
                 </div>
@@ -317,7 +317,7 @@ export default async function SettingsPage({
                   {(blockedPeople ?? []).length === 0 ? (
                     <p className="muted small">You have not blocked anyone.</p>
                   ) : (
-                    <div className="stack" style={{ marginTop: 10 }}>
+                    <div className="stack" style={{ marginTop: 12 }}>
                       {(blockedPeople ?? []).map((person) => (
                         <UnblockButton
                           key={person.id}
@@ -331,7 +331,7 @@ export default async function SettingsPage({
 
                 <div className="panel">
                   <h3>Leaving</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Your profile comes down and your Local Admin takes you out
                     of the WhatsApp groups.
                   </p>

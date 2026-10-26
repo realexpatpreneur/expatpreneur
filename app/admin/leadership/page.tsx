@@ -63,7 +63,7 @@ export default async function LeadershipPage() {
               <div className="panel">
                 <h3>Already running something</h3>
                 {doing.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody holds a role in your Village yet.
                   </p>
                 ) : (
@@ -94,7 +94,7 @@ export default async function LeadershipPage() {
               <div className="panel">
                 <h3>Put forward</h3>
                 {(suggestions ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody yet.
                   </p>
                 ) : (
@@ -129,7 +129,7 @@ export default async function LeadershipPage() {
 
               <div className="panel panel-wash">
                 <h3>How this works</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Roles are given by the Global team, so this is a
                   suggestion. The member is not told they were put forward,
                   which means nobody is left disappointed by a role that

@@ -225,7 +225,7 @@ export function LessonForm({
       <input type="hidden" name="course_id" value={courseId} />
       {lesson ? <input type="hidden" name="id" value={lesson.id} /> : null}
 
-      <div className="g2" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 12 }}>
         <label className="field">
           <span>Position</span>
           <input
@@ -276,7 +276,7 @@ export function DeleteLessonButton({
   );
 
   return (
-    <form action={action} style={{ marginTop: 10 }}>
+    <form action={action} style={{ marginTop: 12 }}>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="course_id" value={courseId} />

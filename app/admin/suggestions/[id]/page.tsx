@@ -55,7 +55,7 @@ export default async function AdminSuggestionPage({
             {suggestion.anonymous ? (
               <div className="panel panel-wash">
                 <h3>Sent anonymously</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   No name, no email and no Circle were stored with this
                   suggestion, so it cannot be traced or replied to.
                 </p>
@@ -63,7 +63,7 @@ export default async function AdminSuggestionPage({
             ) : (
               <div className="panel">
                 <h3>From</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   <Link href={`/members/${author?.id}`}>{author?.full_name}</Link>
                   {author?.headline ? `, ${author.headline}` : ""}
                 </p>

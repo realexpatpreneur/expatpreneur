@@ -158,7 +158,7 @@ export default async function LeadPage({
               {circleIds.length ? (
                 <div className="panel">
                   <h3>Your Circle</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Knowing who has gone quiet is most of the job. A message
                     from you lands better than anything the platform sends.
                   </p>
@@ -183,7 +183,7 @@ export default async function LeadPage({
               {(groups ?? []).map((group) => (
                 <div className="panel" key={group.id}>
                   <h3>{group.name}</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     <Link href={`/groups/${group.id}`}>See it as a member</Link>
                   </p>
                   <GroupForm group={group} />
@@ -230,7 +230,7 @@ export default async function LeadPage({
 
               <div className="panel panel-wash">
                 <h3>What the role is</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Turning up, noticing who has gone quiet, and making
                   introductions. It is reviewed once a year, and stepping down
                   is normal rather than a failure.

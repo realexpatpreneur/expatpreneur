@@ -172,7 +172,7 @@ export default async function WhatsappTasksPage() {
       <section className="sec">
         <div className="panel panel-wash">
           <h3 style={{ fontSize: 14 }}>How this is meant to go</h3>
-          <p className="muted small" style={{ marginTop: 6 }}>
+          <p className="muted small" style={{ marginTop: 8 }}>
             Open the group, add the number, come back and tick it off. The
             member has already been told by email which Circle they are in and
             that the group takes a day, so nobody is waiting in silence while

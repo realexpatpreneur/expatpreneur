@@ -94,12 +94,12 @@ export default async function PublicMembersPage({
             People building a business away from home, in every Village.
           </p>
 
-          <div className="g3" style={{ marginTop: 18 }}>
+          <div className="g3" style={{ marginTop: 20 }}>
             <div className="panel">
               <h3 style={{ fontSize: 15 }}>
                 {totalMembers} {totalMembers === 1 ? "member" : "members"}
               </h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 {livedVillages === 1
                   ? "in one Village"
                   : `across ${livedVillages} Villages`}
@@ -107,7 +107,7 @@ export default async function PublicMembersPage({
             </div>
             <div className="panel">
               <h3 style={{ fontSize: 15 }}>Where they are from</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 {(nationalities ?? []).length
                   ? (nationalities ?? [])
                       .map((n: { nationality: string }) => n.nationality)
@@ -117,7 +117,7 @@ export default async function PublicMembersPage({
             </div>
             <div className="panel">
               <h3 style={{ fontSize: 15 }}>What they do</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 {(industries ?? []).length
                   ? (industries ?? [])
                       .map((i: { industry: string }) => i.industry)
@@ -127,13 +127,13 @@ export default async function PublicMembersPage({
             </div>
           </div>
 
-          <p className="muted small" style={{ marginTop: 14 }}>
+          <p className="muted small" style={{ marginTop: 16 }}>
             {me
               ? "These are the members who chose to be listed publicly."
               : "A few members who chose to be listed publicly are below. The rest of the Directory is for members."}
           </p>
 
-          <form className="searchrow" action="/members" style={{ marginTop: 18 }}>
+          <form className="searchrow" action="/members" style={{ marginTop: 20 }}>
             {village ? <input type="hidden" name="village" value={village} /> : null}
             <input
               name="q"
@@ -204,7 +204,7 @@ export default async function PublicMembersPage({
               </Link>
             </p>
 
-            <div className="panel panel-wash" style={{ marginTop: 22 }}>
+            <div className="panel panel-wash" style={{ marginTop: 24 }}>
               <h3 style={{ fontSize: 15 }}>Not ready to ask yet?</h3>
               <p className="muted small" style={{ margin: "6px 0 12px" }}>
                 We write when there is an open event you could come to, or

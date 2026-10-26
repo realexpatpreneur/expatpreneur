@@ -91,7 +91,7 @@ export default async function NetworkIntelligencePage() {
               <div className="panel">
                 <h3>Cross Village interest</h3>
                 {interest.size === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody has asked about another market yet.
                   </p>
                 ) : (
@@ -120,7 +120,7 @@ export default async function NetworkIntelligencePage() {
               <div className="panel">
                 <h3>Demand without enough local expertise</h3>
                 {unmet.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing asked about that nobody here knows.
                   </p>
                 ) : (
@@ -171,7 +171,7 @@ export default async function NetworkIntelligencePage() {
 
               <div className="panel panel-wash">
                 <h3>What this is not</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Every figure here comes from what members posted and
                   answered. Nothing is inferred from what they read, and
                   nothing here identifies who looked at whom.

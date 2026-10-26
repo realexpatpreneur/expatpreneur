@@ -84,7 +84,7 @@ export default async function MarketPostPage({
               {post.status === "resolved" ? (
                 <div className="panel panel-wash">
                   <h3>Closed</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {post.outcome ?? "The person who asked has what they needed."}
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export default async function MarketPostPage({
               </div>
               <div className="panel panel-wash">
                 <h3>Who knows this market</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Search the Directory for members who have lived or sold there.
                 </p>
                 <Link className="btn btn-ghost" href={`/directory?q=${encodeURIComponent(post.country)}`}>

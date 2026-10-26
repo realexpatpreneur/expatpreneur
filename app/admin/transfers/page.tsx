@@ -51,7 +51,7 @@ export default async function TransfersPage() {
                 return (
                   <div className="panel" key={transfer.id}>
                     <h3>{person?.full_name ?? "A member"}</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       {villageName(transfer.from_village)} to{" "}
                       {villageName(transfer.to_village)}
                       {transfer.moving_on ? `, around ${transfer.moving_on}` : ""}.

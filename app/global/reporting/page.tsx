@@ -124,7 +124,7 @@ export default async function GlobalReportingPage() {
           <div className="panel">
             <h3>People arriving, everywhere</h3>
             {byMonth.size === 0 ? (
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Nothing yet.
               </p>
             ) : (
@@ -147,7 +147,7 @@ export default async function GlobalReportingPage() {
             <div className="panel">
               <h3>Money</h3>
               {(money ?? []).length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing taken yet. Nothing is charged until Stripe is live.
                 </p>
               ) : (
@@ -184,7 +184,7 @@ export default async function GlobalReportingPage() {
                   const leaving = rows.reduce((n, r) => n + r.leaving, 0);
                   const share = asked ? Math.round((staying / asked) * 100) : 0;
                   return (
-                    <div key={cycle} style={{ marginTop: 10 }}>
+                    <div key={cycle} style={{ marginTop: 12 }}>
                       <b>{cycle}</b>
                       <p className="muted small" style={{ margin: "4px 0 0" }}>
                         {asked} asked, {staying} staying, {leaving} leaving.{" "}
@@ -198,7 +198,7 @@ export default async function GlobalReportingPage() {
 
             <div className="panel panel-wash">
               <h3>Reading these</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 The share of asks answered is the one worth watching. A Village
                 where posts go unanswered will lose people months before the
                 membership numbers show it.

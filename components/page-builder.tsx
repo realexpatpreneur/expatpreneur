@@ -494,7 +494,7 @@ export function PageBuilder({
                   Close
                 </button>
               </div>
-              <div className="pb-tabs" style={{ marginTop: 10 }}>
+              <div className="pb-tabs" style={{ marginTop: 12 }}>
                 <button
                   type="button"
                   className={showing === "patterns" ? "on" : ""}
@@ -555,7 +555,7 @@ export function PageBuilder({
                   <h3 style={{ fontSize: 14 }}>
                     {kid ? `${spec.label}, inside the columns` : spec.label}
                   </h3>
-                  <p className="muted small" style={{ marginTop: 2 }}>
+                  <p className="muted small" style={{ marginTop: 4 }}>
                     {spec.about}
                   </p>
                 </div>

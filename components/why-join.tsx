@@ -62,7 +62,7 @@ export function WhyJoin({
         </span>
         Why join ExpatPreneurs?
       </h3>
-      <p className="muted" style={{ marginTop: 6 }}>
+      <p className="muted" style={{ marginTop: 8 }}>
         ExpatPreneurs is where purpose-driven expat entrepreneurs find their
         people, build real partnerships, and grow their businesses through
         genuine collaboration, not surface networking. We are committed to
@@ -71,7 +71,7 @@ export function WhyJoin({
         purpose. Your Village gives you a home in your city, and the network
         connects you to every other Village.
       </p>
-      <p className="small" style={{ marginTop: 10, fontWeight: 600 }}>
+      <p className="small" style={{ marginTop: 12, fontWeight: 600 }}>
         Becoming a member provides you with:
       </p>
       <div className="wj-grid">
@@ -119,7 +119,7 @@ export function WhatHappensNext() {
   return (
     <aside className="panel">
       <h3 style={{ fontSize: 15 }}>What happens next</h3>
-      <div className="divide" style={{ marginTop: 6 }}>
+      <div className="divide" style={{ marginTop: 8 }}>
         {steps.map(([title, line], i) => (
           <div className="task" key={title}>
             <span

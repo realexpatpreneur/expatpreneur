@@ -51,7 +51,7 @@ export default async function GlobalModerationPage() {
                   <h3>About {nameOf(report.subject_id)}</h3>
                   <span className="chip chip-sun">{report.status}</span>
                 </div>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Reported by {nameOf(report.reporter_id)}.{" "}
                   {timeAgo(report.created_at)}.
                 </p>

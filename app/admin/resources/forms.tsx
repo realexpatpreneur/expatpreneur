@@ -26,7 +26,7 @@ export function ResourceForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {resource ? <input type="hidden" name="id" value={resource.id} /> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Title</span>
         <input name="title" required defaultValue={resource?.title ?? ""} />
       </label>
@@ -106,7 +106,7 @@ export function MediaForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Title</span>
         <input name="title" required defaultValue={item?.title ?? ""} />
       </label>

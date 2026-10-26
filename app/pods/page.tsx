@@ -44,7 +44,7 @@ export default async function PodsPage() {
               </Link>
             </p>
           ) : (
-            <Lock style={{ marginTop: 14 }}>
+            <Lock style={{ marginTop: 16 }}>
               Joining or proposing a Growth Pod is part of Village Membership.
             </Lock>
           )}
@@ -65,7 +65,7 @@ export default async function PodsPage() {
                 return (
                   <Link className="panel" key={pod.id} href={`/pods/${pod.slug}`}>
                     <span className="chip">{villageName(pod.village_id)}</span>
-                    <h3 style={{ marginTop: 10 }}>{pod.name}</h3>
+                    <h3 style={{ marginTop: 12 }}>{pod.name}</h3>
                     <p className="muted small">{pod.purpose}</p>
                     <p className="muted small" style={{ marginBottom: 0 }}>
                       Meets {pod.cadence}.{" "}

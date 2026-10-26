@@ -71,7 +71,7 @@ export default async function GlobalVillagesPage({
           </div>
           <div className="panel panel-wash">
             <h3 style={{ fontSize: 14 }}>Before a Village opens</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Two Local Admins, a first Circle Host, a WhatsApp announcement
               group and a Village page. Pausing a Village stops new
               applications and events; members keep their profile either way.

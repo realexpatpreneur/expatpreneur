@@ -320,7 +320,7 @@ export function PrivacyForm({
         </span>
       </label>
 
-      <p className="muted small" style={{ marginTop: 6 }}>
+      <p className="muted small" style={{ marginTop: 8 }}>
         What you are looking for is always members only. Your email and phone
         are never public.
       </p>

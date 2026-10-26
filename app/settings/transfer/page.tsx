@@ -80,7 +80,7 @@ export default async function TransferPage({
 
               <div className="panel panel-wash">
                 <h3>What happens next</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   The Local Admins where you are going place you in a Circle,
                   and the ones you are leaving take you out of the WhatsApp
                   groups. Nothing changes until they do it.
@@ -89,7 +89,7 @@ export default async function TransferPage({
 
               <div className="panel panel-wash">
                 <h3>Your city is not listed?</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Tell us where you are going and we will count you in when a
                   Village opens there.
                 </p>

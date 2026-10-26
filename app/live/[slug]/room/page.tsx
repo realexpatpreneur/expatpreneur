@@ -45,7 +45,7 @@ export default async function RoomPage({
           ) : (
             <div className="panel">
               <h3>Live video is not switched on yet</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Everything around the room works: who may come in, the lobby,
                 the roles and the attendance. The audio and video need the
                 LiveKit keys in the environment.

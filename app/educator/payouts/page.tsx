@@ -54,7 +54,7 @@ export default async function PayoutsPage() {
             <div className="panel">
               <h3>Paid out</h3>
               {(payouts ?? []).length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing paid out yet.
                 </p>
               ) : (
@@ -94,7 +94,7 @@ export default async function PayoutsPage() {
 
               <div className="panel panel-wash">
                 <h3>How it is paid</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   By bank transfer, monthly, arranged by the Global team. A
                   refunded sale comes off before the next payout, so the
                   figure here is what is genuinely yours.

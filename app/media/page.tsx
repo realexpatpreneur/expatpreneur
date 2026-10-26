@@ -109,7 +109,7 @@ export default async function MediaPage({
         <section className="sec">
           <div className="panel panel-wash" style={{ maxWidth: 520 }}>
             <h3>The newsletter</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Member stories and what is opening where, once a month. Members
               can switch it off in their settings, and anybody can
               unsubscribe from the email itself.
@@ -122,7 +122,7 @@ export default async function MediaPage({
           <section className="sec">
             <div className="panel panel-wash">
               <h3>There is a story here</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Something you did, something another member did, or something
                 two of you did together. Tell the team about it.
               </p>

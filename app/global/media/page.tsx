@@ -71,7 +71,7 @@ export default async function GlobalMediaPage({
               <div className="panel">
                 <h3>Everything written</h3>
                 {(articles ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing yet.
                   </p>
                 ) : (
@@ -104,7 +104,7 @@ export default async function GlobalMediaPage({
               <div className="panel">
                 <h3>Stories members have suggested</h3>
                 {(suggestions ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing suggested yet.
                   </p>
                 ) : (

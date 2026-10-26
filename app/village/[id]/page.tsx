@@ -126,7 +126,7 @@ export default async function PostPage({
               </div>
             ) : null}
 
-            <div className="row" style={{ marginTop: 14, flexWrap: "wrap" }}>
+            <div className="row" style={{ marginTop: 16, flexWrap: "wrap" }}>
               {mine && !resolved ? <CloseForm askId={post.id} /> : null}
               {!mine && canReply ? (
                 <Link
@@ -147,7 +147,7 @@ export default async function PostPage({
               {(replies ?? []).length}{" "}
               {(replies ?? []).length === 1 ? "reply" : "replies"}
             </h3>
-            <div className="divide" style={{ marginTop: 6 }}>
+            <div className="divide" style={{ marginTop: 8 }}>
               {(replies ?? []).length ? (
                 (replies ?? []).map((r) => {
                   const them = replyAuthors?.find((a) => a.id === r.author_id);
@@ -191,12 +191,12 @@ export default async function PostPage({
             </div>
 
             {resolved ? null : canReply ? (
-              <div style={{ marginTop: 10 }}>
+              <div style={{ marginTop: 12 }}>
                 <ReplyForm askId={post.id} people={neighbours ?? []} />
               </div>
             ) : (
               <Lock
-                style={{ marginTop: 10 }}
+                style={{ marginTop: 12 }}
                 note="Replying across Villages is part of Village Membership."
                 cta="See Village Membership"
               >
@@ -209,7 +209,7 @@ export default async function PostPage({
         <div className="stack">
           <div className="panel panel-wash">
             <h3 style={{ fontSize: 14 }}>Tips</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Introductions work best with a short reason. Move to a private
               message for the details.
             </p>

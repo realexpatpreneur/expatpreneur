@@ -45,7 +45,7 @@ export default async function GlobalLibraryPage({
             keeps for itself.
           </p>
 
-          <form className="searchrow" action="/global/library" style={{ marginTop: 18 }}>
+          <form className="searchrow" action="/global/library" style={{ marginTop: 20 }}>
             {village ? <input type="hidden" name="village" value={village} /> : null}
             <input name="q" defaultValue={q} placeholder="A title or a line from it" />
             <button className="btn btn-ghost" type="submit">
@@ -101,7 +101,7 @@ export default async function GlobalLibraryPage({
 
           <div className="panel panel-wash" style={{ marginTop: 20 }}>
             <h3>Sharing one with every Village</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               A resource marked for every Village is shared with all of them. Local
               Admins add their own in their workspace, and anything worth
               copying across the network belongs here.

@@ -35,7 +35,7 @@ export default async function ProposePodPage() {
             <div className="stack">
               <div className="panel panel-wash">
                 <h3>What makes a Pod work</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Six to eight people, one thing they are all trying to do,
                   and an end date. The ones that drift are the ones with a
                   broad purpose and no finish.
@@ -43,7 +43,7 @@ export default async function ProposePodPage() {
               </div>
               <div className="panel panel-wash">
                 <h3>What you are taking on</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Proposing means leading it: setting the meetings, opening
                   the room, and telling the Village when it is done.
                 </p>

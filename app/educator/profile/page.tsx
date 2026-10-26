@@ -50,7 +50,7 @@ export default async function EducatorProfilePage() {
 
             <div className="panel panel-wash">
               <h3>Why this is separate</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Your member profile is about who you are in the network. This
                 one is about why somebody should spend an evening learning
                 from you, which is a different question and usually a shorter

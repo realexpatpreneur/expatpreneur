@@ -76,7 +76,7 @@ export default async function JobPage({
               {job.compensation ? (
                 <div className="panel">
                   <h3>Pay</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {job.compensation}
                   </p>
                 </div>
@@ -84,7 +84,7 @@ export default async function JobPage({
               {mine && job.status === "open" ? (
                 <div className="panel panel-wash">
                   <h3>When it is done</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Closing it keeps the board honest.
                   </p>
                   <CloseJobForm jobId={job.id} />
@@ -96,12 +96,12 @@ export default async function JobPage({
               <div className="panel">
                 <h3>Getting in touch</h3>
                 {job.apply_note ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     {job.apply_note}
                   </p>
                 ) : null}
                 {mine ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     This is your post.
                   </p>
                 ) : canReach && poster ? (
@@ -110,7 +110,7 @@ export default async function JobPage({
                   </Link>
                 ) : (
                   <>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       They are in another Village, so reaching them is part of
                       Village Membership.
                     </p>
@@ -124,7 +124,7 @@ export default async function JobPage({
               {business ? (
                 <div className="panel">
                   <h3>The business</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     <Link href={`/businesses/${business.slug}`}>{business.name}</Link>
                   </p>
                 </div>

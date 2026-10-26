@@ -72,7 +72,7 @@ export default async function SalesPage() {
               <div className="panel">
                 <h3>Every sale</h3>
                 {paid.length === 0 && refunded.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing sold yet.
                   </p>
                 ) : (
@@ -102,7 +102,7 @@ export default async function SalesPage() {
               {(refunds ?? []).length ? (
                 <div className="panel">
                   <h3>Refunds asked for</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     The Global team decides these, since the money went
                     through the platform. You see them so nothing happens
                     behind your back.

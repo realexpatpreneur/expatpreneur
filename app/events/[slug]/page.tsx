@@ -195,7 +195,7 @@ export default async function EventPage({
                 <div className="panel">
                   <h3>Photographs</h3>
                   {(photos ?? []).length === 0 ? (
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       None yet. If you were there, put one up.
                     </p>
                   ) : (
@@ -283,7 +283,7 @@ export default async function EventPage({
                 ) : blocked ? (
                   <>
                     <h3>{blocked}</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       You can still see what is on. Village Membership opens every
                       Village, including their events.
                     </p>
@@ -295,7 +295,7 @@ export default async function EventPage({
                   event.waitlist ? (
                     <>
                       <h3>Full, but there is a list</h3>
-                      <p className="muted small" style={{ marginTop: 6 }}>
+                      <p className="muted small" style={{ marginTop: 8 }}>
                         People do drop out. Whoever has waited longest takes
                         the place, and hears straight away.
                       </p>
@@ -311,7 +311,7 @@ export default async function EventPage({
                   ) : (
                     <>
                       <h3>This one is full</h3>
-                      <p className="muted small" style={{ marginTop: 6 }}>
+                      <p className="muted small" style={{ marginTop: 8 }}>
                         No waiting list for this one. Ask the host.
                       </p>
                     </>
@@ -319,7 +319,7 @@ export default async function EventPage({
                 ) : ticketPrice(event, paying) && stripeReady ? (
                   <>
                     <h3>{priceText(event, paying)}</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       A ticket confirms your place. Paying is what registers
                       you.
                     </p>
@@ -332,7 +332,7 @@ export default async function EventPage({
                 ) : ticketPrice(event, paying) ? (
                   <>
                     <h3>{priceText(event, paying)}</h3>
-                    <p className="muted small" style={{ marginTop: 6 }}>
+                    <p className="muted small" style={{ marginTop: 8 }}>
                       Tickets are not being taken online yet. Register here and
                       the host will sort the payment with you.
                     </p>
@@ -358,7 +358,7 @@ export default async function EventPage({
               {visiting ? (
                 <div className="panel panel-wash">
                   <h3>Visiting {village?.name}</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     The Local Admins will see you are coming and can introduce
                     you to members.
                   </p>

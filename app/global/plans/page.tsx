@@ -36,7 +36,7 @@ export default async function PlansPage() {
         <section className="sec">
           <div className="panel panel-wash">
             <h3>Changing a price</h3>
-            <p className="muted small" style={{ marginTop: 6 }}>
+            <p className="muted small" style={{ marginTop: 8 }}>
               Changing the number here changes what the Membership page says
               and what Stripe charges, because the price is built from the
               member's own Village at the moment they pay. There is nothing

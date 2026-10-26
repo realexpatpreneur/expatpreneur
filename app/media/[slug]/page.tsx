@@ -81,7 +81,7 @@ export default async function ArticlePage({
               {about ? (
                 <div className="panel">
                   <h3>The member</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     <b>{about.full_name}</b>
                     {about.headline ? `. ${about.headline}` : ""}
                   </p>
@@ -96,7 +96,7 @@ export default async function ArticlePage({
               {me ? (
                 <div className="panel panel-wash">
                   <h3>There is a story here</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     If you know one worth telling, say so.
                   </p>
                   <Link className="btn btn-ghost" href="/media/suggest">
@@ -106,7 +106,7 @@ export default async function ArticlePage({
               ) : (
                 <div className="panel panel-wash">
                   <h3>Join them</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Membership is by invitation.
                   </p>
                   <Link className="btn btn-primary" href="/apply">

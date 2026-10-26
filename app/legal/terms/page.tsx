@@ -28,7 +28,7 @@ export default async function TermsPage() {
       <main className="wrap">
         <section className="sec">
           <LegalTabs here="/legal/terms" />
-          <h1 style={{ marginTop: 18 }}>Terms of service</h1>
+          <h1 style={{ marginTop: 20 }}>Terms of service</h1>
           <p className="lead">
             The agreement between ExpatPreneurs Global and its members.
           </p>

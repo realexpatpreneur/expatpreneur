@@ -73,7 +73,7 @@ export default async function NetworkPage() {
           </p>
 
           {paid ? null : (
-            <Lock style={{ marginTop: 14 }}>
+            <Lock style={{ marginTop: 16 }}>
               You can browse every Village. Contacting members and attending
               events in other Villages is a paid benefit.
             </Lock>

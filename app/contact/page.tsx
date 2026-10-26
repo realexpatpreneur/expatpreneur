@@ -47,7 +47,7 @@ export default async function ContactPage({
           <h2>{title}</h2>
           <p className="intro">{intro}</p>
 
-          <div className="tabs" style={{ marginTop: 18 }}>
+          <div className="tabs" style={{ marginTop: 20 }}>
             {TABS.map(([key, label]) => (
               <Link
                 key={key}
@@ -59,11 +59,11 @@ export default async function ContactPage({
             ))}
           </div>
 
-          <div style={{ marginTop: 14 }}>
+          <div style={{ marginTop: 16 }}>
             <ContactForm kind={here} villages={villages ?? []} />
           </div>
 
-          <div className="g3" style={{ marginTop: 22 }}>
+          <div className="g3" style={{ marginTop: 24 }}>
             <Link className="panel" href="/apply">
               <h3 style={{ fontSize: 14 }}>You want to join</h3>
               <p className="muted small" style={{ marginTop: 4 }}>

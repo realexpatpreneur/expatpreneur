@@ -68,7 +68,7 @@ export default async function ApplicationsPage({
         ))}
       </div>
 
-      <div style={{ marginTop: 14 }}>
+      <div style={{ marginTop: 16 }}>
         {rows.length === 0 ? (
           <div className="panel panel-wash">
             <p className="muted" style={{ margin: 0 }}>

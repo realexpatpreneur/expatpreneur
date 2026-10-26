@@ -41,7 +41,7 @@ export default async function ApplyPage() {
           <div className="gside">
             <div>
               <WhyJoin villages={allVillages ?? []} />
-              <div style={{ marginTop: 18 }}>
+              <div style={{ marginTop: 20 }}>
                 <ApplyForm villages={villages ?? []} />
               </div>
             </div>

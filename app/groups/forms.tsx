@@ -71,7 +71,7 @@ export function JoinPodButton({
     return (
       <div className="panel panel-wash">
         <h3>This Pod is full</h3>
-        <p className="muted small" style={{ marginTop: 6 }}>
+        <p className="muted small" style={{ marginTop: 8 }}>
           Pods stay small on purpose. Tell your Local Admin and the next one
           forms sooner.
         </p>

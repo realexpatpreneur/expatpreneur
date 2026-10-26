@@ -172,7 +172,7 @@ export default async function ForYouPage({
             {suggestions.length === 0 ? (
               <div className="panel">
                 <h3>Nothing to suggest yet</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   This works from your industry, the markets you know and
                   where you have lived. Filling those in on your profile is
                   what makes it useful.
@@ -219,7 +219,7 @@ export default async function ForYouPage({
             {isPaid(member) ? null : (
               <div className="panel panel-wash" style={{ marginTop: 20 }}>
                 <h3>These are people in your own Village</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   With Village Membership the same page suggests people in every
                   Village, which is where the markets you do not know yet are.
                 </p>
@@ -237,7 +237,7 @@ export default async function ForYouPage({
               <div className="panel">
                 <h3>Asks you could answer</h3>
                 {asksForMe.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing open that touches what you do.
                   </p>
                 ) : (
@@ -260,7 +260,7 @@ export default async function ForYouPage({
               <div className="panel">
                 <h3>Markets you know</h3>
                 {marketsForMe.length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nobody is asking about the markets on your profile at the
                     moment.
                   </p>
@@ -288,7 +288,7 @@ export default async function ForYouPage({
               <div className="panel">
                 <h3>Coming up</h3>
                 {(events ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing on the calendar you can get to yet.
                   </p>
                 ) : (
@@ -316,7 +316,7 @@ export default async function ForYouPage({
               {(pods ?? []).length ? (
                 <div className="panel">
                   <h3>Pods forming</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     A few members working towards something together, for a
                     fixed stretch.
                   </p>
@@ -362,7 +362,7 @@ export default async function ForYouPage({
             <div className="gside">
               <div className="panel">
                 <h3>Where these come from</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Three things you wrote on your profile: your industry, the
                   markets you know, and where you have lived. A person is
                   suggested when one of those matches theirs, and the card
@@ -386,7 +386,7 @@ export default async function ForYouPage({
               <div className="stack">
                 <div className="panel panel-wash">
                   <h3>What it does not do</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     It does not watch what you read, who you looked at or how
                     long you stayed. Nothing here is learned about you behind
                     your back; it is your own profile, read back.
@@ -394,7 +394,7 @@ export default async function ForYouPage({
                 </div>
                 <div className="panel panel-wash">
                   <h3>Who can see you here</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     The same people who can see you in the Directory, and no
                     others. Suggestions never reach past the access rules.
                   </p>

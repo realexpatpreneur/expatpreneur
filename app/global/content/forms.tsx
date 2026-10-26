@@ -46,7 +46,7 @@ export function PageEditor({
                   <div>
                     <h3>{blockLabel[block.type] ?? block.type}</h3>
                     {spec ? (
-                      <p className="muted small" style={{ marginTop: 2 }}>
+                      <p className="muted small" style={{ marginTop: 4 }}>
                         {spec.about}
                       </p>
                     ) : null}
@@ -146,7 +146,7 @@ export function PageEditor({
                 {pending ? "Publishing" : "Publish"}
               </button>
             </div>
-            <p className="muted small" style={{ marginTop: 10 }}>
+            <p className="muted small" style={{ marginTop: 12 }}>
               A draft changes nothing on the site. Publishing makes this page
               show what is written here.
             </p>

@@ -151,7 +151,7 @@ export default async function GlobalMoneyPage() {
             <div className="panel">
               <h3>Refunds asked for</h3>
               {(refundAsks ?? []).length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing waiting.
                 </p>
               ) : (
@@ -174,7 +174,7 @@ export default async function GlobalMoneyPage() {
             <div className="panel">
               <h3>Course sales</h3>
               {(sales ?? []).length === 0 ? (
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing sold yet.
                 </p>
               ) : (
@@ -215,7 +215,7 @@ export default async function GlobalMoneyPage() {
             ) : (
               <div className="panel panel-wash">
                 <h3>Payouts</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   Nothing to pay out until a course sells.
                 </p>
               </div>
@@ -223,7 +223,7 @@ export default async function GlobalMoneyPage() {
 
             <div className="panel panel-wash">
               <h3>The share</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Educators keep a percentage of each sale, recorded on every
                 payout, so changing it later does not change what was already
                 agreed.

@@ -75,7 +75,7 @@ export default async function LibraryPage({
               {(resources ?? []).map((resource) => (
                 <div className="panel" key={resource.id}>
                   <span className="chip">{kindLabel[resource.kind] ?? resource.kind}</span>
-                  <h3 style={{ marginTop: 10 }}>{resource.title}</h3>
+                  <h3 style={{ marginTop: 12 }}>{resource.title}</h3>
                   <p className="muted small">{resource.description}</p>
                   <p className="muted small">
                     {resource.all_villages
@@ -100,7 +100,7 @@ export default async function LibraryPage({
           {!isPaid(member) ? (
             <div className="panel panel-wash" style={{ marginTop: 16 }}>
               <h3>Resources from other Villages</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 What Dubai learned about licensing is not much use in Lisbon,
                 but some of it travels. Village Membership opens every Village's
                 library.

@@ -37,7 +37,7 @@ export default function NotFound() {
           ).map(([icon, title, text, href]) => (
             <Link className="panel" href={href} key={title}>
               <Ic name={icon} style={{ color: "var(--blue)" }} />
-              <h3 style={{ fontSize: 14, marginTop: 10 }}>{title}</h3>
+              <h3 style={{ fontSize: 14, marginTop: 12 }}>{title}</h3>
               <p className="muted small" style={{ marginTop: 4 }}>
                 {text}
               </p>

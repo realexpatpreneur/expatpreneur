@@ -37,7 +37,7 @@ export default async function RenewPage({
           {done === "staying" ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>Good. See you at the next one.</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Nothing changes. Your Circle and your Village carry on.
               </p>
               <Link className="btn btn-ghost" href="/home">
@@ -47,7 +47,7 @@ export default async function RenewPage({
           ) : done === "leaving" ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>Thank you for the time you gave it</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 Your Local Admin will be in touch about the last details. You
                 are welcome to come back.
               </p>
@@ -58,7 +58,7 @@ export default async function RenewPage({
           ) : !renewal ? (
             <div className="panel panel-wash" style={{ maxWidth: 680 }}>
               <h3>Nothing to answer</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 You are not in a re-enrolment round at the moment. This page
                 wakes up once a year.
               </p>
@@ -69,7 +69,7 @@ export default async function RenewPage({
           ) : renewal.status !== "pending" ? (
             <div className="panel" style={{ maxWidth: 680 }}>
               <h3>You already answered</h3>
-              <p className="muted small" style={{ marginTop: 6 }}>
+              <p className="muted small" style={{ marginTop: 8 }}>
                 For {renewal.cycle} you said you are{" "}
                 {renewal.status === "staying" ? "staying" : "stepping away"}. If
                 that has changed, tell your Local Admin.
@@ -84,7 +84,7 @@ export default async function RenewPage({
               <div className="stack">
                 <div className="panel">
                   <h3>Why we ask</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     A Circle of fifty where fifteen have quietly drifted is not
                     a Circle of fifty. Asking every year keeps the rooms full of
                     people who want to be in them.
@@ -92,7 +92,7 @@ export default async function RenewPage({
                 </div>
                 <div className="panel panel-wash">
                   <h3>What happens to your place</h3>
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     If you step away, it goes to someone on the waiting list in
                     your city, which is usually longer than the Circle.
                   </p>

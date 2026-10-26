@@ -67,7 +67,7 @@ export default async function MemberMorePage() {
             ]}
           />
 
-          <form action={signOut} style={{ marginTop: 18 }}>
+          <form action={signOut} style={{ marginTop: 20 }}>
             <button className="btn btn-ghost" type="submit">
               Log out
             </button>

@@ -27,12 +27,12 @@ export function WordingForm({
       <input type="hidden" name="page" value={page} />
 
       {state.done ? (
-        <div className="flag ok" style={{ marginBottom: 14 }}>
+        <div className="flag ok" style={{ marginBottom: 16 }}>
           Saved. The page shows the new wording straight away.
         </div>
       ) : null}
       {state.error ? (
-        <div className="flag hold" style={{ marginBottom: 14 }}>
+        <div className="flag hold" style={{ marginBottom: 16 }}>
           {state.error}
         </div>
       ) : null}

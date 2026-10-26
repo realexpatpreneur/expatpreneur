@@ -82,7 +82,7 @@ export default async function VillagesPage({
         <div
           className="panel panel-wash"
           style={{
-            marginTop: 22,
+            marginTop: 24,
             display: "flex",
             gap: 16,
             alignItems: "center",

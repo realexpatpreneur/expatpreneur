@@ -160,7 +160,7 @@ export default async function ApplicationPage({
 
             {answers.offers_admin === "Yes" || answers.city_entrepreneurs ? (
               <>
-                <h3 style={{ marginTop: 18 }}>No Village in their city</h3>
+                <h3 style={{ marginTop: 20 }}>No Village in their city</h3>
                 <dl className="kv" style={{ marginTop: 8 }}>
                   <dt>Expat entrepreneurs they know there</dt>
                   <dd>{text("city_entrepreneurs")}</dd>

@@ -32,7 +32,7 @@ export function GroupForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {group ? <input type="hidden" name="id" value={group.id} /> : null}
 
-      <div className="g2" style={{ marginTop: 10 }}>
+      <div className="g2" style={{ marginTop: 12 }}>
         <label className="field">
           <span>Name</span>
           <input name="name" required defaultValue={group?.name ?? ""} />
@@ -113,7 +113,7 @@ export function PodForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {pod ? <input type="hidden" name="id" value={pod.id} /> : null}
 
-      <label className="field" style={{ marginTop: 10 }}>
+      <label className="field" style={{ marginTop: 12 }}>
         <span>Name</span>
         <input name="name" required defaultValue={pod?.name ?? ""} />
       </label>

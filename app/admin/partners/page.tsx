@@ -45,7 +45,7 @@ export default async function AdminPartnersPage({
               <div className="panel">
                 <h3>What you have proposed</h3>
                 {(requests ?? []).length === 0 ? (
-                  <p className="muted small" style={{ marginTop: 6 }}>
+                  <p className="muted small" style={{ marginTop: 8 }}>
                     Nothing yet.
                   </p>
                 ) : (
@@ -74,7 +74,7 @@ export default async function AdminPartnersPage({
 
               <div className="panel panel-wash">
                 <h3>The usual conditions</h3>
-                <p className="muted small" style={{ marginTop: 6 }}>
+                <p className="muted small" style={{ marginTop: 8 }}>
                   No member data is shared with the partner, and no sales
                   pitch at the table. Global can add others.
                 </p>
