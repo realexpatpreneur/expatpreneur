@@ -3346,6 +3346,54 @@ a.card:hover {
   .ep-home .ep-hero-img { height: clamp(360px, calc(100vh - 340px), 420px) !important; }
 }
 
+/* ---------------------------------------------------------------------
+   The gap between the hero's two columns.
+
+   The image frame sat so far out that a wide void opened between the
+   words and the picture, and the frame's own right edge ran past the
+   navigation above it. It comes in 50px. Its place in the layout does not
+   change, so nothing reflows around it, and once the columns stack it
+   sits where it always did.
+   --------------------------------------------------------------------- */
+@media (min-width: 981px) {
+  .ep-home .ep-hero-in > div:nth-child(2) { right: 50px; }
+}
+@container app (max-width: 980px) {
+  .ep-home .ep-hero-in > div:nth-child(2) { right: auto; }
+}
+@media (max-width: 980px) {
+  .ep-home .ep-hero-in > div:nth-child(2) { right: auto; }
+}
+
+/* ---------------------------------------------------------------------
+   The hero's two buttons.
+
+   Every other button on the page answers the pointer. These two carry a
+   class of their own and were left out of that, so they get the same
+   lift, plus a colour that moves with it.
+   --------------------------------------------------------------------- */
+.ep-home .ep-hero-btn { transition: transform 300ms, box-shadow 300ms, background-color 300ms, border-color 300ms; }
+.ep-home .ep-hero-btn:hover { transform: translateY(-2px); }
+.ep-home .ep-cta-row .ep-hero-btn:first-child:hover { background: #22303F !important; box-shadow: 0 14px 30px rgba(44,62,80,0.28) !important; }
+.ep-home .ep-cta-row .ep-hero-btn:last-child:hover { background: #F5F8FB !important; border-color: #2C3E50 !important; box-shadow: 0 10px 22px rgba(44,62,80,0.12); }
+.ep-home .ep-hero-btn:active { transform: translateY(0); }
+.ep-home .ep-hero-btn:focus-visible { outline: 2px solid #4074AE; outline-offset: 3px; }
+
+/* The invitation button keeps a slow ring going, so the eye finds it
+   without anything on the page moving. It stops under the pointer, and
+   for anyone who has asked their machine for less motion. */
+@keyframes ep-pulse {
+  0%   { box-shadow: 0 10px 24px rgba(44,62,80,0.16), 0 0 0 0 rgba(44,62,80,0.30); }
+  70%  { box-shadow: 0 10px 24px rgba(44,62,80,0.16), 0 0 0 15px rgba(44,62,80,0); }
+  100% { box-shadow: 0 10px 24px rgba(44,62,80,0.16), 0 0 0 0 rgba(44,62,80,0); }
+}
+.ep-home .ep-cta-row .ep-hero-btn:first-child { animation: ep-pulse 2900ms ease-out infinite; }
+.ep-home .ep-cta-row .ep-hero-btn:first-child:hover { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ep-home .ep-cta-row .ep-hero-btn:first-child { animation: none !important; }
+}
+
+
 /* ==== EP HOME 2026 END ==== */
 
 /* ==== EP MENU START (script 193) ==== */
