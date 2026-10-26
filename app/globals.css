@@ -3514,3 +3514,62 @@ a.card:hover {
   .app .epm-row:hover .epm-chev { transform: none; }
 }
 /* ==== EP MENU END ==== */
+
+/* ==== EP SHARPEN START (script 208) ==== */
+/* A re-cut of the system, not a new design. The markup does not change.
+   Six things were dating the platform: 13.5px body text, headings in
+   Flat UI's Midnight Blue, an action colour at 46% saturation, 22px
+   surfaces sitting beside 4px buttons, four gradient tokens, and every
+   label shaped as a lozenge. */
+
+:root{
+  /* Headings were #2C3E50. The near black was already here, unused by
+     them. */
+  --ink:#0B1220;
+  --muted:#5A6775;      /* 5.8:1 on white, against 4.6:1 before */
+  --line:#E2E6EB;
+  --wash:#F6F8FA;
+
+  /* The action colour. #4074AE is hue 212 at 46% saturation, which is
+     why it reads as a default rather than a decision. This is the same
+     hue family at 72%, so it stays in Kristiane's world while gaining
+     some conviction. 6.1:1 on white, and white reads on it. */
+  --blue:#1F5FBF;
+  --blue-soft:#E9F0FC;
+
+  /* The warm note is unchanged. It gains an ink, because white on it
+     was 2:1 and nobody could read the counts. */
+  --sun-ink:#3A2208;
+
+  /* One corner scale. 22px surfaces against 4px buttons was two systems
+     arguing in public. */
+  --r-lg:10px; --r-md:8px; --r-sm:6px;
+}
+
+/* 13.5px is the loudest legacy signal on the platform. */
+body, .app { font-size:14.5px; }
+.app h1, .app h2, .app h3, .app h4 { color:var(--ink); font-weight:680; letter-spacing:-0.022em; }
+.app h1 { letter-spacing:-0.03em; }
+
+.panel, .msgs, .email, .tablewrap, .sp, .sp-side, .stat, .sp-cover { border-radius:var(--r-lg); }
+
+/* Labels stop being lozenges. Numbers keep their round badge, because a
+   count is a number and not a label. */
+.chip, .fchip, .city, .step, .sp-pill, .sp-chip, .sp-stop, .sp-kind,
+.kindtag, .hero-kicker, .pv-flags span, .sp-cover-chip, .billing em,
+.p2-ribbon { border-radius:var(--r-sm); }
+.sp-viewas, .sp-tabs, .billing, .pv-cities { border-radius:var(--r-md); }
+.sp-viewas a, .sp-act { border-radius:var(--r-sm); }
+
+.nav .count, .mtabs .count { color:var(--sun-ink); }
+
+/* The focus ring was 2px of amber on white, which is 2:1. */
+:focus-visible { outline:2px solid var(--blue); outline-offset:2px; border-radius:var(--r-sm); }
+
+/* The gradient washes go. The Village photograph on a profile cover
+   stays, because that one carries a picture rather than decoration. */
+.cover { background:var(--navy); }
+.cover.mint { background:var(--mint); color:#0E3242; }
+.cover.pink { background:var(--pink); color:#4A2A16; }
+.cover.navy { background:var(--navy); }
+/* ==== EP SHARPEN END ==== */
