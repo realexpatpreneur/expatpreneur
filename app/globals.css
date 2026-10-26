@@ -3698,3 +3698,35 @@ body, .app { font-size:14.5px; }
   border-bottom-color:var(--ink);
 }
 /* ==== EP RHYTHM END ==== */
+
+/* ==== EP ONE PRODUCT START (script 214) ==== */
+/* Two workspaces, two chromes. The member space ran light and the admin
+   and global spaces ran a dark rail and sidebar, so moving between them
+   read as moving between two different products. They share one chrome
+   now, the light one, which is what the public side and the reference
+   both use. Every dark rule below is the counterpart of a .admin rule
+   earlier in this file. */
+
+.admin .mside{ background:#fff; border-color:var(--cardline); }
+.admin .mside .logo, .admin .mside .nav{ color:#3B4650; }
+.admin .mside .logo small{ color:var(--muted); }
+.admin .mside .nav:hover{ background:var(--wash); color:var(--ink); }
+.admin .mside .nav[aria-current]{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--ink);
+  font-weight:600;
+  box-shadow:0 1px 3px rgba(15,20,25,.1), 0 4px 10px rgba(15,20,25,.07);
+}
+.admin .mside .navlabel{ color:var(--muted); }
+.admin .mside .sidefoot{ border-color:var(--line); }
+
+.admin .rail{ background:#fff; border-right-color:var(--cardline); }
+.admin .rail-tile{ background:#fff; border-color:var(--line); color:#5A6875; }
+.admin .rail-tile:hover{ background:var(--wash); color:var(--ink); }
+.admin .rail-tile.on{ background:var(--ink); border-color:var(--ink); color:#fff; }
+.admin .rail-sep{ background:#D8DDE3; }
+.admin .side-head{ border-bottom-color:var(--line); }
+.admin .side-head b{ color:var(--ink); }
+.admin .side-ic{ background:var(--blue-soft); color:var(--blue); }
+/* ==== EP ONE PRODUCT END ==== */
