@@ -33,7 +33,10 @@ export default async function VillagePublicPage({
     .eq("slug", slug)
     .maybeSingle();
 
+  // A Village that is paused or archived has no public page, the same three
+  // statuses the lists use.
   if (!village) notFound();
+  if (!["open", "launching", "exploring"].includes(village.status)) notFound();
 
   // Only what a stranger is allowed to see: members who chose to be public,
   // and events open to everyone.

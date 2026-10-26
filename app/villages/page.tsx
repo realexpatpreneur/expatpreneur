@@ -30,6 +30,9 @@ export default async function VillagesPage({
     supabase
       .from("villages")
       .select("id, slug, name, city, country, status, summary, cover_url")
+      // the same three the footer, the home page and the invitation form
+      // list, so a Village that is paused or archived is off the public site
+      .in("status", ["open", "launching", "exploring"])
       .order("name"),
     supabase.from("village_public_counts").select("village_id, members, circles"),
   ]);
