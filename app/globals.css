@@ -3246,3 +3246,39 @@ a.card:hover {
   .ep-home .ep-tile-num > span { display: none !important; }
 }
 /* ==== EP HOME 2026 END ==== */
+
+/* ==== EP MENU START (script 193) ==== */
+/* The menu page. Restraint rather than decoration: real type, hairlines,
+   and room to breathe. No cards, no pills, no shadows. */
+
+.app .epm-eyebrow { margin: 0 0 10px; font-size: 12px; font-weight: 600;
+                    letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); }
+.app .epm-h1 { margin: 0; font-family: var(--display); font-size: clamp(34px, 3.6cqi, 46px);
+               line-height: 1.05; font-weight: 700; letter-spacing: -0.02em; color: var(--navy); }
+
+.app .epm { display: grid; gap: 46px; max-width: 760px; }
+.app .epm-group { display: grid; gap: 4px; }
+.app .epm-title { margin: 0 0 6px; font-family: var(--body); font-size: 11.5px; font-weight: 600;
+                  letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.app .epm-list { list-style: none; margin: 0; padding: 0; }
+.app .epm-list li + li > .epm-row { border-top: 1px solid rgba(44,62,80,0.09); }
+
+.app .epm-row { display: flex; align-items: center; justify-content: space-between; gap: 18px;
+                padding: 17px 2px; text-decoration: none; color: var(--navy);
+                font-size: 19px; font-weight: 500; letter-spacing: -0.012em;
+                transition: color .18s ease, padding-left .18s ease; }
+.app .epm-row:hover { color: var(--blue); padding-left: 6px; }
+.app .epm-chev { flex: none; color: rgba(44,62,80,0.32); transition: transform .18s ease, color .18s ease; }
+.app .epm-row:hover .epm-chev { color: var(--blue); transform: translateX(3px); }
+
+@container app (max-width: 620px) {
+  .app .epm { gap: 36px; }
+  .app .epm-row { font-size: 17.5px; padding: 15px 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app .epm-row, .app .epm-chev { transition: none; }
+  .app .epm-row:hover { padding-left: 2px; }
+  .app .epm-row:hover .epm-chev { transform: none; }
+}
+/* ==== EP MENU END ==== */
