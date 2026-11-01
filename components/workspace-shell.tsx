@@ -49,7 +49,13 @@ export async function WorkspaceShell({
 
   return (
     <div className={`mapp v2 ${spaces.length > 1 ? "" : "no-rail"} ${dark ? "admin" : ""} shell-${kind}`}>
-      <WorkspaceNav kind={kind} name={who} dark={dark} avatar={face} />
+      <WorkspaceNav
+        kind={kind}
+        name={who}
+        dark={dark}
+        avatar={face}
+        sub={kind === "member" && member?.villageName ? `${member.villageName} Village` : undefined}
+      />
 
       <div className="mmain">
         <header className="mtop">
@@ -71,6 +77,12 @@ export async function WorkspaceShell({
               {switchTo[0]}
             </Link>
           ) : null}
+          {kind === "member" ? (
+            <Link className="btn btn-primary m-postbtn hide-m" href="/village/new">
+              <Ic name="plus" />
+              Post an Ask or Offer
+            </Link>
+          ) : null}
           <Link className="iconbtn" aria-label="Notifications" href="/notifications">
             <Ic name="bell" />
             <span className="dot" />
@@ -82,6 +94,12 @@ export async function WorkspaceShell({
 
         <div className="mbody">{children}</div>
       </div>
+
+      {kind === "member" ? (
+        <Link className="m-fab" href="/village/new" aria-label="Post an Ask or Offer">
+          <Ic name="plus" />
+        </Link>
+      ) : null}
     </div>
   );
 }

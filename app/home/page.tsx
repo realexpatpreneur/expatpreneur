@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { currentUser, roleCarriesMembership } from "@/lib/member";
 import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
-import { FeedPost, Compose, WaRow, EventRow, type FeedItem } from "@/components/feed";
+import { FeedPost, Compose, type FeedItem } from "@/components/feed";
 import { Av } from "@/components/bits";
 import { Ic } from "@/components/icon";
 import { IntroduceForm } from "@/app/village/forms";
@@ -19,6 +19,11 @@ function ago(iso: string) {
   if (days < 14) return "Last week";
   if (days < 60) return `${Math.floor(days / 7)} weeks ago`;
   return new Date(iso).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+}
+
+// The moment a number of days back, for asking who joined since then.
+function daysAgo(days: number) {
+  return new Date(Date.now() - days * 86400000).toISOString();
 }
 
 export default async function MemberHomePage() {
@@ -194,23 +199,34 @@ export default async function MemberHomePage() {
       when: "Coming up",
       kind: "Event",
       tone: "navy",
-      text: `${e.title} is on ${when.toLocaleDateString("en-GB", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-      })}${e.is_online ? ", online" : e.venue ? `, at ${e.venue}` : ""}.`,
+      text: "",
       embedTitle: e.title,
-      embedLine: when.toLocaleString("en-GB", {
+      embedLine: `${when.toLocaleString("en-GB", {
         weekday: "long",
         day: "numeric",
         month: "long",
         hour: "2-digit",
         minute: "2-digit",
-      }),
+      })}${e.is_online ? ", online" : e.venue ? `, ${e.venue}` : ""}`,
       href: `/events/${e.slug}`,
+      image: e.cover_url,
       actions: [["Register", `/events/${e.slug}`]],
     });
   }
+
+  // Who has joined the Village this week, so the feed opens on people.
+  const weekAgo = daysAgo(7);
+  const { data: newcomers, count: newCount } = profile.village_id
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url", { count: "exact" })
+        .eq("village_id", profile.village_id)
+        .eq("status", "active")
+        .neq("id", profile.id)
+        .gte("created_at", weekAgo)
+        .order("created_at", { ascending: false })
+        .limit(4)
+    : { data: null, count: 0 };
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -218,25 +234,24 @@ export default async function MemberHomePage() {
 
   return (
     <WorkspaceShell kind="member">
-      <PageHead
-        title={`${greeting}, ${firstName}`}
-        sub={
-          villageName
-            ? `What is happening in ${villageName} this week.`
-            : "What is happening across the network this week."
-        }
-        actions={
-          <Link className="btn btn-primary" href="/village/new">
-            <Ic name="plus" />
-            Post an Ask or Offer
-          </Link>
-        }
-      />
+      <div className="m-greet">
+        <Av name={profile.full_name} src={profile.avatar_url ?? null} />
+        <div>
+          <h1>
+            {greeting}, {firstName}
+          </h1>
+          <p>
+            {villageName
+              ? `What is happening in ${villageName} this week.`
+              : "What is happening across the network this week."}
+          </p>
+        </div>
+      </div>
 
       {toIntroduce ? (
-        <section className="sec">
-          <h2 style={{ fontSize: 18 }}>Say hello first</h2>
-          <p className="muted small" style={{ margin: "6px 0 12px" }}>
+        <section style={{ marginTop: 32 }}>
+          <h2 className="m-h2">Say hello first</h2>
+          <p className="m-muted" style={{ margin: "6px 0 14px", fontSize: 15 }}>
             {villageName
               ? `${villageName} cannot help somebody it has not met. This is already written from what you told us.`
               : "Your Village cannot help somebody it has not met. This is already written from what you told us."}
@@ -249,61 +264,75 @@ export default async function MemberHomePage() {
         </section>
       ) : null}
 
-      <div className="feedlayout">
-        <div className="feedcol">
+      <div className="m-feedgrid">
+        <div style={{ minWidth: 0 }}>
           <Compose name={profile.full_name} avatar={profile.avatar_url} />
-          {items.length ? (
-            items.map((item, i) => <FeedPost key={i} item={item} />)
-          ) : (
-            <div className="panel panel-wash">
-              <h3 style={{ fontSize: 14 }}>Nothing here yet</h3>
-              <p className="muted small" style={{ marginTop: 8 }}>
-                When members post an Ask or an Offer, and when your Village
-                announces something, it appears here.
-              </p>
-            </div>
-          )}
+
+          {newcomers && newcomers.length ? (
+            <Link className="m-strip" href="/my-village/members">
+              <span className="m-faces">
+                {newcomers.map((n) => (
+                  <Av key={n.id} name={n.full_name} src={n.avatar_url ?? null} />
+                ))}
+              </span>
+              <span>
+                <b>
+                  {newCount ?? newcomers.length} new{" "}
+                  {(newCount ?? newcomers.length) === 1 ? "member" : "members"}
+                </b>{" "}
+                joined {villageName ? `${villageName} Village` : "your Village"} this week. Say hello.
+              </span>
+              <span className="m-arrow">Meet them</span>
+            </Link>
+          ) : null}
+
+          <div style={{ marginTop: 8 }}>
+            {items.length ? (
+              items.map((item, i) => <FeedPost key={i} item={item} />)
+            ) : (
+              <div className="m-card" style={{ marginTop: 18, background: "#F4F6F8", borderColor: "#F4F6F8" }}>
+                <h3>Nothing here yet</h3>
+                <p className="m-muted" style={{ marginTop: 8, fontSize: 14 }}>
+                  When members post an Ask or an Offer, and when your Village
+                  announces something, it appears here.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
-        <aside className="feedside">
-          <div className="panel">
-            <div className="row" style={{ gap: 12 }}>
-              <Av
-                name={profile.full_name}
-                className="av-lg"
-                src={profile.avatar_url ?? null}
-              />
-              <div className="grow">
-                <b>{profile.full_name}</b>
-                <p className="muted small">{profile.headline}</p>
+        <aside style={{ display: "grid", gap: 20 }}>
+          <div className="m-card">
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <Av name={profile.full_name} className="av-lg" src={profile.avatar_url ?? null} />
+              <div style={{ minWidth: 0 }}>
+                <b style={{ display: "block", fontSize: 16 }}>{profile.full_name}</b>
+                {profile.headline ? (
+                  <span className="m-muted" style={{ fontSize: 13 }}>{profile.headline}</span>
+                ) : null}
                 {onMembership ? (
-                  <div className="tags" style={{ marginTop: 8 }}>
-                    <span className="tiertag">Village Member</span>
-                  </div>
+                  <span className="m-kind m-offer" style={{ display: "block", marginTop: 6, fontSize: 11 }}>
+                    Village Member
+                  </span>
                 ) : null}
               </div>
             </div>
-            <div className="path" style={{ marginTop: 12 }}>
-              <Link className="pnode" href="/network">
-                <Ic name="globe" />
-                Global network
-              </Link>
-              <Ic name="chev" />
-              <Link className="pnode" href="/my-village">
-                <Ic name="pin" />
-                {villageName ?? "Your Village"}
+            <div className="m-path" style={{ marginTop: 16 }}>
+              <Link href="/network">Global</Link>
+              <i>/</i>
+              <Link href="/my-village" className={circleName ? "" : "on"}>
+                {villageName ? `${villageName} Village` : "Your Village"}
               </Link>
               {circleName ? (
                 <>
-                  <Ic name="chev" />
-                  <Link className="pnode on" href="/my-circle">
-                    <Ic name="rings" />
+                  <i>/</i>
+                  <Link className="on" href="/my-circle">
                     {circleName}
                   </Link>
                 </>
               ) : null}
             </div>
-            <div className="row" style={{ marginTop: 12 }}>
+            <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
               <Link className="btn btn-ghost btn-sm" href="/me">
                 My profile
               </Link>
@@ -314,30 +343,31 @@ export default async function MemberHomePage() {
           </div>
 
           {events && events.length ? (
-            <div className="panel">
-              <div className="sechead">
+            <div className="m-card">
+              <div className="m-cardhead">
                 <h3>Coming up</h3>
-                <Link href="/events">All events</Link>
+                <Link className="m-ulink" href="/events">
+                  All events
+                </Link>
               </div>
-              <div className="divide">
+              <div style={{ marginTop: 10 }}>
                 {events.map((e) => {
                   const d = new Date(e.starts_at);
                   return (
-                    <EventRow
-                      key={e.id}
-                      cover={e.cover_url}
-                      href={`/events/${e.slug}`}
-                      day={String(d.getDate())}
-                      month={d.toLocaleDateString("en-GB", { month: "short" })}
-                      title={e.title}
-                      line={`${d.toLocaleDateString("en-GB", {
-                        weekday: "long",
-                      })}, ${d.toLocaleTimeString("en-GB", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}${e.is_online ? ", online" : e.venue ? `, ${e.venue}` : ""}`}
-                      visiting={e.village_id !== profile.village_id}
-                    />
+                    <Link key={e.id} className="m-row" href={`/events/${e.slug}`} style={{ gridTemplateColumns: "40px minmax(0,1fr)" }}>
+                      <span className={`m-date ${e.village_id !== profile.village_id ? "visit" : ""}`}>
+                        <b>{d.getDate()}</b>
+                        <span>{d.toLocaleDateString("en-GB", { month: "short" })}</span>
+                      </span>
+                      <span>
+                        <b style={{ display: "block" }}>{e.title}</b>
+                        <span className="m-muted">
+                          {d.toLocaleDateString("en-GB", { weekday: "long" })},{" "}
+                          {d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                          {e.is_online ? ", online" : e.venue ? `, ${e.venue}` : ""}
+                        </span>
+                      </span>
+                    </Link>
                   );
                 })}
               </div>
@@ -345,35 +375,37 @@ export default async function MemberHomePage() {
           ) : null}
 
           {circleName ? (
-            <div className="panel">
-              <div className="sechead">
-                <h3>Your WhatsApp groups</h3>
-              </div>
-              <div className="stack">
-                <WaRow
-                  title={circleName}
-                  sub="Your home base"
-                  background="#E7EEF7"
-                  colour="#4074AE"
-                  icon="rings"
-                  href="/my-circle"
-                />
-                <WaRow
-                  title={`${villageName ?? "Village"} announcements`}
-                  sub="Village news, read only"
-                  background="#E6F4F1"
-                  colour="#24675A"
-                  icon="bell"
-                  href="/my-village/announcements"
-                />
+            <div className="m-card">
+              <h3>Your WhatsApp groups</h3>
+              <div style={{ marginTop: 10 }}>
+                <Link className="m-row" href="/my-circle">
+                  <span className="m-ic">
+                    <Ic name="rings" />
+                  </span>
+                  <span>
+                    <b style={{ display: "block" }}>{circleName}</b>
+                    <span className="m-muted">Your home base</span>
+                  </span>
+                  <span className="btn btn-primary btn-sm">Open</span>
+                </Link>
+                <Link className="m-row" href="/my-village/announcements">
+                  <span className="m-ic">
+                    <Ic name="bell" />
+                  </span>
+                  <span>
+                    <b style={{ display: "block" }}>{villageName ?? "Village"} announcements</b>
+                    <span className="m-muted">Village news, read only</span>
+                  </span>
+                  <span className="btn btn-ghost btn-sm">Open</span>
+                </Link>
               </div>
             </div>
           ) : null}
 
           {onMembership ? null : (
-            <Link className="panel panel-wash linkrow" href="/upgrade">
-              <h3 style={{ fontSize: 14 }}>Village Membership</h3>
-              <p className="muted small" style={{ marginTop: 8 }}>
+            <Link className="m-card m-ink-card m-strip" href="/upgrade" style={{ display: "block", marginTop: 0 }}>
+              <span className="m-kind" style={{ color: "#A8DCD1" }}>Village Membership</span>
+              <p style={{ margin: "10px 0 0", fontSize: 15, lineHeight: 1.55, color: "#DCE3E9" }}>
                 Contact members in any Village, attend their events, and
                 promote what you do.
               </p>

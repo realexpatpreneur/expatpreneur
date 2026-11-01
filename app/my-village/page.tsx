@@ -80,12 +80,14 @@ export default async function VillageAskOfferPage({
     <WorkspaceShell kind="member">
       <VillageHead here="/my-village" />
 
-      <div className="gside" style={{ marginTop: 16 }}>
-        <div>
-          <div className="filters">
+      <div className="m-vgrid">
+        <div style={{ minWidth: 0 }}>
+          <div className="m-seg" role="tablist" aria-label="Show">
             {FILTERS.map(([key, label]) => (
               <Link
                 key={key}
+                role="tab"
+                aria-selected={show === key}
                 className={`fchip ${show === key ? "on" : ""}`}
                 href={`/my-village?show=${key}`}
               >
@@ -94,9 +96,9 @@ export default async function VillageAskOfferPage({
             ))}
           </div>
 
-          <div className="stack">
-            {posts && posts.length ? (
-              posts.map((post) => (
+          {posts && posts.length ? (
+            <div className="m-ao">
+              {posts.map((post) => (
                 <AskCard
                   key={post.id}
                   id={post.id}
@@ -113,55 +115,62 @@ export default async function VillageAskOfferPage({
                   author={authorOf(post.author_id)?.full_name ?? "A member"}
                   when={timeAgo(post.created_at)}
                 />
-              ))
-            ) : (
-              <div className="panel panel-wash">
-                <h3 style={{ fontSize: 14 }}>Nothing open right now</h3>
-                <p className="muted small" style={{ marginTop: 8 }}>
-                  Post the first one. An Ask is something you need; an Offer is
-                  something you can give.
-                </p>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="m-card" style={{ marginTop: 18, background: "#F4F6F8", borderColor: "#F4F6F8" }}>
+              <h3>Nothing open right now</h3>
+              <p className="m-muted" style={{ marginTop: 8, fontSize: 14 }}>
+                Post the first one. An Ask is something you need; an Offer is
+                something you can give.
+              </p>
+              <Link className="btn btn-primary btn-sm" href="/village/new" style={{ marginTop: 14 }}>
+                <Ic name="plus" />
+                Post an Ask or Offer
+              </Link>
+            </div>
+          )}
         </div>
 
-        <div className="stack">
-          <div className="panel">
-            <h3 style={{ fontSize: 14 }}>How Ask &amp; Offer works</h3>
-            <ul className="ticks" style={{ marginTop: 12 }}>
-              <li>
-                <Ic name="check" />
+        <aside style={{ display: "grid", gap: 20 }}>
+          <div className="m-card">
+            <h3>How Ask &amp; Offer works</h3>
+            <div className="m-steps">
+              <div>
+                <span>1</span>
                 Ask for an introduction, a supplier or advice
-              </li>
-              <li>
-                <Ic name="check" />
+              </div>
+              <div>
+                <span>2</span>
                 Offer your expertise, a resource or a contact
-              </li>
-              <li>
-                <Ic name="check" />
+              </div>
+              <div>
+                <span>3</span>
                 Mark it resolved and say what happened
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
 
           {admins && admins.length ? (
-            <div className="panel">
-              <h3 style={{ fontSize: 14 }}>Local Admins</h3>
-              {admins.map((a) => (
-                <div className="li" key={a.id}>
-                  <Av name={a.full_name} className="av-sm" src={a.avatar_url ?? null} />
-                  <div className="grow">
-                    <b>{a.full_name}</b>
+            <div className="m-card">
+              <h3>Your Village team</h3>
+              <div style={{ marginTop: 10 }}>
+                {admins.map((a) => (
+                  <div className="m-row" key={a.id}>
+                    <Av name={a.full_name} className="av-sm" src={a.avatar_url ?? null} />
+                    <span>
+                      <b style={{ display: "block" }}>{a.full_name}</b>
+                      <span className="m-muted">Local Admin</span>
+                    </span>
+                    <Link className="btn btn-ghost btn-sm" href={`/messages/${a.id}`}>
+                      Message
+                    </Link>
                   </div>
-                  <Link className="btn btn-ghost btn-sm" href={`/messages/${a.id}`}>
-                    Message
-                  </Link>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           ) : null}
-        </div>
+        </aside>
       </div>
     </WorkspaceShell>
   );

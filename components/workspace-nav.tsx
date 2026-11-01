@@ -19,11 +19,15 @@ export function WorkspaceNav({
   name,
   dark,
   avatar = null,
+  sub,
 }: {
   kind: string;
   name: string;
   dark: boolean;
   avatar?: string | null;
+  // The line under the space's name. The member space says which
+  // Village it is; the others keep saying ExpatPreneurs.
+  sub?: string;
 }) {
   const path = usePathname() ?? "/";
   const spaces = SPACES[kind] ?? SPACES.member;
@@ -80,7 +84,7 @@ export function WorkspaceNav({
           </span>
           <div>
             <b>{here.label}</b>
-            <span>ExpatPreneurs</span>
+            <span>{sub ?? "ExpatPreneurs"}</span>
           </div>
         </div>
         <nav className="side-nav">

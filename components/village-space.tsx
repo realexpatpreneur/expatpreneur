@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { PageHead } from "@/components/workspace-shell";
 import { Av } from "@/components/bits";
-import { Ic } from "@/components/icon";
 
 const TABS: [string, string][] = [
   ["/my-village", "Ask & Offer"],
@@ -31,10 +29,25 @@ export async function VillageHead({ here }: { here: string }) {
   const { data: village } = profile?.village_id
     ? await supabase
         .from("villages")
-        .select("name, city, country")
+        .select("name, city, country, cover_url")
         .eq("id", profile.village_id)
         .maybeSingle()
     : { data: null };
+
+  // A few of the people in it, so the head of the Village is faces.
+  const { data: faces } = profile?.village_id
+    ? await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .eq("village_id", profile.village_id)
+        .eq("status", "active")
+        .not("avatar_url", "is", null)
+        .limit(5)
+    : { data: null };
+
+  const cover =
+    ((village as { cover_url?: string | null } | null)?.cover_url ?? "").trim().replace(/['"\\()]/g, "") ||
+    "/brand/members.jpg";
 
   const [{ count: members }, { count: circles }] = profile?.village_id
     ? await Promise.all([
@@ -52,29 +65,32 @@ export async function VillageHead({ here }: { here: string }) {
 
   return (
     <>
-      <PageHead
-        title={village ? `${village.name} Village` : "Your Village"}
-        sub={
-          village
-            ? `${members ?? 0} members, ${circles ?? 0} Circle${
-                circles === 1 ? "" : "s"
-              } of up to 50`
-            : undefined
-        }
-        actions={
-          <Link className="btn btn-primary" href="/village/new">
-            <Ic name="plus" />
-            Post an Ask or Offer
-          </Link>
-        }
-      />
-      <div className="tabs">
+      <header className="m-vhead" style={{ backgroundImage: `url('${cover}')` }}>
+        <div>
+          <div>
+            <h1>{village ? `${village.name} Village` : "Your Village"}</h1>
+            {village ? (
+              <p>
+                {members ?? 0} members, {circles ?? 0} Circle{circles === 1 ? "" : "s"} of up to 50
+              </p>
+            ) : null}
+          </div>
+          {faces && faces.length ? (
+            <Link className="m-faces" href="/my-village/members" aria-label="Members">
+              {faces.map((f) => (
+                <Av key={f.id} name={f.full_name} className="av-lg" src={f.avatar_url ?? null} />
+              ))}
+            </Link>
+          ) : null}
+        </div>
+      </header>
+      <nav className="tabs m-vtabs" aria-label="Your Village">
         {TABS.map(([href, label]) => (
           <Link key={href} href={href} aria-current={here === href ? "page" : undefined}>
             {label}
           </Link>
         ))}
-      </div>
+      </nav>
     </>
   );
 }
@@ -102,30 +118,27 @@ export function AskCard({
   authorAvatar?: string | null;
   when: string;
 }) {
-  const offer = kind === "offer";
+  const tag = kind === "offer" ? "offer" : kind === "introduction" ? "introduction" : "ask";
+  const label = kind === "offer" ? "Offer" : kind === "introduction" ? "Hello" : "Ask";
   return (
-    <Link className="ao linkrow ao-tiled" href={`/village/${id}`}>
-      <span className={`ao-ic ${offer ? "offer" : "ask"}`}>
-        <Ic name={offer ? "sparkle" : "hand"} />
+    <Link className="m-aorow" href={`/village/${id}`}>
+      <span className={`m-tag ${tag}`}>{label}</span>
+      <span style={{ minWidth: 0 }}>
+        <b>{title}</b>
+        <span className="m-aometa">
+          <Av name={author} src={authorAvatar} />
+          <span>
+            {author}, {when}
+          </span>
+          <span>{scope}</span>
+        </span>
       </span>
-      <div className="ao-body">
-        <div className="row" style={{ gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
-          <span className={`kindtag ${offer ? "offer" : "ask"}`}>
-            {offer ? "Offer" : "Ask"}
-          </span>
-          <span className={`chip ${status === "open" ? "chip-mint" : ""}`}>
-            {status === "open" ? "Open" : "Resolved"}
-          </span>
-          <span className="muted small">
-            {scope}, {replies} {replies === 1 ? "reply" : "replies"}
-          </span>
-        </div>
-        <b style={{ fontWeight: 600 }}>{title}</b>
-        <div className="row small muted" style={{ marginTop: 4 }}>
-          <Av name={author} className="av-sm" src={authorAvatar} />
-          {author}, {when}
-        </div>
-      </div>
+      <span className="m-status" style={{ color: status === "open" ? "#24675A" : "#6B7683" }}>
+        {status === "open" ? "Open" : "Resolved"}
+        <small>
+          {replies} {replies === 1 ? "reply" : "replies"}
+        </small>
+      </span>
     </Link>
   );
 }
