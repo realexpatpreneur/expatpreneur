@@ -5,6 +5,8 @@ import { pageText } from "@/lib/text";
 import { whoIsHere, isPaid } from "@/lib/member";
 import { SubscribeForm } from "@/app/media/subscribe-form";
 import { DualPage } from "@/components/dual-page";
+import { PublicPage } from "@/components/public-page";
+import { Arrow, Faces, PHOTO } from "@/components/design/parts";
 import { PageHead } from "@/components/workspace-shell";
 import { EventRow } from "@/components/feed";
 import {
@@ -76,6 +78,157 @@ export default async function EventsPage({
     ["online", "Online"],
     ["mine", "I am going"],
   ];
+
+  // A visitor gets the designed public page. A member keeps their workspace.
+  if (!member) {
+    const [lead, ...later] = rows;
+    const dayOf = (iso: string) => new Date(iso);
+    const where = (e: EventData) =>
+      `${e.village_id ? `${villageName(e.village_id)}. ` : ""}${whenText(e)}${
+        e.is_online ? ", online" : e.venue ? `, ${e.venue}` : ""
+      }`;
+    return (
+      <PublicPage active="/events">
+        <PageBlocks data={{ events: events ?? [] }} slug="events">
+        <div className="d-page">
+          <section style={{ padding: "64px 0 80px" }}>
+            <div className="d-wrap d-hero">
+              <div>
+                <p className="d-eyebrow">Events</p>
+                <h1 className="d-h1" style={{ marginTop: 16, maxWidth: "15ch" }}>{t("title", "Gatherings in every Village, and online.")}</h1>
+                <p className="d-lead" style={{ marginTop: 18, maxWidth: "46ch" }}>
+                  {t("intro", "Gatherings in every Village and online. Some are open to everyone; most are for members.")}
+                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 32 }}>
+                  <Faces srcs={[PHOTO.nadia, PHOTO.tomas, PHOTO.julien]} size={44} />
+                  <p className="d-body" style={{ fontSize: 14 }}>
+                    Every Village holds at least one gathering a month, and members can visit the others.
+                  </p>
+                </div>
+              </div>
+              <div className="d-collage" role="img" aria-label="Members of the network and the table at a founders dinner">
+                {/* eslint-disable @next/next/no-img-element */}
+                <img src={PHOTO.members} alt="" style={{ left: 0, top: 0, width: "62%", height: "72%" }} />
+                <img src={PHOTO.table} alt="" style={{ right: 0, bottom: 0, width: "56%", height: "58%", border: "6px solid #FFFFFF" }} />
+                {/* eslint-enable @next/next/no-img-element */}
+                <div className="d-card-paper d-float" style={{ position: "absolute", left: "6%", bottom: "6%", display: "flex", alignItems: "center", gap: 10 }}>
+                  <Faces srcs={[PHOTO.ines]} size={32} />
+                  <span style={{ fontSize: 13, lineHeight: 1.35 }}>
+                    <b style={{ display: "block" }}>Inês is going</b>
+                    <span style={{ color: "#6B7683" }}>Lisbon Village</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {lead ? (
+            <section style={{ padding: "0 0 0" }}>
+              <div className="d-wrap">
+                <p className="d-eyebrow" style={{ marginBottom: 20 }}>Next up</p>
+                <Link className="d-feature" href={`/e/${lead.slug}`}>
+                  <span className="d-fimg">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={lead.cover_url ?? PHOTO.table} alt="" />
+                  </span>
+                  <span style={{ display: "flex", flexDirection: "column", padding: 36 }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                      <span style={{ textAlign: "center", lineHeight: 1.05, border: "1.5px solid #0F1419", borderRadius: 6, padding: "8px 12px" }}>
+                        <b style={{ display: "block", fontSize: 26, fontWeight: 800 }}>{dayOf(lead.starts_at).getDate()}</b>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: "#B8691F", textTransform: "uppercase" }}>
+                          {dayOf(lead.starts_at).toLocaleDateString("en-GB", { month: "short" })}
+                        </span>
+                      </span>
+                      <span className="d-body" style={{ fontSize: 14 }}>{where(lead)}</span>
+                    </span>
+                    <b style={{ display: "block", marginTop: 24, fontSize: 30, fontWeight: 800, letterSpacing: "-.03em" }}>{lead.title}</b>
+                    {lead.description ? (
+                      <span className="d-body" style={{ display: "block", marginTop: 10, fontSize: 16 }}>{lead.description}</span>
+                    ) : null}
+                    <span style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 24 }}>
+                      <span className="d-status d-open" style={{ fontSize: 13 }}>Open to everyone</span>
+                      <span style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", border: "1px solid #C7CDD4", borderRadius: 4, padding: "6px 10px" }}>
+                        {priceText(lead, false)}
+                      </span>
+                    </span>
+                  </span>
+                </Link>
+              </div>
+            </section>
+          ) : null}
+
+          <section style={{ padding: "72px 0 0" }}>
+            <div className="d-wrap">
+              <h2 className="d-h2" style={{ marginBottom: 8 }}>{lead ? "Coming up" : "On the calendar"}</h2>
+              {later.length === 0 ? (
+                <div className="d-rows">
+                  <div className="d-row">
+                    <p className="d-body">
+                      {lead ? "Nothing else on the calendar yet." : "Nothing open to everyone on the calendar yet. Most gatherings are for members."}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="d-rows">
+                  {later.map((e) => {
+                    const d = dayOf(e.starts_at);
+                    return (
+                      <Link className="d-row d-erow" key={e.id} href={`/e/${e.slug}`}>
+                        <span className="d-d">
+                          <b>{d.getDate()}</b>
+                          <span>{d.toLocaleDateString("en-GB", { month: "short", weekday: "short" })}</span>
+                        </span>
+                        <span className="d-th">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={e.cover_url ?? PHOTO.members} alt="" />
+                        </span>
+                        <span>
+                          <b style={{ display: "block", fontSize: 19 }}>{e.title}</b>
+                          <span className="d-body" style={{ display: "block", marginTop: 4, fontSize: 14 }}>{where(e)}</span>
+                        </span>
+                        <span className="d-act" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+                          <span className="d-status d-open" style={{ fontSize: 12 }}>Open to everyone</span>
+                          <span className="d-btn d-btn-sm d-btn-dark d-shine">{priceText(e, false) === "Free" ? "Register" : priceText(e, false)}</span>
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+
+          <section style={{ padding: "96px 0 104px" }}>
+            <div className="d-wrap d-notify">
+              <div className="d-inkbox">
+                <span style={{ display: "block", marginBottom: 22 }}>
+                  <Faces srcs={[PHOTO.tomas, PHOTO.ines, PHOTO.nadia]} size={44} />
+                </span>
+                <h2 className="d-h2 d-light">Most events are for members.</h2>
+                <p style={{ marginTop: 12, fontSize: 16, lineHeight: 1.6, color: "#B9C3CD" }}>
+                  Every Village holds at least one gathering a month, and members can visit the others.
+                </p>
+                <div style={{ marginTop: "auto", paddingTop: 28 }}>
+                  <Link className="d-btn d-btn-mint d-shine" href="/apply">Request your invitation <Arrow /></Link>
+                </div>
+              </div>
+              <div className="d-boxed d-form">
+                <h2 className="d-h2">Hear about the open ones.</h2>
+                <p className="d-body" style={{ marginTop: 12, fontSize: 16 }}>
+                  Some gatherings are open to anybody. We will write when one is
+                  near you, and not otherwise.
+                </p>
+                <div style={{ marginTop: 22 }}>
+                  <SubscribeForm source="events" />
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        </PageBlocks>
+      </PublicPage>
+    );
+  }
 
   return (
     <DualPage member={Boolean(member)} nav="/events" active="/events">

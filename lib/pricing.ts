@@ -61,3 +61,34 @@ export function priceLine(pricing: Pricing[], yearly: boolean): string | null {
 export function anyFounding(pricing: Pricing[]): boolean {
   return pricing.some((p) => p.founding_open);
 }
+
+// The lowest figure in each currency for one kind of rate, cheapest
+// first. The designed membership card shows the standard rate as the
+// price and the founding rate beside it, so it needs both apart.
+function lowest(pricing: Pricing[], pick: (p: Pricing) => number | null): string[] {
+  const low = new Map<string, number>();
+  for (const p of pricing) {
+    const cents = pick(p);
+    if (!cents || cents <= 0) continue;
+    const have = low.get(p.currency);
+    if (have == null || cents < have) low.set(p.currency, cents);
+  }
+  return [...low.entries()]
+    .sort((a, b) => a[1] - b[1])
+    .map(([currency, cents]) => money(cents, currency));
+}
+
+// The standard rate, the one a Village charges once founding has closed.
+export function standardLine(pricing: Pricing[], yearly: boolean): string | null {
+  const rates = lowest(pricing, (p) => (yearly ? p.year_cents : p.month_cents));
+  return rates.length ? rates.join(" / ") : null;
+}
+
+// The founding rate, counted only where founding is still open.
+export function foundingLine(pricing: Pricing[], yearly: boolean): string | null {
+  const rates = lowest(
+    pricing.filter((p) => p.founding_open),
+    (p) => (yearly ? p.founding_year_cents : p.founding_month_cents)
+  );
+  return rates.length ? rates.join(" / ") : null;
+}

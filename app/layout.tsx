@@ -3,6 +3,8 @@ import "./globals.css";
 // Field, button and list spacing this build needs on top of the
 // prototype stylesheet. Kept separate so it stays easy to read.
 import "./forms.css";
+// The design of the public pages, scoped so the workspaces keep theirs.
+import "./design.css";
 import { siteUrl, siteName, siteDescription } from "@/lib/site";
 import { SiteHeader } from "@/components/site-header";
 
