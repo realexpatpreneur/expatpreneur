@@ -8,7 +8,6 @@ import { DualPage } from "@/components/dual-page";
 import { PublicPage } from "@/components/public-page";
 import { Arrow, Faces, PHOTO } from "@/components/design/parts";
 import { PageHead } from "@/components/workspace-shell";
-import { EventRow } from "@/components/feed";
 import {
   whenText,
   priceText,
@@ -263,45 +262,58 @@ export default async function EventsPage({
         ) : null}
 
         {rows.length === 0 ? (
-          <div className="panel panel-wash">
-            <p className="muted" style={{ margin: 0 }}>
-              Nothing on the calendar yet.
+          <div className="m-card" style={{ background: "#F4F6F8", borderColor: "#F4F6F8" }}>
+            <h3>Nothing on the calendar yet</h3>
+            <p className="m-muted" style={{ margin: "8px 0 0", fontSize: 14 }}>
+              When your Village or another one plans a gathering, it appears here.
             </p>
           </div>
         ) : (
-          <div className="divide">
-            {rows.map((event) => {
+          <div className="m-events">
+            {rows.map((event, i) => {
               const blocked = member ? registrationBlock(event, member) : null;
               const d = new Date(event.starts_at);
               const visiting = Boolean(
                 member && event.village_id && event.village_id !== member.village_id
               );
+              const status = registeredFor.has(event.id) ? (
+                <span className="m-kind m-offer">You are going</span>
+              ) : blocked ? (
+                <span className="m-kind" style={{ color: "#8A4F14" }}>{blocked}</span>
+              ) : (
+                <span className="m-kind m-muted">
+                  {priceText(event, member ? isPaid(member) : false)}
+                </span>
+              );
+              const where = `${event.village_id ? `${villageName(event.village_id)}. ` : ""}${whenText(event)}${
+                event.is_online ? ", online" : event.venue ? `, ${event.venue}` : ""
+              }`;
               return (
-                <EventRow
+                <Link
                   key={event.id}
-                  cover={event.cover_url}
+                  className={`m-evcard ${i === 0 ? "m-evlead" : ""}`}
                   href={member ? `/events/${event.slug}` : `/e/${event.slug}`}
-                  day={String(d.getDate())}
-                  month={d.toLocaleDateString("en-GB", { month: "short" })}
-                  title={event.title}
-                  line={`${
-                    event.village_id ? `${villageName(event.village_id)}. ` : ""
-                  }${whenText(event)}${
-                    event.is_online ? ", online" : event.venue ? `, ${event.venue}` : ""
-                  }`}
-                  visiting={visiting}
-                  right={
-                    registeredFor.has(event.id) ? (
-                      <span className="chip chip-mint">You are going</span>
-                    ) : blocked ? (
-                      <span className="chip chip-sun">{blocked}</span>
+                >
+                  <span className="m-evimg">
+                    {event.cover_url ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={event.cover_url} alt="" />
                     ) : (
-                      <span className="chip">
-                        {priceText(event, member ? isPaid(member) : false)}
-                      </span>
-                    )
-                  }
-                />
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src="/brand/table.jpg" alt="" />
+                    )}
+                    <span className={`m-date ${visiting ? "visit" : ""}`}>
+                      <b>{d.getDate()}</b>
+                      <span>{d.toLocaleDateString("en-GB", { month: "short" })}</span>
+                    </span>
+                  </span>
+                  <span className="m-evbody">
+                    {visiting ? <span className="m-kind m-event">Another Village</span> : event.is_online ? <span className="m-kind m-event">Online</span> : null}
+                    <b>{event.title}</b>
+                    <span className="m-muted">{where}</span>
+                    {status}
+                  </span>
+                </Link>
               );
             })}
           </div>

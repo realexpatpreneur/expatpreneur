@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { PublicPage } from "@/components/public-page";
+import { FlowPage } from "@/components/design/flow-page";
+import { PHOTO } from "@/components/design/parts";
 import { StatusForm } from "./form";
-import { Crumbs } from "@/components/crumbs";
 
 export const metadata = {
   title: "Where your request stands, ExpatPreneurs Global",
@@ -9,44 +9,27 @@ export const metadata = {
 
 export default function ApplicationStatusPage() {
   return (
-    <PublicPage>
-      <main className="wrap">
-        <section className="sec">
-          <Crumbs trail={[["Request an invitation", "/apply"], ["Where your request stands"]]} />
-          <h1>Where your request stands</h1>
-          <p className="lead">
-            Somebody reads every one, so it takes days rather than minutes.
-            You can check here in the meantime.
-          </p>
-        </section>
-
-        <section className="sec">
-          <div className="gside">
-            <StatusForm />
-            <div className="stack">
-              <div className="panel panel-wash">
-                <h3>Why it takes a while</h3>
-                <p className="muted small" style={{ marginTop: 8 }}>
-                  Requests go to the Local Admins of the city you named, and
-                  they are members with businesses of their own. A week is
-                  normal.
-                </p>
-              </div>
-              <div className="panel panel-wash">
-                <h3>Lost the reference?</h3>
-                <p className="muted small" style={{ marginTop: 8 }}>
-                  Write to us and say which address you used. We will not
-                  confirm anything about a request to anybody but the person
-                  who made it.
-                </p>
-                <Link className="btn btn-ghost" href="/contact">
-                  Contact
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-    </PublicPage>
+    <FlowPage
+      title="Where your request stands"
+      lead="Somebody reads every one, so it takes days rather than minutes. You can check here in the meantime."
+      photo={PHOTO.reader}
+      photoAlt="A member reading invitation requests"
+      card={{ title: "Read by a person", line: "A week is normal" }}
+    >
+      <StatusForm />
+      <div className="d-aside-note">
+        <b>Why it takes a while</b>
+        Requests go to the Local Admins of the city you named, and they are
+        members with businesses of their own. A week is normal.
+      </div>
+      <div className="d-aside-note" style={{ marginTop: 20, paddingTop: 20 }}>
+        <b>Lost the reference?</b>
+        Write to us and say which address you used. We will not confirm
+        anything about a request to anybody but the person who made it.{" "}
+        <Link className="d-ulink" href="/contact" style={{ fontSize: 14 }}>
+          Contact
+        </Link>
+      </div>
+    </FlowPage>
   );
 }

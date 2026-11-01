@@ -106,7 +106,7 @@ export default async function VillageAskOfferPage({
                   title={post.title}
                   status={post.status}
                   scope={
-                    post.reach === "global"
+                    post.reach === "all_villages"
                       ? "All Villages"
                       : member.villageName ?? "Your Village"
                   }

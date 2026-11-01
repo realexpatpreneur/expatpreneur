@@ -43,13 +43,20 @@ export default async function WelcomePage() {
 
   return (
     <WorkspaceShell kind="member" nav="/welcome">
-        <section className="sec">
-          <h1>Welcome to ExpatPreneurs.</h1>
-          <p className="lead">
-            {village?.name
-              ? `You are in the ${village.name} Village. Finish your profile and your Circle can find you.`
-              : "Finish your profile and your Local Admin will place you in a Circle."}
-          </p>
+        <section className="m-hello">
+          <div>
+            <span className="m-kind m-offer">{village?.name ? `${village.name} Village` : "Welcome"}</span>
+            <h1>Welcome to ExpatPreneurs.</h1>
+            <p>
+              {village?.name
+                ? `You are in the ${village.name} Village. Finish your profile and your Circle can find you.`
+                : "Finish your profile and your Local Admin will place you in a Circle."}
+            </p>
+          </div>
+          <div className="m-hello-photo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/members.jpg" alt="Members of a Village working together" />
+          </div>
         </section>
         <section className="sec">
           <WelcomeForm profile={profile} />

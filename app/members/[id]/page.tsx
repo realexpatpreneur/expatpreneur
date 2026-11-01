@@ -1,5 +1,6 @@
 import { DualPage } from "@/components/dual-page";
 import { ProfileView, SideCard } from "@/components/profile-view";
+import { MemberProfileView } from "@/components/design/member-profile";
 import { Ic } from "@/components/icon";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -157,8 +158,7 @@ export default async function MemberProfilePage({
       </div>
     ) : null;
 
-  // The member view, in the member space's own design: the person first,
-  // big, then what they can help with and what they are looking for.
+  // The member view, in the member space's own design.
   if (me) {
     const [circleRes, postsRes] = await Promise.all([
       person.circle_id
@@ -166,192 +166,35 @@ export default async function MemberProfilePage({
         : Promise.resolve({ data: null }),
       supabase
         .from("asks")
-        .select("id, kind, title, status, created_at, reach")
+        .select("id, kind, title, status, created_at")
         .eq("author_id", person.id)
         .order("created_at", { ascending: false })
         .limit(3),
     ]);
-    const circleName = (circleRes.data as { name?: string } | null)?.name ?? null;
-    const recent = postsRes.data ?? [];
-    const first = person.full_name.split(" ")[0];
-    const lived = (person.lived_in ?? []).filter(Boolean);
-    const initials = person.full_name
-      .split(" ")
-      .map((w) => w[0])
-      .slice(0, 2)
-      .join("");
-    const place = [village?.name ? `${village.name} Village` : null, circleName]
-      .filter(Boolean)
-      .join(", ");
 
     return (
       <DualPage member nav="/members" active="/discover">
-        <nav className="m-crumb" aria-label="Breadcrumb">
-          <Link href="/directory">Directory</Link>
-          <span>/</span>
-          <span>{person.full_name}</span>
-        </nav>
-
-        <section className="m-phero">
-          <div className="m-portrait">
-            {person.avatar_url ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={person.avatar_url} alt={person.full_name} />
-            ) : (
-              <span className="m-big" style={{ background: "#E6F4F1" }}>{initials}</span>
-            )}
-          </div>
-          <div>
-            {place || relation ? (
-              <span className="m-kind" style={{ color: "#2F8F77" }}>
-                {[place, relation].filter(Boolean).join(". ")}
-              </span>
-            ) : null}
-            <h1>{person.full_name}</h1>
-            {person.headline || person.business_name ? (
-              <p style={{ margin: "8px 0 0", fontSize: 18, color: "#3B4650" }}>
-                {person.headline ?? person.business_name}
-              </p>
-            ) : null}
-            {lived.length || village?.name ? (
-              <div className="m-route">
-                {lived.map((p) => (
-                  <span key={p} style={{ display: "contents" }}>
-                    <span>{p}</span>
-                    <i>/</i>
-                  </span>
-                ))}
-                {village?.name ? <span className="now">{village.name}, now</span> : null}
-              </div>
-            ) : null}
-            {person.languages?.length ? (
-              <p className="m-muted" style={{ margin: "8px 0 0", fontSize: 14 }}>
-                Works in {person.languages.join(", ").replace(/, ([^,]*)$/, " and $1")}.
-              </p>
-            ) : null}
-            <div className="m-pacts">
+        <MemberProfileView
+          person={person}
+          villageName={village?.name ?? null}
+          circleName={(circleRes.data as { name?: string } | null)?.name ?? null}
+          relation={relation}
+          self={person.id === me.id}
+          recent={postsRes.data ?? []}
+          crumbs={[["Directory", "/directory"]]}
+          actions={
+            <>
               {actionIsForm ? null : action}
               {person.id !== me.id ? (
                 <Link className="sp-icon" aria-label="Report" href={`/report?member=${person.id}`}>
                   <Ic name="flag" />
                 </Link>
               ) : null}
-            </div>
-            {actionIsForm ? (
-              <div className="m-card" style={{ marginTop: 18, maxWidth: 540 }}>
-                {action}
-              </div>
-            ) : null}
-            {notice ? <div style={{ marginTop: 24, maxWidth: 560 }}>{notice}</div> : null}
-          </div>
-        </section>
-
-        <div className="m-pcols">
-          <div style={{ minWidth: 0 }}>
-            {person.bio ? (
-              <>
-                <h2 className="m-h2">About</h2>
-                <p style={{ margin: "12px 0 0", fontSize: 16, lineHeight: 1.7, color: "#3B4650", maxWidth: "62ch", whiteSpace: "pre-line" }}>
-                  {person.bio}
-                </p>
-              </>
-            ) : null}
-
-            <div className="m-two" style={{ marginTop: person.bio ? 28 : 0 }}>
-              <div className="m-need">
-                <span className="m-kind m-offer">Can help with</span>
-                <p>{person.can_help_with || <span className="m-muted">Not said yet</span>}</p>
-              </div>
-              <div className="m-need">
-                <span className="m-kind m-ask">Looking for</span>
-                <p>{person.looking_for || <span className="m-muted">Not said yet</span>}</p>
-              </div>
-            </div>
-
-            {person.business_name ? (
-              <>
-                <h2 className="m-h2" style={{ marginTop: 44 }}>
-                  {person.id === me.id ? "Your business" : `${first}'s business`}
-                </h2>
-                <div className="m-biz">
-                  <span className="m-bizmark">{person.business_name.slice(0, 1)}</span>
-                  <span style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 6, padding: "22px 24px" }}>
-                    {person.industry ? <span className="m-kind m-muted">{person.industry}</span> : null}
-                    <b style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-.02em" }}>{person.business_name}</b>
-                  </span>
-                </div>
-              </>
-            ) : null}
-
-            {recent.length ? (
-              <>
-                <h2 className="m-h2" style={{ marginTop: 44 }}>Recently on Ask &amp; Offer</h2>
-                <div className="m-ao" style={{ marginTop: 12 }}>
-                  {recent.map((r) => (
-                    <Link key={r.id} className="m-aorow" href={`/village/${r.id}`}>
-                      <span className={`m-tag ${r.kind === "offer" ? "offer" : r.kind === "introduction" ? "introduction" : "ask"}`}>
-                        {r.kind === "offer" ? "Offer" : r.kind === "introduction" ? "Hello" : "Ask"}
-                      </span>
-                      <span style={{ minWidth: 0 }}>
-                        <b>{r.title}</b>
-                        <span className="m-aometa">
-                          {new Date(r.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}
-                        </span>
-                      </span>
-                      <span className="m-status" style={{ color: r.status === "open" ? "#24675A" : "#6B7683" }}>
-                        {r.status === "open" ? "Open" : "Resolved"}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </>
-            ) : null}
-          </div>
-
-          <aside style={{ display: "grid", gap: 20 }}>
-            <div className="m-card">
-              <h3>Details</h3>
-              <dl className="m-dl">
-                {village?.name ? (
-                  <>
-                    <dt>Village</dt>
-                    <dd>{village.name}</dd>
-                  </>
-                ) : null}
-                {circleName ? (
-                  <>
-                    <dt>Circle</dt>
-                    <dd>{circleName}</dd>
-                  </>
-                ) : null}
-                {person.industry ? (
-                  <>
-                    <dt>Industry</dt>
-                    <dd>{person.industry}</dd>
-                  </>
-                ) : null}
-                {person.markets_known?.length ? (
-                  <>
-                    <dt>Markets</dt>
-                    <dd>{person.markets_known.join(", ")}</dd>
-                  </>
-                ) : null}
-                {person.languages?.length ? (
-                  <>
-                    <dt>Languages</dt>
-                    <dd>{person.languages.join(", ")}</dd>
-                  </>
-                ) : null}
-              </dl>
-            </div>
-            <div className="m-card" style={{ background: "#F4F6F8", borderColor: "#F4F6F8" }}>
-              <h3>What is never shown</h3>
-              <p className="m-muted" style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.5 }}>
-                Email, phone and anything written for admins stay private.
-              </p>
-            </div>
-          </aside>
-        </div>
+            </>
+          }
+          below={actionIsForm ? <div className="m-card" style={{ marginTop: 18, maxWidth: 540 }}>{action}</div> : null}
+          notice={notice}
+        />
       </DualPage>
     );
   }

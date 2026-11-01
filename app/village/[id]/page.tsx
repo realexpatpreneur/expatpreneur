@@ -77,147 +77,147 @@ export default async function PostPage({
   const kindName = intro ? "Introduction" : offer ? "Offer" : "Ask";
   const resolved = post.status === "resolved";
 
+  const replyCount = (replies ?? []).length;
+  const tag = intro ? "introduction" : offer ? "offer" : "ask";
+
   return (
     <WorkspaceShell kind="member">
-      <nav className="crumbs" aria-label="Breadcrumb">
-        <Link href="/my-village">{member.villageName ?? "Your Village"}</Link>
-        <Ic name="chev" />
+      <nav className="m-crumb" aria-label="Breadcrumb">
+        <Link href="/my-village">{member.villageName ? `${member.villageName} Village` : "Your Village"}</Link>
+        <span>/</span>
         <Link href="/my-village">Ask &amp; Offer</Link>
-        <Ic name="chev" />
+        <span>/</span>
         <span>{kindName}</span>
       </nav>
 
-      <div className="gside">
-        <div className="stack">
-          <div className="panel">
-            <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
-              <span className={`kindtag ${offer || intro ? "offer" : "ask"}`}>
-                {kindName}
-              </span>
-              <span className={`chip ${resolved ? "" : "chip-mint"}`}>
+      <div className="m-vgrid" style={{ marginTop: 0 }}>
+        <div style={{ minWidth: 0 }}>
+          <article>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
+              <span className={`m-tag ${tag}`} style={{ padding: "0 10px" }}>{kindName}</span>
+              <span className="m-kind" style={{ color: resolved ? "#6B7683" : "#24675A" }}>
                 {resolved ? "Resolved" : "Open"}
               </span>
-              {post.category ? <span className="chip">{post.category}</span> : null}
-              <span className="chip chip-blue">
-                {post.reach === "global" ? "All Villages" : member.villageName ?? "Your Village"}
+              {post.category ? <span className="m-muted" style={{ fontSize: 13 }}>{post.category}</span> : null}
+              <span className="m-muted" style={{ fontSize: 13 }}>
+                {post.reach === "all_villages" ? "All Villages" : member.villageName ?? "Your Village"}
               </span>
             </div>
 
-            <h1 style={{ fontSize: 20, marginTop: 12 }}>{post.title}</h1>
+            <h1 style={{ margin: "14px 0 0", fontSize: 32, fontWeight: 800, letterSpacing: "-.03em", lineHeight: 1.15 }}>
+              {post.title}
+            </h1>
 
-            <div className="row small muted" style={{ marginTop: 8 }}>
-              <Av
-                name={author?.full_name ?? "A member"}
-                className="av-sm"
-                src={author?.avatar_url ?? null}
-              />
-              <Link href={mine ? "/me" : `/members/${post.author_id}`}>
-                {author?.full_name ?? "A member"}
-              </Link>
-              , {timeAgo(post.created_at)}
-            </div>
+            <Link className="m-row" href={mine ? "/me" : `/members/${post.author_id}`} style={{ marginTop: 18, gridTemplateColumns: "56px minmax(0,1fr)", borderTop: 0 }}>
+              <Av name={author?.full_name ?? "A member"} className="av-lg" src={author?.avatar_url ?? null} />
+              <span>
+                <b style={{ display: "block", fontSize: 15 }}>{author?.full_name ?? "A member"}</b>
+                <span className="m-muted">
+                  {author?.headline ? `${author.headline}, ` : ""}
+                  {timeAgo(post.created_at)}
+                </span>
+              </span>
+            </Link>
 
-            <p style={{ marginTop: 12, whiteSpace: "pre-wrap" }}>{post.body}</p>
+            <p style={{ margin: "18px 0 0", fontSize: 17, lineHeight: 1.7, color: "#3B4650", whiteSpace: "pre-wrap", maxWidth: "66ch" }}>
+              {post.body}
+            </p>
 
             {resolved && post.outcome ? (
-              <div className="flag ok" style={{ marginTop: 12 }}>
+              <div className="flag ok" style={{ marginTop: 20 }}>
                 <Ic name="check" />
                 <span>Outcome: {post.outcome}</span>
               </div>
             ) : null}
 
-            <div className="row" style={{ marginTop: 16, flexWrap: "wrap" }}>
-              {mine && !resolved ? <CloseForm askId={post.id} /> : null}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 24 }}>
               {!mine && canReply ? (
-                <Link
-                  className="btn btn-primary"
-                  href={`/messages/${post.author_id}`}
-                >
+                <Link className="btn btn-primary" href={`/messages/${post.author_id}`} style={{ height: 44, padding: "0 18px", fontSize: 14 }}>
                   Message {(author?.full_name ?? "them").split(" ")[0]}
                 </Link>
               ) : null}
-              <Link className="btn btn-ghost" href={`/report?ask=${post.id}`}>
+              <Link className="btn btn-ghost" href={`/report?ask=${post.id}`} style={{ height: 44, padding: "0 18px", fontSize: 14 }}>
                 Report
               </Link>
             </div>
-          </div>
-
-          <div className="panel">
-            <h3 style={{ fontSize: 14 }}>
-              {(replies ?? []).length}{" "}
-              {(replies ?? []).length === 1 ? "reply" : "replies"}
-            </h3>
-            <div className="divide" style={{ marginTop: 8 }}>
-              {(replies ?? []).length ? (
-                (replies ?? []).map((r) => {
-                  const them = replyAuthors?.find((a) => a.id === r.author_id);
-                  const who = them?.full_name ?? "A member";
-                  return (
-                    <div className="li" style={{ alignItems: "flex-start" }} key={r.id}>
-                      <Av name={who} className="av-sm" src={them?.avatar_url ?? null} />
-                      <div className="grow">
-                        <b>{who}</b>
-                        <p className="small" style={{ whiteSpace: "pre-wrap" }}>
-                          {r.body}
-                        </p>
-                        {(r.mentions ?? []).length ? (
-                          <p className="muted small" style={{ marginTop: 4 }}>
-                            Pointing at{" "}
-                            {(r.mentions ?? []).map(
-                              (who: string, n: number) => {
-                                const them = replyAuthors?.find(
-                                  (a) => a.id === who
-                                );
-                                if (!them) return null;
-                                return (
-                                  <span key={who}>
-                                    {n ? ", " : ""}
-                                    <Link href={`/members/${them.id}`}>
-                                      {them.full_name}
-                                    </Link>
-                                  </span>
-                                );
-                              }
-                            )}
-                          </p>
-                        ) : null}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="muted small">No replies yet.</p>
-              )}
-            </div>
-
-            {resolved ? null : canReply ? (
-              <div style={{ marginTop: 12 }}>
-                <ReplyForm askId={post.id} people={neighbours ?? []} />
+            {mine && !resolved ? (
+              <div style={{ marginTop: 24, maxWidth: 560 }}>
+                <CloseForm askId={post.id} />
               </div>
+            ) : null}
+          </article>
+
+          <h2 className="m-h2" style={{ marginTop: 48 }}>
+            {replyCount} {replyCount === 1 ? "reply" : "replies"}
+          </h2>
+          <div style={{ marginTop: 12, borderTop: "2px solid #0F1419" }}>
+            {replyCount ? (
+              (replies ?? []).map((r) => {
+                const them = replyAuthors?.find((a) => a.id === r.author_id);
+                const who = them?.full_name ?? "A member";
+                return (
+                  <div className="m-post" key={r.id}>
+                    <Av name={who} src={them?.avatar_url ?? null} />
+                    <div style={{ minWidth: 0 }}>
+                      <div className="m-meta">
+                        <b>{who}</b>
+                        {them?.headline ? <span className="m-muted">{them.headline}</span> : null}
+                        <span className="m-muted">{timeAgo(r.created_at)}</span>
+                      </div>
+                      <p style={{ whiteSpace: "pre-wrap" }}>{r.body}</p>
+                      {(r.mentions ?? []).length ? (
+                        <div className="m-acts">
+                          <span className="m-muted" style={{ fontSize: 13 }}>Pointing at</span>
+                          {(r.mentions ?? []).map((whoId: string) => {
+                            const named = replyAuthors?.find((a) => a.id === whoId);
+                            if (!named) return null;
+                            return (
+                              <Link key={whoId} className="m-act" href={`/members/${named.id}`}>
+                                <Av name={named.full_name} className="av-sm" src={named.avatar_url ?? null} />
+                                {named.full_name}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })
             ) : (
-              <Lock
-                style={{ marginTop: 12 }}
-                note="Replying across Villages is part of Village Membership."
-                cta="See Village Membership"
-              >
-                This is from another Village
-              </Lock>
+              <p className="m-muted" style={{ margin: "16px 0 0", fontSize: 15 }}>
+                No replies yet.
+              </p>
             )}
           </div>
+
+          {resolved ? null : canReply ? (
+            <div className="m-card" style={{ marginTop: 24 }}>
+              <ReplyForm askId={post.id} people={neighbours ?? []} />
+            </div>
+          ) : (
+            <Lock
+              style={{ marginTop: 24 }}
+              note="Replying across Villages is part of Village Membership."
+              cta="See Village Membership"
+            >
+              This is from another Village
+            </Lock>
+          )}
         </div>
 
-        <div className="stack">
-          <div className="panel panel-wash">
-            <h3 style={{ fontSize: 14 }}>Tips</h3>
-            <p className="muted small" style={{ marginTop: 8 }}>
+        <aside style={{ display: "grid", gap: 20 }}>
+          <div className="m-card" style={{ background: "#F4F6F8", borderColor: "#F4F6F8" }}>
+            <h3>Tips</h3>
+            <p className="m-muted" style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.55 }}>
               Introductions work best with a short reason. Move to a private
               message for the details.
             </p>
           </div>
-          <Link className="btn btn-ghost" href="/my-village">
+          <Link className="m-ulink" href="/my-village" style={{ justifySelf: "start", fontSize: 14 }}>
             Back to Ask &amp; Offer
           </Link>
-        </div>
+        </aside>
       </div>
     </WorkspaceShell>
   );

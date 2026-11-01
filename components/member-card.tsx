@@ -81,6 +81,20 @@ export function MemberCard({
 
   return (
     <article className="mcard">
+      <Link className="mc-photo" href={`/members/${person.id}`} aria-hidden="true" tabIndex={-1}>
+        {person.avatar_url ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img src={person.avatar_url} alt="" />
+        ) : (
+          <span>
+            {person.full_name
+              .split(" ")
+              .map((w) => w[0])
+              .slice(0, 2)
+              .join("")}
+          </span>
+        )}
+      </Link>
       <Link className="row linkrow" href={`/members/${person.id}`}>
         <Av name={person.full_name} src={person.avatar_url ?? null} />
         <div style={{ minWidth: 0 }}>

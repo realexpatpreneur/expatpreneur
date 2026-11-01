@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PublicPage } from "@/components/public-page";
+import { FlowPage } from "@/components/design/flow-page";
+import { PHOTO } from "@/components/design/parts";
 import { inviteByToken } from "../actions";
 import { ReEnrolForm } from "../form";
 
@@ -21,53 +22,37 @@ export default async function ReEnrolPage({
 
   if (invite.status === "re_enrolled") {
     return (
-      <PublicPage>
-        <section className="pubsec">
-          <div className="panel" style={{ maxWidth: 620 }}>
-            <h1 style={{ fontSize: 22 }}>This place is already confirmed</h1>
-            <p className="muted" style={{ marginTop: 8 }}>
-              Somebody has been through this link already, which will have been
-              you. Sign in and carry on.
-            </p>
-            <Link className="btn btn-primary" href="/login">
-              Sign in
-            </Link>
-          </div>
-        </section>
-      </PublicPage>
+      <FlowPage
+        title="This place is already confirmed"
+        lead="Somebody has been through this link already, which will have been you. Sign in and carry on."
+      >
+        <Link className="btn btn-primary" href="/login" style={{ marginTop: 0 }}>
+          Sign in
+        </Link>
+      </FlowPage>
     );
   }
 
   if (invite.status === "declined") {
     return (
-      <PublicPage>
-        <section className="pubsec">
-          <div className="panel" style={{ maxWidth: 620 }}>
-            <h1 style={{ fontSize: 22 }}>You have already told us</h1>
-            <p className="muted" style={{ marginTop: 8 }}>
-              If you have changed your mind, request an invitation and your
-              Local Admin will see it.
-            </p>
-            <Link className="btn btn-ghost" href="/apply">
-              Request an invitation
-            </Link>
-          </div>
-        </section>
-      </PublicPage>
+      <FlowPage
+        title="You have already told us"
+        lead="If you have changed your mind, request an invitation and your Local Admin will see it."
+      >
+        <Link className="btn btn-ghost" href="/apply">
+          Request an invitation
+        </Link>
+      </FlowPage>
     );
   }
 
   return (
-    <PublicPage>
-      <section className="pubsec">
-        <div style={{ maxWidth: 680 }}>
-          <h1 style={{ fontSize: 26 }}>Welcome back, {firstName}</h1>
-          <p className="intro">
-            Confirm your details to keep your place in ExpatPreneurs{" "}
-            {village.name ?? "your Village"}.
-          </p>
-
-          <div style={{ marginTop: 20 }}>
+    <FlowPage
+      title={`Welcome back, ${firstName}`}
+      lead={`Confirm your details to keep your place in ExpatPreneurs ${village.name ?? "your Village"}.`}
+      card={{ title: village.name ? `${village.name} Village` : "Your Village", line: "Your place is kept for you" }}
+    >
+          <div>
             <ReEnrolForm
               token={token}
               invite={{
@@ -79,8 +64,6 @@ export default async function ReEnrolPage({
               cityName={village.city ?? ""}
             />
           </div>
-        </div>
-      </section>
-    </PublicPage>
+    </FlowPage>
   );
 }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireMember, timeAgo } from "@/lib/member";
 import { ConnectionDecision } from "./forms";
+import { Av } from "@/components/bits";
 
 export const metadata = { title: "Messages, ExpatPreneurs Global" };
 
@@ -46,12 +47,13 @@ export default async function MessagesPage() {
   const { data: people } = peopleIds.length
     ? await supabase
         .from("profiles")
-        .select("id, full_name, headline, village_id")
+        .select("id, full_name, headline, village_id, avatar_url")
         .in("id", peopleIds)
     : { data: [] };
 
   const nameOf = (id: string) =>
     people?.find((p) => p.id === id)?.full_name ?? "A member";
+  const faceOf = (id: string) => people?.find((p) => p.id === id)?.avatar_url ?? null;
 
   return (
     <WorkspaceShell kind="member" nav="/messages">
@@ -66,12 +68,13 @@ export default async function MessagesPage() {
         {(requests ?? []).length ? (
           <section className="sec">
             <h2>Requests to connect</h2>
-            <div className="divide">
+            <div className="m-threads">
               {(requests ?? []).map((request) => (
-                <div className="li linkrow" key={request.id}>
-                  <div>
+                <div className="m-thread" key={request.id}>
+                  <Av name={nameOf(request.requester_id)} className="av-lg" src={faceOf(request.requester_id)} />
+                  <div style={{ minWidth: 0 }}>
                     <b>{nameOf(request.requester_id)}</b>
-                    <div className="muted small">{request.reason}</div>
+                    <span className="m-muted">{request.reason}</span>
                   </div>
                   <div className="rowmeta">
                     <ConnectionDecision requestId={request.id} />
@@ -90,19 +93,20 @@ export default async function MessagesPage() {
               </p>
             </div>
           ) : (
-            <div className="divide">
+            <div className="m-threads">
               {[...threads.entries()].map(([id, thread]) => (
-                <Link className="li linkrow" key={id} href={`/messages/${id}`}>
-                  <div>
+                <Link className={`m-thread ${thread.unread ? "unread" : ""}`} key={id} href={`/messages/${id}`}>
+                  <Av name={nameOf(id)} className="av-lg" src={faceOf(id)} />
+                  <div style={{ minWidth: 0 }}>
                     <b>{nameOf(id)}</b>
-                    <div className="muted small">
+                    <span className="m-muted">
                       {thread.body.slice(0, 90)}
                       {thread.body.length > 90 ? "..." : ""}
-                    </div>
+                    </span>
                   </div>
-                  <div className="rowmeta">
-                    {thread.unread ? <span className="chip chip-blue">New</span> : null}
-                    <span className="chip">{timeAgo(thread.created_at)}</span>
+                  <div className="m-status">
+                    {thread.unread ? <span className="m-kind m-offer">New</span> : null}
+                    <small>{timeAgo(thread.created_at)}</small>
                   </div>
                 </Link>
               ))}

@@ -1,4 +1,5 @@
-import { PublicPage } from "@/components/public-page";
+import { FlowPage } from "@/components/design/flow-page";
+import { PHOTO } from "@/components/design/parts";
 import { Done } from "@/components/done";
 
 export const metadata = { title: "Message sent, ExpatPreneurs Global" };
@@ -11,9 +12,7 @@ export default async function ContactSentPage({
   const { kind = "general" } = await searchParams;
 
   return (
-    <PublicPage active="/contact">
-      <main className="wrap">
-        <section className="pubsec">
+    <FlowPage photo={PHOTO.members}>
           <Done
             title="Thanks for getting in touch"
             actions={[{ label: "Back to home", href: "/", kind: "primary" }]}
@@ -24,8 +23,6 @@ export default async function ContactSentPage({
                 ? "Your request is with the Global team. They handle interviews and stories."
                 : "Your message has reached the Global team. We will reply by email."}
           </Done>
-        </section>
-      </main>
-    </PublicPage>
+    </FlowPage>
   );
 }

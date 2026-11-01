@@ -1,4 +1,5 @@
-import { PublicPage } from "@/components/public-page";
+import { FlowPage } from "@/components/design/flow-page";
+import { PHOTO } from "@/components/design/parts";
 import { Done } from "@/components/done";
 
 export const metadata = { title: "Thank you, ExpatPreneurs Global" };
@@ -11,9 +12,7 @@ export default async function SuggestionSentPage({
   const { how } = await searchParams;
 
   return (
-    <PublicPage>
-      <main className="wrap">
-        <section className="pubsec">
+    <FlowPage photo={PHOTO.table} photoAlt="Members around a table at a Village dinner">
           <Done
             title="Thank you"
             actions={[
@@ -25,8 +24,6 @@ export default async function SuggestionSentPage({
               ? "Your suggestion is with the team, and nothing on it says who sent it."
               : "Your suggestion is with the team. They read every one."}
           </Done>
-        </section>
-      </main>
-    </PublicPage>
+    </FlowPage>
   );
 }

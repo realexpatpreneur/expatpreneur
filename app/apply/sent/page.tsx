@@ -1,4 +1,5 @@
-import { PublicPage } from "@/components/public-page";
+import { FlowPage } from "@/components/design/flow-page";
+import { PHOTO } from "@/components/design/parts";
 import { Done } from "@/components/done";
 
 export const metadata = { title: "Request received, ExpatPreneurs Global" };
@@ -11,9 +12,11 @@ export default async function ApplicationSentPage({
   const { ref } = await searchParams;
 
   return (
-    <PublicPage>
-      <main className="wrap">
-        <section className="pubsec">
+    <FlowPage
+      photo={PHOTO.reader}
+      photoAlt="A member reading invitation requests"
+      card={{ title: "Read by a person", line: "Most reviews take about a week" }}
+    >
           <Done
             title="Request received"
             actions={[
@@ -32,8 +35,6 @@ export default async function ApplicationSentPage({
             Your request is being read. Someone reads every one, and you will
             hear back by email. Most reviews take about a week.
           </Done>
-        </section>
-      </main>
-    </PublicPage>
+    </FlowPage>
   );
 }

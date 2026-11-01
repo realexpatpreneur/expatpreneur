@@ -48,7 +48,7 @@ export async function WorkspaceShell({
   const home = WORKSPACE_START[kind] ?? "/home";
 
   return (
-    <div className={`mapp v2 ${spaces.length > 1 ? "" : "no-rail"} ${dark ? "admin" : ""} shell-${kind}`}>
+    <div className={`mapp v2 ws ${spaces.length > 1 ? "" : "no-rail"} ${dark ? "admin" : ""} shell-${kind}`}>
       <WorkspaceNav
         kind={kind}
         name={who}

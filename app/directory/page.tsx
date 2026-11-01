@@ -107,15 +107,15 @@ export default async function DirectoryPage({
               Search
             </button>
           </form>
-          <div className="tabs">
+          <div className="m-seg" style={{ marginTop: 16 }}>
             <Link
-              className={`chip ${scope === "mine" ? "chip-mint" : ""}`}
+              className={`fchip ${scope === "mine" ? "on" : ""}`}
               href="/directory?village=mine"
             >
               My Village
             </Link>
             <Link
-              className={`chip ${scope === "all" ? "chip-mint" : ""}`}
+              className={`fchip ${scope === "all" ? "on" : ""}`}
               href="/directory?village=all"
             >
               Every Village
