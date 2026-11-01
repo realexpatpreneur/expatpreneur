@@ -12,7 +12,7 @@ export default async function SuggestionSentPage({
   const { how } = await searchParams;
 
   return (
-    <FlowPage photo={PHOTO.table} photoAlt="Members around a table at a Village dinner">
+    <FlowPage photo={PHOTO.members}>
           <Done
             title="Thank you"
             actions={[

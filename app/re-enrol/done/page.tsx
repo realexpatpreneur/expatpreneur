@@ -6,7 +6,7 @@ export const metadata = { title: "Thank you, ExpatPreneurs Global" };
 
 export default function ReEnrolDeclinedPage() {
   return (
-    <FlowPage photo={PHOTO.table} photoAlt="Members around a table at a Village dinner">
+    <FlowPage photo={PHOTO.members}>
       <Done
         title="Thank you for being part of it"
         actions={[{ label: "Back to home", href: "/", kind: "primary" }]}

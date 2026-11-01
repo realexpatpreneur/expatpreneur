@@ -10,8 +10,8 @@ export default function ResetPasswordPage() {
     <FlowPage
       title="Reset your password"
       lead="Only if you set one. Most members sign in with a link instead, which needs no password at all."
-      photo={PHOTO.table}
-      photoAlt="Members around a table at a Village dinner"
+      photo={PHOTO.nadia}
+      photoAlt="A member at work in her cafe"
     >
       <ResetForm />
       <div className="d-aside-note">

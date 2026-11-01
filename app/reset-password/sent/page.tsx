@@ -6,7 +6,7 @@ export const metadata = { title: "Check your email, ExpatPreneurs Global" };
 
 export default function ResetSentPage() {
   return (
-    <FlowPage photo={PHOTO.table} photoAlt="Members around a table at a Village dinner">
+    <FlowPage photo={PHOTO.nadia} photoAlt="A member at work in her cafe">
       <Done
         title="Check your email"
         icon="mail"

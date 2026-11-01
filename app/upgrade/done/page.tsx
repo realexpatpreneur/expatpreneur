@@ -14,7 +14,8 @@ export default async function UpgradeDonePage({
 
   return (
     <FlowPage
-      photo={cancelled ? PHOTO.table : PHOTO.members}
+      photo={cancelled ? PHOTO.nadia : PHOTO.members}
+      photoAlt={cancelled ? "A member at work in her cafe" : "Members of a Village working together"}
       card={cancelled ? undefined : { title: "Every Village is open", line: "Members, events and introductions" }}
     >
       <Done
