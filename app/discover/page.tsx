@@ -143,7 +143,7 @@ export default async function DiscoverPage({
       <PageBlocks slug="discover">
       <div className="d-page">
         <section style={{ padding: "64px 0 72px" }}>
-          <div className="d-wrap d-hero" style={{ gridTemplateColumns: "minmax(0,1.05fr) minmax(0,.95fr)" }}>
+          <div className="d-wrap d-hero d-hero-search">
             <div>
               <p className="d-eyebrow">Discover</p>
               <h1 className="d-h1" style={{ marginTop: 16, maxWidth: "16ch" }}>Wherever you have landed, there is a Village for you.</h1>
@@ -160,7 +160,7 @@ export default async function DiscoverPage({
                   aria-label="Search the network"
                   autoComplete="off"
                 />
-                <button className="d-btn d-btn-sm d-btn-dark d-shine" type="submit" style={{ height: 40 }}>Search</button>
+                <button className="d-btn d-btn-sm d-btn-dark d-shine" type="submit">Search</button>
               </form>
               {q ? (
                 <p className="d-small" style={{ marginTop: 14 }}>
@@ -330,7 +330,7 @@ export default async function DiscoverPage({
                 {evs.map((e) => {
                   const d = new Date(e.starts_at);
                   return (
-                    <Link className="d-row d-erow" key={e.id} href={`/e/${e.slug}`} style={{ gridTemplateColumns: "84px minmax(0,1fr) 170px" }}>
+                    <Link className="d-row d-erow d-erow-3" key={e.id} href={`/e/${e.slug}`}>
                       <span className="d-d">
                         <b>{d.getDate()}</b>
                         <span>{d.toLocaleDateString("en-GB", { month: "short" })}</span>

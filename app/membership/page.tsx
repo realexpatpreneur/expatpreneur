@@ -72,7 +72,7 @@ export default async function MembershipPage() {
     <PublicPage active="/membership">
       <div className="d-page">
         <section style={{ padding: "64px 0 48px" }}>
-          <div className="d-wrap d-hero" style={{ gridTemplateColumns: "minmax(0,1.1fr) minmax(0,.9fr)", alignItems: "end" }}>
+          <div className="d-wrap d-hero d-hero-end">
             <div>
               <p className="d-eyebrow">Membership</p>
               <h1 className="d-h1" style={{ marginTop: 16, maxWidth: "17ch" }}>Your people. Your opportunities. Your village.</h1>
