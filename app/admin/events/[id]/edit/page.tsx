@@ -22,7 +22,7 @@ export default async function EditEventPage({
   if (!event) notFound();
 
   const [{ data: villages }, { data: circles }] = await Promise.all([
-    supabase.from("villages").select("id, name").order("name"),
+    supabase.from("villages").select("id, name").neq("status", "archived").order("name"),
     supabase.from("circles").select("id, name, village_id").order("name"),
   ]);
 

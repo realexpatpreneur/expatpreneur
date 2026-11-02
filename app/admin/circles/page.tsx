@@ -19,7 +19,7 @@ export default async function AdminCirclesPage({
     await Promise.all([
       supabase.from("circle_rooms").select("*").order("name"),
       supabase.from("circle_capacity").select("circle_id, members, places_left"),
-      supabase.from("villages").select("id, name").order("name"),
+      supabase.from("villages").select("id, name").neq("status", "archived").order("name"),
     ]);
 
   const mine = (circles ?? []).filter(

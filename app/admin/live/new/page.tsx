@@ -11,7 +11,7 @@ export default async function NewSessionPage() {
 
   const [{ data: villages }, { data: circles }, { data: groups }, { data: pods }, { data: events }] =
     await Promise.all([
-      supabase.from("villages").select("id, name").order("name"),
+      supabase.from("villages").select("id, name").neq("status", "archived").order("name"),
       supabase.from("circles").select("id, name, village_id").order("name"),
       supabase.from("industry_groups").select("id, name").order("name"),
       supabase.from("pods").select("id, name, village_id").order("name"),
