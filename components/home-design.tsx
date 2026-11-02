@@ -67,7 +67,7 @@ export function HomeDesign({ villages }: { villages: Village[] }) {
     .join(" ");
 
   return (
-    <div className="d-page d-type-figtree">
+    <div className="d-page">
       {/* Hero */}
       <section style={{ padding: "72px 0 80px" }}>
         <div className="d-wrap d-hero">
