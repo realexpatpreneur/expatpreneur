@@ -12,6 +12,7 @@ import {
   whenText,
   priceText,
   registrationBlock,
+  EVENT_COLUMNS,
   type EventRow as EventData,
 } from "@/lib/events";
 
@@ -29,9 +30,14 @@ export default async function EventsPage({
   const supabase = await createClient();
   const t = await pageText("events");
 
+  // Not a star. 0074 took the table wide grant off events and gave back
+  // a named list without online_url and address, so a star names two
+  // columns this role cannot read and the whole query is refused. The
+  // list came back empty and the page said "Nothing on the calendar yet"
+  // with ten events in the table.
   let query = supabase
     .from("events")
-    .select("*")
+    .select(EVENT_COLUMNS)
     .eq("status", "published")
     .gte("starts_at", new Date().toISOString())
     .order("starts_at")

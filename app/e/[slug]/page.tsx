@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { whenText, priceText, type EventRow } from "@/lib/events";
+import { whenText, priceText, EVENT_COLUMNS, type EventRow } from "@/lib/events";
 import { PublicPage } from "@/components/public-page";
 import { GuestRegisterForm } from "@/app/events/forms";
 
@@ -18,9 +18,11 @@ export default async function PublicEventPage({
   const { registered } = await searchParams;
   const supabase = await createClient();
 
+  // Same as /events: a star on events is a permission error since 0074,
+  // so every public event link has been answering not found.
   const { data } = await supabase
     .from("events")
-    .select("*")
+    .select(EVENT_COLUMNS)
     .eq("slug", slug)
     .eq("visibility", "public")
     .eq("status", "published")

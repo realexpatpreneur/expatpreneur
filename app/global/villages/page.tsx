@@ -12,9 +12,16 @@ export default async function GlobalVillagesPage({
   const { done } = await searchParams;
   const supabase = await createClient();
 
+  // Not a star. 0076 took the table wide grant off villages and gave
+  // back a named list without the Local Admin's own notes, which live in
+  // the village_settings view now, so a star is a permission error and
+  // this table came back empty with three Villages in it. These are the
+  // granted columns, and the form beside the table uses all of them.
   const { data: villages } = await supabase
     .from("villages")
-    .select("*")
+    .select(
+      "id, slug, name, city, country, timezone, status, summary, cover_url, launched_on, currency, paid_launch_on, created_at, updated_at"
+    )
     .order("name");
 
   return (

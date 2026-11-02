@@ -37,11 +37,20 @@ export async function sendReport(
   // notification itself.
   try {
     const service = createAdminClient();
-    const { data: me } = await service
-      .from("profiles")
-      .select("village_id")
-      .eq("id", user.id)
-      .maybeSingle();
+
+    // The Village of the person reported, not of the person reporting.
+    // That is where the report belongs, it is what the trigger in 0082
+    // writes on the row, and it is therefore the only Village whose
+    // Local Admins can read it. Picking the reporter's Village sent the
+    // notification to admins who would open the page and find nothing,
+    // and left the ones who could act on it unaware.
+    const { data: subject } = subjectId
+      ? await service
+          .from("profiles")
+          .select("village_id")
+          .eq("id", subjectId)
+          .maybeSingle()
+      : { data: null };
 
     const { data: admins } = await service
       .from("member_roles")
@@ -50,15 +59,19 @@ export async function sendReport(
       .in("role", ["local_admin", "global_admin"]);
 
     for (const admin of admins ?? []) {
-      const relevant =
-        admin.role === "global_admin" || admin.scope_id === me?.village_id;
-      if (!relevant) continue;
+      const isGlobal = admin.role === "global_admin";
+      const theirs =
+        isGlobal ||
+        (Boolean(subject?.village_id) && admin.scope_id === subject?.village_id);
+      if (!theirs) continue;
       await notify(
         admin.profile_id,
         "report",
         "A member reported something",
         "It is waiting in moderation.",
-        "/global/moderation"
+        // A Local Admin cannot open /global/moderation; requireGlobal
+        // turns them around at the door. Theirs is /admin/reports.
+        isGlobal ? "/global/moderation" : "/admin/reports"
       );
     }
   } catch {
