@@ -351,11 +351,17 @@ export default async function SettingsPage({
                   </div>
                 </div>
 
-                <div className="panel">
-                  <h3>Blocked members</h3>
-                  {(blockedPeople ?? []).length === 0 ? (
-                    <p className="muted small">You have not blocked anyone.</p>
-                  ) : (
+                {/* The blocks table, its policies and its grant all
+                    exist, and nothing in the platform inserts a block or
+                    reads one, so there is no way to block anybody and this
+                    panel could only ever say nobody is blocked. It is
+                    shown only when there is something in it, which today
+                    means never, rather than implying a feature that is not
+                    there. Anybody who needs somebody dealt with uses
+                    /report, which does work. */}
+                {(blockedPeople ?? []).length > 0 ? (
+                  <div className="panel">
+                    <h3>Blocked members</h3>
                     <div className="stack" style={{ marginTop: 12 }}>
                       {(blockedPeople ?? []).map((person) => (
                         <UnblockButton
@@ -365,8 +371,8 @@ export default async function SettingsPage({
                         />
                       ))}
                     </div>
-                  )}
-                </div>
+                  </div>
+                ) : null}
 
                 <div className="panel">
                   <h3>Leaving</h3>

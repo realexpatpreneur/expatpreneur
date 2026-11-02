@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { currentMember, currentRoles, workspacesFor } from "@/lib/member";
+import { createClient } from "@/lib/supabase/server";
 import { Ic } from "@/components/icon";
 import { SidebarToggle } from "@/components/sidebar-toggle";
 import { WorkspaceNav } from "@/components/workspace-nav";
@@ -46,6 +47,20 @@ export async function WorkspaceShell({
   const who: string = name ?? member?.full_name ?? "You";
   const face = member?.avatar_url ?? null;
 
+  // How many are actually unread, for the dot. Own rows only, which the
+  // notifications policy already enforces, and a head count rather than
+  // the rows themselves because the number is all this needs.
+  let unread = 0;
+  if (member?.id) {
+    const supabase = await createClient();
+    const { count } = await supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("profile_id", member.id)
+      .is("read_at", null);
+    unread = count ?? 0;
+  }
+
   const spaces = SPACES[kind] ?? SPACES.member;
   const dark = kind === "admin" || kind === "global";
   const home = WORKSPACE_START[kind] ?? "/home";
@@ -87,9 +102,14 @@ export async function WorkspaceShell({
               Post an Ask or Offer
             </Link>
           ) : null}
+          {/* The dot was rendered unconditionally, on every member page,
+              for ever. Nothing counted anything, and /notifications marks
+              everything read as soon as it is opened, so it said there was
+              something new whether or not there was, which is the same as
+              saying nothing. */}
           <Link className="iconbtn" aria-label="Notifications" href="/notifications">
             <Ic name="bell" />
-            <span className="dot" />
+            {unread > 0 ? <span className="dot" /> : null}
           </Link>
           <Link className="show-m" href="/more">
             <Av name={who} className="av-sm" src={face} />

@@ -125,18 +125,16 @@ export function SessionForm({
             <small>A host lets people in one by one.</small>
           </span>
         </label>
-        <label className="check">
-          <input type="checkbox" name="chat" defaultChecked />
-          <span>
-            <b>Chat</b>
-          </span>
-        </label>
-        <label className="check">
-          <input type="checkbox" name="hand_raise" defaultChecked />
-          <span>
-            <b>Hands and questions</b>
-          </span>
-        </label>
+        {/* Chat and "Hands and questions" were checkboxes here. Both
+            wrote their column and nothing ever read either: the room
+            mounts LiveKit's conference unconditionally, so chat is always
+            on and hand raising is whatever LiveKit gives, whichever way
+            the boxes were set. Turning one off changed nothing and the
+            host had no way of knowing. */}
+        <p className="muted small">
+          Chat and raised hands are always on in the room. They come from
+          the room itself rather than from a setting here.
+        </p>
         <div className="g2">
           <label className="field">
             <span>Room size</span>

@@ -224,16 +224,29 @@ export function NotificationForm({
     {}
   );
 
+  // Every row said "Email and push". There is no push: no service
+  // worker, no VAPID key, no Notification call anywhere in app, lib,
+  // components or public. So that half was never true and is gone.
+  //
+  // Two rows are gone with it. Replies had nothing that sends one, so
+  // the switch controlled nothing, and the reply itself always appears in
+  // the bell whatever it was set to. Weekly digest is not even a case in
+  // wants_email and no job anywhere produces a Monday summary: the only
+  // two scheduled jobs are the event reminders and the recordings tidy.
+  // Either can come back the day something sends it.
+  //
+  // Event reminders used to say "in your time zone". profiles.time_zone
+  // is written in these settings and read back only to draw its own
+  // select; the job fires on absolute hours and formats times in the
+  // event's zone.
   const rows: [keyof typeof prefs, string, string][] = [
-    ["replies", "Replies to my Asks and Offers", "Email and push"],
     [
       "messages",
       "New messages",
-      "Email and push. Important because daily chat is on WhatsApp.",
+      "By email. Important because daily chat is on WhatsApp.",
     ],
-    ["events", "Event reminders", "The day before, in your time zone"],
-    ["announcements", "Village announcements", ""],
-    ["digest", "Weekly digest", "A summary every Monday"],
+    ["events", "Event reminders", "By email, the day before and an hour before"],
+    ["announcements", "Village announcements", "By email"],
     [
       "newsletter",
       "Newsletter and news",

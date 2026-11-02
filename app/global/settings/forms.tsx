@@ -130,51 +130,37 @@ export function SecurityForm({
       {state.error ? <div className="flag hold">{state.error}</div> : null}
       {state.done ? <div className="flag ok">Saved.</div> : null}
 
-      <label className="check">
-        <input
-          type="checkbox"
-          name="two_step_leaders"
-          defaultChecked={on("two_step_leaders")}
-        />
-        <span>
-          <b>Two step sign in for all leaders</b>
-        </span>
-      </label>
+      {/* Four checkboxes used to sit here: two step sign in for leaders,
+          two step for members, daily backups "Kept for 30 days", and
+          remove access when a role ends. All four wrote a settings row
+          and were read by nothing but their own tick. There is no second
+          factor, TOTP or verification code anywhere in app, lib or
+          components, so two of them described a feature that does not
+          exist, and the Integrations tab on this same screen already has
+          a panel admitting its own unkeyed rows "are notes, because
+          nothing on the platform reads them yet" while this tab had none.
 
-      <label className="check">
-        <input
-          type="checkbox"
-          name="two_step_members"
-          defaultChecked={on("two_step_members")}
-        />
-        <span>
-          <b>Two step sign in for members</b>
-          <small>Optional for members</small>
-        </span>
-      </label>
-
-      <label className="check">
-        <input
-          type="checkbox"
-          name="daily_backups"
-          defaultChecked={on("daily_backups")}
-        />
-        <span>
-          <b>Daily backups</b>
-          <small>Kept for 30 days</small>
-        </span>
-      </label>
-
-      <label className="check">
-        <input
-          type="checkbox"
-          name="access_ends_with_role"
-          defaultChecked={on("access_ends_with_role")}
-        />
-        <span>
-          <b>Remove access immediately when a role ends</b>
-        </span>
-      </label>
+          They are statements of what is true now rather than switches,
+          because a switch that cannot be off is a lie either way. */}
+      <div className="panel panel-wash">
+        <h3 style={{ fontSize: 14 }}>How sign in and access work</h3>
+        <ul className="plain" style={{ marginTop: 8 }}>
+          <li>
+            Signing in is by emailed link, or by a password if somebody set
+            one in their settings. There is no second step, for leaders or
+            for members, and nothing here can turn one on.
+          </li>
+          <li>
+            Access ends with a role, always. A role that carries membership
+            ending is treated as a membership ending, which closes the
+            member side on the next page they open. It is not optional.
+          </li>
+          <li>
+            Backups belong to the database host rather than to this
+            platform, so they are neither set nor reported here.
+          </li>
+        </ul>
+      </div>
 
       <button className="btn btn-primary" type="submit" disabled={pending}>
         {pending ? "Saving" : "Save"}

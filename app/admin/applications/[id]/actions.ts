@@ -256,6 +256,17 @@ export async function waitlistApplication(
     );
   }
 
+  // Nothing recorded this. /global/settings says "Every decision a
+  // leader makes is recorded" and /global/audit already has a label for
+  // this exact action, waiting for a record that never arrived.
+  await createAdminClient().from("audit_log").insert({
+    actor_id: admin.userId,
+    action: "application.waitlisted",
+    entity: "applications",
+    entity_id: id,
+    meta: { note: note || null },
+  });
+
   revalidatePath("/admin/applications");
   redirect(`/admin/applications/${id}?done=waitlisted`);
 }
@@ -303,6 +314,16 @@ export async function declineApplication(
       }
     );
   }
+
+  // Same again, and this is the decision most likely to be questioned
+  // later, which makes it the worst one to have been leaving out.
+  await createAdminClient().from("audit_log").insert({
+    actor_id: admin.userId,
+    action: "application.declined",
+    entity: "applications",
+    entity_id: id,
+    meta: { reason: reason || null },
+  });
 
   revalidatePath("/admin/applications");
   redirect(`/admin/applications/${id}?done=declined`);

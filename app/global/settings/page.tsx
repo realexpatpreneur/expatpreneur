@@ -125,7 +125,8 @@ export default async function SystemSettingsPage({
                   <h3>The record</h3>
                   <p className="muted small" style={{ marginTop: 8 }}>
                     Every decision a leader makes is recorded: memberships,
-                    roles, moderation, and anything called off.
+                    roles, moderation, applications approved, waitlisted or
+                    declined, and anything called off.
                   </p>
                   <Link className="btn btn-ghost" href="/global/audit">
                     Audit log

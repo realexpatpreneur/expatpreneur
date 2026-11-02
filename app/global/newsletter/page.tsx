@@ -59,8 +59,10 @@ export default async function NewsletterPage() {
       {flodeskReady ? null : (
         <div className="flag hold" style={{ marginTop: 16 }}>
           Flodesk is not connected, so nothing here has reached it. Signups
-          are being kept, and they go across on the day the key is set.
-          supabase/setup/flodesk-setup.md has the three settings.
+          are being kept, and the Download button is how they get across:
+          nothing sends them on its own when the key is set, which this
+          used to promise. supabase/setup/flodesk-setup.md has the three
+          settings.
         </div>
       )}
 

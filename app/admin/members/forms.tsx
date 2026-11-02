@@ -205,15 +205,18 @@ export function AnnouncementForm({ villageName }: { villageName: string | null }
     <form action={action} className="panel" style={{ maxWidth: 720 }}>
       {state.error ? <div className="flag hold">{state.error}</div> : null}
 
-      <label className="field">
-        <span>Who is it for?</span>
-        <select name="audience" defaultValue="village">
-          <option value="village">
-            {villageName ? `${villageName} Village` : "My Village"}
-          </option>
-          <option value="circle">One Circle</option>
-        </select>
-      </label>
+      {/* This was a choice between the Village and "One Circle". The
+          answer was written to the row and read by nothing, there was no
+          Circle to pick, and sendAnnouncement tells every active member
+          of the whole Village either way, so choosing a Circle sent it to
+          everybody and then said "Sent." It goes to the Village, and says
+          so, until there is something to choose with. */}
+      <input type="hidden" name="audience" value="village" />
+      <p className="muted small">
+        Everybody active in{" "}
+        {villageName ? `the ${villageName} Village` : "your Village"} hears
+        this once, in the platform and by email.
+      </p>
 
       <label className="field">
         <span>Title</span>

@@ -180,9 +180,11 @@ export default async function GlobalRequestsPage() {
                     </p>
                   ) : null}
                   <p className="muted small">
-                    A copy is put together by hand for now and sent to that
-                    address. Removal means the profile, the posts and the
-                    messages, and it cannot be undone.
+                    This records your decision and tells the member it was
+                    looked at. It does not export or delete anything: a copy
+                    is put together by hand and sent to that address, and a
+                    removal is carried out by hand too. Nothing here touches
+                    the profile, the posts or the messages.
                   </p>
                   <DataDecision id={request.id} />
                 </div>
