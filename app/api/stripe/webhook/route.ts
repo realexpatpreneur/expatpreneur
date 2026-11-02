@@ -638,9 +638,28 @@ async function handle(event: Stripe.Event) {
     const live = ["active", "trialing"].includes(subscription.status);
 
     if (profileId) {
+      // Where the renewal date lives depends on the API version the
+      // destination is set to. Stripe moved current_period_start and
+      // current_period_end off the subscription and onto each
+      // subscription item in 2025-03-31.basil, so on basil and on
+      // anything later, which is every version this account can pick,
+      // subscription.current_period_end is simply not there.
+      //
+      // This read it off the subscription behind a cast, which silenced
+      // the compiler, and then ?? null swallowed the undefined. So the
+      // line below claiming the renewal date is finally being written
+      // would have gone on writing null for ever, and Settings would
+      // have gone on saying "Not known yet". Reading it from the first
+      // item is the fix; the old place is kept as a fallback in case the
+      // destination is ever pinned to a version before basil.
+      const item = subscription.items?.data?.[0] as
+        | { current_period_end?: number }
+        | undefined;
       const periodEnd =
+        item?.current_period_end ??
         (subscription as unknown as { current_period_end?: number })
-          .current_period_end ?? null;
+          .current_period_end ??
+        null;
 
       must(
         "updating the subscription",
@@ -648,8 +667,6 @@ async function handle(event: Stripe.Event) {
           .from("subscriptions")
           .update({
             status: ended ? "cancelled" : live ? "active" : "past_due",
-            // Read in three places and written in none, so the renewal
-            // date has never once appeared.
             current_period_end: periodEnd
               ? new Date(periodEnd * 1000).toISOString()
               : null,
