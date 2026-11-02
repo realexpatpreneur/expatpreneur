@@ -7,8 +7,9 @@ import { requireAdmin } from "@/lib/access";
 
 const stages: Record<string, string[]> = {
   review: ["new", "with_local"],
+  recommended: ["recommended"],
   waitlist: ["waitlisted"],
-  decided: ["approved", "declined", "recommended"],
+  decided: ["approved", "declined"],
 };
 
 export default async function ApplicationsPage({
@@ -35,9 +36,9 @@ export default async function ApplicationsPage({
   );
 
   const chipFor = (status: string) =>
-    status === "approved" || status === "recommended"
+    status === "approved"
       ? "chip-mint"
-      : status === "waitlisted"
+      : status === "waitlisted" || status === "recommended"
         ? "chip-sun"
         : status === "declined"
           ? ""
@@ -54,6 +55,7 @@ export default async function ApplicationsPage({
         {(
           [
             ["review", "To review"],
+            ["recommended", "With the Global team"],
             ["waitlist", "Waitlist"],
             ["decided", "Decided"],
           ] as [string, string][]

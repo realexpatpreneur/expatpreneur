@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, nationalityMix, NATIONALITY_LIMIT } from "@/lib/access";
-import { ApproveForm, WaitlistForm, DeclineForm } from "./decision-forms";
+import { ApproveForm, WaitlistForm, DeclineForm, RecommendForm } from "./decision-forms";
 import { Crumbs } from "@/components/crumbs";
 
 const doneText: Record<string, string> = {
@@ -21,7 +21,7 @@ export default async function ApplicationPage({
   const { id } = await params;
   const { done } = await searchParams;
 
-  await requireAdmin();
+  const admin = await requireAdmin();
   const supabase = await createClient();
 
   const { data: application } = await supabase
@@ -34,7 +34,7 @@ export default async function ApplicationPage({
 
   const villageId = application.village_id as string | null;
 
-  const [{ data: village }, { data: members }, { data: circles }] =
+  const [{ data: village }, { data: members }, { data: circles }, { data: settings }, { data: over }] =
     await Promise.all([
       villageId
         ? supabase.from("villages").select("name").eq("id", villageId).maybeSingle()
@@ -52,7 +52,24 @@ export default async function ApplicationPage({
             .select("circle_id, name, places_left")
             .eq("village_id", villageId)
         : Promise.resolve({ data: [] }),
+      supabase.from("settings").select("key, value"),
+      // The same function the trigger in 0084 uses, so the screen and the
+      // rule cannot disagree. It was 0.3 hardcoded in lib/access.ts here
+      // while /admin/mix and /admin read settings.nationality_limit, and
+      // nothing anywhere read nationality_from_size, so a two person
+      // Village would have shown a hundred percent and a warning.
+      villageId
+        ? supabase.rpc("nationality_over_the_limit", {
+            p_village: villageId,
+            p_nationalities: application.nationalities ?? [],
+          })
+        : Promise.resolve({ data: null }),
     ]);
+
+  const values = Object.fromEntries(
+    ((settings ?? []) as { key: string; value: string }[]).map((x) => [x.key, x.value])
+  );
+  const limitPercent = Number(values.nationality_limit ?? 30);
 
   // Internal balance check. This never leaves the admin workspace.
   const mix = nationalityMix(members ?? []);
@@ -63,13 +80,11 @@ export default async function ApplicationPage({
     const after = total + 1 === 0 ? 0 : (now + 1) / (total + 1);
     return { nat, now, share: after, over: after > NATIONALITY_LIMIT };
   });
-  const overLimit = checks.filter((c) => c.over);
-  const warning =
-    overLimit.length > 0
-      ? `Approving takes ${overLimit
-          .map((c) => `${c.nat} to ${Math.round(c.share * 100)} percent`)
-          .join(" and ")} of this Village. You can still approve.`
-      : null;
+  // "You can still approve." was true and is not any more. 0084 refuses
+  // it, and the Global team is the way through.
+  const warning = over
+    ? `Approving takes ${over} above ${limitPercent} percent of this Village, so it is refused. Recommend it to the Global team and they can decide.`
+    : null;
 
   const answers = (application.answers ?? {}) as Record<string, string | string[]>;
   const text = (key: string) => {
@@ -191,8 +206,9 @@ export default async function ApplicationPage({
             <div className="panel panel-wash">
               <h3>Village balance</h3>
               <p className="muted small">
-                Internal only. No Village goes above 30 percent of one
-                nationality. This is never mentioned to applicants or members.
+                Internal only. No Village goes above {limitPercent} percent of
+                one nationality, and an approval that would is refused. This is
+                never mentioned to applicants or members.
               </p>
               {total === 0 ? (
                 <p className="muted small">
@@ -238,7 +254,13 @@ export default async function ApplicationPage({
               </div>
             ) : (
               <>
-                <ApproveForm id={id} circles={openCircles} warning={warning} />
+                <ApproveForm
+                  id={id}
+                  circles={openCircles}
+                  warning={warning}
+                  isGlobal={admin.isGlobal}
+                />
+                <RecommendForm id={id} />
                 <WaitlistForm id={id} />
                 <DeclineForm id={id} />
               </>

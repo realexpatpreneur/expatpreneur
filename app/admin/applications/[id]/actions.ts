@@ -46,6 +46,24 @@ export async function approveApplication(
     return { error: "Choose a Village for this person before approving." };
   }
 
+  // The balance limit. 0084 made it real, so this asks before writing
+  // rather than letting the trigger raise, which lets a Local Admin be
+  // told what to do about it. The trigger is still there behind this.
+  const clearIt = formData.get("over_the_limit") === "on";
+  const service0 = createAdminClient();
+  const { data: over } = await service0.rpc("nationality_over_the_limit", {
+    p_village: application.village_id,
+    p_nationalities: application.nationalities ?? [],
+  });
+
+  if (over && !(admin.isGlobal && clearIt)) {
+    return {
+      error: admin.isGlobal
+        ? `Approving this would put ${over} above the balance limit for this Village. Tick the box to approve it anyway and it will be recorded against your name.`
+        : `Approving this would put ${over} above the balance limit for this Village. Recommend it to the Global team and they will decide.`,
+    };
+  }
+
   // Their own words about what they need and what they offer, carried
   // onto the profile only if they said the Village could see them. The
   // introduction they find waiting is built from these.
@@ -111,6 +129,12 @@ export async function approveApplication(
       status: "approved",
       decided_by: admin.userId,
       decided_at: invitedAt.toISOString(),
+      ...(over
+        ? {
+            nationality_cleared_by: admin.userId,
+            nationality_cleared_at: invitedAt.toISOString(),
+          }
+        : {}),
       profile_id: userId,
       circle_id: circleId,
       invited_at: invitedAt.toISOString(),
@@ -282,4 +306,50 @@ export async function declineApplication(
 
   revalidatePath("/admin/applications");
   redirect(`/admin/applications/${id}?done=declined`);
+}
+// A tricky one goes to the Global team rather than being decided locally.
+// /apply/status has always described this stage and nothing could reach
+// it until 0084. A Local Admin stopped by the balance limit uses this.
+export async function recommendApplication(
+  _prev: DecisionState,
+  formData: FormData
+): Promise<DecisionState> {
+  const id = String(formData.get("id"));
+  const note = String(formData.get("note") ?? "").trim();
+  const admin = await requireAdmin();
+  const supabase = await createClient();
+
+  const { data: application, error } = await supabase
+    .from("applications")
+    .update({ status: "recommended", local_note: note, reviewed_by: admin.userId })
+    .eq("id", id)
+    .select("full_name, village_id")
+    .maybeSingle();
+  if (error) return { error: error.message };
+
+  // Somebody has to know it is waiting, or it sits in a queue nobody
+  // opens. This is the kind of promise the audit found broken in eleven
+  // other places, so it is not going to be broken here.
+  if (application) {
+    const service = createAdminClient();
+    const { data: globals } = await service
+      .from("member_roles")
+      .select("profile_id")
+      .eq("role", "global_admin")
+      .is("ended_at", null);
+
+    const { notify } = await import("@/lib/notify");
+    for (const person of globals ?? []) {
+      await notify(
+        person.profile_id,
+        "application",
+        "A Village has recommended somebody",
+        `${application.full_name} is waiting for the final word.`,
+        "/admin/applications?stage=recommended"
+      );
+    }
+  }
+
+  revalidatePath("/admin/applications");
+  redirect(`/admin/applications/${id}?done=recommended`);
 }

@@ -90,9 +90,12 @@ export default async function VillageMixPage() {
             )}
 
             <p className="muted small" style={{ marginTop: 12 }}>
-              The dark marker shows the {limit} percent limit. When a
-              nationality reaches it, new requests from that nationality wait
-              until the balance allows. The Village itself is never capped.
+              The dark marker shows the {limit} percent limit. Approving
+              somebody whose nationality would go above it is refused, and the
+              Global team is the only one who can decide to go ahead anyway.
+              The rule stays quiet until a Village has {fromSize} members,
+              because a share means nothing before that. The Village itself is
+              never capped.
             </p>
           </div>
 
