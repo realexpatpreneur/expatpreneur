@@ -21,7 +21,10 @@ export default async function VillageSettingsPage() {
 
   const { data: villages } = await supabase
     .from("villages")
-    .select("id, name, timezone, visitor_places, summary")
+    // visitor_places is one of the working numbers a Village keeps, and
+    // 0076 took those off the table for everybody. village_settings
+    // serves them to the admins of that Village.
+    .select("id, name, timezone, summary")
     .in(
       "id",
       admin.villageIds.length
@@ -29,6 +32,19 @@ export default async function VillageSettingsPage() {
         : ["00000000-0000-0000-0000-000000000000"]
     )
     .order("name");
+
+  const { data: villageSettings } = await supabase
+    .from("village_settings")
+    .select("id, visitor_places");
+
+  const places = new Map(
+    (villageSettings ?? []).map((r) => [r.id, (r.visitor_places as number) ?? 6])
+  );
+
+  const withPlaces = (villages ?? []).map((v) => ({
+    ...v,
+    visitor_places: places.get(v.id) ?? 6,
+  }));
 
   // The Local Admins of these Villages, which the prototype lists here.
   const { data: adminRoles } = await supabase
@@ -61,10 +77,10 @@ export default async function VillageSettingsPage() {
 
         <section className="sec">
           <div className="stack" style={{ maxWidth: 820 }}>
-            {(villages ?? []).length === 0 ? (
+            {withPlaces.length === 0 ? (
               <p className="muted">You do not run a Village yet.</p>
             ) : (
-              (villages ?? []).map((village) => (
+              withPlaces.map((village) => (
                 <VillageSettingsForm key={village.id} village={village} />
               ))
             )}

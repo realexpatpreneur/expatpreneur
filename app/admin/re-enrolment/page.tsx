@@ -53,7 +53,7 @@ export default async function ReEnrolmentPage({
     villageId
       ? supabase
           .from("villages")
-          .select("id, name, reenrol_deadline")
+          .select("id, name")
           .eq("id", villageId)
           .maybeSingle()
       : Promise.resolve({ data: null }),
@@ -67,6 +67,19 @@ export default async function ReEnrolmentPage({
           .order("full_name")
       : Promise.resolve({ data: [] }),
   ]);
+
+  // reenrol_deadline is one of the working numbers 0076 took off the
+  // villages table for everybody; village_settings serves them to the
+  // admins of that Village.
+  const { data: vs } = villageId
+    ? await supabase
+        .from("village_settings")
+        .select("reenrol_deadline")
+        .eq("id", villageId)
+        .maybeSingle()
+    : { data: null };
+
+  const deadline = (vs?.reenrol_deadline as string | null) ?? null;
 
   const rows = people ?? [];
   const count = (s: string) => rows.filter((r) => r.status === s).length;
@@ -207,14 +220,14 @@ export default async function ReEnrolmentPage({
           <div className="panel">
             <h3 style={{ fontSize: 14 }}>Deadline</h3>
             <p className="muted small" style={{ marginTop: 8 }}>
-              {village?.reenrol_deadline
-                ? `Currently ${new Date(village.reenrol_deadline).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.`
+              {deadline
+                ? `Currently ${new Date(deadline).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.`
                 : "None set."}
             </p>
             {villageId ? (
               <DeadlineForm
                 villageId={villageId}
-                deadline={village?.reenrol_deadline ?? null}
+                deadline={deadline}
               />
             ) : null}
           </div>

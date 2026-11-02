@@ -81,6 +81,21 @@ export async function decideOnParticipant(
   const slug = String(formData.get("slug"));
   const decision = String(formData.get("decision"));
 
+  // The comment under these two used to say the database checks again
+  // that the person pressing this really is a host. It did not: the
+  // policy ended in `with check (true)`. 0076 adds the trigger that does,
+  // and this asks first so the refusal reads like a sentence rather than
+  // a Postgres exception.
+  const { data: seat } = await supabase
+    .from("session_participants")
+    .select("session_id")
+    .eq("id", String(formData.get("participant_id")))
+    .maybeSingle();
+
+  if (!seat || !(await hostOf(seat.session_id))) {
+    return { error: "Only a host of this room can do that." };
+  }
+
   const patch =
     decision === "admit"
       ? { state: "admitted", joined_at: new Date().toISOString() }
@@ -105,6 +120,21 @@ export async function setParticipantRole(
 ): Promise<LiveState> {
   const supabase = await createClient();
   const slug = String(formData.get("slug"));
+
+  // The comment under these two used to say the database checks again
+  // that the person pressing this really is a host. It did not: the
+  // policy ended in `with check (true)`. 0076 adds the trigger that does,
+  // and this asks first so the refusal reads like a sentence rather than
+  // a Postgres exception.
+  const { data: seat } = await supabase
+    .from("session_participants")
+    .select("session_id")
+    .eq("id", String(formData.get("participant_id")))
+    .maybeSingle();
+
+  if (!seat || !(await hostOf(seat.session_id))) {
+    return { error: "Only a host of this room can do that." };
+  }
 
   const { error } = await supabase
     .from("session_participants")

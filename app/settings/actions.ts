@@ -44,10 +44,20 @@ export async function saveAccount(
     if (error) return { error: "That password could not be set." };
   }
 
+  // The profile carries a copy of the address, and it is the confirmed
+  // one. Supabase only moves auth.users.email once the person clicks the
+  // link in it, so writing the typed value here would point every email
+  // the platform sends at an address nobody has proved they own. 0076
+  // refuses that write; this keeps the copy in step with what is actually
+  // confirmed.
+  const {
+    data: { user: fresh },
+  } = await supabase.auth.getUser();
+
   const { error } = await supabase
     .from("profiles")
     .update({
-      email: email || undefined,
+      email: fresh?.email ?? undefined,
       phone: String(formData.get("phone") ?? "").trim() || null,
       time_zone: String(formData.get("time_zone") ?? "Asia/Dubai"),
       language: String(formData.get("language") ?? "English"),
