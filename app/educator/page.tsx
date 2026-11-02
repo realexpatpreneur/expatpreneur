@@ -3,7 +3,7 @@ import { Stat } from "@/components/admin-bits";
 import { Ic } from "@/components/icon";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember, isPaid } from "@/lib/member";
+import { requireMember } from "@/lib/member";
 import { Lock } from "@/components/lock";
 import { CourseForm } from "./forms";
 
@@ -76,7 +76,7 @@ export default async function EducatorPage({
             <Ic name="info" />
             <span>
               Courses are written by Educators. Ask the Global team about the
-              role, and until then saving will be refused.
+              role; until you hold it, saving is refused.
             </span>
           </div>
         ) : null}
@@ -159,11 +159,12 @@ export default async function EducatorPage({
                 ))
               )}
             </div>
-            {isPaid(member) || isEducator ? (
+            {isEducator ? (
               <CourseForm />
             ) : (
               <Lock note="">
-                Hosting a workshop is part of Village Membership.
+                Courses are written by Educators. The Global team gives out the
+                role.
               </Lock>
             )}
           </div>
