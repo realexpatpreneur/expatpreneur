@@ -76,30 +76,55 @@ export function FinishSignIn({ next }: { next: string }) {
 
   if (outcome === "working") {
     return (
-      <div className="panel">
-        <h3>Signing you in</h3>
-        <p className="muted small" style={{ marginTop: 8 }}>
-          One moment.
-        </p>
-      </div>
+      <>
+        <Head title="Almost in." lead="Your link is being checked. This takes a second and then the site opens." />
+        <div className="panel">
+          <h3>Signing you in</h3>
+          <p className="muted small" style={{ marginTop: 8 }}>
+            One moment.
+          </p>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="panel">
-      <div className="flag hold">
-        {outcome === "expired"
-          ? "That link has been used already, or it is more than an hour old."
-          : "This page was opened without a sign in link."}
+    <>
+      <Head
+        title="That link is spent."
+        lead="Nothing is wrong with your membership. A fresh link puts you back where you were going."
+      />
+      <div className="panel">
+        <div className="flag hold">
+          {outcome === "expired"
+            ? "That link has been used already, or it is more than an hour old."
+            : "This page was opened without a sign in link."}
+        </div>
+        <p className="muted small" style={{ marginTop: 12 }}>
+          Links last an hour and work once. Ask for a fresh one and it will
+          come to the same address your invitation went to.
+        </p>
+        <p className="muted small" style={{ marginTop: 12 }}>
+          <Link href={`/login?next=${encodeURIComponent(next)}`}>
+            Send me a new link
+          </Link>
+        </p>
       </div>
-      <p className="muted small" style={{ marginTop: 12 }}>
-        Links last an hour and work once. Ask for a fresh one and it will
-        come to the same address your invitation went to.
-      </p>
-      <p className="muted small" style={{ marginTop: 12 }}>
-        <Link href={`/login?next=${encodeURIComponent(next)}`}>
-          Send me a new link
-        </Link>
+    </>
+  );
+}
+
+// FlowPage draws the heading for every other screen on the way in. Here
+// it has to move inside, because what the heading should say is only
+// known once the link has been looked at.
+function Head({ title, lead }: { title: string; lead: string }) {
+  return (
+    <div style={{ marginBottom: 28 }}>
+      <h1 className="d-h1" style={{ fontSize: "clamp(30px, 3.2vw, 42px)" }}>
+        {title}
+      </h1>
+      <p className="d-lead" style={{ marginTop: 12, fontSize: 17 }}>
+        {lead}
       </p>
     </div>
   );

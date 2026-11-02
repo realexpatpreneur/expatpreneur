@@ -22,12 +22,10 @@ export default async function FinishPage({
     asked.startsWith("/") && !asked.startsWith("//") ? asked : "/home";
 
   return (
-    <FlowPage
-      title="Almost in."
-      lead="Your link is being checked. This takes a second and then the site opens."
-      photo={PHOTO.reader}
-      photoAlt="A member reading an invitation"
-    >
+    // The heading belongs to the client half. A link that failed and a
+    // heading still saying the site is about to open would be a page
+    // disagreeing with itself.
+    <FlowPage photo={PHOTO.reader} photoAlt="A member reading an invitation">
       <FinishSignIn next={safe} />
     </FlowPage>
   );
