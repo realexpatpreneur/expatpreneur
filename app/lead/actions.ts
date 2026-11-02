@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { slugify } from "@/lib/events";
+import { slugify, zonedToUtc } from "@/lib/events";
 
 export type LeadState = { error?: string; done?: string };
 
@@ -44,7 +44,8 @@ export async function openRoomForMine(
     audience: kind === "village" ? "village" : kind,
     audience_id: kind === "village" ? id : id,
     tier: "all",
-    scheduled_start: new Date(`${date}T${time}:00`).toISOString(),
+    // The time typed is the time in the room's own zone.
+    scheduled_start: zonedToUtc(date, time, String(formData.get("timezone") ?? "Asia/Dubai")),
     timezone: String(formData.get("timezone") ?? "Asia/Dubai"),
     lobby: Boolean(formData.get("lobby")),
     max_participants: Number(formData.get("max_participants") ?? 50),

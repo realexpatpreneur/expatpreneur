@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
-import { slugify } from "@/lib/events";
+import { slugify, zonedToUtc } from "@/lib/events";
 
 export type SessionFormState = { error?: string };
 
@@ -55,8 +55,9 @@ export async function saveSession(
     audience,
     audience_id,
     tier: String(formData.get("tier") ?? "all"),
-    scheduled_start: new Date(`${date}T${time}:00`).toISOString(),
-    scheduled_end: endTime ? new Date(`${date}T${endTime}:00`).toISOString() : null,
+    // The time typed is the time in the room's own zone.
+    scheduled_start: zonedToUtc(date, time, String(formData.get("timezone") ?? "Asia/Dubai")),
+    scheduled_end: endTime ? zonedToUtc(date, endTime, String(formData.get("timezone") ?? "Asia/Dubai")) : null,
     timezone: String(formData.get("timezone") ?? "Asia/Dubai"),
     lobby: Boolean(formData.get("lobby")),
     chat: Boolean(formData.get("chat")),

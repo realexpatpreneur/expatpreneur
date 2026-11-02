@@ -151,3 +151,50 @@ export function slugify(title: string) {
   const suffix = Math.random().toString(36).slice(2, 6);
   return `${base || "event"}-${suffix}`;
 }
+// A date and a clock time as somebody types them, in the time zone they
+// chose, turned into the moment it is. Without this the server read
+// "19:00" as 19:00 in London, so a Dubai dinner set for 19:00 showed as
+// 23:00 everywhere it was displayed in Dubai time.
+export function zonedToUtc(date: string, time: string, timezone: string): string {
+  const zone = safeZone(timezone);
+  const guess = new Date(`${date}T${time}:00Z`);
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: zone,
+      hourCycle: "h23",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    })
+      .formatToParts(guess)
+      .filter((p) => p.type !== "literal")
+      .map((p) => [p.type, Number(p.value)])
+  ) as Record<string, number>;
+  const asIfUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  const offset = asIfUtc - guess.getTime();
+  return new Date(guess.getTime() - offset).toISOString();
+}
+
+// The other way: a stored moment as the date and clock time it is in a
+// time zone, for filling in an edit form.
+export function utcToZoned(iso: string, timezone: string): { date: string; time: string } {
+  const zone = safeZone(timezone);
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: zone,
+      hourCycle: "h23",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+      .formatToParts(new Date(iso))
+      .filter((p) => p.type !== "literal")
+      .map((p) => [p.type, p.value])
+  ) as Record<string, string>;
+  return { date: `${parts.year}-${parts.month}-${parts.day}`, time: `${parts.hour}:${parts.minute}` };
+}

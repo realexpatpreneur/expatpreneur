@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
-import { slugify } from "@/lib/events";
+import { slugify, zonedToUtc } from "@/lib/events";
 import { offerThePlaceOn } from "@/app/events/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notify";
@@ -93,9 +93,11 @@ export async function saveEvent(
       ? audience_id
       : admin.homeVillageId ?? admin.villageIds[0] ?? null;
 
-  const startsAt = new Date(`${date}T${time}:00`).toISOString();
+  // The time typed is the time in the event's own zone.
+  const zone = String(formData.get("timezone") ?? "Asia/Dubai");
+  const startsAt = zonedToUtc(date, time, zone);
   const endTime = String(formData.get("end_time") ?? "");
-  const endsAt = endTime ? new Date(`${date}T${endTime}:00`).toISOString() : null;
+  const endsAt = endTime ? zonedToUtc(date, endTime, zone) : null;
 
   const venue = String(formData.get("venue") ?? "").trim();
 

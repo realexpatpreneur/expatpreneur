@@ -9,6 +9,7 @@ import {
 } from "./actions";
 import { Uploader } from "@/components/uploader";
 import { Combo } from "@/components/combo";
+import { utcToZoned } from "@/lib/events";
 import { TIMEZONES } from "@/lib/lists/timezones";
 
 type Option = { value: string; label: string };
@@ -23,6 +24,8 @@ export function EventForm({
     title: string;
     description: string | null;
     starts_at: string;
+    ends_at?: string | null;
+    timezone?: string | null;
     venue: string | null;
     capacity: number;
     visitor_places: number;
@@ -48,9 +51,13 @@ export function EventForm({
     {}
   );
 
-  const start = event ? new Date(event.starts_at) : null;
-  const dateValue = start ? start.toISOString().slice(0, 10) : "";
-  const timeValue = start ? start.toISOString().slice(11, 16) : "";
+  // Shown in the event's own time zone, the way it was typed, so saving
+  // an edit does not move the event.
+  const zone = event?.timezone ?? "Asia/Dubai";
+  const start = event ? utcToZoned(event.starts_at, zone) : null;
+  const dateValue = start ? start.date : "";
+  const timeValue = start ? start.time : "";
+  const endValue = event?.ends_at ? utcToZoned(event.ends_at, zone).time : "";
   const currentAudience = event
     ? event.audience === "circle"
       ? `circle:${event.audience_id}`
@@ -83,13 +90,13 @@ export function EventForm({
         <div className="g2">
           <label className="field">
             <span>End time</span>
-            <input name="end_time" type="time" />
+            <input name="end_time" type="time" defaultValue={endValue} />
           </label>
           <Combo
             name="timezone"
             label="Time zone"
             options={TIMEZONES}
-            value="Asia/Dubai"
+            value={zone}
           />
         </div>
         <label className="field">
