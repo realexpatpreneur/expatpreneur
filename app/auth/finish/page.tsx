@@ -3,7 +3,10 @@ import { PHOTO } from "@/components/design/parts";
 import { FinishSignIn } from "./finish";
 
 export const metadata = {
-  title: "Signing you in, ExpatPreneurs Global",
+  // Neutral, because this page has two outcomes and the tab is read in
+  // both. "Signing you in" above a spent link is the same contradiction
+  // a line lower down.
+  title: "Your sign in link, ExpatPreneurs Global",
   robots: { index: false, follow: false },
 };
 

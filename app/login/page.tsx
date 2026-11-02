@@ -18,8 +18,12 @@ export default async function LoginPage({
       <div className="d-login-form">
         <div style={{ width: "100%", maxWidth: 440 }}>
           <h1 className="d-h1" style={{ fontSize: "clamp(32px, 3.4vw, 44px)" }}>Welcome back.</h1>
+          {/* There are two ways in and the password one is the
+              default, so claiming we ask for no password was a lie to
+              everybody who read it before clicking anything. */}
           <p className="d-lead" style={{ marginTop: 12, fontSize: 17 }}>
-            We send a link instead of asking for a password.
+            Two ways in. A password if you have set one, or a link sent to
+            your email.
           </p>
           <div className="d-form" style={{ marginTop: 32 }}>
             {/* A link that did not work sent them here. Saying nothing
