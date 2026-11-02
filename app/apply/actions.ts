@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { tooManyTries, captchaPassed, TOO_MANY } from "@/lib/guard";
 import { sendTemplate, url } from "@/lib/email";
 
@@ -60,7 +61,15 @@ export async function submitApplication(
     villageId = data?.id ?? null;
   }
 
-  const { data: recent } = await supabase
+  // applications has no read policy an unsigned visitor satisfies, so this
+  // ran as anon and came back empty every time rather than erroring. The
+  // one a day guard has never fired. The same role problem is why the
+  // insert below could never save a row, so both go through the service
+  // role, behind the honeypot, the captcha and the three an hour counter
+  // that already guard this action.
+  const service = createAdminClient();
+
+  const { data: recent } = await service
     .from("applications")
     .select("id, created_at")
     .eq("email", email)
@@ -74,7 +83,13 @@ export async function submitApplication(
     };
   }
 
-  const { data: saved, error } = await supabase.from("applications").insert({
+  // This asks for the row back, because the reference is set by a before
+  // insert trigger and the confirmation email quotes it. Asking makes
+  // Postgres check the new row against the select policy, and there is
+  // none that anon satisfies, so the whole statement aborted and not one
+  // expression of interest was ever saved. Every other public form on the
+  // site inserts without asking for the row back, which is why they work.
+  const { data: saved, error } = await service.from("applications").insert({
     full_name: fullName,
     email,
     phone: String(formData.get("phone") ?? "").trim() || null,
