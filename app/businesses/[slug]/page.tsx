@@ -16,9 +16,15 @@ export default async function BusinessPage({
   const member = await whoIsHere();
   const supabase = await createClient();
 
+  // A visitor is granted only some columns of a business (0028), and
+  // asking for one they are not granted fails the whole query, which is
+  // what turned every listing into a 404 for anybody signed out. These
+  // are the columns this page uses, all of them on that list.
   const { data: business } = await supabase
     .from("businesses")
-    .select("*")
+    .select(
+      "id, slug, owner_id, village_id, name, tagline, description, industry, website, founded, serves, public, services, offer, logo_url"
+    )
     .eq("slug", slug)
     .maybeSingle();
 

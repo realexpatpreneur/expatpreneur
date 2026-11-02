@@ -7,6 +7,26 @@ import { whoIsHere, isPaid } from "@/lib/member";
 import { EnrolButton } from "../forms";
 import { BuyButton, RefundForm } from "../buy";
 
+type CourseRow = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  level: string | null;
+  duration: string | null;
+  tier: string;
+  price_cents: number;
+  member_price_cents: number | null;
+  currency: string | null;
+  public_listing: boolean;
+  status: string;
+  educator_id?: string | null;
+  format?: string | null;
+  starts_at?: string | null;
+  description?: string | null;
+  outcomes?: string[] | null;
+};
+
 export default async function CoursePage({
   params,
 }: {
@@ -16,11 +36,17 @@ export default async function CoursePage({
   const member = await whoIsHere();
   const supabase = await createClient();
 
-  const { data: course } = await supabase
-    .from("courses")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle();
+  // The columns a visitor is granted, or everything for a member. Asking
+  // a visitor's query for a column they are not granted fails it, which
+  // made every course a 404 for anybody signed out.
+  const { data: found } = member
+    ? await supabase.from("courses").select("*").eq("slug", slug).maybeSingle()
+    : await supabase
+        .from("courses")
+        .select("id, slug, title, summary, level, duration, tier, price_cents, member_price_cents, currency, public_listing, status")
+        .eq("slug", slug)
+        .maybeSingle();
+  const course = found as unknown as CourseRow | null;
 
   if (!course) notFound();
   if (!member && !course.public_listing) notFound();

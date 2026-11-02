@@ -8,6 +8,24 @@ export const metadata = { title: "Learning, ExpatPreneurs Global" };
 
 const covers = ["blue", "mint", "pink", "navy", "sun", "paper"] as const;
 
+type CatalogueRow = {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string | null;
+  level: string | null;
+  duration: string | null;
+  tier: string;
+  educator_id?: string | null;
+  cover_url?: string | null;
+  price_cents: number;
+  member_price_cents: number | null;
+  currency: string;
+  public_listing: boolean;
+  format?: string | null;
+  starts_at?: string | null;
+};
+
 export default async function LearningPage({
   searchParams,
 }: {
@@ -20,11 +38,20 @@ export default async function LearningPage({
   const supabase = await createClient();
 
   const [{ data: courses }, { data: mine }] = await Promise.all([
-    supabase
-      .from("courses")
-      .select("id, slug, title, summary, level, duration, tier, educator_id, cover_url, price_cents, member_price_cents, currency, public_listing, format, starts_at")
-      .eq("status", "published")
-      .order("created_at", { ascending: false }),
+    // A visitor is granted only some course columns (0017, 0021), and
+    // asking for any other fails the whole query, which left the public
+    // catalogue empty. Members are granted the lot.
+    (member
+      ? supabase
+          .from("courses")
+          .select("id, slug, title, summary, level, duration, tier, educator_id, cover_url, price_cents, member_price_cents, currency, public_listing, format, starts_at")
+          .eq("status", "published")
+          .order("created_at", { ascending: false })
+      : supabase
+          .from("courses")
+          .select("id, slug, title, summary, level, duration, tier, price_cents, member_price_cents, currency, public_listing")
+          .eq("status", "published")
+          .order("created_at", { ascending: false })) as unknown as Promise<{ data: CatalogueRow[] | null }>,
     member
       ? supabase
           .from("course_progress")
