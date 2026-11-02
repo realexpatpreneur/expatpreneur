@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { promises as dns } from "node:dns";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,16 @@ export async function GET() {
     await fetch(`${url}/auth/v1/health`, { headers: { apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY! }, cache: "no-store" });
     auth.push(Date.now() - t0);
   }
+  // The database's own address, which says which AWS region it is in.
+  const ref = new URL(url).host.split(".")[0];
+  let dbAddress: string[] = [];
+  try {
+    dbAddress = await dns.resolve6(`db.${ref}.supabase.co`);
+  } catch (e) {
+    dbAddress = [String(e)];
+  }
   return NextResponse.json({
+    dbAddress,
     functionRegion: process.env.VERCEL_REGION ?? "unknown",
     databaseHost: new URL(url).host,
     databaseTripsMs: trips,
