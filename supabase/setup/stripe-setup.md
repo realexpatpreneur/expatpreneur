@@ -16,13 +16,33 @@ Plans, and Stripe charges whatever is there.
 
     https://expatpreneur.vercel.app/api/stripe/webhook
 
-Send it these five events and nothing else:
+Send it these seven events and nothing else:
 
     checkout.session.completed
+    invoice.paid
+    invoice.payment_succeeded
     charge.refunded
     invoice.payment_failed
     customer.subscription.updated
     customer.subscription.deleted
+
+This list said five until 2 November and left out invoice.paid and
+invoice.payment_succeeded, which the webhook has handled since that
+morning. Both of those matter more than they look:
+
+- They are what records a renewal. Without them only the first payment
+  of a membership ever reaches the platform, so Global team, Payments
+  and a member's own receipts both show one charge and then nothing,
+  however many months Stripe has billed.
+- They are the only thing that puts a member back after a failed card.
+  invoice.payment_failed closes their membership; the recovery is the
+  next invoice succeeding. Without these two events Stripe carries on
+  charging somebody who stays locked out, which is the worst failure in
+  the whole payment path.
+
+Stripe sends both because which one arrives depends on the account's API
+version, so take both and let the webhook ignore the duplicate: it
+records a payment once per invoice id and drops the second.
 
 Copy the signing secret, which starts with `whsec_`.
 

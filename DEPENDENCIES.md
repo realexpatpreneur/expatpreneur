@@ -10,24 +10,31 @@ actually reads and the places it reads them.
 
 ## Payments
 
-**Needs: a Stripe account, then STRIPE_SECRET_KEY,
-STRIPE_MEMBERSHIP_PRICE_ID and STRIPE_WEBHOOK_SECRET in Vercel.**
+**Needs: a Stripe account, then STRIPE_SECRET_KEY and
+STRIPE_WEBHOOK_SECRET in Vercel.**
+
+STRIPE_MEMBERSHIP_PRICE_ID was listed here and nothing in the build has
+ever read it. There is no Stripe product or price to make: each Village's
+own rate is sent to Stripe at the moment of checkout, which is the only
+way one account can charge AED for Dubai and EUR for Lisbon, and the
+founding rate against the standard one. supabase/setup/stripe-setup.md
+is the step by step.
 
 Waiting on it:
 
 - The paid plan. /upgrade says "not switched on yet" and offers nothing
   to click.
-- The price on the Membership page, which reads "Not set yet". The
-  monthly and yearly switch stays hidden until a price exists, because
-  a switch between two blanks is worse than no switch.
+- The checkout itself. The prices are seeded per Village and the
+  Membership page shows them already, so what is missing is the ability
+  to pay, not the figures.
 - Paid event tickets. Free events register normally.
 - Buying a course, and the member price.
 - Educator payouts, and the share they are paid.
 - Receipts, which have nothing to list.
 
-Also needed, and not a key: the membership price itself, and the
-educator's share, which is sitting at 70 percent as a placeholder
-because nobody has decided it.
+Also needed, and not a key: the educator's share, which is sitting at 70
+percent as a placeholder because nobody has decided it. The membership
+rates are set, per Village, under Global team, Plans.
 
 ## Email
 
