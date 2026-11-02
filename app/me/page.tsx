@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { currentUser, roleCarriesMembership } from "@/lib/member";
+import { currentUser, roleCarriesMembership, STATUSES_IN_PLACE } from "@/lib/member";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { MemberProfileView } from "@/components/design/member-profile";
 import { Ic } from "@/components/icon";
@@ -25,18 +25,24 @@ export default async function MyProfilePage({
   const { data: person } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, public_profile, plan, avatar_url, complimentary"
+      "id, full_name, headline, bio, business_name, industry, languages, markets_known, lived_in, can_help_with, looking_for, village_id, circle_id, public_profile, plan, status, avatar_url, complimentary"
     )
     .eq("id", user.id)
     .maybeSingle();
 
   if (!person) redirect("/home");
 
+  // Closed by an admin. They keep this page, because their profile is
+  // theirs, but nothing on it should offer them a way to pay: only an
+  // admin can open the account again.
+  const closed = person.status === "left" || person.status === "removed";
+
   // The same question Settings and Home ask, asked the same way.
   const onMembership =
-    person.plan === "paid" ||
-    Boolean(person.complimentary) ||
-    (await roleCarriesMembership(user.id));
+    STATUSES_IN_PLACE.includes(person.status) &&
+    (person.plan === "paid" ||
+      Boolean(person.complimentary) ||
+      (await roleCarriesMembership(user.id)));
 
   const [{ data: village }, { data: circle }] = await Promise.all([
     person.village_id
@@ -126,7 +132,20 @@ export default async function MyProfilePage({
                 Change this
               </Link>
             </div>
-            {onMembership ? null : (
+            {closed ? (
+              /* Where they stand, on the page they land on, rather than
+                 an offer they cannot take. This card used to read
+                 "Village Membership, reach members in every Village" and
+                 go to the checkout, which is the one thing a closed
+                 account cannot do. */
+              <Link className="m-card m-ink-card m-strip" href="/settings?show=membership" style={{ display: "block", marginTop: 0 }}>
+                <span className="m-kind" style={{ color: "#A8DCD1" }}>This account is closed</span>
+                <p style={{ margin: "10px 0 0", fontSize: 15, lineHeight: 1.55, color: "#DCE3E9" }}>
+                  Your profile is still yours and the rest of the network is
+                  closed to you. Your Local Admin can open it again.
+                </p>
+              </Link>
+            ) : onMembership ? null : (
               <Link className="m-card m-ink-card m-strip" href="/upgrade" style={{ display: "block", marginTop: 0 }}>
                 <span className="m-kind" style={{ color: "#A8DCD1" }}>Village Membership</span>
                 <p style={{ margin: "10px 0 0", fontSize: 15, lineHeight: 1.55, color: "#DCE3E9" }}>

@@ -21,11 +21,12 @@ export function MembershipPlans({
   // places, because then there is no one figure to print.
   seats: number | null;
   // Who is looking. The call to action on the paid card was a hardcoded
-  // "Sign in" to /login, which is the wrong thing to say to all three
-  // kinds of visitor: a stranger has nothing to sign in to, a member
-  // whose membership has not started needs the checkout, and somebody
-  // who already pays needs neither.
-  viewer: "visitor" | "unpaid" | "paid";
+  // "Sign in" to /login, which is the wrong thing to say to any of them:
+  // a stranger has nothing to sign in to, a member whose membership has
+  // not started needs the checkout, somebody who already pays needs
+  // neither, and somebody whose account has been closed cannot buy their
+  // way back in at all.
+  viewer: "visitor" | "unpaid" | "paid" | "closed";
 }) {
   const [yearly, setYearly] = useState(false);
   const member = plans.find((p) => p.slug === "member");
@@ -65,7 +66,17 @@ export function MembershipPlans({
           <p className="d-price">By application</p>
           <p className="d-small" style={{ marginTop: 6 }}>Every request is read personally</p>
           {member.blurb ? <p className="d-body" style={{ marginTop: 18 }}>{member.blurb}</p> : null}
-          <Link className="d-btn d-btn-line d-shine d-btn-wide" href="/apply" style={{ marginTop: 24 }}>Request your invitation</Link>
+          {/* Only a stranger is asked to apply. Anybody signed in is
+              already past this, and being told to request an invitation
+              on a page you reached from inside your own account reads as
+              a broken site rather than an offer. */}
+          {viewer === "visitor" ? (
+            <Link className="d-btn d-btn-line d-shine d-btn-wide" href="/apply" style={{ marginTop: 24 }}>Request your invitation</Link>
+          ) : (
+            <p className="d-small" style={{ marginTop: 24, fontWeight: 600 }}>
+              Where everybody starts. You are past this.
+            </p>
+          )}
           <ul className="d-ticks">
             {(member.features ?? []).map((f) => (
               <li key={f}><Tick /><span>{f}</span></li>
@@ -103,6 +114,12 @@ export function MembershipPlans({
           {viewer === "paid" ? (
             <p style={{ marginTop: 24, fontSize: 15, color: "#A8DCD1", fontWeight: 600 }}>
               This is yours already.
+            </p>
+          ) : viewer === "closed" ? (
+            /* No button. Only an admin can open a closed account, so a
+               checkout here would take the money and change nothing. */
+            <p style={{ marginTop: 24, fontSize: 15, color: "#B9C3CD", fontWeight: 600 }}>
+              This account has been closed. Your Local Admin can open it again.
             </p>
           ) : (
             <Link

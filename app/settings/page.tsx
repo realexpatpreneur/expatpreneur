@@ -283,6 +283,26 @@ export default async function SettingsPage({
                         </Link>
                       </div>
                     </>
+                  ) : hasLeft(member) ? (
+                    /* A closed account is told where it stands and
+                       nothing else. The block below this one is for
+                       somebody whose membership has not started yet: it
+                       quotes a price, says the member side opens when
+                       their membership begins, and offers the checkout.
+                       All three are untrue here, and sitting under a
+                       Closed chip they read as a broken page. */
+                    <dl className="kv">
+                      <dt>What you have</dt>
+                      <dd>
+                        Your profile and these settings. The rest of the
+                        network is closed to you.
+                      </dd>
+                      <dt>Opening it again</dt>
+                      <dd>
+                        Your Local Admin does this. There is nothing to pay
+                        and nothing to do here.
+                      </dd>
+                    </dl>
                   ) : (
                     <>
                       {/* This read "What you have: Your Village and

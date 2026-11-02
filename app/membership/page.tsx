@@ -2,7 +2,7 @@ import Link from "next/link";
 import { livePage } from "@/lib/pages";
 import { Blocks } from "@/components/blocks";
 import { createClient } from "@/lib/supabase/server";
-import { currentMember, isPaid } from "@/lib/member";
+import { currentMember, isPaid, hasLeft } from "@/lib/member";
 import { PublicPage } from "@/components/public-page";
 import { type Plan } from "@/components/plans";
 import { MembershipPlans } from "@/components/design/membership-plans";
@@ -41,11 +41,13 @@ export default async function MembershipPage() {
   // A public page, but it is read by signed in members too, and the
   // paid card used to say "Sign in" to every one of them.
   const me = await currentMember();
-  const viewer: "visitor" | "unpaid" | "paid" = !me
+  const viewer: "visitor" | "unpaid" | "paid" | "closed" = !me
     ? "visitor"
-    : isPaid(me)
-      ? "paid"
-      : "unpaid";
+    : hasLeft(me)
+      ? "closed"
+      : isPaid(me)
+        ? "paid"
+        : "unpaid";
   const [{ data: plans }, { data: pricing }] = await Promise.all([
     supabase
       .from("plans")
