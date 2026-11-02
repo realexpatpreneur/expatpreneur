@@ -24,6 +24,25 @@ const HEADINGS: Record<string, [string, string]> = {
   press: ["Press and media", "Interviews, stories and speaking requests."],
 };
 
+// The three ways on from here, as ruled rows beside the form.
+const ELSEWHERE: [string, string, string][] = [
+  [
+    "/apply",
+    "You want to join",
+    "Requesting an invitation is the way in, and it is read by a person.",
+  ],
+  [
+    "/villages/suggest",
+    "Your city is not here",
+    "Villages open where enough people ask.",
+  ],
+  [
+    "/apply/status",
+    "You already applied",
+    "Your reference and email show you where it stands.",
+  ],
+];
+
 export default async function ContactPage({
   searchParams,
 }: {
@@ -42,50 +61,45 @@ export default async function ContactPage({
   return (
     <PublicPage active="/contact">
       <PageBlocks slug="contact">
-      <section className="pubsec">
-        <div className="article" style={{ maxWidth: 680 }}>
-          <h2>{title}</h2>
-          <p className="intro">{intro}</p>
-
-          <div className="tabs" style={{ marginTop: 20 }}>
-            {TABS.map(([key, label]) => (
-              <Link
-                key={key}
-                href={`/contact?kind=${key}`}
-                aria-current={here === key ? "page" : undefined}
-              >
-                {label}
-              </Link>
-            ))}
+      <div className="d-page">
+        <section style={{ padding: "56px 0 44px" }}>
+          <div className="d-wrap">
+            <h1 className="d-h1" style={{ maxWidth: "20ch" }}>{title}</h1>
+            <p className="d-lead" style={{ marginTop: 18, maxWidth: "46ch" }}>{intro}</p>
+            <nav className="d-tabs" aria-label="What this is about" style={{ marginTop: 36 }}>
+              {TABS.map(([key, label]) => (
+                <Link
+                  key={key}
+                  className={here === key ? "on" : ""}
+                  href={`/contact?kind=${key}`}
+                  aria-current={here === key ? "page" : undefined}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
           </div>
+        </section>
 
-          <div style={{ marginTop: 16 }}>
-            <ContactForm kind={here} villages={villages ?? []} />
-          </div>
+        <section className="d-sec d-sec-top0" style={{ paddingBottom: 104 }}>
+          <div className="d-wrap d-apply">
+            <div className="d-boxed d-form">
+              <ContactForm kind={here} villages={villages ?? []} />
+            </div>
 
-          <div className="g3" style={{ marginTop: 24 }}>
-            <Link className="panel" href="/apply">
-              <h3 style={{ fontSize: 14 }}>You want to join</h3>
-              <p className="muted small" style={{ marginTop: 4 }}>
-                Requesting an invitation is the way in, and it is read by a
-                person.
-              </p>
-            </Link>
-            <Link className="panel" href="/villages/suggest">
-              <h3 style={{ fontSize: 14 }}>Your city is not here</h3>
-              <p className="muted small" style={{ marginTop: 4 }}>
-                Villages open where enough people ask.
-              </p>
-            </Link>
-            <Link className="panel" href="/apply/status">
-              <h3 style={{ fontSize: 14 }}>You already applied</h3>
-              <p className="muted small" style={{ marginTop: 4 }}>
-                Your reference and email show you where it stands.
-              </p>
-            </Link>
+            <div>
+              <div className="d-rows">
+                {ELSEWHERE.map(([href, heading, line]) => (
+                  <Link className="d-row" key={href} href={href} style={{ display: "block" }}>
+                    <h3 style={{ fontSize: 17, fontWeight: 700 }}>{heading}</h3>
+                    <p className="d-body" style={{ marginTop: 6, fontSize: 14 }}>{line}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
           </PageBlocks>
 </PublicPage>
   );
