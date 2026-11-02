@@ -78,7 +78,20 @@ export async function decideRefund(
       .eq("id", request.purchase_id)
       .maybeSingle();
 
-    if (purchase?.provider_ref) {
+    // Without a reference there is nothing to refund against, and the
+    // whole Stripe block used to be skipped silently: the request was
+    // still marked approved, the audit log still said refund.approved,
+    // and the learner was still told their money was on its way. It never
+    // moved. Say so instead.
+    if (!purchase?.provider_ref) {
+      return {
+        error:
+          "There is no Stripe reference on that purchase, so nothing can be " +
+          "refunded from here. Refund it in Stripe, then mark this approved.",
+      };
+    }
+
+    {
       try {
         const { getStripe } = await import("@/lib/stripe");
         const stripe = getStripe();

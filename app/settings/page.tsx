@@ -83,6 +83,28 @@ export default async function SettingsPage({
       .in("key", ["default_language", "languages_prepared"]),
   ]);
 
+  // What this member will actually be charged. plans.price_cents is a
+  // network wide number that nothing reads at checkout: the price comes
+  // from village_pricing, per Village and per currency. Quoting the plans
+  // row here told a Dubai member fifty euros a month and then charged
+  // them fifty nine dirhams, which is two different currencies and a
+  // seven times difference, two clicks apart.
+  const { data: rate } = profile?.village_id
+    ? await supabase
+        .from("village_pricing")
+        .select("currency, month_cents, year_cents, founding_month_cents, founding_year_cents, founding_open")
+        .eq("plan_slug", "paid")
+        .eq("village_id", profile.village_id)
+        .maybeSingle()
+    : { data: null };
+
+  // The founding rate while there are seats, the standard one after.
+  const monthCents = rate
+    ? (rate.founding_open ? rate.founding_month_cents : null) ?? rate.month_cents
+    : null;
+
+  const rateCurrency = rate?.currency ?? null;
+
   if (!profile) return null;
 
   // The languages a member may choose are the one the platform is
@@ -122,6 +144,9 @@ export default async function SettingsPage({
       currency,
       maximumFractionDigits: 0,
     });
+
+  const priceLine =
+    monthCents && rateCurrency ? `${money(monthCents, rateCurrency)} a month` : null;
 
   const villageLine = `${village?.name ?? "No"} Village${
     circle?.name ? `, ${circle.name}` : ""
@@ -218,8 +243,8 @@ export default async function SettingsPage({
                           Village Member
                           {member.complimentary
                             ? ", complimentary"
-                            : paidPlan && paidPlan.price_cents
-                              ? `, ${money(paidPlan.price_cents, paidPlan.currency)} a ${paidPlan.interval}`
+                            : priceLine
+                              ? `, ${priceLine}`
                               : ""}
                         </dd>
                         <dt>Payment method</dt>
@@ -261,8 +286,8 @@ export default async function SettingsPage({
                         <dd>Nothing. Membership comes with your invitation.</dd>
                         <dt>Village Membership</dt>
                         <dd>
-                          {paidPlan && paidPlan.price_cents
-                            ? `${money(paidPlan.price_cents, paidPlan.currency)} a ${paidPlan.interval}`
+                          {priceLine
+                            ? priceLine
                             : "Price to be confirmed"}
                         </dd>
                         <dt>Payment method</dt>

@@ -158,14 +158,46 @@ export async function startTicketCheckout(
   );
   if (!amount) return { error: "This event is free." };
 
-  const { error: holdError } = await supabase.from("event_registrations").insert({
-    event_id: eventId,
-    profile_id: user.id,
-    status: "pending",
-  });
+  // A hold, so the seat is not sold twice while they are in Stripe.
+  //
+  // This used to be a plain insert, and the unique key meant the second
+  // attempt collided and was reported as "You are already on the list for
+  // this event." So abandoning a checkout once, by closing the tab or
+  // letting it time out, left a pending row that blocked that person from
+  // ever buying that ticket again. The row looks identical to a real
+  // one, so nobody could see why.
+  //
+  // Somebody already confirmed is genuinely on the list and is told so.
+  // Anybody else is retrying, and a retry gets their hold back.
+  const { data: standing } = await supabase
+    .from("event_registrations")
+    .select("id, status")
+    .eq("event_id", eventId)
+    .eq("profile_id", user.id)
+    .maybeSingle();
+
+  if (standing?.status === "confirmed") {
+    return { error: "You are already on the list for this event." };
+  }
+
+  // Not an upsert: the unique index here is partial, on profile_id is not
+  // null, and Postgres cannot infer a partial index from an on conflict
+  // clause. That is the same 42P10 that has kept the subscriptions table
+  // empty since the day it was made, and it would have broken buying a
+  // ticket altogether.
+  const { error: holdError } = standing
+    ? await supabase
+        .from("event_registrations")
+        .update({ status: "pending" })
+        .eq("id", standing.id)
+    : await supabase.from("event_registrations").insert({
+        event_id: eventId,
+        profile_id: user.id,
+        status: "pending",
+      });
 
   if (holdError) {
-    return { error: "You are already on the list for this event." };
+    return { error: "That place could not be held. Try again in a moment." };
   }
 
   const stripe = getStripe();

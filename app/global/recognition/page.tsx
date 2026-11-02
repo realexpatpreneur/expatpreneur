@@ -24,8 +24,13 @@ export default async function RecognitionPage() {
         .from("payouts")
         .select("id, person_id, role, period_start, net_cents, currency, status, reference")
         .eq("kind", "recognition")
+        // Sixty rows is three months at twenty leaders. Past that, a
+        // payout still owed to a volunteer fell off the only page that
+        // lists it and the only page that can mark it paid, and the owed
+        // figure stopped counting it. Still owed sorts first now.
+        .order("status", { ascending: true })
         .order("period_start", { ascending: false })
-        .limit(60),
+        .limit(500),
     ]);
 
   const values = Object.fromEntries((settings ?? []).map((s) => [s.key, s.value]));

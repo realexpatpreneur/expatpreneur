@@ -16,13 +16,20 @@ export default async function GlobalRequestsPage() {
       supabase
         .from("pod_proposals")
         .select("id, proposer_id, village_id, name, purpose, cadence, ends_on, status, created_at")
+        // The cap used to be applied before the open check below, so once
+        // forty settled proposals were newer than the oldest open one,
+        // the section said nothing was waiting while something was. The
+        // same condition, asked of the database instead.
+        .not("status", "in", "(actioned,not_now)")
         .order("created_at", { ascending: false })
-        .limit(40),
+        .limit(200),
       supabase
         .from("data_requests")
         .select("id, profile_id, kind, status, note, created_at")
+        // Same shape, and this is the one with a statutory clock on it.
+        .not("status", "in", "(done,refused)")
         .order("created_at", { ascending: false })
-        .limit(40),
+        .limit(200),
       supabase.from("villages").select("id, name"),
     ]);
 
@@ -30,9 +37,13 @@ export default async function GlobalRequestsPage() {
   // partnership offers and press requests.
   const { data: enquiries } = await supabase
     .from("enquiries")
+    // The only route a partner or a journalist has to you, and the
+    // section reported nothing waiting once forty answered ones were
+    // newer than the oldest unanswered.
     .select("id, kind, full_name, email, organisation, message, status, created_at")
+    .eq("status", "new")
     .order("created_at", { ascending: false })
-    .limit(40);
+    .limit(200);
 
   const ids = [
     ...new Set([

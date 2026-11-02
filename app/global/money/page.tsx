@@ -19,8 +19,11 @@ export default async function GlobalMoneyPage() {
       supabase
         .from("payments")
         .select("id, kind, amount_cents, currency, status, created_at, profile_id, guest_email")
+        // Taken so far was computed from whatever fifty rows came back,
+        // so it stopped growing at fifty payments, and it added dirhams
+        // to euros and printed the result with no currency at all.
         .order("created_at", { ascending: false })
-        .limit(50),
+        .limit(1000),
       supabase
         .from("subscriptions")
         .select("id, status, current_period_end, profile_id")
@@ -72,9 +75,20 @@ export default async function GlobalMoneyPage() {
     ? await supabase.from("profiles").select("id, full_name").in("id", ids)
     : { data: [] };
 
-  const total = (payments ?? [])
-    .filter((p) => p.status === "paid")
-    .reduce((sum, p) => sum + p.amount_cents, 0);
+  // One figure per currency. A single number across AED and EUR is not a
+  // number anybody can act on.
+  const takenByCurrency = new Map<string, number>();
+  for (const p of payments ?? []) {
+    if (p.status !== "paid") continue;
+    const ccy = (p.currency ?? "EUR").toUpperCase();
+    takenByCurrency.set(ccy, (takenByCurrency.get(ccy) ?? 0) + p.amount_cents);
+  }
+
+  const taken = [...takenByCurrency.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([ccy, cents]) =>
+      (cents / 100).toLocaleString("en-GB", { style: "currency", currency: ccy })
+    );
 
   return (
     <main className="wrap">
@@ -101,7 +115,7 @@ export default async function GlobalMoneyPage() {
           <div className="panel">
             <h3>Taken so far</h3>
             <p className="lead" style={{ margin: 0 }}>
-              {(total / 100).toFixed(2)}
+              {taken.length === 0 ? "Nothing yet" : taken.join("  ·  ")}
             </p>
           </div>
         </div>
