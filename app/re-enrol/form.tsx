@@ -41,7 +41,8 @@ export function ReEnrolForm({
           <Ic name="star" />
           <span>
             <b>Founding member.</b> Your founding member badge, and your Village
-            membership at no cost, as for every member.
+            Membership at the founding rate, which is the lowest it will be. It
+            begins when it is paid for.
           </span>
         </div>
 

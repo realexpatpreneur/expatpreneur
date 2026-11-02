@@ -47,11 +47,20 @@ export default async function AdminMemberPage({
         .is("ended_at", null),
     ]);
 
-  const options = (circles ?? []).map((c) => ({
-    id: c.circle_id as string,
-    name: c.name as string,
-    places_left: c.places_left as number,
-  }));
+  // A full Circle was still listed here and still selectable, and
+  // updateMember wrote circle_id with no check at all, so this was one of
+  // the two paths that overfilled a Circle. The approval screen already
+  // filtered; this one did not. The member's own Circle stays in the list
+  // whatever its count, so saving the form does not silently move them.
+  const options = (circles ?? [])
+    .filter(
+      (c) => (c.places_left as number) > 0 || c.circle_id === member.circle_id
+    )
+    .map((c) => ({
+      id: c.circle_id as string,
+      name: c.name as string,
+      places_left: c.places_left as number,
+    }));
 
   return (
     <main className="wrap">

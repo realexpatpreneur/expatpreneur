@@ -178,8 +178,27 @@ async function handle(event: Stripe.Event) {
       const becoming: Record<string, unknown> = { plan: "paid" };
       if (tookFounding) becoming.founding = true;
       if (wasInvited) becoming.status = "active";
+
+      // The Circle their admin chose while approving them, if it still
+      // has room. 0080 enforces the fifty, including against this
+      // connection, because the cap is a rule of the product rather than
+      // a permission. So ask first: a payment must never fail because a
+      // Circle filled up while somebody was in Stripe. They arrive
+      // unplaced instead, and the Local Admin places them, which is the
+      // same thing that happens when no Circle was chosen at all.
       if (wasInvited && application?.circle_id && !joining?.circle_id) {
-        becoming.circle_id = application.circle_id;
+        const room = must(
+          "checking the circle has room",
+          await service
+            .from("circle_capacity")
+            .select("places_left")
+            .eq("circle_id", application.circle_id)
+            .maybeSingle()
+        );
+
+        if ((room?.places_left ?? 0) > 0) {
+          becoming.circle_id = application.circle_id;
+        }
       }
 
       must(

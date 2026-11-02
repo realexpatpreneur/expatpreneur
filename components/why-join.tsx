@@ -32,7 +32,7 @@ const BENEFITS: [string, string, string[]][] = [
   ]],
   ["star", "Founding Member Perks", [
     "Founding members are the first members of each Village",
-    "Membership in your Village at no cost",
+    "Village Membership at the founding rate, the lowest it will be",
     "Shape the community culture from day one",
     "Priority access to all events and opportunities",
     "Founding member recognition and badge",
