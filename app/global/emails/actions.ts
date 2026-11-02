@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { record } from "@/lib/audit";
-import { sendEmail, url } from "@/lib/email";
+import { sendEmail, url, emailReady } from "@/lib/email";
 
 export type EmailState = { error?: string; done?: string };
 
@@ -83,6 +83,18 @@ export async function sendTestEmail(
       (out, [name, value]) => out.split(`{${name}}`).join(value),
       text
     );
+
+  // This is the one screen whose purpose is to find out whether email
+  // works, and it answered "Sent to your own address" without calling
+  // anything that could have sent. sendEmail returns on its first line
+  // when there is no key, so the test was reporting its own no-op as a
+  // success, on the day somebody would be using it to debug exactly that.
+  if (!emailReady) {
+    return {
+      error:
+        "Nothing was sent. There is no Resend key set, so no email leaves the platform yet. Set RESEND_API_KEY and try again.",
+    };
+  }
 
   await sendEmail(
     me.email,

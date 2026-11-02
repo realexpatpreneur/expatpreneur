@@ -58,8 +58,8 @@ export function StatusForm() {
         <span>Your reference</span>
         <input name="reference" required placeholder="EP-XXXXX" />
         <span className="hint">
-          It is in the email we sent when you asked, and on the page
-          straight after you sent the form.
+          It was shown on the page right after you sent the form. If you do
+          not have it, write to us and we will find your request.
         </span>
       </label>
 

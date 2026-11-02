@@ -146,9 +146,14 @@ export async function saveEvent(
       thanks: Boolean(formData.get("remind_thanks")),
     },
     status: String(formData.get("status") ?? "published"),
-    host_id: admin.userId,
   };
 
+  // The host used to be rewritten to whoever pressed Save, on every save,
+  // so a second admin opening an event to fix a typo quietly took it over
+  // and nobody was told. The label on the reminders said "When the time,
+  // place or host changes", and the host could not be compared because it
+  // always matched the person saving. It is set when the event is created
+  // and left alone after that.
   if (id) {
     // What it looked like before, so the guests can be told what moved.
     const [{ data: beforeBase }, { data: beforeDetails }] = await Promise.all([

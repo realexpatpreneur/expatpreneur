@@ -31,6 +31,16 @@ export type EventRow = {
   status: string;
   village_id: string | null;
   host_id: string | null;
+  // In EVENT_COLUMNS and so in every read, but it was never on this type,
+  // which is why the event page promised reminders without being able to
+  // ask whether the host had turned any on.
+  reminders?: {
+    week?: boolean;
+    day?: boolean;
+    hour?: boolean;
+    changes?: boolean;
+    thanks?: boolean;
+  } | null;
 };
 
 // A timezone the formatter does not recognise throws, and one bad row

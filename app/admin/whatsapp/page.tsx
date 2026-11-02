@@ -6,6 +6,7 @@ import { TaskDone } from "../members/forms";
 import { PageHead } from "@/components/workspace-shell";
 import { Stat } from "@/components/admin-bits";
 import { Ic } from "@/components/icon";
+import { emailReady } from "@/lib/email";
 
 export const metadata = { title: "WhatsApp sync, Admin" };
 
@@ -174,9 +175,10 @@ export default async function WhatsappTasksPage() {
           <h3 style={{ fontSize: 14 }}>How this is meant to go</h3>
           <p className="muted small" style={{ marginTop: 8 }}>
             Open the group, add the number, come back and tick it off. The
-            member has already been told by email which Circle they are in and
-            that the group takes a day, so nobody is waiting in silence while
-            you work through this.
+            member has been told in the platform which Circle they are in.
+            {emailReady
+              ? " They have had the same by email, so nobody is waiting in silence while you work through this."
+              : " Email is not connected yet, so that notification is the only thing they have had. Somebody who does not open the platform is waiting in silence until you get to them."}
           </p>
           <p className="muted small" style={{ marginTop: 8 }}>
             WhatsApp does not let any platform add somebody to a group, ours

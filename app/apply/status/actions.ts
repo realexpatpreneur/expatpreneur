@@ -40,7 +40,7 @@ export async function checkStatus(
   if (!data) {
     return {
       error:
-        "Nothing matches those two. Check the reference in the email we sent when you asked.",
+        "Nothing matches those two. Check the address you used, and the reference you were shown after sending the form. If you do not have it, write to us and we will find your request.",
     };
   }
 

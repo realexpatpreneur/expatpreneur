@@ -286,10 +286,20 @@ export default async function EventPage({
                             : "You are registered"}
                       </span>
                     </p>
-                    <p className="muted small">
-                      A reminder comes the day before and an hour before it
-                      starts.
-                    </p>
+                    {/* The job selects confirmed registrations only, so a
+                        pending one never gets a reminder, and it reads the
+                        event's own reminder flags. This said both come, to
+                        everybody, whatever the event was set to. */}
+                    {mine?.status === "confirmed" &&
+                    (event.reminders?.day || event.reminders?.hour) ? (
+                      <p className="muted small">
+                        {event.reminders?.day && event.reminders?.hour
+                          ? "A reminder comes the day before and an hour before it starts."
+                          : event.reminders?.day
+                            ? "A reminder comes the day before."
+                            : "A reminder comes an hour before it starts."}
+                      </p>
+                    ) : null}
                     <p>
                       <a className="btn btn-ghost" href={`/events/${event.slug}/calendar`}>
                         Add to calendar
