@@ -117,7 +117,13 @@ export default async function MemberHomePage() {
         .limit(6),
       supabase
         .from("announcements")
-        .select("id, title, body, sent_at, author_id")
+        // No Village filter used to be here and none in the policy
+        // either, so the three most recent announcements in the whole
+        // network landed on every member's home page, and the line under
+        // each one named the reader's own Village whichever Village had
+        // actually sent it. 0078 scopes the policy; this says so here too.
+        .select("id, title, body, sent_at, author_id, village_id")
+        .eq("village_id", profile.village_id ?? "")
         .not("sent_at", "is", null)
         .order("sent_at", { ascending: false })
         .limit(3),

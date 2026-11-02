@@ -44,6 +44,17 @@ export default async function DirectoryPage({
   if (scope === "mine" && member.village_id) {
     query = query.eq("village_id", member.village_id);
   }
+
+  // "Let members in other Villages find me" is one of the three switches
+  // on the Privacy tab, and until now it was written, read back to draw
+  // the toggle, and consulted by nothing at all. Somebody who turned it
+  // off was still listed here and still suggested on For You. It only
+  // bites across Villages; inside your own the Directory is the point.
+  if (scope === "all" && member.village_id) {
+    query = query.or(
+      `village_id.eq.${member.village_id},findable_elsewhere.is.true`
+    );
+  }
   if (q) {
     query = query.or(
       `full_name.ilike.%${q}%,headline.ilike.%${q}%,business_name.ilike.%${q}%,industry.ilike.%${q}%`

@@ -46,6 +46,14 @@ export default async function ForYouPage({
       .select("id, full_name, headline, business_name, industry, markets_known, lived_in, village_id, avatar_url")
       .eq("status", "active")
       .neq("id", member.id)
+      // Honouring the same switch as the Directory: somebody who asked
+      // not to be found outside their Village is not suggested outside it
+      // either. Until now nothing anywhere read that column.
+      .or(
+        member.village_id
+          ? `village_id.eq.${member.village_id},findable_elsewhere.is.true`
+          : "findable_elsewhere.is.true"
+      )
       .limit(150),
     supabase.from("villages").select("id, name"),
     supabase
