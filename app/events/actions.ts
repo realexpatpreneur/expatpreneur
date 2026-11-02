@@ -48,7 +48,11 @@ export async function registerForEvent(
   const [{ data: event }, { data: profile }] = await Promise.all([
     supabase
       .from("events")
-      .select("title, starts_at, ends_at, timezone, venue, is_online, online_url")
+      // online_url is served by event_details now, to whoever is
+      // registered once release_hours has come round. A confirmation goes
+      // out the moment somebody registers, which is usually well before
+      // that, so it points at the page rather than carrying the link.
+      .select("title, starts_at, ends_at, timezone, venue, is_online")
       .eq("id", eventId)
       .maybeSingle(),
     supabase
@@ -74,7 +78,7 @@ export async function registerForEvent(
         title: event.title,
         when: whenText(event),
         where: event.is_online
-          ? `Online. ${event.online_url ?? "The link is on the event page."}`
+          ? "Online. The link appears on the event page nearer the time."
           : event.venue ?? "The venue is on the event page.",
         status: requiresApproval
           ? "Your request is with the host, who will confirm shortly."
@@ -92,7 +96,7 @@ export async function registerForEvent(
             : "Your place is confirmed.",
           whenText(event),
           event.is_online
-            ? `Online. ${event.online_url ?? "The link is on the event page."}`
+            ? "Online. The link appears on the event page nearer the time."
             : event.venue ?? "The venue is on the event page.",
           "A reminder comes the day before and an hour before it starts.",
         ],
@@ -232,7 +236,11 @@ export async function registerAsGuest(
   const slug = String(formData.get("slug"));
   const { data: event } = await supabase
     .from("events")
-    .select("title, starts_at, ends_at, timezone, venue, is_online, online_url")
+    // Never the link here. This address came from a public form and
+    // nothing has verified that the person typing it owns it, so sending
+    // the Zoom room to it hands the room to anybody who knows somebody
+    // else's address.
+    .select("title, starts_at, ends_at, timezone, venue, is_online")
     .eq("id", String(formData.get("event_id")))
     .maybeSingle();
 
@@ -245,7 +253,7 @@ export async function registerAsGuest(
         `Thank you for registering, ${name.split(" ")[0]}.`,
         whenText(event),
         event.is_online
-          ? `Online. ${event.online_url ?? "The link follows nearer the time."}`
+          ? "Online. The link follows nearer the time."
           : event.venue ?? "The venue follows nearer the time.",
         "This event is open to everyone. Most of what ExpatPreneurs does is for members, by invitation.",
       ],

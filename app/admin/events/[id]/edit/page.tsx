@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { EVENT_COLUMNS } from "@/lib/events";
 import { requireAdmin } from "@/lib/access";
 import { EventForm } from "../../forms";
 
@@ -13,13 +14,21 @@ export default async function EditEventPage({
   const admin = await requireAdmin();
   const supabase = await createClient();
 
-  const { data: event } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+  // The Zoom link and the full address no longer live on the table for a
+  // reader; event_details serves them, and an admin of this Village is one
+  // of the two people it serves them to.
+  const [{ data: base }, { data: details }] = await Promise.all([
+    supabase.from("events").select(EVENT_COLUMNS).eq("id", id).maybeSingle(),
+    supabase.from("event_details").select("address, online_url").eq("id", id).maybeSingle(),
+  ]);
 
-  if (!event) notFound();
+  if (!base) notFound();
+
+  const event = {
+    ...base,
+    address: details?.address ?? null,
+    online_url: details?.online_url ?? null,
+  };
 
   const [{ data: villages }, { data: circles }] = await Promise.all([
     supabase.from("villages").select("id, name").neq("status", "archived").order("name"),

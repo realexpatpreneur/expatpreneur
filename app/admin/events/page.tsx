@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { EVENT_COLUMNS } from "@/lib/events";
 import { requireAdmin } from "@/lib/access";
 import { whenText, priceText, audienceText, type EventRow } from "@/lib/events";
 import { say, publishLabel } from "@/lib/labels";
@@ -12,7 +13,7 @@ export default async function AdminEventsPage() {
 
   const { data: events } = await supabase
     .from("events")
-    .select("*")
+    .select(EVENT_COLUMNS)
     .order("starts_at", { ascending: false })
     .limit(50);
 

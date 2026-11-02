@@ -11,6 +11,7 @@ import {
   audienceText,
   registrationBlock,
   type EventRow,
+  EVENT_COLUMNS,
 } from "@/lib/events";
 import { RegisterForm, CancelForm } from "../forms";
 import { PhotoForm, RemovePhoto } from "@/app/photos/forms";
@@ -30,12 +31,24 @@ export default async function EventPage({
 
   const { data } = await supabase
     .from("events")
-    .select("*")
+    .select(EVENT_COLUMNS)
     .eq("slug", slug)
     .maybeSingle();
 
   if (!data) notFound();
   const event = data as EventRow;
+
+  // The Zoom link and the full address are not columns a reader can take
+  // off the table any more. event_details serves them to the two people
+  // the page has always promised them to: whoever runs the event, and
+  // whoever is registered once release_hours has come round. An empty
+  // result here means this reader is neither, which is the same thing the
+  // copy below says.
+  const { data: details } = await supabase
+    .from("event_details")
+    .select("online_url, address")
+    .eq("id", event.id)
+    .maybeSingle();
 
   const [{ data: host }, { data: village }, { data: mine }, { data: guests }] =
     await Promise.all([
@@ -92,7 +105,11 @@ export default async function EventPage({
     (new Date(event.starts_at).getTime() - Date.now()) / 3600000;
   const detailsOut = hoursAway <= (event.release_hours ?? 48);
   const blocked = registrationBlock(event, member);
-  const registered = mine && mine.status !== "cancelled";
+  // Going means going. A cancelled registration obviously is not, and
+  // neither is one the host declined or one still sitting on the
+  // waitlist, both of which this counted as registered.
+  const registered =
+    mine !== null && (mine.status === "confirmed" || mine.status === "pending");
   const visiting =
     event.village_id !== null && event.village_id !== member.village_id;
   const taken = (guests ?? []).length;
@@ -142,9 +159,9 @@ export default async function EventPage({
                   <dt>Where</dt>
                   <dd>
                     {event.is_online ? (
-                      registered && detailsOut && event.online_url ? (
-                        <a href={event.online_url} target="_blank" rel="noreferrer">
-                          {event.online_url}
+                      registered && detailsOut && details?.online_url ? (
+                        <a href={details.online_url} target="_blank" rel="noreferrer">
+                          {details.online_url}
                         </a>
                       ) : registered ? (
                         `Online. The link appears here ${event.release_hours ?? 48} hours before, and comes by email.`
@@ -152,7 +169,7 @@ export default async function EventPage({
                         "Online. The link goes to people who are registered."
                       )
                     ) : registered && detailsOut ? (
-                      `${event.venue ?? ""}${event.address ? `. ${event.address}` : ""}`
+                      `${event.venue ?? ""}${details?.address ? `. ${details.address}` : ""}`
                     ) : registered ? (
                       `${event.venue ?? "To be confirmed"}. The full address appears here ${event.release_hours ?? 48} hours before, and comes by email.`
                     ) : (

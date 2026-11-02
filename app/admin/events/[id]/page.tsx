@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
-import { whenText, priceText, audienceText, type EventRow } from "@/lib/events";
+import { whenText, priceText, audienceText, type EventRow, EVENT_COLUMNS } from "@/lib/events";
 import { DecisionButtons, CheckInButton } from "../forms";
 import { Crumbs } from "@/components/crumbs";
 
@@ -18,7 +18,11 @@ export default async function AdminEventPage({
   await requireAdmin();
   const supabase = await createClient();
 
-  const { data } = await supabase.from("events").select("*").eq("id", id).maybeSingle();
+  const { data } = await supabase
+    .from("events")
+    .select(EVENT_COLUMNS)
+    .eq("id", id)
+    .maybeSingle();
   if (!data) notFound();
   const event = data as EventRow;
 

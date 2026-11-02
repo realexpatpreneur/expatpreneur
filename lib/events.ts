@@ -10,10 +10,12 @@ export type EventRow = {
   ends_at: string | null;
   timezone: string;
   venue: string | null;
-  address: string | null;
+  // Served by the event_details view, not by a read of the table. Absent
+  // from EVENT_COLUMNS on purpose, so these are optional here.
+  address?: string | null;
   release_hours: number;
   is_online: boolean;
-  online_url: string | null;
+  online_url?: string | null;
   waitlist: boolean;
   visibility: string;
   audience: string;
@@ -198,3 +200,11 @@ export function utcToZoned(iso: string, timezone: string): { date: string; time:
   ) as Record<string, string>;
   return { date: `${parts.year}-${parts.month}-${parts.day}`, time: `${parts.hour}:${parts.minute}` };
 }
+
+// Every column of an event except the two that are earned. online_url and
+// address are served by the event_details view instead, to whoever runs
+// the event and to whoever is registered once release_hours has come
+// round, which is what the page has always promised and what 0074 made
+// true. A select that names either column here is a permission error.
+export const EVENT_COLUMNS =
+  "id, slug, village_id, host_id, title, description, cover_url, starts_at, ends_at, timezone, venue, is_online, visibility, audience, audience_id, tier, requires_approval, show_guest_list, capacity, visitor_places, waitlist, price_cents, member_price_cents, currency, refund_policy, reminders, status, release_hours, created_at, updated_at";

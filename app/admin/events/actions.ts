@@ -151,11 +151,26 @@ export async function saveEvent(
 
   if (id) {
     // What it looked like before, so the guests can be told what moved.
-    const { data: before } = await supabase
-      .from("events")
-      .select("slug, title, starts_at, ends_at, timezone, venue, address, online_url, status, reminders")
-      .eq("id", id)
-      .maybeSingle();
+    const [{ data: beforeBase }, { data: beforeDetails }] = await Promise.all([
+      supabase
+        .from("events")
+        .select("slug, title, starts_at, ends_at, timezone, venue, status, reminders")
+        .eq("id", id)
+        .maybeSingle(),
+      supabase
+        .from("event_details")
+        .select("address, online_url")
+        .eq("id", id)
+        .maybeSingle(),
+    ]);
+
+    const before = beforeBase
+      ? {
+          ...beforeBase,
+          address: beforeDetails?.address ?? null,
+          online_url: beforeDetails?.online_url ?? null,
+        }
+      : null;
 
     const { error } = await supabase.from("events").update(row).eq("id", id);
     if (error) return { error: error.message };
