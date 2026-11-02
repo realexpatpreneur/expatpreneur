@@ -67,6 +67,7 @@ export function ReEnrolForm({
               name="email"
               type="email"
               defaultValue={invite.email ?? ""}
+              readOnly={Boolean(invite.email)}
               required
               autoComplete="email"
             />

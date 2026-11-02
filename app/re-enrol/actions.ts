@@ -43,7 +43,7 @@ export async function confirmPlace(
   const { data: invite } = await service
     .from("founding_invites")
     .select(
-      "id, village_id, full_name, phone, status, complimentary, complimentary_reason, added_by"
+      "id, village_id, full_name, phone, email, status, complimentary, complimentary_reason, added_by"
     )
     .eq("token", token)
     .maybeSingle();
@@ -52,6 +52,24 @@ export async function confirmPlace(
   if (invite.status === "re_enrolled") {
     return { error: "This place has already been confirmed. Try signing in." };
   }
+
+  // The address on the invitation is the one that counts. The form field
+  // is a convenience, and before this it was the field, not the
+  // invitation, that decided which account got touched.
+  const inviteEmail = String(invite.email ?? "").trim().toLowerCase();
+  if (inviteEmail && email !== inviteEmail) {
+    return {
+      error:
+        "That is not the address this invitation was sent to. Use that one, " +
+        "or ask your Local Admin to change it on the invitation.",
+    };
+  }
+
+  // Who, if anyone, is signed in on this device.
+  const supabase = await createClient();
+  const {
+    data: { user: signedIn },
+  } = await supabase.auth.getUser();
 
   // Their account. They set a password here rather than waiting for a
   // link, because they are being asked to do this once and be done.
@@ -63,15 +81,28 @@ export async function confirmPlace(
     });
 
   let userId = created?.user?.id;
+  let needsSigningIn = true;
 
   if (createError) {
-    const { data: list } = await service.auth.admin.listUsers();
-    const existing = list?.users.find(
-      (u) => u.email?.toLowerCase() === email
-    );
-    if (!existing) return { error: createError.message };
-    userId = existing.id;
-    await service.auth.admin.updateUserById(existing.id, { password });
+    // The address already has an account. The only person who may claim a
+    // place with it is somebody already signed in as it.
+    //
+    // What stood here looked the account up by the address typed into the
+    // form and then set its password. Anybody holding any valid link could
+    // type a member's address, be handed their account, and have their
+    // profile overwritten on the way in. listUsers returns its first page,
+    // which is the earliest accounts, which is the founder and the Global
+    // team.
+    if (signedIn?.email?.toLowerCase() === email) {
+      userId = signedIn.id;
+      needsSigningIn = false;
+    } else {
+      return {
+        error:
+          "There is already an account with this address. Sign in with it " +
+          "first, then open this link again.",
+      };
+    }
   }
 
   if (!userId) return { error: "The account could not be created." };
@@ -113,11 +144,12 @@ export async function confirmPlace(
       claimed_at: new Date().toISOString(),
     })
     .eq("id", invite.id);
-
-  // Sign them in on this device, so they land in their own profile
-  // rather than at a sign in page.
-  const supabase = await createClient();
-  await supabase.auth.signInWithPassword({ email, password });
+  // Sign them in on this device, so they land in their own profile rather
+  // than at a sign in page. Somebody already signed in as this account
+  // stays signed in; their password is not touched.
+  if (needsSigningIn) {
+    await supabase.auth.signInWithPassword({ email, password });
+  }
 
   redirect("/welcome");
 }
