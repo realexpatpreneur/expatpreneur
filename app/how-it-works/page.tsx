@@ -196,7 +196,7 @@ export default async function HowItWorksPage() {
                   <img src={PHOTO.julien} alt="" />
                   <img src={PHOTO.ines} alt="" />
                   {/* eslint-enable @next/next/no-img-element */}
-                  <span className="d-plus" style={{ width: 48, height: 48, fontSize: 18 }}>+</span>
+                  <span className="d-plus" style={{ fontSize: 18 }}>+</span>
                 </div>
               </article>
             </div>

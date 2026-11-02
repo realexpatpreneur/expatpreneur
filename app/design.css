@@ -248,8 +248,8 @@
 .d-page .d-gcard { background: #FFFFFF; border: 1px solid var(--d-line); border-radius: 6px; padding: 32px; transition: transform .25s ease, box-shadow .25s ease, border-color .25s; }
 .d-page .d-gcard:hover { transform: translate(-4px,-4px); box-shadow: 8px 8px 0 var(--d-ink); border-color: var(--d-ink); }
 .d-page .d-gcard:hover .d-stack > * + * { margin-left: -2px; }
-.d-page .d-seats { display: grid; grid-template-columns: repeat(6, 48px); gap: 10px; margin-top: 22px; }
-.d-page .d-seats > * { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; transition: transform .3s ease; }
+.d-page .d-seats { display: grid; grid-template-columns: repeat(6, minmax(0, 48px)); gap: 10px; margin-top: 22px; }
+.d-page .d-seats > * { width: 100%; height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover; transition: transform .3s ease; }
 .d-page .d-gcard:hover .d-seats > :nth-child(odd) { transform: translateY(-6px); }
 .d-page .d-where { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr); gap: 24px; }
 .d-page .d-wcol { border-top: 2px solid var(--d-ink); padding-top: 22px; }

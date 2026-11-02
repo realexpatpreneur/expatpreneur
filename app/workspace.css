@@ -436,3 +436,28 @@ body .mcard:hover{border-color:#0F1419;transform:translate(-4px,-4px);box-shadow
 /* The round post button is not needed on the posting page itself, where
    it covered the title field. */
 .ws:has(.m-postgrid) .m-fab{display:none}
+
+/* Tablets. Between 860 and 1100 pixels the side menu used to vanish and
+   nothing replaced it, so Messages, the Directory, Notifications and
+   every second-level page could not be reached on an iPad. The menu now
+   stays, a little narrower. Below 860 the phone layout takes over: the
+   rail and the menu give way to the tabs along the bottom. */
+@container app (min-width: 861px) and (max-width: 1100px){
+  .mapp.v2.ws:not(.no-rail){grid-template-columns:72px 216px minmax(0,1fr)}
+  .mapp.v2.ws.no-rail{grid-template-columns:216px minmax(0,1fr)}
+  .mapp.v2.ws .mside{display:flex;padding:20px 12px}
+  .ws .mtop,.ws .mbody{padding-left:28px;padding-right:28px}
+}
+@container app (max-width: 860px){
+  .mapp.v2.ws,.mapp.v2.ws.no-rail{grid-template-columns:minmax(0,1fr)}
+  .mapp.v2.ws .rail,.mapp.v2.ws .mside{display:none}
+  .ws .mtop{padding:0 20px}
+  .ws .mtop .mlogo{display:flex}
+  .ws .mbody{padding:24px 20px 110px}
+  .ws .mtabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:6;background:#FFFFFF;border-top:1px solid var(--m-line);padding:6px 6px max(14px, env(safe-area-inset-bottom));justify-content:space-around}
+  .ws .mtabs a{min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--m-muted);padding:6px 4px;flex:1;position:relative}
+  .ws .mtabs a[aria-current]{color:var(--m-ink)}
+  .ws .mtabs .count{position:absolute;top:2px;right:calc(50% - 20px);font-size:10px;background:var(--m-sun);color:var(--m-ink);border-radius:4px;padding:0 5px;font-weight:700}
+  .ws .m-fab{display:grid;position:fixed;right:16px;bottom:90px;z-index:6;width:56px;height:56px;border-radius:14px;background:var(--m-ink);color:#FFFFFF;place-items:center;box-shadow:4px 4px 0 var(--m-mint)}
+  .ws:has(.m-postgrid) .m-fab{display:none}
+}
