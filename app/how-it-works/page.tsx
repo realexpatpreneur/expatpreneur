@@ -11,7 +11,8 @@ const JOURNEY: [string, string][] = [
   ["Request an invitation", "Share your business and your expat journey."],
   ["Review", "Every request is read personally."],
   ["Welcome", "Once accepted, complete your profile and choose what the public can see."],
-  ["Join your Circle", "You are placed in a Circle and added to its WhatsApp group."],
+  ["Village Membership", "Membership begins when it is paid for. That is what opens the member side."],
+  ["Join your Circle", "Once your membership begins you are placed in a Circle and added to its WhatsApp group."],
   ["Take part", "Ask, offer, meet people and explore other Villages."],
   ["Move with you", "If you change city, your profile and history come with you."],
 ];

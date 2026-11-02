@@ -54,9 +54,9 @@ export default async function WelcomeDonePage() {
           <div className="panel" style={{ maxWidth: 560 }}>
             <h3>Your membership</h3>
             <p className="muted small" style={{ margin: "6px 0 12px" }}>
-              Your Village sets its own price, in its own currency. The next
-              page shows yours and takes you to the checkout. Your Circle and
-              its WhatsApp group follow straight after.
+              Your Village has its own rate, in its own currency. The next page
+              shows yours. Your Circle and its WhatsApp group follow once your
+              membership begins.
             </p>
             <Link className="btn btn-primary" href="/upgrade">
               See what your Village costs

@@ -420,15 +420,10 @@ export default async function MemberHomePage() {
             </div>
           ) : null}
 
-          {onMembership ? null : (
-            <Link className="m-card m-ink-card m-strip" href="/upgrade" style={{ display: "block", marginTop: 0 }}>
-              <span className="m-kind" style={{ color: "#A8DCD1" }}>Village Membership</span>
-              <p style={{ margin: "10px 0 0", fontSize: 15, lineHeight: 1.55, color: "#DCE3E9" }}>
-                Contact members in any Village, attend their events, and
-                promote what you do.
-              </p>
-            </Link>
-          )}
+          {/* The upsell that used to sit here is gone. An unpaid member
+              is redirected off this page before it renders now, so it
+              could never be seen, and a panel nobody can reach is worse
+              than no panel. /upgrade is where that case is handled. */}
         </aside>
       </div>
     </WorkspaceShell>

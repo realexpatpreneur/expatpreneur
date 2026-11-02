@@ -17,13 +17,13 @@ export const metadata = {
 const QUESTIONS: [string, string][] = [
   ["Why is membership by invitation?", "So every Village stays trusted and useful. Every request is read personally."],
   ["Does membership cost anything?", "Village Membership is priced in the currency of your own Village, at the founding rate while founding places last there."],
-  ["I am already in the Dubai WhatsApp group. Do I pay?", "No. Re-enrol on the platform and your place stays. Village Membership is optional, for reaching every Village."],
+  ["I am already in the Dubai WhatsApp group. Do I pay?", "Yes. Re-enrolling keeps your place in the group, and Village Membership is what opens the platform itself. Re-enrol first and you keep the founding rate while founding places last."],
   ["Who can request an invitation?", "Anyone building a business in a country that is not their country of origin, from the idea stage to expansion."],
   ["Why do you ask about my nationalities and the countries I have lived in?", "They make up your expat journey on your profile, so members can find people who know a market or speak a language."],
   ["Is ExpatPreneurs a place to sell?", "Members share their work in the right places, but relationships come first. Mass pitching is not allowed."],
   ["What if I move to another city?", "Your profile and history stay with you. You can ask to transfer to the Village in your new city."],
   ["Is this a dating space?", "No. It is a professional community built on warm, respectful connection."],
-  ["Can I change membership later?", "Yes. You can upgrade or cancel from your settings at any time."],
+  ["Can I change membership later?", "Yes. Both are on the Village Membership page, and cancelling runs to the end of the period you have paid for."],
 ];
 
 const EXPECTED = [
@@ -96,8 +96,9 @@ export default async function MembershipPage() {
           <div className="d-wrap">
             <MembershipPlans plans={(plans ?? []) as Plan[]} pricing={rates} seats={seats} />
             <p className="d-small" style={{ marginTop: 22 }}>
-              Membership is by invitation. Once your request is accepted you can
-              upgrade to Village Membership at any time.
+              Membership is by invitation, and it begins when it is paid for.
+              Once your request is accepted you finish your profile and then
+              Village Membership opens the rest.
             </p>
           </div>
         </section>

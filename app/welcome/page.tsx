@@ -49,8 +49,8 @@ export default async function WelcomePage() {
             <h1>Welcome to ExpatPreneurs.</h1>
             <p>
               {village?.name
-                ? `You are in the ${village.name} Village. Finish your profile and your Circle can find you.`
-                : "Finish your profile and your Local Admin will place you in a Circle."}
+                ? `You are in the ${village.name} Village. Finish your profile, and your Circle follows when your membership begins.`
+                : "Finish your profile, and your Circle follows when your membership begins."}
             </p>
           </div>
           <div className="m-hello-photo">

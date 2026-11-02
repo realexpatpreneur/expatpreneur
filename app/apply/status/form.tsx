@@ -15,7 +15,7 @@ const meaning: Record<string, string> = {
   "with the Global team": "Your Village recommended you. The final word is being given.",
   "on the waiting list":
     "Not a no. Your city is full or still forming, and you will hear when a place comes up.",
-  approved: "You are in. Check your email for the link that signs you in.",
+  approved: "Your place is offered. Sign in, finish your profile, and your membership begins when it is paid for.",
   closed: "This one was decided and is closed. You are welcome to ask again later.",
 };
 

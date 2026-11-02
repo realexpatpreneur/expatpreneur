@@ -40,7 +40,8 @@ const STEPS: [string, string][] = [
   ["Request an invitation", "Tell us about you, your business and your expat journey."],
   ["Review", "A person in your chosen Village reads it."],
   ["Welcome", "Complete your profile and choose what the public can see."],
-  ["Join your Circle", "You are placed in a Circle and added to its WhatsApp group."],
+  ["Village Membership", "Membership begins when it is paid for."],
+  ["Join your Circle", "Once it begins you are placed in a Circle and added to its WhatsApp group."],
   ["Take part", "Ask, offer, meet and explore other Villages."],
   ["Move with you", "Change city and your profile and history come with you."],
 ];

@@ -11,7 +11,8 @@ export const metadata = { title: "Request an invitation, ExpatPreneurs Global" }
 const NEXT: [string, string][] = [
   ["Review", "Your request is read personally."],
   ["A conversation", "We may ask a few questions or invite you to an open evening."],
-  ["Welcome", "Once accepted, you complete your profile and join a Circle and its WhatsApp group."],
+  ["Welcome", "Once accepted, you complete your profile."],
+  ["Village Membership", "Membership begins when it is paid for, and your Circle and its WhatsApp group follow."],
 ];
 
 const said: Record<string, [string, string]> = {

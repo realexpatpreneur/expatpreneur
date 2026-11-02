@@ -238,7 +238,7 @@ export default async function VillagePublicPage({
                 <p className="muted small" style={{ marginTop: 8 }}>
                   {opening
                     ? "A Village opens when there are enough members in the city, two Local Admins and a first Circle Host. Joining the waitlist counts you towards the first, and you can offer to be one of the others."
-                    : "ExpatPreneurs is by invitation. Every request is read personally, and accepted members are welcomed into a Circle."}
+                    : "ExpatPreneurs is by invitation. Every request is read personally, and once membership begins you are welcomed into a Circle."}
                 </p>
                 <Link
                   className="btn btn-primary"

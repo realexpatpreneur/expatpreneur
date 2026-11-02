@@ -131,7 +131,7 @@ export function WelcomeForm({ profile }: { profile: Profile }) {
       </label>
 
       <button className="btn btn-primary" type="submit" disabled={pending}>
-        {pending ? "Saving" : "Finish and join my Circle"}
+        {pending ? "Saving" : "Save my profile"}
       </button>
     </form>
   );

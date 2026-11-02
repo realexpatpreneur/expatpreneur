@@ -278,29 +278,41 @@ export default async function SettingsPage({
                     </>
                   ) : (
                     <>
+                      {/* This read "What you have: Your Village and
+                          Circle, the Directory, Ask and Offer, resources
+                          and local events" and "Cost: Nothing. Membership
+                          comes with your invitation." Both were untrue.
+                          0067 put the Circle and the Directory behind the
+                          plan, and 0066 says membership begins when it is
+                          paid for, so what somebody here actually has is
+                          this page and their profile. */}
                       <dl className="kv">
                         <dt>What you have</dt>
                         <dd>
-                          Your Village and Circle, the Directory, Ask and Offer,
-                          resources and local events
+                          Your profile and these settings. The member side opens
+                          when your membership begins.
                         </dd>
-                        <dt>Cost</dt>
-                        <dd>Nothing. Membership comes with your invitation.</dd>
                         <dt>Village Membership</dt>
                         <dd>
-                          {priceLine
-                            ? priceLine
-                            : "Price to be confirmed"}
+                          {priceLine ? priceLine : "Price to be confirmed"}
                         </dd>
                         <dt>Payment method</dt>
                         <dd>None saved yet</dd>
                       </dl>
                       <div className="panel panel-wash" style={{ marginTop: 16 }}>
                         <p className="muted small" style={{ margin: 0 }}>
-                          Village Membership adds every Village: contact members
-                          anywhere, events in other Villages as a visiting
-                          member, and the Directory of the whole network.
+                          Village Membership is the platform: your Circle and
+                          its group, the Directory of the whole network, Ask and
+                          Offer, Hubs and Pods, messages, and events in your own
+                          Village and in every other one.
                         </p>
+                        <Link
+                          className="btn btn-primary"
+                          href="/upgrade"
+                          style={{ marginTop: 12 }}
+                        >
+                          Village Membership
+                        </Link>
                       </div>
                     </>
                   )}

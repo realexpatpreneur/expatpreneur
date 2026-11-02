@@ -113,7 +113,11 @@ export function WhatHappensNext() {
     ],
     [
       "Welcome",
-      "Once accepted, you complete your profile and join a Circle and its WhatsApp group.",
+      "Once accepted, you complete your profile.",
+    ],
+    [
+      "Village Membership",
+      "Membership begins when it is paid for, and your Circle and its WhatsApp group follow.",
     ],
   ];
   return (
