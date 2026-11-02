@@ -425,3 +425,14 @@ body .mcard:hover{border-color:#0F1419;transform:translate(-4px,-4px);box-shadow
   .ws *{transition:none !important}
   .ws .btn-primary::after,.ws .m-shine::after{display:none}
 }
+
+/* The phone tabs sat at the top of the page, under the header, because
+   they come before the page in the markup and sticky bottom cannot move
+   them down. They are fixed to the bottom of the screen instead. */
+@container app (max-width: 620px){
+  .ws .mtabs{position:fixed;left:0;right:0;bottom:0;z-index:6;padding-bottom:max(14px, env(safe-area-inset-bottom))}
+  .ws .mbody{padding-bottom:110px}
+}
+/* The round post button is not needed on the posting page itself, where
+   it covered the title field. */
+.ws:has(.m-postgrid) .m-fab{display:none}
