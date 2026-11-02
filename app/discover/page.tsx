@@ -295,11 +295,23 @@ export default async function DiscoverPage({
                       <span className="d-small" style={{ fontSize: 13 }}>{villageName(c.village_id)} Village</span>
                     </span>
                     <span className="d-body d-cdesc">
-                      {c.status === "open" ? "Welcoming new members this month." : "Getting ready to welcome its first members."}
+                      {c.status === "welcoming"
+                        ? "Welcoming new members."
+                        : c.status === "full"
+                          ? "Full for now. The next Circle forms shortly."
+                          : c.status === "closed"
+                            ? "Closed."
+                            : "Getting ready to welcome its first members."}
                     </span>
                     <span className="d-small" style={{ fontSize: 13 }}>Up to {c.capacity} members</span>
-                    <span className={`d-status ${c.status === "open" ? "d-open" : "d-soon"}`} style={{ fontSize: 13 }}>
-                      {c.status === "open" ? "Welcoming" : "Preparing"}
+                    <span className={`d-status ${c.status === "welcoming" ? "d-open" : "d-soon"}`} style={{ fontSize: 13 }}>
+                      {c.status === "welcoming"
+                        ? "Welcoming"
+                        : c.status === "full"
+                          ? "Full"
+                          : c.status === "closed"
+                            ? "Closed"
+                            : "Preparing"}
                     </span>
                   </Link>
                 ))}

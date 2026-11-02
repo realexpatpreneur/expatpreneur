@@ -98,7 +98,7 @@ export default async function NetworkPage() {
                       <>
                         <Link
                           className="btn btn-ghost btn-sm"
-                          href={`/directory?village=${village.slug}`}
+                          href="/directory?village=all"
                         >
                           Members
                         </Link>

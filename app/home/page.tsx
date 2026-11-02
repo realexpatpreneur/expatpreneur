@@ -260,8 +260,8 @@ export default async function MemberHomePage() {
           </h1>
           <p>
             {villageName
-              ? `What is happening in ${villageName} this week.`
-              : "What is happening across the network this week."}
+              ? `What is happening in ${villageName} and across the network.`
+              : "What is happening across the network."}
           </p>
         </div>
       </div>

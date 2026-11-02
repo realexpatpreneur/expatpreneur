@@ -35,7 +35,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const supabase = await createClient();
     const [{ data: villages }, { data: articles }] = await Promise.all([
-      supabase.from("villages").select("slug, updated_at"),
+      // Not every Village. /villages/[slug] answers not found for a
+      // paused or an archived one, so publishing them here hands a search
+      // engine a page that 404s.
+      supabase
+        .from("villages")
+        .select("slug, updated_at")
+        .in("status", ["open", "launching", "exploring"]),
       supabase
         .from("articles")
         .select("slug, published_at")

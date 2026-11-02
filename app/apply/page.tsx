@@ -17,7 +17,7 @@ const NEXT: [string, string][] = [
 
 const said: Record<string, [string, string]> = {
   open: ["Open now", "#24675A"],
-  launching: ["Opening next month", "#8A5520"],
+  launching: ["Opening soon", "#8A5520"],
   exploring: ["Being explored", "#8A5520"],
 };
 

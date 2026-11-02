@@ -7,14 +7,22 @@ export const metadata = {
   title: "Where your request stands, ExpatPreneurs Global",
 };
 
+// The lead and the card are drawn on the server, above a result worked
+// out in the browser, which is the fault /auth/finish had. They said "it
+// takes days rather than minutes" and "A week is normal" directly above
+// the answer, so somebody declined read that a week was normal above
+// "This one was decided and is closed", and somebody approved read it
+// above their place being offered. Both were true of a request still
+// waiting and neither of a decided one, so they say something true of
+// every outcome now.
 export default function ApplicationStatusPage() {
   return (
     <FlowPage
       title="Where your request stands"
-      lead="Somebody reads every one, so it takes days rather than minutes. You can check here in the meantime."
+      lead="Your address and your reference show you where it stands."
       photo={PHOTO.reader}
       photoAlt="A member reading invitation requests"
-      card={{ title: "Read by a person", line: "A week is normal" }}
+      card={{ title: "Read by a person", line: "Never by a machine" }}
     >
       <StatusForm />
       <div className="d-aside-note">

@@ -98,9 +98,15 @@ export default async function WatchPage({
                     {lead.summary ? (
                       <p style={{ marginTop: 14, fontSize: 16, lineHeight: 1.65, color: "#B9C3CD" }}>{lead.summary}</p>
                     ) : null}
+                    {/* "Our YouTube channel" and "Follow the podcast"
+                        went to youtube.com and open.spotify.com, the
+                        services' own front pages. The real addresses are
+                        columns on the shows table, which the show page
+                        reads properly, so this sends people there rather
+                        than off the site to nothing. */}
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
-                      <a className="d-btn d-btn-mint d-shine" href="https://www.youtube.com/" target="_blank" rel="noopener">Our YouTube channel</a>
-                      <a className="d-btn d-btn-ghost" href="https://open.spotify.com/" target="_blank" rel="noopener">Follow the podcast</a>
+                      <Link className="d-btn d-btn-mint d-shine" href="/watch?show=episode">Episodes and videos</Link>
+                      <Link className="d-btn d-btn-ghost" href="/media">Read the stories</Link>
                     </div>
                   </div>
                 </div>
@@ -207,12 +213,14 @@ export default async function WatchPage({
                 <div style={{ flex: "1 1 460px", minWidth: 0 }}>
                   <h2 className="d-h2">Have a story the network should hear?</h2>
                   <p className="d-body" style={{ marginTop: 12, fontSize: 16 }}>
-                    New stories, videos, podcast episodes and events from every Village, once a month.
+                    New stories, videos, podcast episodes and events from every Village.
                   </p>
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
                   <Link className="d-btn d-btn-dark d-shine" href="/media">Read the stories</Link>
-                  <Link className="d-btn d-btn-line d-shine" href="/media/suggest">Suggest a story</Link>
+                  {/* /media/suggest requires a member, and this block is
+                      the visitor one, so it sent them to a login. */}
+                  <Link className="d-btn d-btn-line d-shine" href="/apply">Request an invitation</Link>
                 </div>
               </div>
             </div>

@@ -19,6 +19,7 @@ export default async function GlobalReportingPage() {
     { data: money },
     { data: renewals },
     { data: rooms },
+    { count: unrouted },
   ] = await Promise.all([
     supabase.from("village_summary").select("*").order("members", { ascending: false }),
     supabase
@@ -36,6 +37,18 @@ export default async function GlobalReportingPage() {
       .from("renewal_summary")
       .select("cycle, village_id, asked, staying, leaving, waiting"),
     supabase.from("village_rooms").select("village_id, sessions, came"),
+    // village_summary counts applications per Village, so one with no
+    // Village belongs to no row and was invisible here. 0073 noted that
+    // having no Village is the normal case rather than the edge one, and
+    // those are exactly the ones that are with the Global team, since only
+    // they can route one. So a stat labelled "With you or a Village" was
+    // dropping the half that is with you. Last in this list, because the
+    // destructuring above reads it in order.
+    supabase
+      .from("applications")
+      .select("id", { count: "exact", head: true })
+      .is("village_id", null)
+      .in("status", ["new", "with_local", "recommended"]),
   ]);
 
   const totals = (villages ?? []).reduce(
@@ -82,7 +95,16 @@ export default async function GlobalReportingPage() {
               : "No members yet"
           }
         />
-        <Stat label="Requests waiting" value={totals.waiting} note="With you or a Village" href="/admin/applications" />
+        <Stat
+          label="Requests waiting"
+          value={totals.waiting + (unrouted ?? 0)}
+          note={
+            unrouted
+              ? `${unrouted} with no Village yet, so with you`
+              : "With you or a Village"
+          }
+          href="/admin/applications"
+        />
         <Stat label="Villages" value={(villages ?? []).length} note="Open and preparing" href="/global/villages" />
       </div>
 

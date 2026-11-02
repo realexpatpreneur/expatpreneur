@@ -16,12 +16,12 @@ function Col({ title, items }: { title: string; items: React.ReactNode[] }) {
   );
 }
 
-const SOCIAL: [string, string, string][] = [
-  ["youtube", "YouTube", "https://www.youtube.com/"],
-  ["instagram", "Instagram", "https://www.instagram.com/"],
-  ["linkedin", "LinkedIn", "https://www.linkedin.com/"],
-  ["mic", "Podcast", "https://open.spotify.com/"],
-];
+// Each of these used to carry the service's own front page as its
+// address, under an accessible name reading "ExpatPreneurs on YouTube"
+// and so on, so a screen reader announced an account that the link did
+// not go to. Put the real addresses in here and the icons come back; the
+// row renders nothing while the list is empty, which is honest.
+const SOCIAL: [string, string, string][] = [];
 
 export async function SiteFooter() {
   // Each column shows the menu the Global team keeps, or the links
@@ -140,7 +140,7 @@ export async function SiteFooter() {
           items={links("footer_stories", [
             ["/media", "Media"],
             ["/watch", "Videos"],
-            ["/watch?kind=podcast", "Podcasts"],
+            ["/watch?show=episode", "Podcasts"],
             ["/media", "Founder story"],
           ])}
         />

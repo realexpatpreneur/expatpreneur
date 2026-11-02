@@ -42,7 +42,21 @@ export default async function SalesPage() {
       maximumFractionDigits: 2,
     });
 
-  const earned = paid.reduce((sum, s) => sum + (s.educator_cents ?? 0), 0);
+  // Not one figure. Sales can be in EUR, USD or AED, and adding them
+  // together and printing the result as euros was arithmetic on unlike
+  // things. Same fix as /educator/payouts and /global/money.
+  const earnedBy = new Map<string, number>();
+  for (const sale of paid) {
+    const ccy = (sale.currency ?? "EUR").toUpperCase();
+    earnedBy.set(ccy, (earnedBy.get(ccy) ?? 0) + (sale.educator_cents ?? 0));
+  }
+  const earnedLine =
+    earnedBy.size === 0
+      ? "nothing yet"
+      : [...earnedBy.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .map(([ccy, cents]) => money(cents, ccy))
+          .join(", ");
   const thisMonth = paid.filter(
     (s) => s.month === new Date().toISOString().slice(0, 8) + "01"
   );
@@ -56,7 +70,7 @@ export default async function SalesPage() {
           <Crumbs trail={[["Your courses", "/educator"], ["Sales"]]} />
           <h1>Sales</h1>
           <p className="lead">
-            {paid.length} sold, {money(earned)} earned.{" "}
+            {paid.length} sold, {earnedLine} earned.{" "}
             {refunded.length ? `${refunded.length} refunded.` : ""}
           </p>
           <p>

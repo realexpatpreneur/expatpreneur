@@ -16,7 +16,9 @@ export function MembershipPlans({
 }: {
   plans: Plan[];
   pricing: Pricing[];
-  seats: number;
+  // Null when the Villages do not all offer the same number of founding
+  // places, because then there is no one figure to print.
+  seats: number | null;
 }) {
   const [yearly, setYearly] = useState(false);
   const member = plans.find((p) => p.slug === "member");
@@ -38,7 +40,11 @@ export function MembershipPlans({
         ) : <span />}
         <p className="d-small">
           Priced in your Village&apos;s currency.
-          {founding ? ` The first ${seats} members of each Village pay the founding rate.` : ""}
+          {founding
+            ? seats
+              ? ` The first ${seats} members of each Village pay the founding rate.`
+              : " The first members of each Village pay the founding rate, while its places last."
+            : ""}
         </p>
       </div>
 
@@ -75,7 +81,11 @@ export function MembershipPlans({
           </p>
           {founding ? (
             <div className="d-found">
-              <span className="d-lbl" style={{ color: "#A8DCD1" }}>Founding rate, first {seats} in each Village</span>
+              <span className="d-lbl" style={{ color: "#A8DCD1" }}>
+                {seats
+                  ? `Founding rate, first ${seats} in each Village`
+                  : "Founding rate, while your Village's places last"}
+              </span>
               <span className="d-found-tag">While places last</span>
               <span style={{ fontSize: 15, color: "#FFFFFF" }}>
                 <b style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-.02em" }}>{founding}</b> {per}

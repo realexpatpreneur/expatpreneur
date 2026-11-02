@@ -137,7 +137,7 @@ export default async function VillagePublicPage({
                       <b style={{ fontSize: 18 }}>Opening soon</b>
                     </div>
                     <div className="stat">
-                      <span>Founding members</span>
+                      <span>Members</span>
                       <b>{counts?.members ?? 0}</b>
                     </div>
                     <div className="stat">

@@ -13,8 +13,8 @@ export default async function SuggestionsPage() {
         <section className="sec">
           <h1>Suggestion box</h1>
           <p className="lead">
-            How could ExpatPreneurs be better? Local Admins and the Global team
-            read everything that comes in.
+            How could ExpatPreneurs be better? Your Local Admins and the
+            Global team read what comes in.
           </p>
         </section>
         <section className="sec">

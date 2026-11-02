@@ -25,15 +25,22 @@ export default async function GlobalOverviewPage() {
     supabase
       .from("profiles")
       .select("id", { count: "exact", head: true })
-      .eq("plan", "paid"),
+      .eq("plan", "paid")
+      .eq("status", "active"),
     supabase
       .from("applications")
       .select("id", { count: "exact", head: true })
       .in("status", ["new", "with_local", "recommended"]),
+    // Escalated, not merely open. This counted every report that was not
+    // closed, so a number labelled "From Local Admins" and "Raised by a
+    // Village that could not settle it locally" was in fact every open
+    // report in the network, most of them never seen by a Local Admin at
+    // all. escalated is set in one place: handleReport, when somebody
+    // sends one up.
     supabase
       .from("reports")
       .select("id", { count: "exact", head: true })
-      .neq("status", "closed"),
+      .eq("status", "escalated"),
     supabase
       .from("suggestions")
       .select("id", { count: "exact", head: true })

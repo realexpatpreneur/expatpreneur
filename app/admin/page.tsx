@@ -25,6 +25,7 @@ export default async function AdminOverviewPage() {
     { count: activeMembers },
     { count: openRequests },
     { data: reports },
+    { count: openReports },
     { data: whatsapp },
     { data: events },
     { data: circles },
@@ -53,6 +54,15 @@ export default async function AdminOverviewPage() {
       .not("status", "in", "(closed,escalated)")
       .order("created_at", { ascending: false })
       .limit(5),
+    // The stat used to be the length of the list above, which is capped
+    // at five however many are open, and which leaves out escalated ones
+    // that are still open and still this Village's business. A count of
+    // its own, scoped to the Village, which the list was not either.
+    supabase
+      .from("reports")
+      .select("id", { count: "exact", head: true })
+      .in("village_id", villageIds)
+      .neq("status", "closed"),
     supabase
       .from("whatsapp_tasks")
       .select("id, kind, group_name, profile_id")
@@ -88,7 +98,13 @@ export default async function AdminOverviewPage() {
   const values = Object.fromEntries((settings ?? []).map((s) => [s.key, s.value]));
   const limit = Number(values.nationality_limit ?? 30);
 
-  const quietDays = Number(values.quiet_days ?? 45);
+  // This printed "No activity in {quietDays} days" with quietDays coming
+  // from values.quiet_days, a settings key no migration has ever
+  // inserted, so the number shown was always the hardcoded 45. And
+  // member_activity's counts are lifetime, with no date column to filter
+  // on, so the figure was never about any window: it is the number of
+  // members who have never posted, never answered and never attended.
+  // That is a useful number. It is just not the one the label named.
   const { data: quiet } = await supabase
     .from("member_activity")
     .select("profile_id, posts, replies, attended")
@@ -104,8 +120,8 @@ export default async function AdminOverviewPage() {
   const stats: [string, number | string, string, string][] = [
     ["Active members", activeMembers ?? 0, "In this Village", "/admin/members"],
     ["Invitation requests", openRequests ?? 0, "Waiting on you", "/admin/applications"],
-    ["Open reports", (reports ?? []).length, "Handled privately", "/admin/reports"],
-    ["Quiet members", quietCount, `No activity in ${quietDays} days`, "/admin/care"],
+    ["Open reports", openReports ?? 0, "Handled privately", "/admin/reports"],
+    ["Quiet members", quietCount, "Never posted, answered or attended", "/admin/care"],
   ];
 
   return (

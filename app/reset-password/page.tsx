@@ -9,7 +9,7 @@ export default function ResetPasswordPage() {
   return (
     <FlowPage
       title="Reset your password"
-      lead="Only if you set one. Most members sign in with a link instead, which needs no password at all."
+      lead="Only if you set one. There are two ways in: a password, or a link sent to your email."
       photo={PHOTO.nadia}
       photoAlt="A member at work in her cafe"
     >

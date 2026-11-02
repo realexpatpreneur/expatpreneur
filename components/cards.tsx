@@ -80,7 +80,7 @@ export function VillageCard({
         <p className="muted small">
           {village.country}.{" "}
           {launching
-            ? "Opening next month."
+            ? "Opening soon."
             : empty
               ? "Opening soon."
               : `${village.members ?? 0} members in ${village.circles ?? 0} Circle${

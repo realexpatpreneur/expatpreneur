@@ -31,12 +31,46 @@ export default async function PayoutsPage() {
       maximumFractionDigits: 2,
     });
 
-  const paidOut = (payouts ?? [])
-    .filter((p) => p.status === "paid")
-    .reduce((sum, p) => sum + p.net_cents, 0);
+  // These three figures were each a single number printed as euros,
+  // summed across every currency: a sale in AED and one in EUR added
+  // together and labelled with whichever the money() default was. The
+  // payout form offers EUR, USD and AED, so the totals were arithmetic on
+  // unlike things. /global/money was fixed for this; this page and the
+  // sales page were not.
+  const byCurrency = (
+    rows: { currency?: string | null }[],
+    amount: (row: never) => number
+  ) => {
+    const totals = new Map<string, number>();
+    for (const row of rows) {
+      const ccy = (row.currency ?? "EUR").toUpperCase();
+      totals.set(ccy, (totals.get(ccy) ?? 0) + amount(row as never));
+    }
+    return totals;
+  };
 
-  const earned = (sales ?? []).reduce((sum, s) => sum + (s.educator_cents ?? 0), 0);
-  const waiting = earned - paidOut;
+  const earnedBy = byCurrency(sales ?? [], (s: { educator_cents: number | null }) =>
+    s.educator_cents ?? 0
+  );
+  const paidOutBy = byCurrency(
+    (payouts ?? []).filter((p) => p.status === "paid"),
+    (p: { net_cents: number }) => p.net_cents
+  );
+
+  const waitingBy = new Map<string, number>();
+  for (const [ccy, cents] of earnedBy) {
+    waitingBy.set(ccy, Math.max(0, cents - (paidOutBy.get(ccy) ?? 0)));
+  }
+
+  // One line per currency, biggest first, or a dash when there is nothing
+  // rather than a confident zero in a currency nobody has used.
+  const lines = (totals: Map<string, number>) =>
+    totals.size === 0
+      ? "Nothing yet"
+      : [...totals.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .map(([ccy, cents]) => money(cents, ccy))
+          .join(", ");
 
   return (
     <WorkspaceShell kind="edu" nav="/educator/payouts">
@@ -84,11 +118,11 @@ export default async function PayoutsPage() {
                 <h3>Where you stand</h3>
                 <dl className="kv">
                   <dt>Earned in total</dt>
-                  <dd>{money(earned)}</dd>
+                  <dd>{lines(earnedBy)}</dd>
                   <dt>Paid out</dt>
-                  <dd>{money(paidOut)}</dd>
+                  <dd>{lines(paidOutBy)}</dd>
                   <dt>Waiting</dt>
-                  <dd>{money(Math.max(0, waiting))}</dd>
+                  <dd>{lines(waitingBy)}</dd>
                 </dl>
               </div>
 

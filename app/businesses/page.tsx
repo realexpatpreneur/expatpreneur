@@ -64,11 +64,13 @@ export default async function BusinessesPage({
             What members actually do, and which markets they already sell into.
           </p>
           {done ? <div className="flag ok">Saved.</div> : null}
-          <p>
-            <Link className="btn btn-primary" href="/businesses/new">
-              Add your business
-            </Link>
-          </p>
+          {member ? (
+            <p>
+              <Link className="btn btn-primary" href="/businesses/new">
+                Add your business
+              </Link>
+            </p>
+          ) : null}
           <form className="searchrow">
             <input name="q" defaultValue={q} placeholder="Name, industry or what they do" />
             <button className="btn btn-ghost" type="submit">

@@ -46,7 +46,7 @@ export function WhyJoin({
 }) {
   const said: Record<string, string> = {
     open: "open now",
-    launching: "opening next month",
+    launching: "opening soon",
     exploring: "being explored",
   };
   const ours = villages.map((v) => `${v.name}: ${said[v.status] ?? v.status}`);

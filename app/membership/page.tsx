@@ -66,7 +66,8 @@ export default async function MembershipPage() {
     );
   }
 
-  const seats = Math.max(...rates.map((r) => r.founding_seats ?? 50), 0) || 50;
+  const seatCounts = new Set(rates.map((r) => r.founding_seats ?? 50));
+  const seats = seatCounts.size === 1 ? [...seatCounts][0] : null;
 
   return (
     <PublicPage active="/membership">
