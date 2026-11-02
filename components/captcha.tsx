@@ -4,9 +4,16 @@ import { useEffect, useRef } from "react";
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-// The captcha, if there is one. With no site key this renders nothing at
-// all, so the forms work exactly as they do today until Cloudflare is
-// set up.
+// The bot check, kept invisible. Turnstile runs in the background when
+// the form appears and puts its answer in a hidden field called
+// cf-turnstile-response, which the server action checks. Nobody sees a
+// box or ticks anything.
+//
+// With a site key created in "Invisible" mode nothing is ever shown.
+// With a "Managed" key, interaction-only keeps it hidden too, and a
+// challenge appears only for the rare visitor Cloudflare is unsure of.
+// With no site key at all this renders nothing, and the server lets the
+// form through, so the forms work exactly as before until the keys exist.
 export function Captcha() {
   const box = useRef<HTMLDivElement>(null);
 
@@ -31,11 +38,21 @@ export function Captcha() {
         turnstile?: { render: (el: Element, o: Record<string, unknown>) => void };
       }).turnstile;
       if (api && box.current && !box.current.hasChildNodes()) {
-        api.render(box.current, { sitekey: SITE_KEY, theme: "light" });
+        api.render(box.current, {
+          sitekey: SITE_KEY,
+          theme: "light",
+          appearance: "interaction-only",
+          execution: "render",
+          "refresh-expired": "auto",
+          "response-field-name": "cf-turnstile-response",
+        });
       }
     }
   }, []);
 
   if (!SITE_KEY) return null;
-  return <div ref={box} style={{ marginTop: 16 }} />;
+  // No margin and no height of its own, so the form looks the same with
+  // the check as without it. If Cloudflare does need a click, the box
+  // grows to fit.
+  return <div ref={box} style={{ minHeight: 0 }} />;
 }
