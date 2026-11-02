@@ -52,7 +52,11 @@ export async function writeToGlobal(
 
   const { error } = await supabase.from("suggestions").insert({
     author_id: admin.userId,
-    about: "global",
+    // suggestion_about is an enum of village and community. There is no
+    // global, so this insert was refused by Postgres every time and the
+    // raw type error was shown to the admin. A note to the Global team is
+    // a community one, which is exactly who the policy sends those to.
+    about: "community",
     village_id: admin.homeVillageId ?? admin.villageIds[0] ?? null,
     title,
     body,

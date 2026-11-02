@@ -11,7 +11,11 @@ import { whenText } from "@/lib/events";
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
   const auth = request.headers.get("authorization");
-  if (secret && auth !== `Bearer ${secret}`) {
+  // This read `if (secret && ...)`, so with CRON_SECRET unset the guard
+  // passed and the route was open to anyone on the internet who knew the
+  // path. It sends every due event email. The Flodesk webhook
+  // already gets this right; these two did not.
+  if (!secret || auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Not allowed" }, { status: 401 });
   }
 

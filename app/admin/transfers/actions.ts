@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/access";
 import { notify } from "@/lib/notify";
 import { record } from "@/lib/audit";
@@ -36,19 +37,87 @@ export async function handleTransfer(
   if (error) return { error: error.message };
 
   if (decision === "done") {
-    // The member moves Village and leaves their Circle behind; the new
-    // Local Admins place them.
-    await supabase
+    // No transfer has ever actually moved anybody.
+    //
+    // profiles_admin_write checks is_admin(village_id) in both USING and
+    // WITH CHECK, and on an update USING is evaluated against the old row
+    // and WITH CHECK against the new one. So the admin of the Village
+    // they are leaving passes the first and fails the second, and the
+    // admin of the Village they are joining fails the first and matches
+    // zero rows, which is not even an error. Either way the member stayed
+    // where they were, while the request flipped to done, the audit log
+    // recorded member.transferred, and they were told they had moved.
+    //
+    // A move is legitimately the business of both ends, which is more
+    // than one row policy can express, so the check is here and the write
+    // goes through the service connection.
+    const mine = new Set(admin.villageIds);
+    const allowed =
+      admin.isGlobal ||
+      mine.has(request.from_village) ||
+      mine.has(request.to_village);
+
+    if (!allowed) {
+      return { error: "Only an admin of one of those two Villages can do that." };
+    }
+
+    const service = createAdminClient();
+
+    // Their Circle is left behind, and it is needed for the task below,
+    // so read it before it goes.
+    const { data: before } = await service
+      .from("profiles")
+      .select("circle_id")
+      .eq("id", request.profile_id)
+      .maybeSingle();
+
+    const { data: oldCircle } = before?.circle_id
+      ? await service
+          .from("circles")
+          .select("name")
+          .eq("id", before.circle_id)
+          .maybeSingle()
+      : { data: null };
+
+    const { error: moveError } = await service
       .from("profiles")
       .update({ village_id: request.to_village, circle_id: null })
       .eq("id", request.profile_id);
 
-    await supabase.from("whatsapp_tasks").insert({
-      village_id: request.from_village,
+    if (moveError) {
+      return { error: "That move could not be completed. Nothing was changed." };
+    }
+
+    // Out of the old Village group, and out of their old Circle group,
+    // which nothing used to raise at all.
+    const tasks: Record<string, unknown>[] = [
+      {
+        village_id: request.from_village,
+        profile_id: request.profile_id,
+        kind: "remove",
+        group_name: "Village group",
+      },
+    ];
+
+    if (oldCircle?.name) {
+      tasks.push({
+        village_id: request.from_village,
+        profile_id: request.profile_id,
+        kind: "remove",
+        group_name: oldCircle.name,
+      });
+    }
+
+    // And into the new one. Nothing raised this either, so a transferred
+    // member ended up in neither Village group.
+    tasks.push({
+      village_id: request.to_village,
       profile_id: request.profile_id,
-      kind: "remove",
+      kind: "add",
       group_name: "Village group",
     });
+
+    await service.from("whatsapp_tasks").insert(tasks);
 
     await record(admin.userId, "member.transferred", "profile", request.profile_id, {
       from: request.from_village,
