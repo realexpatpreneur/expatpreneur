@@ -101,8 +101,21 @@ export const currentMember = cache(async function currentMember(): Promise<
   };
 });
 
-// Every member page starts here: signed in, profile present, and past
-// the welcome flow.
+// Every member page starts here: signed in, profile present, past the
+// welcome flow, and paid for.
+//
+// The last of those is new. Membership is paid, with free access handed
+// out by the Global team and nobody else, so somebody who has not paid
+// reaches their own profile, their settings and the checkout and nothing
+// else. is_paid() in the database already closed the content itself,
+// which is why an unpaid member used to get a member home with empty
+// shelves rather than an explanation. One function says no now, the way
+// 0067 made one function in the database decide the same thing, so all
+// fifty six pages behind this follow without being touched.
+//
+// The pages somebody has to reach before their membership is live use
+// requireAccount instead: /welcome, /settings, /upgrade and /renew. Sign
+// out lives on /settings, so it stays within reach.
 export async function requireMember(next: string): Promise<Member> {
   const user = await currentUser();
   if (!user) redirect(`/login?next=${next}`);
@@ -111,6 +124,9 @@ export async function requireMember(next: string): Promise<Member> {
   if (!member) redirect("/home");
   if (member.onboarding) redirect("/welcome");
   if (member.invited) redirect("/welcome");
+  // Lapsed, or complimentary access that was taken back. /upgrade is the
+  // page that says what is waiting and takes them to the checkout.
+  if (!isPaid(member)) redirect("/upgrade");
 
   return member;
 }
@@ -132,9 +148,17 @@ export async function requireAccount(
 
 // For the pages the public can also open. Returns null rather than
 // redirecting, so the page can decide what a stranger is shown.
+//
+// Unpaid counts as a stranger here, which it has to, or the twelve pages
+// behind this would be the one way round the gate: a lapsed member would
+// keep the member view of the Directory, Learning, Businesses and the
+// rest while every other page turned them away. Invited already came
+// back null, so this only makes a lapsed member behave like an invited
+// one, which is what the product asks for.
 export async function whoIsHere(): Promise<Member | null> {
   const member = await currentMember();
   if (!member || member.onboarding || member.invited) return null;
+  if (!isPaid(member)) return null;
   return member;
 }
 

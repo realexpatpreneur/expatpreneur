@@ -1,7 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember } from "@/lib/member";
+import { requireAccount } from "@/lib/member";
 import { RenewalForm } from "./form";
 
 export const metadata = { title: "Another year, ExpatPreneurs Global" };
@@ -12,7 +12,9 @@ export default async function RenewPage({
   searchParams: Promise<{ done?: string }>;
 }) {
   const { done } = await searchParams;
-  const member = await requireMember("/renew");
+  // A renewal is how somebody becomes paid again, so it cannot sit
+  // behind being paid.
+  const member = await requireAccount("/renew");
   const supabase = await createClient();
 
   const { data: renewal } = await supabase

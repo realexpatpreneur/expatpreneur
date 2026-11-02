@@ -1,7 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireMember, isPaid } from "@/lib/member";
+import { requireAccount, isPaid } from "@/lib/member";
 import {
   AccountForm,
   ProfileSettingsForm,
@@ -29,7 +29,9 @@ export default async function SettingsPage({
   searchParams: Promise<{ show?: string }>;
 }) {
   const { show = "account" } = await searchParams;
-  const member = await requireMember("/settings");
+  // requireAccount, not requireMember: an unpaid member has to be able
+  // to reach their settings, because sign out is on this page.
+  const member = await requireAccount("/settings");
   const supabase = await createClient();
 
   const [
