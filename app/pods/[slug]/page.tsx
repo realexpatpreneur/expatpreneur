@@ -16,11 +16,20 @@ export default async function PodPage({
 
   const { data: pod } = await supabase
     .from("pods")
-    .select("*")
+    // whatsapp_url comes from pod_rooms now: the lead, the Global team,
+    // and a paying member who has joined.
+    .select("id, slug, name, purpose, village_id, lead_id, capacity, cadence, status, created_at, updated_at")
     .eq("slug", slug)
     .maybeSingle();
 
   if (!pod) notFound();
+
+  // The room link, if this reader is entitled to it.
+  const { data: room } = await supabase
+    .from("pod_rooms")
+    .select("whatsapp_url")
+    .eq("id", pod.id)
+    .maybeSingle();
 
   const [{ data: members }, { data: size }, { data: lead }] = await Promise.all([
     supabase.from("pod_members").select("profile_id").eq("pod_id", pod.id),
@@ -105,11 +114,11 @@ export default async function PodPage({
                   joined={joined}
                   full={(size?.places_left ?? 0) <= 0}
                 />
-                {joined && pod.whatsapp_url ? (
+                {joined && room?.whatsapp_url ? (
                   <p style={{ marginTop: 12 }}>
                     <a
                       className="btn mint"
-                      href={pod.whatsapp_url}
+                      href={room.whatsapp_url}
                       target="_blank"
                       rel="noreferrer"
                     >

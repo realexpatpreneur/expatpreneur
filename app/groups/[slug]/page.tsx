@@ -16,11 +16,24 @@ export default async function GroupPage({
 
   const { data: group } = await supabase
     .from("industry_groups")
-    .select("*")
+    // whatsapp_url is no longer a column a reader can take off this
+    // table. group_rooms serves it to the lead, to the Global team, and
+    // to a paying member who has joined, which is what the button below
+    // already checked for in the interface alone.
+    .select("id, slug, name, industry, description, lead_id, status, cover_url, created_at, updated_at")
     .eq("slug", slug)
     .maybeSingle();
 
   if (!group) notFound();
+
+  // The room link, if this reader is entitled to it. An empty result is
+  // the answer, not an error: it means lead no, Global no, joined and
+  // paying no.
+  const { data: room } = await supabase
+    .from("group_rooms")
+    .select("whatsapp_url")
+    .eq("id", group.id)
+    .maybeSingle();
 
   const [{ data: members }, { data: lead }] = await Promise.all([
     supabase.from("group_members").select("profile_id").eq("group_id", group.id),
@@ -98,11 +111,11 @@ export default async function GroupPage({
             <div className="stack">
               <div className="panel">
                 <JoinGroupButton groupId={group.id} slug={group.slug} joined={joined} />
-                {joined && group.whatsapp_url ? (
+                {joined && room?.whatsapp_url ? (
                   <p style={{ marginTop: 12 }}>
                     <a
                       className="btn mint"
-                      href={group.whatsapp_url}
+                      href={room.whatsapp_url}
                       target="_blank"
                       rel="noreferrer"
                     >

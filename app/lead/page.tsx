@@ -77,13 +77,13 @@ export default async function LeadPage({
       groupIds.length
         ? supabase
             .from("industry_groups")
-            .select("id, name, description, whatsapp_url")
+            .select("id, name, description")
             .in("id", groupIds)
         : Promise.resolve({ data: [] }),
       podIds.length
         ? supabase
             .from("pods")
-            .select("id, name, purpose, whatsapp_url, cadence")
+            .select("id, name, purpose, cadence")
             .in("id", podIds)
         : Promise.resolve({ data: [] }),
       supabase
@@ -94,6 +94,30 @@ export default async function LeadPage({
         .order("scheduled_start")
         .limit(5),
     ]);
+
+  // whatsapp_url is no longer readable from either table. A lead is one
+  // of the three people group_rooms and pod_rooms answer, so the link
+  // comes from there and is merged back on.
+  const [{ data: groupRooms }, { data: podRooms }] = await Promise.all([
+    groupIds.length
+      ? supabase.from("group_rooms").select("id, whatsapp_url").in("id", groupIds)
+      : Promise.resolve({ data: [] as { id: string; whatsapp_url: string | null }[] }),
+    podIds.length
+      ? supabase.from("pod_rooms").select("id, whatsapp_url").in("id", podIds)
+      : Promise.resolve({ data: [] as { id: string; whatsapp_url: string | null }[] }),
+  ]);
+
+  const groupLink = new Map((groupRooms ?? []).map((r) => [r.id, r.whatsapp_url]));
+  const podLink = new Map((podRooms ?? []).map((r) => [r.id, r.whatsapp_url]));
+
+  const myGroups = (groups ?? []).map((g) => ({
+    ...g,
+    whatsapp_url: groupLink.get(g.id) ?? null,
+  }));
+  const myPods = (pods ?? []).map((p) => ({
+    ...p,
+    whatsapp_url: podLink.get(p.id) ?? null,
+  }));
 
   const things = (leadership ?? []).map((l) => ({
     value: `${l.kind}:${l.thing_id}`,
@@ -180,7 +204,7 @@ export default async function LeadPage({
                 </div>
               ) : null}
 
-              {(groups ?? []).map((group) => (
+              {myGroups.map((group) => (
                 <div className="panel" key={group.id}>
                   <h3>{group.name}</h3>
                   <p className="muted small" style={{ marginTop: 8 }}>
@@ -190,7 +214,7 @@ export default async function LeadPage({
                 </div>
               ))}
 
-              {(pods ?? []).map((pod) => (
+              {myPods.map((pod) => (
                 <div className="panel" key={pod.id}>
                   <h3>{pod.name}</h3>
                   <PodForm pod={pod} />
