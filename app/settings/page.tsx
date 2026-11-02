@@ -1,7 +1,7 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireAccount, isPaid } from "@/lib/member";
+import { requireAccount, isPaid, hasLeft } from "@/lib/member";
 import {
   AccountForm,
   ProfileSettingsForm,
@@ -225,11 +225,18 @@ export default async function SettingsPage({
                             : member.complimentary
                               ? "Complimentary, given by an admin."
                               : "Active"
-                          : "Village Membership is not active on this account."}
+                          : hasLeft(member)
+                            ? "This account has been closed. Your Local Admin can tell you where it stands, and can open it again."
+                            : "Village Membership is not active on this account."}
                       </p>
                     </div>
                     {isPaid(member) ? (
                       <span className="chip chip-mint">Active</span>
+                    ) : hasLeft(member) ? (
+                      /* No checkout here. Paying would not put the status
+                         back, because only an admin can do that, so the
+                         button would take money for nothing. */
+                      <span className="chip">Closed</span>
                     ) : (
                       <Link className="btn btn-primary" href="/upgrade">
                         Upgrade to Village Membership

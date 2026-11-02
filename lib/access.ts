@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { STATUSES_IN_PLACE } from "@/lib/member";
 
 export type AdminContext = {
   userId: string;
@@ -21,7 +22,7 @@ export async function requireAdmin(): Promise<AdminContext> {
   const [{ data: profile }, { data: roles }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("full_name, village_id")
+      .select("full_name, village_id, status")
       .eq("id", user.id)
       .maybeSingle(),
     supabase
@@ -30,6 +31,16 @@ export async function requireAdmin(): Promise<AdminContext> {
       .eq("profile_id", user.id)
       .is("ended_at", null),
   ]);
+
+  // Still here. This asked only about roles before, so an admin whose
+  // profile had been marked left or removed kept both workspaces and
+  // everything in them, including every member record in the network.
+  // The role row says what they may do; the status says whether they
+  // are anybody at all, and that has to come first.
+  //
+  // The role is not touched. An admin put back to active has their
+  // workspaces back with it.
+  if (!profile || !STATUSES_IN_PLACE.includes(profile.status)) redirect("/home");
 
   const isGlobal = (roles ?? []).some((r) => r.role === "global_admin");
   const localVillages = (roles ?? [])

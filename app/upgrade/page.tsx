@@ -1,7 +1,8 @@
 import { WorkspaceShell } from "@/components/workspace-shell";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireAccount, isPaid } from "@/lib/member";
+import { redirect } from "next/navigation";
+import { requireAccount, isPaid, hasLeft } from "@/lib/member";
 import { stripeReady } from "@/lib/stripe";
 import { money, rateOf, anyFounding, type Pricing } from "@/lib/pricing";
 import {
@@ -21,6 +22,11 @@ export default async function UpgradePage({
   // The one member page somebody reaches before their membership is
   // live, because this is where it becomes live.
   const member = await requireAccount("/upgrade");
+
+  // Left or removed. There is nothing to buy: only an admin can put the
+  // status back, so this page would sell access that would not arrive.
+  if (hasLeft(member)) redirect("/settings?show=membership");
+
   const supabase = await createClient();
 
   // The list on this page is her catalogue, held in plans, rather than

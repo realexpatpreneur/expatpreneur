@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { currentUser, roleCarriesMembership } from "@/lib/member";
+import { currentUser, roleCarriesMembership, STATUSES_IN_PLACE } from "@/lib/member";
 import { WorkspaceShell, PageHead } from "@/components/workspace-shell";
 import { FeedPost, Compose, type FeedItem } from "@/components/feed";
 import { Av } from "@/components/bits";
@@ -43,9 +43,10 @@ export default async function MemberHomePage() {
   // The same question Settings asks, asked the same way, so the two
   // pages cannot disagree about whether somebody is a Village Member.
   const onMembership =
-    profile?.plan === "paid" ||
-    Boolean(profile?.complimentary) ||
-    (await roleCarriesMembership(user.id));
+    STATUSES_IN_PLACE.includes(profile?.status ?? "") &&
+    (profile?.plan === "paid" ||
+      Boolean(profile?.complimentary) ||
+      (await roleCarriesMembership(user.id)));
 
   if (error) {
     return (
@@ -82,6 +83,13 @@ export default async function MemberHomePage() {
   // person arrives on a member home with nothing on it.
   if (profile.status === "onboarding" || profile.status === "invited")
     redirect("/welcome");
+
+  // Left or removed. Same reason as above: this page reads the profile
+  // itself, so the line requireMember runs for everywhere else has to be
+  // repeated here. The checkout is the wrong place to send them, because
+  // paying does not put the status back.
+  if (profile.status === "left" || profile.status === "removed")
+    redirect("/settings?show=membership");
 
   // And the same for somebody whose membership has ended. requireMember
   // does this for the other fifty six pages, and this one reads the

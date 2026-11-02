@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe, siteUrl, stripeReady } from "@/lib/stripe";
 import { ticketPrice } from "@/lib/events";
-import { roleCarriesMembership } from "@/lib/member";
+import { roleCarriesMembership, STATUSES_IN_PLACE } from "@/lib/member";
 import { rateOf, type Pricing } from "@/lib/pricing";
 
 export type CheckoutState = { error?: string };
@@ -28,13 +28,22 @@ export async function startMembershipCheckout(
 
   const { data: profile } = await supabase
     .from("member_records")
-    .select("full_name, email, plan, village_id, complimentary")
+    .select("full_name, email, plan, village_id, complimentary, status")
     .eq("id", user.id)
     .maybeSingle();
 
   // A complimentary member must never reach a checkout. Before this,
   // the guard only looked at the plan, so a Local Admin or a Pod Leader
   // could be taken to Stripe and charged for what they already have.
+  // Marked left or removed. Only an admin can put that back, so taking
+  // their money here would sell them access they would not get.
+  if (profile && !STATUSES_IN_PLACE.includes(profile.status)) {
+    return {
+      error:
+        "This account is not open. Your Local Admin can tell you where it stands.",
+    };
+  }
+
   if (
     profile?.plan === "paid" ||
     profile?.complimentary ||

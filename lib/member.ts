@@ -124,6 +124,10 @@ export async function requireMember(next: string): Promise<Member> {
   if (!member) redirect("/home");
   if (member.onboarding) redirect("/welcome");
   if (member.invited) redirect("/welcome");
+  // Left or removed. Not a lapsed member, so not the checkout: paying
+  // would not let them back in, because only an admin can put the status
+  // back. Settings says where they stand and holds sign out.
+  if (hasLeft(member)) redirect("/settings?show=membership");
   // Lapsed, or complimentary access that was taken back. /upgrade is the
   // page that says what is waiting and takes them to the checkout.
   if (!isPaid(member)) redirect("/upgrade");
@@ -162,9 +166,28 @@ export async function whoIsHere(): Promise<Member | null> {
   return member;
 }
 
+// The statuses the database counts as being here. is_member(),
+// is_paid() and is_paid_row() all ask for exactly these three, and
+// anything else is invited, left or removed.
+export const STATUSES_IN_PLACE = ["onboarding", "active", "quiet"];
+
+// Marked left or removed by an admin. Worth its own name because it is
+// not the same as unpaid: there is nothing for these people to buy, so
+// they are never sent to the checkout.
+export const hasLeft = (member: Member) =>
+  member.status === "left" || member.status === "removed";
+
 // What the private side opens for, matching is_paid() in the database.
+//
+// The status half of that match was missing here from the start. The
+// database has always asked for it, so somebody marked left kept every
+// page the shell draws while every query behind those pages answered
+// nothing: a workspace with the rail, the sidebar and the workspace
+// switcher in it, and no content anywhere. The gate said yes and the
+// data said no, which is the worst way round for the two to disagree.
 export const isPaid = (member: Member) =>
-  member.plan === "paid" || Boolean(member.complimentary);
+  STATUSES_IN_PLACE.includes(member.status) &&
+  (member.plan === "paid" || Boolean(member.complimentary));
 
 export function timeAgo(iso: string) {
   const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
@@ -180,6 +203,18 @@ export const currentRoles = cache(async function currentRoles(): Promise<string[
   const user = await currentUser();
   if (!user) return [];
   const supabase = await createClient();
+  // Somebody marked left or removed holds no roles as far as the site
+  // is concerned, whatever member_roles still says. Ending the role is
+  // the admin's job and the row is left alone here, so putting the
+  // status back hands the workspaces straight back.
+  //
+  // Without this, a Global Admin who was marked left was still shown
+  // Educator, Local Admin and Global team in the workspace switcher,
+  // because the switcher asked about roles and nothing asked whether
+  // they were still here.
+  const member = await currentMember();
+  if (!member || !STATUSES_IN_PLACE.includes(member.status)) return [];
+
   const { data } = await supabase
     .from("member_roles")
     .select("role")
