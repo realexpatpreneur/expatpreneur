@@ -156,6 +156,10 @@
 .d-page .d-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--d-green); }
 .d-page .d-heroart { position: relative; height: 580px; }
 .d-page .d-heroart > img { position: absolute; object-fit: cover; border-radius: 6px; }
+.d-page .d-ha-tomas { right: 0; top: 0; width: 66%; height: 78%; }
+.d-page .d-ha-ines { left: 0; bottom: 0; width: 44%; height: 52%; border: 6px solid #FFFFFF; }
+.d-page .d-ha-reply { position: absolute; left: 0; top: 48px; width: 44%; min-width: 230px; z-index: 2; }
+.d-page .d-ha-dinner { position: absolute; right: 20px; bottom: 30px; z-index: 2; }
 .d-page .d-people { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 20px; }
 .d-page .d-people-5 { grid-template-columns: repeat(5, minmax(0,1fr)); align-items: start; }
 .d-page .d-people-5 > :nth-child(even) { margin-top: 48px; }
@@ -451,7 +455,13 @@
   .d-page .d-sec { padding: 72px 0; }
   .d-page .d-people, .d-page .d-steps6, .d-page .d-vgrid, .d-page .d-month, .d-page .d-ticks-2,
   .d-page .d-apply-card .formgrid, .d-page .d-apply-card .choicegrid, .d-page .d-why .wj-grid { grid-template-columns: minmax(0,1fr); }
-  .d-page .d-heroart { height: 440px; }
+  /* On a phone the reply card sits under Inês, just over the bottom of
+     her photo, instead of covering Tomás. */
+  .d-page .d-heroart { height: 560px; }
+  .d-page .d-ha-tomas { width: 70%; height: 330px; }
+  .d-page .d-ha-ines { width: 48%; height: 220px; bottom: 110px; }
+  .d-page .d-ha-reply { top: auto; bottom: 0; width: 86%; min-width: 0; }
+  .d-page .d-ha-dinner { right: 0; bottom: auto; top: 290px; }
   .d-page .d-search { padding-left: 14px; }
   .d-page .d-search .d-btn { padding: 0 14px; }
   .d-page .d-collage { height: 340px; }

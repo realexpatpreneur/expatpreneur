@@ -99,10 +99,10 @@ export function HomeDesign({ villages }: { villages: Village[] }) {
 
           <div className="d-heroart" role="img" aria-label="Members of the network, a reply to an Ask and an upcoming founders dinner">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={PHOTO.tomas} alt="" style={{ right: 0, top: 0, width: "66%", height: "78%" }} />
+            <img className="d-ha-tomas" src={PHOTO.tomas} alt="" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={PHOTO.ines} alt="" style={{ left: 0, bottom: 0, width: "44%", height: "52%", border: "6px solid #FFFFFF" }} />
-            <div className="d-card-paper d-float" style={{ position: "absolute", left: 0, top: 48, width: "44%", minWidth: 230 }}>
+            <img className="d-ha-ines" src={PHOTO.ines} alt="" />
+            <div className="d-card-paper d-float d-ha-reply">
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <Faces srcs={[PHOTO.ines]} size={32} />
                 <span style={{ fontSize: 13, lineHeight: 1.3 }}>
@@ -114,7 +114,7 @@ export function HomeDesign({ villages }: { villages: Village[] }) {
                 &ldquo;I worked with a great Portuguese copywriter. I can introduce you.&rdquo;
               </p>
             </div>
-            <div className="d-card-ink d-float d-float-2" style={{ position: "absolute", right: 20, bottom: 30 }}>
+            <div className="d-card-ink d-float d-float-2 d-ha-dinner">
               <div className="d-datechip"><b>Thu</b><span>7:30 PM</span></div>
               <div>
                 <b style={{ display: "block", fontSize: 14, fontWeight: 600 }}>Founders dinner</b>
