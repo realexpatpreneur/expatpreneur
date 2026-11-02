@@ -47,7 +47,8 @@ export function RegisterForm({
   if (state.done === "pending") {
     return (
       <div className="flag ok">
-        Your request is with the host. You will hear within a day.
+        Your request is with the host, and they have been told. Their answer
+        appears in your notifications.
       </div>
     );
   }

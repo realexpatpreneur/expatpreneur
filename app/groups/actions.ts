@@ -3,8 +3,47 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { notify } from "@/lib/notify";
 
 export type JoinState = { error?: string; done?: string };
+
+// Joining tells the lead. The forms said "You are in. The lead will
+// share the WhatsApp group." and "the lead will be in touch about the
+// first meeting" while neither action told anybody anything, so the lead
+// found out by opening the page and counting.
+//
+// The service connection, because a member cannot read another member's
+// name and does not need to in order to be announced to their lead.
+async function tellTheLead(
+  kind: "group" | "pod",
+  table: "industry_groups" | "pods",
+  id: string,
+  joinerId: string,
+  slug: string
+) {
+  try {
+    const service = createAdminClient();
+    const [{ data: thing }, { data: joiner }] = await Promise.all([
+      service.from(table).select("name, lead_id").eq("id", id).maybeSingle(),
+      service.from("profiles").select("full_name").eq("id", joinerId).maybeSingle(),
+    ]);
+
+    if (!thing?.lead_id || thing.lead_id === joinerId) return;
+
+    await notify(
+      thing.lead_id,
+      kind,
+      `${joiner?.full_name ?? "Somebody"} joined ${thing.name}`,
+      kind === "group"
+        ? "They are waiting on the group link."
+        : "They are waiting to hear about the first meeting.",
+      `/${kind === "group" ? "groups" : "pods"}/${slug}`
+    );
+  } catch {
+    // Joining worked. Not telling the lead is not worth undoing it for.
+  }
+}
 
 export async function joinGroup(
   _prev: JoinState,
@@ -17,11 +56,14 @@ export async function joinGroup(
   const slug = String(formData.get("slug"));
   if (!user) redirect(`/login?next=/groups/${slug}`);
 
+  const groupId = String(formData.get("group_id"));
   const { error } = await supabase
     .from("group_members")
-    .insert({ group_id: String(formData.get("group_id")), profile_id: user.id });
+    .insert({ group_id: groupId, profile_id: user.id });
 
   if (error) return { error: "You are already in this Group." };
+
+  await tellTheLead("group", "industry_groups", groupId, user.id, slug);
 
   revalidatePath(`/groups/${slug}`);
   return { done: "joined" };
@@ -77,6 +119,8 @@ export async function joinPod(
     .insert({ pod_id: podId, profile_id: user.id });
 
   if (error) return { error: "You are already in this Pod." };
+
+  await tellTheLead("pod", "pods", podId, user.id, slug);
 
   revalidatePath(`/pods/${slug}`);
   return { done: "joined" };

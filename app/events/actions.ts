@@ -45,6 +45,33 @@ export async function registerForEvent(
     };
   }
 
+  // A request to come sits at pending until the host says yes, and the
+  // form told the person "Your request is with the host. You will hear
+  // within a day." Nothing told the host, so they learned of it only by
+  // opening /admin/events and noticing. Nothing enforces a day either,
+  // which the form no longer claims.
+  if (requiresApproval && !waiting) {
+    try {
+      const service = createAdminClient();
+      const [{ data: hosted }, { data: asking }] = await Promise.all([
+        service.from("events").select("host_id, title").eq("id", eventId).maybeSingle(),
+        service.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+      ]);
+
+      if (hosted?.host_id && hosted.host_id !== user.id) {
+        await notify(
+          hosted.host_id,
+          "event",
+          `${asking?.full_name ?? "Somebody"} asked to come`,
+          `${hosted.title ?? "Your event"} is waiting on your yes.`,
+          `/admin/events`
+        );
+      }
+    } catch {
+      // The registration stands either way.
+    }
+  }
+
   const [{ data: event }, { data: profile }] = await Promise.all([
     supabase
       .from("events")

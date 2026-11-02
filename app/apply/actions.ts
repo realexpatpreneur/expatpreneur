@@ -142,6 +142,27 @@ export async function submitApplication(
     return { error: "That did not send. Please try again in a moment." };
   }
 
+  // The form promises "we will add your city to our list of suggestions"
+  // to somebody whose city has no Village. It never did: the application
+  // row was the only thing written, and the list the Global team reads at
+  // /global/cities is city_suggestions, which only the suggest form has
+  // ever written to. So the city went nowhere and the application could
+  // not even be approved, because approving needs a Village.
+  //
+  // Only when there is no Village. A city that already has one does not
+  // need suggesting.
+  if (!villageId) {
+    const country = String(formData.get("country") ?? "").trim();
+    await service.from("city_suggestions").insert({
+      city,
+      country: country || "Not given",
+      name: fullName,
+      email,
+      offers_admin: false,
+      note: "From an invitation request for a city with no Village yet.",
+    });
+  }
+
   await sendTemplate(
     "received",
     email,

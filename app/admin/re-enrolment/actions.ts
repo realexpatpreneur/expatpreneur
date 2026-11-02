@@ -226,6 +226,19 @@ export async function closeOut(
     String(formData.get("village_id") ?? "") || admin.villageIds[0];
 
   const supabase = await createClient();
+
+  // The button says "Create removal tasks" and the panel beside it says
+  // these people "become tasks to remove from the WhatsApp group". It
+  // only ever set the status, so nothing appeared at /admin/whatsapp and
+  // nobody was ever taken out of anything. Read them first, because after
+  // the update there is no way to tell who was just closed out from who
+  // was closed out last cycle.
+  const { data: closing } = await supabase
+    .from("founding_invites")
+    .select("full_name")
+    .eq("village_id", villageId)
+    .in("status", ["invited", "reminded"]);
+
   const { error } = await supabase
     .from("founding_invites")
     .update({ status: "removed" })
@@ -233,6 +246,27 @@ export async function closeOut(
     .in("status", ["invited", "reminded"]);
 
   if (error) return { error: error.message };
+
+  if ((closing ?? []).length > 0) {
+    const { data: village } = await supabase
+      .from("villages")
+      .select("name")
+      .eq("id", villageId)
+      .maybeSingle();
+
+    // One task per person, so each can be ticked off as it is done,
+    // which is how the rest of that list works.
+    await supabase.from("whatsapp_tasks").insert(
+      (closing ?? []).map((person) => ({
+        village_id: villageId,
+        profile_id: null,
+        kind: "remove" as const,
+        group_name: `${village?.name ?? "Village"} group, ${person.full_name ?? "a member"} did not re-enrol`,
+      }))
+    );
+  }
+
   revalidatePath("/admin/re-enrolment");
+  revalidatePath("/admin/whatsapp");
   return { done: "closed" };
 }

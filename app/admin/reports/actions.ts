@@ -50,6 +50,34 @@ export async function handleReport(
     }
   }
 
+  // /report promises "They will come back to you." Nothing ever reached
+  // the reporter: no notification, no email, and no page where a member
+  // could see what became of it. Closing one is the moment to say so,
+  // without naming anybody or saying what was done, which is the same
+  // care the report page itself takes.
+  if (status === "closed") {
+    try {
+      const service = createAdminClient();
+      const { data: report } = await service
+        .from("reports")
+        .select("reporter_id")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (report?.reporter_id) {
+        await notify(
+          report.reporter_id,
+          "report",
+          "Your report has been looked at",
+          "It has been dealt with. Thank you for telling us.",
+          "/report"
+        );
+      }
+    } catch {
+      // The decision stands either way.
+    }
+  }
+
   await record(admin.userId, `report.${status}`, "report", id, {});
 
   revalidatePath("/admin/reports");

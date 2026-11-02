@@ -161,11 +161,40 @@ export async function notForMe(
   const token = String(formData.get("token") ?? "");
   const service = createAdminClient();
 
+  // The page says "We will take you out of the {Village} WhatsApp group."
+  // It only ever set the status, so no admin was ever told and nobody was
+  // ever taken out. The Village is read before the update, because after
+  // it the row is declined and there is nothing to read it from.
+  const { data: invite } = await service
+    .from("founding_invites")
+    .select("village_id, full_name")
+    .eq("token", token)
+    .maybeSingle();
+
   const { error } = await service
     .from("founding_invites")
     .update({ status: "declined", last_contact: new Date().toISOString() })
     .eq("token", token);
 
   if (error) return { error: "That did not save. Please try again." };
+
+  if (invite?.village_id) {
+    const { data: village } = await service
+      .from("villages")
+      .select("name")
+      .eq("id", invite.village_id)
+      .maybeSingle();
+
+    // profile_id stays null on purpose. Somebody declining never made an
+    // account, so there is no profile to point at. The task carries the
+    // name in the group so the admin knows who to remove.
+    await service.from("whatsapp_tasks").insert({
+      village_id: invite.village_id,
+      profile_id: null,
+      kind: "remove",
+      group_name: `${village?.name ?? "Village"} group, ${invite.full_name ?? "a member"} asked not to continue`,
+    });
+  }
+
   redirect("/re-enrol/done");
 }

@@ -45,7 +45,7 @@ export function SuggestionForm({ villageName }: { villageName: string | null }) 
         <span>
           <b>Send it as yourself</b>
           <small>
-            The admins see your name and can reply and thank you.
+            The admins see your name, and you hear back when it is read.
           </small>
         </span>
       </label>

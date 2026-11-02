@@ -20,7 +20,7 @@ export function JoinGroupButton({
   if (state.done === "joined") {
     return (
       <div className="flag ok">
-        You are in. The lead will share the WhatsApp group.
+        You are in, and the lead has been told. They share the group link.
       </div>
     );
   }
@@ -59,7 +59,7 @@ export function JoinPodButton({
   if (state.done === "joined") {
     return (
       <div className="flag ok">
-        You are in. The lead will be in touch about the first meeting.
+        You are in, and the lead has been told. They set the first meeting.
       </div>
     );
   }

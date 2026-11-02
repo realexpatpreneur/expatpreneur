@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireGlobal } from "@/lib/access";
 import { record } from "@/lib/audit";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { notify } from "@/lib/notify";
+import { sendEmail, url } from "@/lib/email";
 
 export type GlobalState = { error?: string };
 
@@ -37,11 +40,21 @@ export async function saveVillage(
     String(formData.get("slug") ?? "").trim() ||
     name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
+  // What it was before, so opening can be told apart from a Village that
+  // was already open and is being renamed.
+  const { data: before } = id
+    ? await supabase.from("villages").select("status").eq("id", id).maybeSingle()
+    : { data: null };
+
   const { error } = id
     ? await supabase.from("villages").update(row).eq("id", id)
     : await supabase.from("villages").insert({ ...row, slug });
 
   if (error) return { error: error.message };
+
+  if (id && row.status === "open" && before?.status !== "open") {
+    await tellThePeopleWaiting(id, name);
+  }
 
   revalidatePath("/global/villages");
   redirect("/global/villages?done=1");
@@ -187,4 +200,90 @@ export async function updateCity(
 
   revalidatePath("/global/cities");
   return {};
+}
+// Three pages promise this and none of it ever happened.
+//
+// /network/notified is titled "We will let you know" and says "You will
+// get a notification when the {name} Village opens." village_interest
+// has carried a told_at column since 0034 and nothing has ever written
+// to it, and the only other read of that table is the page deciding
+// whether to show that very line.
+//
+// /villages/suggest says "Join the waitlist and you will hear the day it
+// opens" and the form says "So we can tell you when the Village opens.
+// Nothing else is sent." city_suggestions held the address and nothing
+// ever read it.
+//
+// And /settings/transfer tells a member to suggest their new city and
+// "we will count you in when it opens", which rests on the same thing.
+//
+// Members are told in the platform, which works today. People who only
+// left an address get an email, which does not go out until Resend is
+// wired, and then it will without anything changing here. told_at is
+// what stops either being told twice.
+async function tellThePeopleWaiting(villageId: string, villageName: string) {
+  const service = createAdminClient();
+
+  const { data: waiting } = await service
+    .from("village_interest")
+    .select("profile_id")
+    .eq("village_id", villageId)
+    .is("told_at", null);
+
+  for (const person of waiting ?? []) {
+    await notify(
+      person.profile_id,
+      "village",
+      `The ${villageName} Village is open`,
+      "You asked to hear when it opened. You can ask to transfer to it from your settings.",
+      "/network"
+    );
+  }
+
+  if ((waiting ?? []).length > 0) {
+    await service
+      .from("village_interest")
+      .update({ told_at: new Date().toISOString() })
+      .eq("village_id", villageId)
+      .is("told_at", null);
+  }
+
+  // The people who left only an address, through /villages/suggest or an
+  // invitation request for a city with no Village. Matched on the city
+  // rather than on an id, because a suggestion is made before the
+  // Village exists and so can never carry one.
+  const { data: village } = await service
+    .from("villages")
+    .select("city")
+    .eq("id", villageId)
+    .maybeSingle();
+
+  if (!village?.city) return;
+
+  const { data: suggestions } = await service
+    .from("city_suggestions")
+    .select("id, email, name")
+    .ilike("city", village.city)
+    .not("email", "is", null);
+
+  for (const suggestion of suggestions ?? []) {
+    if (!suggestion.email) continue;
+    await sendEmail(
+      suggestion.email,
+      `The ${villageName} Village is open`,
+      `${villageName} is open`,
+      [
+        `You asked us to tell you when a Village opened in ${village.city}. It has.`,
+        "Requests to join are read by a person, so the next step is asking for an invitation.",
+      ],
+      { label: "Request an invitation", href: url("/apply") }
+    );
+  }
+
+  if ((suggestions ?? []).length > 0) {
+    await service
+      .from("city_suggestions")
+      .update({ status: "exploring", note: `Told when ${villageName} opened.` })
+      .in("id", (suggestions ?? []).map((x) => x.id));
+  }
 }
