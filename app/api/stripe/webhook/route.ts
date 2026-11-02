@@ -124,6 +124,33 @@ async function handle(event: Stripe.Event) {
       // the notifications would go out twice.
       if (!fresh) return;
 
+      // The renewal date, at the moment of payment rather than whenever
+      // the next subscription event happens to arrive.
+      //
+      // Doing it here rather than leaning on customer.subscription.created
+      // is deliberate: Stripe does not promise the order of the two, and
+      // if that event landed first the row below would not exist yet, the
+      // update would match nothing, and the date would be missing until
+      // the subscription changed for some other reason, which could be a
+      // month. A retrieve costs one call and does not care about order.
+      //
+      // It is also where the period end actually lives: on the first
+      // subscription item, since 2025-03-31.basil moved it off the
+      // subscription.
+      let renewsAt: string | null = null;
+      if (session.subscription) {
+        try {
+          const live = await getStripe().subscriptions.retrieve(
+            String(session.subscription)
+          );
+          const seconds = live.items?.data?.[0]?.current_period_end ?? null;
+          if (seconds) renewsAt = new Date(seconds * 1000).toISOString();
+        } catch {
+          // Not worth failing a paid membership over a display date. The
+          // next subscription event fills it in.
+        }
+      }
+
       must(
         "membership subscription",
         await service.from("subscriptions").upsert(
@@ -134,6 +161,7 @@ async function handle(event: Stripe.Event) {
             provider: "stripe",
             provider_customer: String(session.customer ?? ""),
             provider_subscription: String(session.subscription ?? ""),
+            current_period_end: renewsAt,
           },
           { onConflict: "profile_id" }
         )
