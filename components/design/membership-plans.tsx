@@ -13,12 +13,19 @@ export function MembershipPlans({
   plans,
   pricing,
   seats,
+  viewer,
 }: {
   plans: Plan[];
   pricing: Pricing[];
   // Null when the Villages do not all offer the same number of founding
   // places, because then there is no one figure to print.
   seats: number | null;
+  // Who is looking. The call to action on the paid card was a hardcoded
+  // "Sign in" to /login, which is the wrong thing to say to all three
+  // kinds of visitor: a stranger has nothing to sign in to, a member
+  // whose membership has not started needs the checkout, and somebody
+  // who already pays needs neither.
+  viewer: "visitor" | "unpaid" | "paid";
 }) {
   const [yearly, setYearly] = useState(false);
   const member = plans.find((p) => p.slug === "member");
@@ -93,7 +100,19 @@ export function MembershipPlans({
             </div>
           ) : null}
           {paid.blurb ? <p style={{ marginTop: 18, fontSize: 15, lineHeight: 1.6, color: "#B9C3CD" }}>{paid.blurb}</p> : null}
-          <Link className="d-btn d-btn-mint d-shine d-glint d-btn-wide" href="/login" style={{ marginTop: 24 }}>Sign in</Link>
+          {viewer === "paid" ? (
+            <p style={{ marginTop: 24, fontSize: 15, color: "#A8DCD1", fontWeight: 600 }}>
+              This is yours already.
+            </p>
+          ) : (
+            <Link
+              className="d-btn d-btn-mint d-shine d-glint d-btn-wide"
+              href={viewer === "unpaid" ? "/upgrade" : "/apply"}
+              style={{ marginTop: 24 }}
+            >
+              {viewer === "unpaid" ? "Start your membership" : "Request your invitation"}
+            </Link>
+          )}
           <ul className="d-ticks d-ticks-2">
             {(paid.features ?? []).map((f) => (
               <li key={f}><Tick color="#A8DCD1" /><span>{f}</span></li>

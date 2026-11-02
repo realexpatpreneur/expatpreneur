@@ -2,6 +2,7 @@ import Link from "next/link";
 import { livePage } from "@/lib/pages";
 import { Blocks } from "@/components/blocks";
 import { createClient } from "@/lib/supabase/server";
+import { currentMember, isPaid } from "@/lib/member";
 import { PublicPage } from "@/components/public-page";
 import { type Plan } from "@/components/plans";
 import { MembershipPlans } from "@/components/design/membership-plans";
@@ -36,6 +37,15 @@ const EXPECTED = [
 
 export default async function MembershipPage() {
   const supabase = await createClient();
+
+  // A public page, but it is read by signed in members too, and the
+  // paid card used to say "Sign in" to every one of them.
+  const me = await currentMember();
+  const viewer: "visitor" | "unpaid" | "paid" = !me
+    ? "visitor"
+    : isPaid(me)
+      ? "paid"
+      : "unpaid";
   const [{ data: plans }, { data: pricing }] = await Promise.all([
     supabase
       .from("plans")
@@ -95,7 +105,12 @@ export default async function MembershipPage() {
 
         <section className="d-sec d-sec-top0">
           <div className="d-wrap">
-            <MembershipPlans plans={(plans ?? []) as Plan[]} pricing={rates} seats={seats} />
+            <MembershipPlans
+              plans={(plans ?? []) as Plan[]}
+              pricing={rates}
+              seats={seats}
+              viewer={viewer}
+            />
             <p className="d-small" style={{ marginTop: 22 }}>
               Membership is by invitation, and it begins when it is paid for.
               Once your request is accepted you finish your profile and then
