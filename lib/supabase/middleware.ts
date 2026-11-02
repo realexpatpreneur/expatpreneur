@@ -96,9 +96,12 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Reads the signed-in person from the session token itself. It still
+  // refreshes the token when it has expired, but on an ordinary click it
+  // no longer asks the sign in server, which was one more trip to the
+  // database's region before every page.
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims?.sub ? data.claims : null;
 
   const path = request.nextUrl.pathname;
 

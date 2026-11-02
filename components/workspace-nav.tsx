@@ -14,6 +14,9 @@ import {
 
 // The rail, the sidebar and the bottom tabs. It reads the address
 // itself, so the page it wraps does not have to say where it is.
+//
+// The sidebar and the phone tabs fetch their pages in full ahead of the
+// click, so opening one shows it straight away instead of a skeleton.
 export function WorkspaceNav({
   kind,
   name,
@@ -93,6 +96,7 @@ export function WorkspaceNav({
               key={href}
               className="nav"
               href={href}
+              prefetch
               aria-current={current(href) ? "page" : undefined}
             >
               <Ic name={icon} />
@@ -120,7 +124,7 @@ export function WorkspaceNav({
 
       <nav className="mtabs">
         {tabs.map(([href, icon, label, count]) => (
-          <Link key={href} href={href} aria-current={current(href) ? "page" : undefined}>
+          <Link key={href} href={href} prefetch aria-current={current(href) ? "page" : undefined}>
             <Ic name={icon} />
             {label}
             {count ? <span className="count">{count}</span> : null}

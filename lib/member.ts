@@ -76,15 +76,18 @@ export const currentMember = cache(async function currentMember(): Promise<
 
   if (!profile) return null;
 
-  const byRole = await roleCarriesMembership(user.id);
-
-  const { data: village } = profile.village_id
-    ? await supabase
-        .from("villages")
-        .select("name")
-        .eq("id", profile.village_id)
-        .maybeSingle()
-    : { data: null };
+  // The two lookups that follow the profile are independent, so they go
+  // together rather than one after the other.
+  const [byRole, { data: village }] = await Promise.all([
+    roleCarriesMembership(user.id),
+    profile.village_id
+      ? supabase
+          .from("villages")
+          .select("name")
+          .eq("id", profile.village_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
 
   return {
     ...profile,
