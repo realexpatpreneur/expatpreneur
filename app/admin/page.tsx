@@ -111,7 +111,11 @@ export default async function AdminOverviewPage() {
   return (
     <>
       <PageHead
-        title={`${village?.name ?? "Your"} Village`}
+        title={
+          // The Global team sees every Village here and the figures below
+          // add them all up, so naming one of them would mislabel them.
+          admin.villageIds.length > 1 ? "Every Village" : `${village?.name ?? "Your"} Village`
+        }
         sub="How the Village is doing this month"
         actions={
           <Link className="btn btn-primary" href="/admin/announcements">

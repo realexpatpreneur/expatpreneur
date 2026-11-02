@@ -15,7 +15,9 @@ export default async function GlobalOverviewPage() {
     { count: openReports },
     { count: newSuggestions },
   ] = await Promise.all([
-    supabase.from("villages").select("id, name, status, city, country").order("name"),
+    // An archived Village (Madrid) is gone from the network, so it is not
+    // counted, listed or offered as one to prepare.
+    supabase.from("villages").select("id, name, status, city, country").neq("status", "archived").order("name"),
     supabase
       .from("profiles")
       .select("id", { count: "exact", head: true })

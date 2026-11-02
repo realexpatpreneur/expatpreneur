@@ -161,7 +161,7 @@
 .ws .m-steps{display:grid;gap:0;margin-top:12px}
 .ws .m-steps div{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--m-line);font-size:14px;line-height:1.5;color:var(--m-text)}
 .ws .m-steps div:first-child{border-top:0}
-.ws .m-steps span{width:28px;height:28px;border-radius:50%;background:var(--m-wash);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--m-ink)}
+.ws .m-steps > div > span:first-child{width:28px;height:28px;border-radius:50%;background:var(--m-wash);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--m-ink)}
 
 /* Posting */
 .ws .m-postgrid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:48px;align-items:start;margin-top:30px}
