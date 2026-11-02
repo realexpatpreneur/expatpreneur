@@ -7,9 +7,18 @@ import { record } from "@/lib/audit";
 
 export type PlanState = { error?: string; done?: string };
 
-// What a plan costs, and what it says it gives you. The price here is what
-// members are told; Stripe still charges from its own price, and the id of
-// that price is kept beside it so the two cannot drift silently.
+// What a plan is called and what it says it gives you. Not what it costs:
+// the rate is per Village and lives in village_plans, which saveVillageRate
+// below writes and which the membership page and the checkout both read.
+//
+// This used to write stripe_price_id as well, which nothing anywhere
+// reads, under a hint warning that if it and the price disagreed Stripe
+// would win. The checkout builds its charge inline from the Village
+// rate, so it could not. price_cents and currency do get printed, by
+// components/blocks.tsx, for a plan with no per-Village rate, so they
+// stay. The page claimed "Changing the number here changes what the
+// Membership page says and what Stripe charges", and for the paid plan
+// it changed neither.
 export async function savePlan(
   _prev: PlanState,
   formData: FormData
@@ -31,7 +40,6 @@ export async function savePlan(
       price_cents: Math.round(Number(formData.get("price") ?? 0) * 100),
       currency: String(formData.get("currency") ?? "EUR"),
       interval: String(formData.get("interval") ?? "month"),
-      stripe_price_id: String(formData.get("stripe_price_id") ?? "").trim() || null,
       features,
       active: Boolean(formData.get("active")),
     })
@@ -40,8 +48,7 @@ export async function savePlan(
   if (error) return { error: error.message };
 
   await record(admin.userId, "plan.changed", "plan", id, {
-    price: Number(formData.get("price") ?? 0),
-    currency: String(formData.get("currency") ?? "EUR"),
+    name: String(formData.get("name") ?? "").trim(),
   });
 
   revalidatePath("/global/plans");
@@ -177,5 +184,66 @@ export async function recordPayout(
   });
 
   revalidatePath("/global/money");
+  return { done: "saved" };
+}
+// The rates themselves, per Village, in the Village's own currency. The
+// Global team sets them and nobody else: village_plans_write in 0055 has
+// always been global admin only, which was correct and left nobody able
+// to do it, because no screen in app or lib has ever written this table.
+// /upgrade told a member "Your Local Admin or the Global team sets it"
+// and only SQL ever could.
+export async function saveVillageRate(
+  _prev: PlanState,
+  formData: FormData
+): Promise<PlanState> {
+  const admin = await requireGlobal();
+  const supabase = await createClient();
+
+  const villageId = String(formData.get("village_id") ?? "");
+  const planId = String(formData.get("plan_id") ?? "");
+  if (!villageId || !planId) return { error: "A Village and a plan are needed." };
+
+  const cents = (key: string) => {
+    const raw = String(formData.get(key) ?? "").trim();
+    if (raw === "") return null;
+    const value = Number(raw);
+    if (!Number.isFinite(value) || value < 0) return null;
+    return Math.round(value * 100);
+  };
+
+  const month = cents("month");
+  const year = cents("year");
+  if (month === null || year === null) {
+    return { error: "A monthly and a yearly rate are both needed." };
+  }
+
+  // The founding rate is allowed to be empty, which is how a Village says
+  // it has no opening rate. Blank means null rather than zero, because
+  // zero is a price and null is the absence of one, and founding_open in
+  // the view keys on the column being null.
+  const { error } = await supabase
+    .from("village_plans")
+    .update({
+      currency: String(formData.get("currency") ?? "EUR"),
+      month_cents: month,
+      year_cents: year,
+      founding_month_cents: cents("founding_month"),
+      founding_year_cents: cents("founding_year"),
+      founding_seats: Math.max(0, Number(formData.get("founding_seats") ?? 50)),
+      founding_days: Math.max(0, Number(formData.get("founding_days") ?? 90)),
+    })
+    .eq("village_id", villageId)
+    .eq("plan_id", planId);
+
+  if (error) return { error: error.message };
+
+  await record(admin.userId, "village.rate.changed", "village", villageId, {
+    month: month / 100,
+    year: year / 100,
+    currency: String(formData.get("currency") ?? "EUR"),
+  });
+
+  revalidatePath("/global/plans");
+  revalidatePath("/membership");
   return { done: "saved" };
 }
