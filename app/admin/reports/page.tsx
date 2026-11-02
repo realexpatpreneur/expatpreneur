@@ -12,7 +12,7 @@ export default async function AdminReportsPage() {
 
   const { data: reports } = await supabase
     .from("reports")
-    .select("id, kind, subject_id, reporter_id, body, status, action_note, created_at")
+    .select("id, context, subject_id, reporter_id, body, status, action_note, created_at")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -57,7 +57,7 @@ export default async function AdminReportsPage() {
               {open.map((report) => (
                 <div className="panel" key={report.id}>
                   <div className="row" style={{ justifyContent: "space-between" }}>
-                    <h3>{report.kind}</h3>
+                    <h3>{report.context ?? "A report"}</h3>
                     <span className="chip chip-sun">{report.status}</span>
                   </div>
                   <p className="muted small" style={{ marginTop: 8 }}>
@@ -80,7 +80,7 @@ export default async function AdminReportsPage() {
                 {settled.map((report) => (
                   <div className="li linkrow" key={report.id}>
                     <div>
-                      <b>{report.kind}</b>
+                      <b>{report.context ?? "A report"}</b>
                       <div className="muted small">
                         About {nameOf(report.subject_id)}.{" "}
                         {report.action_note ?? "No note."}

@@ -81,12 +81,9 @@ export async function saveLesson(
     body: String(formData.get("body") ?? "").trim() || null,
     video_url: String(formData.get("video_url") ?? "").trim() || null,
     duration: String(formData.get("duration") ?? "").trim() || null,
-    format: String(formData.get("format") ?? "recorded") === "live" ? "live" : "recorded",
-    outcomes: String(formData.get("outcomes") ?? "")
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean),
-    starts_at: String(formData.get("starts_at") ?? "").trim() || null,
+    // Format, outcomes and the start time belong to the course, not to a
+    // lesson; lessons have no such columns, so sending them refused every
+    // save.
     position: Number(formData.get("position") ?? 1),
   };
 

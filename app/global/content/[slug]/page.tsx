@@ -49,7 +49,7 @@ export default async function PageEditorPage({
         .limit(6),
       supabase
         .from("businesses")
-        .select("id, slug, name, category, summary, offer, logo_url")
+        .select("id, slug, name, category, tagline, offer, logo_url")
         .eq("public", true)
         .limit(6),
       supabase

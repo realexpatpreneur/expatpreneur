@@ -142,7 +142,7 @@ export async function recordPayout(
   const share = Number(formData.get("share") ?? 70);
 
   const { error } = await supabase.from("payouts").insert({
-    educator_id: String(formData.get("educator_id")),
+    person_id: String(formData.get("educator_id")),
     period_start: String(formData.get("period_start")),
     period_end: String(formData.get("period_end")),
     gross_cents: gross,

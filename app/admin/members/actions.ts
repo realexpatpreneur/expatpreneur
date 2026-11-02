@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/access";
 import { sendEmailToMember, sendTemplate, url } from "@/lib/email";
 import { record } from "@/lib/audit";
@@ -84,7 +85,10 @@ export async function updateMember(
     // And the member is told, which until now they were not. This is
     // the moment somebody actually joins: before a Circle they are a
     // name in a list.
-    const { data: person } = await supabase
+    // Email addresses are not granted to the member's own connection, so
+    // asking for one through it failed the whole query. They are read
+    // with the service connection, on the server only.
+    const { data: person } = await createAdminClient()
       .from("profiles")
       .select("email, full_name")
       .eq("id", id)

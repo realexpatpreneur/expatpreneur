@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { record } from "@/lib/audit";
 import { addToNewsletter, removeFromNewsletter } from "@/lib/flodesk";
 
@@ -126,7 +127,10 @@ export async function saveNotificationPrefs(
   // table switches nothing off. It has to reach them. Before this, a
   // member could turn the newsletter off, see Saved, and keep getting it.
   const wantsNewsletter = Boolean(formData.get("newsletter"));
-  const { data: me } = await supabase
+  // Email addresses are not granted to the member's own connection, so
+  // asking for one through it failed the whole query. They are read
+  // with the service connection, on the server only.
+  const { data: me } = await createAdminClient()
     .from("profiles")
     .select("email")
     .eq("id", user.id)

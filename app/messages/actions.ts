@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notify";
 import { sendEmailToMember, url } from "@/lib/email";
 
@@ -47,7 +48,10 @@ export async function sendMessage(
     `/messages/${user.id}`
   );
 
-  const { data: them } = await supabase
+  // Email addresses are not granted to the member's own connection, so
+  // asking for one through it failed the whole query. They are read
+  // with the service connection, on the server only.
+  const { data: them } = await createAdminClient()
     .from("profiles")
     .select("email")
     .eq("id", recipientId)

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/access";
 import { notify } from "@/lib/notify";
 import { sendEmailToMember, url } from "@/lib/email";
@@ -24,7 +25,10 @@ export async function openRenewalRound(
   const villageId = admin.homeVillageId ?? admin.villageIds[0] ?? null;
   if (!villageId) return { error: "No Village to run this for." };
 
-  const { data: members } = await supabase
+  // Email addresses are not granted to an admin's own connection, so this
+  // query failed and the care check reached nobody. Read with the service
+  // connection, scoped to the admin's own Village below.
+  const { data: members } = await createAdminClient()
     .from("profiles")
     .select("id, full_name, email")
     .eq("village_id", villageId)

@@ -46,7 +46,7 @@ export default async function EducatorPage({
     ? await Promise.all([
         supabase
           .from("enrolments")
-          .select("id", { count: "exact", head: true })
+          .select("course_id", { count: "exact", head: true })
           .in("course_id", courseIds),
         supabase
           .from("course_purchases")

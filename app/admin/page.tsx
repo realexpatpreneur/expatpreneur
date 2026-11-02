@@ -49,7 +49,7 @@ export default async function AdminOverviewPage() {
       .in("status", ["new", "with_local"]),
     supabase
       .from("reports")
-      .select("id, kind, created_at, status")
+      .select("id, context, created_at, status")
       .not("status", "in", "(closed,escalated)")
       .order("created_at", { ascending: false })
       .limit(5),
@@ -181,7 +181,7 @@ export default async function AdminOverviewPage() {
                 key={report.id}
                 href="/admin/reports"
                 tag="Reports"
-                title={`Look at a report: ${report.kind}`}
+                title={`Look at a report: ${report.context ?? "a member or post"}`}
                 sub="Private."
               />
             ))}

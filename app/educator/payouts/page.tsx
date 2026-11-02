@@ -19,7 +19,7 @@ export default async function PayoutsPage() {
     supabase
       .from("course_sales")
       .select("educator_cents, currency, status, created_at")
-      .eq("person_id", member.id)
+      .eq("educator_id", member.id)
       .eq("status", "paid"),
     supabase.from("settings").select("value").eq("key", "educator_share").maybeSingle(),
   ]);
