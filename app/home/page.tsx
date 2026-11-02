@@ -75,7 +75,13 @@ export default async function MemberHomePage() {
   }
 
   // A newly approved member finishes their profile before anything else.
-  if (profile.status === "onboarding") redirect("/welcome");
+  // Invited is the same moment seen a step earlier: an invitation has
+  // been accepted and nothing has been filled in. requireMember sends
+  // both to /welcome, and this page reads the profile itself rather than
+  // going through it, so it has to say so too. Without this an invited
+  // person arrives on a member home with nothing on it.
+  if (profile.status === "onboarding" || profile.status === "invited")
+    redirect("/welcome");
 
   const [villageRes, circleRes] = await Promise.all([
     profile.village_id

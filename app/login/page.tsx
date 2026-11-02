@@ -9,9 +9,9 @@ export const metadata = { title: "Log in, ExpatPreneurs Global" };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, error } = await searchParams;
 
   return (
     <div className="d-page d-login">
@@ -22,6 +22,16 @@ export default async function LoginPage({
             We send a link instead of asking for a password.
           </p>
           <div className="d-form" style={{ marginTop: 32 }}>
+            {/* A link that did not work sent them here. Saying nothing
+                leaves somebody with no password staring at a password
+                box, which is how the invitation door stayed shut. */}
+            {error === "link" ? (
+              <div className="flag hold" style={{ marginBottom: 16 }}>
+                That link did not work. Links last an hour and work once,
+                so ask for a fresh one below and it will come to the same
+                address.
+              </div>
+            ) : null}
             <LoginForm next={next ?? "/home"} />
           </div>
           <div style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid #E3E6EA", display: "flex", alignItems: "center", gap: 14 }}>
