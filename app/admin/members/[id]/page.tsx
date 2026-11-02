@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/access";
+import { ROLES_THAT_CARRY_MEMBERSHIP, STATUSES_IN_PLACE } from "@/lib/member";
+import { money } from "@/lib/pricing";
 import { MemberForm } from "../forms";
 import { Crumbs } from "@/components/crumbs";
 
@@ -14,7 +16,7 @@ export default async function AdminMemberPage({
 }) {
   const { id } = await params;
   const { done } = await searchParams;
-  await requireAdmin();
+  const { isGlobal } = await requireAdmin();
   const supabase = await createClient();
 
   const { data: member } = await supabase
@@ -25,7 +27,10 @@ export default async function AdminMemberPage({
 
   if (!member) notFound();
 
-  const [{ data: village }, { data: circles }, { data: roles }] =
+  // The money is readable by the Global team only, which is what
+  // subscriptions_own and payments_own in 0002 say, so a Local Admin
+  // gets the verdict without the figures behind it.
+  const [{ data: village }, { data: circles }, { data: roles }, subscription, payment] =
     await Promise.all([
       member.village_id
         ? supabase
@@ -45,7 +50,82 @@ export default async function AdminMemberPage({
         .select("role, scope")
         .eq("profile_id", id)
         .is("ended_at", null),
+      isGlobal
+        ? supabase
+            .from("subscriptions")
+            .select("status, current_period_end, cancel_at, created_at")
+            .eq("profile_id", id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      isGlobal
+        ? supabase
+            .from("payments")
+            .select("amount_cents, currency, status, created_at")
+            .eq("profile_id", id)
+            .eq("kind", "membership")
+            .order("created_at", { ascending: false })
+            .limit(1)
+        : Promise.resolve({ data: [] }),
     ]);
+
+  // What is actually true about this person's access, said in words.
+  //
+  // Everything on this screen was a control and none of it was an
+  // answer: Status, Plan and a Complimentary box, three fields that
+  // between them decide nothing on their own. A Global Admin reading
+  // "Plan: Member" took it to mean somebody had not subscribed and had
+  // no access, when the global_admin role was carrying their membership
+  // the whole time and unticking the box changed nothing.
+  const held = (roles ?? []).map((r) => r.role as string);
+  const carrying = held.filter((r) => ROLES_THAT_CARRY_MEMBERSHIP.includes(r));
+  const inPlace = STATUSES_IN_PLACE.includes(member.status);
+
+  let openness: string;
+  let because: string;
+  if (!inPlace) {
+    openness = "Closed";
+    because =
+      member.status === "invited"
+        ? "Invited and not started. They have their profile and nothing else until a membership begins."
+        : `Marked ${member.status}. Nothing on the member side opens for them, whatever the plan says. Put the status back to open it again.`;
+  } else if (member.plan === "paid") {
+    openness = "Open";
+    because = "They pay for it.";
+  } else if (member.complimentary) {
+    openness = "Open";
+    because = member.complimentary_reason
+      ? `Complimentary, given by hand. Reason on file: ${member.complimentary_reason}`
+      : "Complimentary, given by hand, with no reason on file.";
+  } else if (carrying.length) {
+    openness = "Open";
+    because = `The ${carrying.join(" and ")} role carries membership on its own. The Complimentary box below does not decide this, and unticking it changes nothing. End the role on the Leadership page to take the access away.`;
+  } else {
+    openness = "Closed";
+    because =
+      "No subscription, and nothing given by hand. They have their profile and the checkout.";
+  }
+
+  const lastPayment =
+    ((payment?.data ?? []) as {
+      amount_cents: number;
+      currency: string;
+      status: string;
+      created_at: string;
+    }[])[0] ?? null;
+
+  const sub =
+    (subscription?.data as {
+      status: string;
+      current_period_end: string | null;
+      cancel_at: string | null;
+    } | null) ?? null;
+
+  const asDate = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
 
   // A full Circle was still listed here and still selectable, and
   // updateMember wrote circle_id with no check at all, so this was one of
@@ -109,6 +189,42 @@ export default async function AdminMemberPage({
             </dl>
           </div>
 
+          {/* The right column is one grid child holding both, so the
+              verdict sits above the controls instead of being auto
+              placed into the next free cell under the left panel. */}
+          <div className="stack">
+          <div className="panel">
+            <h3>Where this stands</h3>
+            <dl className="kv">
+              <dt>Member side</dt>
+              <dd>
+                <b>{openness}.</b> {because}
+              </dd>
+              {isGlobal ? (
+                <>
+                  <dt>Subscription</dt>
+                  <dd>
+                    {sub
+                      ? `${sub.status}${
+                          sub.current_period_end
+                            ? `, next payment ${asDate(sub.current_period_end)}`
+                            : ", no renewal date recorded"
+                        }${sub.cancel_at ? `, cancelling on ${asDate(sub.cancel_at)}` : ""}`
+                      : "Never subscribed."}
+                  </dd>
+                  <dt>Last membership payment</dt>
+                  <dd>
+                    {lastPayment
+                      ? `${money(lastPayment.amount_cents, lastPayment.currency)} on ${asDate(
+                          lastPayment.created_at
+                        )}, ${lastPayment.status}`
+                      : "None on record."}
+                  </dd>
+                </>
+              ) : null}
+            </dl>
+          </div>
+
           <MemberForm
             id={id}
             circles={options}
@@ -118,6 +234,7 @@ export default async function AdminMemberPage({
             complimentary={Boolean(member.complimentary)}
             complimentaryReason={member.complimentary_reason ?? null}
           />
+          </div>
         </div>
       </section>
     </main>
