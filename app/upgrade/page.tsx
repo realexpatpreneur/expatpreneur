@@ -40,6 +40,20 @@ export default async function UpgradePage({
         .maybeSingle()
     : { data: null };
 
+  // Somebody whose membership has ended now lands here from anywhere
+  // they try to go, so this page has to tell them what happened rather
+  // than read like a first offer. my_membership in 0083 is their own row
+  // and only their own: the lapse date is not on the profiles grant, so
+  // nobody reads anybody else's.
+  const { data: held } = isPaid(member)
+    ? { data: null }
+    : await supabase
+        .from("my_membership")
+        .select("lapsed_at, former_circle_name, place_held_until")
+        .maybeSingle();
+
+  const lapsed = held?.lapsed_at ? held : null;
+
   // What this member's own Village charges, in its own currency, at its
   // founding rate while founding is open there.
   const { data: rate } = member.village_id
@@ -71,6 +85,16 @@ export default async function UpgradePage({
           </p>
           {state === "cancelled" ? (
             <div className="flag hold">Checkout was cancelled. Nothing was charged.</div>
+          ) : null}
+          {lapsed ? (
+            <div className="flag hold">
+              Your membership has ended, so the member side is closed. Your
+              profile and your settings are still yours, and everything else
+              opens again the moment this is paid.
+              {lapsed.place_held_until
+                ? ` Your Circle place${lapsed.former_circle_name ? ` in ${lapsed.former_circle_name}` : ""} is held until ${new Date(lapsed.place_held_until).toLocaleDateString("en-GB")}, and you walk back into it if you return before then.`
+                : ""}
+            </div>
           ) : null}
         </section>
 
@@ -133,11 +157,11 @@ export default async function UpgradePage({
                     <h3>Not switched on yet</h3>
                     <p className="muted small" style={{ marginTop: 8 }}>
                       {stripeReady
-                        ? "Your Village has no price set yet. Your Local Admin or the Global team sets it, and this opens the moment they do."
+                        ? "Your Village has no rate set yet. The Global team sets it, and this opens the moment they do."
                         : "Village Membership opens shortly. Until then, ask your Local Admin if you need to reach another Village."}
                     </p>
-                    <Link className="btn btn-ghost" href="/home">
-                      Back to home
+                    <Link className="btn btn-ghost" href="/me">
+                      Your profile
                     </Link>
                   </>
                 )}

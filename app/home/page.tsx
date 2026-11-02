@@ -83,6 +83,12 @@ export default async function MemberHomePage() {
   if (profile.status === "onboarding" || profile.status === "invited")
     redirect("/welcome");
 
+  // And the same for somebody whose membership has ended. requireMember
+  // does this for the other fifty six pages, and this one reads the
+  // profile itself instead of going through it, so without this line the
+  // member home was the one way past the gate.
+  if (!onMembership) redirect("/upgrade");
+
   const [villageRes, circleRes] = await Promise.all([
     profile.village_id
       ? supabase.from("villages").select("name").eq("id", profile.village_id).maybeSingle()

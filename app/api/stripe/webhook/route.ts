@@ -660,11 +660,18 @@ async function handle(event: Stripe.Event) {
           .eq("profile_id", profileId)
       );
 
-      // Losing the subscription drops them back to free membership, which
-      // keeps their Village and their Circle. The founding flag goes with
-      // it: leaving it set let the fifty seat cap drift upward, because
-      // the seat count reads that column and a returning member kept a
-      // seat they had already given back.
+      // Losing the subscription closes the member side and keeps their
+      // Village. The Circle place is theirs for another 35 days, after
+      // which the nightly job in 0083 releases it and remembers which
+      // Circle it was, so coming back inside that window puts them
+      // straight back into it. Nothing here has to write lapsed_at: the
+      // trigger in 0083 stamps it off the state of the row, which is how
+      // a refund, a Local Admin turning complimentary off and a role
+      // being given back are all covered by the same rule.
+      //
+      // The founding flag goes with it: leaving it set let the fifty seat
+      // cap drift upward, because the seat count reads that column and a
+      // returning member kept a seat they had already given back.
       if (ended) {
         must(
           "ending the membership",
