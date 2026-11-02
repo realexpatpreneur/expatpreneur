@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { currentMember } from "@/lib/member";
+import { currentMember, currentRoles, workspacesFor } from "@/lib/member";
 import { Ic } from "@/components/icon";
 import { SidebarToggle } from "@/components/sidebar-toggle";
 import { WorkspaceNav } from "@/components/workspace-nav";
@@ -39,7 +39,10 @@ export async function WorkspaceShell({
   // The shell knows who is signed in, so no page has to pass it along.
   // The same lookup the header and the page use, so the shell costs
   // nothing extra.
-  const member = name ? null : await currentMember();
+  const [member, roles] = await Promise.all([
+    name ? Promise.resolve(null) : currentMember(),
+    currentRoles(),
+  ]);
   const who: string = name ?? member?.full_name ?? "You";
   const face = member?.avatar_url ?? null;
 
@@ -54,6 +57,7 @@ export async function WorkspaceShell({
         name={who}
         dark={dark}
         avatar={face}
+        workspaces={workspacesFor(roles)}
         sub={kind === "member" && member?.villageName ? `${member.villageName} Village` : undefined}
       />
 

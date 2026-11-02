@@ -150,3 +150,28 @@ export function timeAgo(iso: string) {
   if (days < 60) return `${Math.floor(days / 7)} weeks ago`;
   return `${Math.floor(days / 30)} months ago`;
 }
+// The roles the signed-in person holds now, fetched once per page. The
+// workspace menu uses it to offer only the workspaces they can open.
+export const currentRoles = cache(async function currentRoles(): Promise<string[]> {
+  const user = await currentUser();
+  if (!user) return [];
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("member_roles")
+    .select("role")
+    .eq("profile_id", user.id)
+    .is("ended_at", null);
+  return (data ?? []).map((r) => r.role as string);
+});
+
+// Which workspaces those roles open, by the same rules the More page and
+// the workspace guards use.
+export function workspacesFor(roles: string[]): string[] {
+  const has = (role: string) => roles.includes(role);
+  const out = ["member"];
+  if (has("circle_host") || has("industry_lead") || has("pod_lead")) out.push("lead");
+  if (has("educator") || has("global_admin")) out.push("edu");
+  if (has("local_admin") || has("global_admin")) out.push("admin");
+  if (has("global_admin")) out.push("global");
+  return out;
+}

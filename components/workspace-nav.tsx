@@ -23,6 +23,7 @@ export function WorkspaceNav({
   dark,
   avatar = null,
   sub,
+  workspaces = ["member"],
 }: {
   kind: string;
   name: string;
@@ -31,6 +32,10 @@ export function WorkspaceNav({
   // The line under the space's name. The member space says which
   // Village it is; the others keep saying ExpatPreneurs.
   sub?: string;
+  // The workspaces this person's roles open. Only those are offered, so
+  // a member is no longer shown Local Admin and Global team links that
+  // would only send them back home.
+  workspaces?: string[];
 }) {
   const path = usePathname() ?? "/";
   const spaces = SPACES[kind] ?? SPACES.member;
@@ -50,6 +55,7 @@ export function WorkspaceNav({
 
   const current = (href: string) => path === href || path.startsWith(href + "/");
   const tabs = TABS[kind] ?? TABS.member;
+  const others = OTHER_WORKSPACES.filter(([k]) => k !== kind && workspaces.includes(k));
 
   return (
     <>
@@ -106,8 +112,8 @@ export function WorkspaceNav({
           ))}
         </nav>
         <div className="sidefoot">
-          <span className="navlabel">Switch workspace</span>
-          {OTHER_WORKSPACES.filter(([k]) => k !== kind).map(([k, icon, label]) => (
+          {others.length ? <span className="navlabel">Switch workspace</span> : null}
+          {others.map(([k, icon, label]) => (
             <Link key={k} className="nav" href={WORKSPACE_START[k]}>
               <Ic name={icon} />
               {label}
