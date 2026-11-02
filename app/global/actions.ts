@@ -90,6 +90,34 @@ export async function endRole(
   const supabase = await createClient();
 
   const roleId = String(formData.get("role_id"));
+
+  // Nothing stopped the last Global Admin ending their own Global Admin
+  // row, and roles_global_write is the only write policy on member_roles,
+  // so once there are none nobody can ever create one. /global redirects
+  // away for everybody and the page that grants roles is inside it. The
+  // only way back is the service key and a SQL editor.
+  const { data: going } = await supabase
+    .from("member_roles")
+    .select("profile_id, role")
+    .eq("id", roleId)
+    .maybeSingle();
+
+  if (going?.role === "global_admin") {
+    const { count } = await supabase
+      .from("member_roles")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "global_admin")
+      .is("ended_at", null);
+
+    if ((count ?? 0) <= 1) {
+      return {
+        error:
+          "That is the last Global Admin. Give somebody else the role first, " +
+          "or nobody can open the Global workspace again.",
+      };
+    }
+  }
+
   const { data: ended, error } = await supabase
     .from("member_roles")
     .update({ ended_at: new Date().toISOString() })

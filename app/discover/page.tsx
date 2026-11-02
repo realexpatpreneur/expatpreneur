@@ -45,6 +45,18 @@ export default async function DiscoverPage({
   // Every query here runs for somebody who is not signed in, so the database
   // decides what comes back: public profiles, public events, published
   // courses, and media that is not marked members only.
+  //
+  // Each of the capped ones used to take a page of rows and then filter
+  // it in JavaScript, so a search only ever looked at the first 24
+  // people, the next 12 events and the first 8 businesses. With 300
+  // public profiles, searching for somebody whose name sorts late
+  // returned "Nothing matches" while they were sitting right there.
+  // Villages, Circles and Hubs have no cap and so appeared to work,
+  // which is what made the whole thing look like a working feature.
+  //
+  // The cap belongs to the browse view. A search reaches past it.
+  const cap = (n: number) => (q ? 200 : n);
+
   const [
     { data: villages },
     { data: circles },
@@ -69,7 +81,7 @@ export default async function DiscoverPage({
       .eq("public_profile", true)
       .eq("status", "active")
       .order("full_name")
-      .limit(24),
+      .limit(cap(24)),
     supabase
       .from("industry_groups")
       .select("id, slug, name, description")
@@ -83,25 +95,25 @@ export default async function DiscoverPage({
       .eq("status", "published")
       .gte("starts_at", new Date().toISOString())
       .order("starts_at")
-      .limit(12),
+      .limit(cap(12)),
     supabase
       .from("courses")
       .select("id, slug, title, summary, level, duration")
       .eq("status", "published")
       .order("title")
-      .limit(12),
+      .limit(cap(12)),
     supabase
       .from("businesses")
       .select("id, slug, name, category, tagline, logo_url")
       .eq("public", true)
-      .limit(8),
+      .limit(cap(8)),
     supabase
       .from("media_items")
       .select("id, slug, kind, title, summary, duration, published_at, cover_url")
       .eq("member_only", false)
       .not("published_at", "is", null)
       .order("published_at", { ascending: false })
-      .limit(12),
+      .limit(cap(12)),
   ]);
 
   const villageName = (id: string | null) =>
