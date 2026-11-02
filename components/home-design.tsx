@@ -73,7 +73,7 @@ export function HomeDesign({ villages }: { villages: Village[] }) {
           <div>
             {pill ? <span className="d-pill">{pill}</span> : null}
             <h1 className="d-h1" style={{ marginTop: 24, maxWidth: "15ch" }}>
-              Arrive a stranger. <span className="d-blue">Build like a local.</span>
+              Arrive as an Expat. <span className="d-blue">Build like a local.</span>
             </h1>
             <p className="d-lead" style={{ marginTop: 22, maxWidth: "46ch" }}>
               A curated network for founders building in a country that is not
