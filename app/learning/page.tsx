@@ -1,8 +1,10 @@
 import { DualPage } from "@/components/dual-page";
+import { PublicPage } from "@/components/public-page";
 import { PageBlocks } from "@/components/page-blocks";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere, isPaid } from "@/lib/member";
+import { Arrow, Faces, PHOTO } from "@/components/design/parts";
 
 export const metadata = { title: "Learning, ExpatPreneurs Global" };
 
@@ -99,6 +101,181 @@ export default async function LearningPage({
     }
     return true;
   });
+
+  // A visitor gets the designed public page. A member keeps their workspace.
+  if (!member) {
+    const lead = shown[0];
+    const later = shown.slice(1);
+
+    // The same two lines the card used to carry, in the designed type.
+    const kindLine = (course: CatalogueRow) => (
+      <>
+        {course.format === "live" ? "Live workshop" : "Recorded"}
+        {course.duration ? `, ${course.duration}` : ""}
+      </>
+    );
+
+    // Nobody is signed in here, so a paid course is locked and the price
+    // is the public one.
+    const metaLine = (course: CatalogueRow) =>
+      course.tier === "paid" ? (
+        <span style={{ fontSize: 13, fontWeight: 700, border: "1px solid #C7CDD4", borderRadius: 4, padding: "6px 10px" }}>
+          Village Membership
+        </span>
+      ) : (
+        <>
+          <span style={{ fontSize: 15, fontWeight: 700 }}>{priceOf(course)}</span>
+          <span className="d-small" style={{ fontSize: 13 }}>
+            {educators?.find((e) => e.id === course.educator_id)?.full_name ?? "A member"}
+          </span>
+        </>
+      );
+
+    return (
+      <PublicPage active="/learning">
+        <PageBlocks data={{ courses: courses ?? [] }} slug="learning">
+        <div className="d-page">
+          <section style={{ padding: "64px 0 48px" }}>
+            <div className="d-wrap">
+              <h1 className="d-h1" style={{ maxWidth: "12ch" }}>Learning</h1>
+              <p className="d-lead" style={{ marginTop: 18, maxWidth: "46ch" }}>
+                Short courses from members who have already done the thing, not
+                from people who read about it.
+              </p>
+            </div>
+          </section>
+
+          <div className="d-wrap">
+            <nav className="d-tabs">
+              {(
+                [
+                  ["all", "All"],
+                  ["live", "Live"],
+                  ["recorded", "Recorded"],
+                  ["free", "Free"],
+                ] as [string, string][]
+              ).map(([key, label]) => (
+                <Link
+                  key={key}
+                  className={show === key ? "on" : ""}
+                  href={`/learning?show=${key}`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          <section style={{ padding: "56px 0 96px" }}>
+            <div className="d-wrap">
+              {shown.length === 0 ? (
+                <div className="d-rows">
+                  <div className="d-row">
+                    <p className="d-body">Nothing published yet.</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <Link className="d-feature" href={`/learning/${lead.slug}`}>
+                    <span className="d-fimg">
+                      {lead.cover_url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={lead.cover_url} alt="" />
+                      ) : (
+                        <span
+                          className="d-cover-tile"
+                          style={{ position: "absolute", inset: 0, background: "#0F1419", padding: 32, fontSize: 30 }}
+                        >
+                          {lead.title}
+                        </span>
+                      )}
+                    </span>
+                    <span style={{ display: "flex", flexDirection: "column", padding: 36 }}>
+                      <span className="d-lbl d-blue">{kindLine(lead)}</span>
+                      {lead.summary ? (
+                        <b style={{ display: "block", marginTop: 16, fontSize: 26, fontWeight: 800, letterSpacing: "-.03em", lineHeight: 1.15 }}>
+                          {lead.summary}
+                        </b>
+                      ) : null}
+                      <span style={{ display: "flex", alignItems: "center", gap: 14, marginTop: "auto", paddingTop: 28 }}>
+                        {metaLine(lead)}
+                      </span>
+                    </span>
+                  </Link>
+
+                  {later.length ? (
+                    <div style={{ marginTop: 56 }}>
+                      {later.map((course) => (
+                        <Link className="d-mrow" key={course.id} href={`/learning/${course.slug}`}>
+                          <span className="d-thumb" style={{ height: 86 }}>
+                            {course.cover_url ? (
+                              /* eslint-disable-next-line @next/next/no-img-element */
+                              <img src={course.cover_url} alt="" />
+                            ) : (
+                              <span className="d-cover-tile" style={{ padding: 12, fontSize: 14 }}>
+                                {course.title}
+                              </span>
+                            )}
+                          </span>
+                          <span>
+                            <span className="d-lbl" style={{ color: "#6B7683" }}>{kindLine(course)}</span>
+                            {course.summary ? (
+                              <b style={{ display: "block", marginTop: 6, fontSize: 17, lineHeight: 1.35 }}>{course.summary}</b>
+                            ) : null}
+                            <span style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 10 }}>
+                              {metaLine(course)}
+                            </span>
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
+                </>
+              )}
+            </div>
+          </section>
+
+          <section className="d-sec d-washed">
+            <div className="d-wrap d-head" style={{ marginBottom: 0, alignItems: "center" }}>
+              <div style={{ flex: "1 1 460px", minWidth: 0 }}>
+                <h2 className="d-h2">Teach in the network</h2>
+                <p className="d-lead" style={{ marginTop: 14, maxWidth: "54ch" }}>
+                  Village Members can apply to become educators and earn from their
+                  workshops. ExpatPreneurs handles the payment and pays you your
+                  share.
+                </p>
+              </div>
+              <Link className="d-btn d-btn-line d-shine" href="/membership">
+                See membership
+              </Link>
+            </div>
+          </section>
+
+          <section className="d-sec">
+            <div className="d-wrap">
+              <div className="d-dark" style={{ borderRadius: 6, padding: 52, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 32 }}>
+                <div style={{ flex: "1 1 460px", minWidth: 0 }}>
+                  <span style={{ display: "block", marginBottom: 22 }}>
+                    <Faces srcs={[PHOTO.kristiane, PHOTO.julien, PHOTO.ines]} size={48} />
+                  </span>
+                  <h2 className="d-h2">Members pay less, and some courses are theirs alone</h2>
+                  <p style={{ marginTop: 12, fontSize: 17, lineHeight: 1.6, color: "#B9C3CD" }}>
+                    Anyone can buy these. Members get the member price, and the
+                    courses written for the network.
+                  </p>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                  <Link className="d-btn d-btn-mint d-shine" href="/apply">Request an invitation <Arrow /></Link>
+                  <Link className="d-btn d-btn-ghost" href="/membership">What membership costs</Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        </PageBlocks>
+      </PublicPage>
+    );
+  }
 
   return (
     <DualPage member={Boolean(member)} nav="/learning" active="/learning">

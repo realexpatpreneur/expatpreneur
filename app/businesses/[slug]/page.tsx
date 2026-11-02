@@ -1,9 +1,11 @@
 import { DualPage } from "@/components/dual-page";
+import { PublicPage } from "@/components/public-page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { whoIsHere } from "@/lib/member";
 import { ContactBusinessForm } from "../contact-form";
+import { Arrow } from "@/components/design/parts";
 
 export default async function BusinessPage({
   params,
@@ -51,6 +53,153 @@ export default async function BusinessPage({
   ]);
 
   const mine = Boolean(member) && business.owner_id === member?.id;
+
+  // A visitor gets the designed public page. A member keeps their workspace.
+  if (!member) {
+    const label = {
+      fontSize: 13,
+      fontWeight: 700,
+      border: "1px solid #C7CDD4",
+      borderRadius: 4,
+      padding: "6px 10px",
+    };
+    const detail = {
+      display: "grid",
+      gridTemplateColumns: "minmax(0,180px) minmax(0,1fr)",
+      gap: 20,
+      padding: "16px 0",
+      borderBottom: "1px solid #E3E6EA",
+    };
+
+    return (
+      <PublicPage active="/businesses">
+        <div className="d-page">
+          <section style={{ padding: "48px 0 72px" }}>
+            <div className="d-wrap">
+              <p className="d-small">
+                <Link href="/businesses">Businesses</Link>
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 24 }}>
+                {business.industry ? <span style={label}>{business.industry}</span> : null}
+                {village?.name ? <span style={label}>{village.name}</span> : null}
+                {business.public ? <span className="d-status d-open" style={{ fontSize: 13 }}>Public</span> : null}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 24 }}>
+                {business.logo_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img className="d-av" src={business.logo_url} alt="" style={{ width: 84, height: 84 }} />
+                ) : null}
+                <h1 className="d-h1">{business.name}</h1>
+              </div>
+              <p className="d-lead" style={{ marginTop: 18, maxWidth: "52ch" }}>{business.tagline}</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 32 }}>
+                {business.website ? (
+                  <a className="d-btn d-btn-line d-shine" href={business.website} target="_blank" rel="noreferrer">
+                    Visit the website
+                  </a>
+                ) : null}
+                {mine ? (
+                  <Link className="d-btn d-btn-line d-shine" href="/businesses/new">
+                    Edit
+                  </Link>
+                ) : owner ? (
+                  <Link className="d-btn d-btn-dark d-shine" href={`/members/${owner.id}`}>
+                    See {owner.full_name.split(" ")[0]} <Arrow />
+                  </Link>
+                ) : null}
+              </div>
+            </div>
+          </section>
+
+          <section className="d-sec d-sec-top0">
+            <div className="d-wrap d-apply">
+              <div>
+                <h2 className="d-h2">What it does</h2>
+                <p className="d-lead" style={{ whiteSpace: "pre-wrap", marginTop: 16 }}>
+                  {business.description || "Nothing written yet."}
+                </p>
+                <dl style={{ marginTop: 40, borderTop: "2px solid #0F1419" }}>
+                  <div style={detail}>
+                    <dt className="d-small">Started</dt>
+                    <dd className="d-body" style={{ margin: 0 }}>{business.founded || "Not given"}</dd>
+                  </div>
+                  <div style={detail}>
+                    <dt className="d-small">Sells into</dt>
+                    <dd className="d-body" style={{ margin: 0 }}>
+                      {(business.serves ?? []).join(", ") || "Not given"}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div>
+                {business.offer ? (
+                  <div className="d-dark" style={{ borderRadius: 6, padding: 28 }}>
+                    <h2 className="d-h2" style={{ fontSize: 22 }}>Current offer</h2>
+                    <p className="d-body" style={{ marginTop: 10 }}>{business.offer}</p>
+                  </div>
+                ) : null}
+
+                {(business.services ?? []).length ? (
+                  <div style={{ marginTop: business.offer ? 36 : 0 }}>
+                    <h2 className="d-h2" style={{ fontSize: 22 }}>Services</h2>
+                    <div className="d-rows" style={{ marginTop: 16 }}>
+                      {(business.services ?? []).map((service: string) => (
+                        <div className="d-row" key={service}>
+                          <b style={{ fontSize: 16 }}>{service}</b>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {owner ? (
+                  <div style={{ marginTop: 36 }}>
+                    <h2 className="d-h2" style={{ fontSize: 22 }}>Run by</h2>
+                    <p className="d-body" style={{ marginTop: 12 }}>
+                      <Link className="d-ulink" href={`/members/${owner.id}`}>{owner.full_name}</Link>
+                      {owner.headline ? `, ${owner.headline}` : ""}
+                    </p>
+                  </div>
+                ) : null}
+
+                {(jobs ?? []).length ? (
+                  <div style={{ marginTop: 36 }}>
+                    <h2 className="d-h2" style={{ fontSize: 22 }}>Looking for people</h2>
+                    <div className="d-rows" style={{ marginTop: 16 }}>
+                      {(jobs ?? []).map((job) => (
+                        <Link className="d-row" key={job.id} href={`/jobs/${job.id}`} style={{ display: "block" }}>
+                          <b style={{ display: "block", fontSize: 16 }}>{job.title}</b>
+                          <span className="d-small" style={{ display: "block", marginTop: 4, fontSize: 13 }}>{job.kind}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </section>
+
+          <section className="d-sec d-sec-top0">
+            <div className="d-wrap d-apply">
+              <div className="d-boxed d-form">
+                <h2 className="d-h2">Contact {business.name}</h2>
+                <ContactBusinessForm slug={business.slug} name={business.name} />
+              </div>
+              <div>
+                <h2 className="d-h2" style={{ fontSize: 22 }}>How this works</h2>
+                <p className="d-body" style={{ marginTop: 12 }}>
+                  Your message goes to the member who runs this business, with
+                  your email address so they can reply. Nothing is paid or
+                  arranged through ExpatPreneurs.
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </PublicPage>
+    );
+  }
 
   return (
     <DualPage member={Boolean(member)} nav="/businesses" active="/businesses">
